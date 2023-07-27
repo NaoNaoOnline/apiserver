@@ -74,7 +74,7 @@ func (r *run) runE(cmd *cobra.Command, args []string) error {
 	}
 
 	for _, x := range han {
-		x.Attach(mux, hoo)
+		x.Attach(mux, twirp.WithServerHooks(hoo), twirp.WithServerPathPrefix(""))
 	}
 
 	var ser *http.Server

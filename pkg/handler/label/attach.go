@@ -4,10 +4,9 @@ import (
 	"net/http"
 
 	"github.com/NaoNaoOnline/apigocode/pkg/label"
-	"github.com/twitchtv/twirp"
 )
 
-func (h *Handler) Attach(mux *http.ServeMux, hoo *twirp.ServerHooks) {
-	han := label.NewAPIServer(h, twirp.WithServerHooks(hoo), twirp.WithServerPathPrefix(""))
+func (h *Handler) Attach(mux *http.ServeMux, opt ...interface{}) {
+	han := label.NewAPIServer(h, opt...)
 	mux.Handle(han.PathPrefix(), han)
 }
