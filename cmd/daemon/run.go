@@ -13,6 +13,7 @@ import (
 	"github.com/NaoNaoOnline/apiserver/pkg/handler"
 	"github.com/NaoNaoOnline/apiserver/pkg/handler/label"
 	"github.com/NaoNaoOnline/apiserver/pkg/hook/failed"
+	"github.com/rs/cors"
 	"github.com/spf13/cobra"
 	"github.com/twitchtv/twirp"
 	"github.com/xh3b4sd/logger"
@@ -77,10 +78,15 @@ func (r *run) runE(cmd *cobra.Command, args []string) error {
 		x.Attach(mux, twirp.WithServerHooks(hoo), twirp.WithServerPathPrefix(""))
 	}
 
+	crs := cors.New(cors.Options{
+		ExposedHeaders: []string{"*"},
+		AllowedHeaders: []string{"*"},
+	})
+
 	var ser *http.Server
 	{
 		ser = &http.Server{
-			Handler: mux,
+			Handler: crs.Handler(mux),
 		}
 	}
 
