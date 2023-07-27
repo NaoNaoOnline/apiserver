@@ -1,7 +1,11 @@
 package handler
 
-import "google.golang.org/grpc"
+import (
+	"net/http"
+
+	"github.com/twitchtv/twirp"
+)
 
 type Interface interface {
-	Attach(g *grpc.Server)
+	Attach(mux *http.ServeMux, hoo *twirp.ServerHooks)
 }

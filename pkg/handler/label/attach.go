@@ -1,10 +1,13 @@
 package label
 
 import (
-	"github.com/NaoNaoOnline/apigocode/pkg/pbf/label"
-	"google.golang.org/grpc"
+	"net/http"
+
+	"github.com/NaoNaoOnline/apigocode/pkg/label"
+	"github.com/twitchtv/twirp"
 )
 
-func (h *Handler) Attach(g *grpc.Server) {
-	label.RegisterAPIServer(g, h)
+func (h *Handler) Attach(mux *http.ServeMux, hoo *twirp.ServerHooks) {
+	han := label.NewAPIServer(h, twirp.WithServerHooks(hoo), twirp.WithServerPathPrefix(""))
+	mux.Handle(han.PathPrefix(), han)
 }

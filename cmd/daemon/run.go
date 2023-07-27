@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"net"
+	"net/http"
 	"os"
 	"os/signal"
 	"syscall"
@@ -11,12 +12,11 @@ import (
 
 	"github.com/NaoNaoOnline/apiserver/pkg/handler"
 	"github.com/NaoNaoOnline/apiserver/pkg/handler/label"
-	"github.com/NaoNaoOnline/apiserver/pkg/interceptor/failed"
+	"github.com/NaoNaoOnline/apiserver/pkg/hook/failed"
 	"github.com/spf13/cobra"
+	"github.com/twitchtv/twirp"
 	"github.com/xh3b4sd/logger"
 	"github.com/xh3b4sd/tracer"
-	"google.golang.org/grpc"
-	"google.golang.org/grpc/reflection"
 )
 
 type run struct{}
@@ -36,11 +36,6 @@ func (r *run) runE(cmd *cobra.Command, args []string) error {
 
 	// --------------------------------------------------------------------- //
 
-	var ctx context.Context
-	{
-		ctx = context.Background()
-	}
-
 	var log logger.Interface
 	{
 		c := logger.Config{}
@@ -51,11 +46,9 @@ func (r *run) runE(cmd *cobra.Command, args []string) error {
 		}
 	}
 
-	var cep []grpc.UnaryServerInterceptor
+	var erh func(ctx context.Context, err twirp.Error) context.Context
 	{
-		cep = []grpc.UnaryServerInterceptor{
-			failed.NewInterceptor(failed.InterceptorConfig{Log: log}).Interceptor(),
-		}
+		erh = failed.NewHook(failed.HookConfig{Log: log}).Error()
 	}
 
 	var han []handler.Interface
@@ -65,14 +58,29 @@ func (r *run) runE(cmd *cobra.Command, args []string) error {
 		}
 	}
 
-	var ser *grpc.Server
+	var mux *http.ServeMux
 	{
-		ser = grpc.NewServer(grpc.ChainUnaryInterceptor(cep...))
+		mux = http.NewServeMux()
+	}
 
-		reflection.Register(ser)
+	var hoo *twirp.ServerHooks
+	{
+		hoo = &twirp.ServerHooks{
+			Error: func(ctx context.Context, err twirp.Error) context.Context {
+				ctx = erh(ctx, err)
+				return ctx
+			},
+		}
+	}
 
-		for _, x := range han {
-			x.Attach(ser)
+	for _, x := range han {
+		x.Attach(mux, hoo)
+	}
+
+	var ser *http.Server
+	{
+		ser = &http.Server{
+			Handler: mux,
 		}
 	}
 
@@ -88,7 +96,7 @@ func (r *run) runE(cmd *cobra.Command, args []string) error {
 			}
 		}
 
-		log.Log(ctx, "level", "info", "message", fmt.Sprintf("grpc server running at %s", lis.Addr().String()))
+		log.Log(context.Background(), "level", "info", "message", fmt.Sprintf("rpc server running at %s", lis.Addr().String()))
 
 		{
 			err = ser.Serve(lis)
