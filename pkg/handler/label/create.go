@@ -4,10 +4,10 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/NaoNaoOnline/apigocode/pkg/pbf/label"
+	"github.com/NaoNaoOnline/apigocode/pkg/label"
 )
 
 func (h *Handler) Create(ctx context.Context, req *label.CreateI) (*label.CreateO, error) {
-	fmt.Printf("apigocode/pkg/pbf/label.Create not implemented\n")
+	fmt.Printf("apigocode/pkg/label.Create not implemented\n")
 	return &label.CreateO{}, nil
 }

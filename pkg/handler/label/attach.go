@@ -1,10 +1,12 @@
 package label
 
 import (
-	"github.com/NaoNaoOnline/apigocode/pkg/pbf/label"
-	"google.golang.org/grpc"
+	"net/http"
+
+	"github.com/NaoNaoOnline/apigocode/pkg/label"
 )
 
-func (h *Handler) Attach(g *grpc.Server) {
-	label.RegisterAPIServer(g, h)
+func (h *Handler) Attach(mux *http.ServeMux, opt ...interface{}) {
+	han := label.NewAPIServer(h, opt...)
+	mux.Handle(han.PathPrefix(), han)
 }

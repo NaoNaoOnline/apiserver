@@ -3,7 +3,6 @@ package label
 import (
 	"fmt"
 
-	"github.com/NaoNaoOnline/apigocode/pkg/pbf/label"
 	"github.com/xh3b4sd/logger"
 	"github.com/xh3b4sd/tracer"
 )
@@ -13,8 +12,6 @@ type HandlerConfig struct {
 }
 
 type Handler struct {
-	label.UnimplementedAPIServer
-
 	log logger.Interface
 }
 

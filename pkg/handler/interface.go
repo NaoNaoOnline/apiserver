@@ -1,7 +1,9 @@
 package handler
 
-import "google.golang.org/grpc"
+import (
+	"net/http"
+)
 
 type Interface interface {
-	Attach(g *grpc.Server)
+	Attach(mux *http.ServeMux, opt ...interface{})
 }
