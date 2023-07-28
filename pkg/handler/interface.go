@@ -1,9 +1,9 @@
 package handler
 
 import (
-	"net/http"
+	"github.com/gorilla/mux"
 )
 
 type Interface interface {
-	Attach(mux *http.ServeMux, opt ...interface{})
+	Attach(*mux.Router, ...interface{})
 }
