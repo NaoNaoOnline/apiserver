@@ -20,7 +20,7 @@ type Middleware struct {
 
 func NewMiddleware(c MiddlewareConfig) *Middleware {
 	if c.Log == nil {
-		tracer.Panic(fmt.Errorf("%T.Log must not be empty", c))
+		tracer.Panic(tracer.Mask(fmt.Errorf("%T.Log must not be empty", c)))
 	}
 
 	return &Middleware{

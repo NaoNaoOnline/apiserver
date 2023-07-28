@@ -9,7 +9,7 @@ import (
 func main() {
 	err := mainE()
 	if err != nil {
-		tracer.Panic(err)
+		tracer.Panic(tracer.Mask(err))
 	}
 }
 

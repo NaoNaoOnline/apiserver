@@ -3,6 +3,7 @@ package auth
 import (
 	"fmt"
 	"net/http"
+	"strings"
 
 	"github.com/NaoNaoOnline/apiserver/pkg/context/token"
 	"github.com/golang-jwt/jwt/request"
@@ -20,7 +21,7 @@ type Middleware struct {
 
 func NewMiddleware(c MiddlewareConfig) *Middleware {
 	if c.Log == nil {
-		tracer.Panic(fmt.Errorf("%T.Log must not be empty", c))
+		tracer.Panic(tracer.Mask(fmt.Errorf("%T.Log must not be empty", c)))
 	}
 
 	return &Middleware{
@@ -30,11 +31,22 @@ func NewMiddleware(c MiddlewareConfig) *Middleware {
 
 func (m *Middleware) Handler(h http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		tok, err := request.AuthorizationHeaderExtractor.ExtractToken(r)
-		if err != nil {
-			tracer.Panic(err)
+		var err error
+
+		var tok string
+		{
+			tok, err = request.AuthorizationHeaderExtractor.ExtractToken(r)
+			if isNoToken(err) {
+				tok = "" // no access token is valid within this middleware
+			} else if err != nil {
+				tracer.Panic(tracer.Mask(err))
+			}
 		}
 
 		h.ServeHTTP(w, r.WithContext(token.NewContext(r.Context(), tok)))
 	})
+}
+
+func isNoToken(err error) bool {
+	return strings.Contains(err.Error(), "no token")
 }
