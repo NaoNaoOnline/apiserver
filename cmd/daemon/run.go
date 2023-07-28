@@ -13,7 +13,9 @@ import (
 	"github.com/NaoNaoOnline/apiserver/pkg/handler"
 	"github.com/NaoNaoOnline/apiserver/pkg/handler/label"
 	"github.com/NaoNaoOnline/apiserver/pkg/hook/failed"
-	"github.com/rs/cors"
+	"github.com/NaoNaoOnline/apiserver/pkg/middleware/auth"
+	"github.com/NaoNaoOnline/apiserver/pkg/middleware/cors"
+	"github.com/gorilla/mux"
 	"github.com/spf13/cobra"
 	"github.com/twitchtv/twirp"
 	"github.com/xh3b4sd/logger"
@@ -59,9 +61,16 @@ func (r *run) runE(cmd *cobra.Command, args []string) error {
 		}
 	}
 
-	var mux *http.ServeMux
+	var rtr *mux.Router
 	{
-		mux = http.NewServeMux()
+		rtr = mux.NewRouter()
+	}
+
+	{
+		rtr.Use(
+			cors.NewMiddleware(cors.MiddlewareConfig{Log: log}).Handler,
+			auth.NewMiddleware(auth.MiddlewareConfig{Log: log}).Handler,
+		)
 	}
 
 	var hoo *twirp.ServerHooks
@@ -75,18 +84,13 @@ func (r *run) runE(cmd *cobra.Command, args []string) error {
 	}
 
 	for _, x := range han {
-		x.Attach(mux, twirp.WithServerHooks(hoo), twirp.WithServerPathPrefix(""))
+		x.Attach(rtr, twirp.WithServerHooks(hoo), twirp.WithServerPathPrefix(""))
 	}
-
-	crs := cors.New(cors.Options{
-		ExposedHeaders: []string{"*"},
-		AllowedHeaders: []string{"*"},
-	})
 
 	var ser *http.Server
 	{
 		ser = &http.Server{
-			Handler: crs.Handler(mux),
+			Handler: rtr,
 		}
 	}
 

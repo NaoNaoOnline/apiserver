@@ -4,6 +4,8 @@ go 1.20
 
 require (
 	github.com/NaoNaoOnline/apigocode v0.0.0-20230727124722-8767fccb725f
+	github.com/golang-jwt/jwt v3.2.2+incompatible
+	github.com/gorilla/mux v1.8.0
 	github.com/rs/cors v1.9.0
 	github.com/spf13/cobra v1.7.0
 	github.com/twitchtv/twirp v8.1.3+incompatible

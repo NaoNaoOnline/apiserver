@@ -1,12 +1,11 @@
 package label
 
 import (
-	"net/http"
-
 	"github.com/NaoNaoOnline/apigocode/pkg/label"
+	"github.com/gorilla/mux"
 )
 
-func (h *Handler) Attach(mux *http.ServeMux, opt ...interface{}) {
+func (h *Handler) Attach(rtr *mux.Router, opt ...interface{}) {
 	han := label.NewAPIServer(h, opt...)
-	mux.Handle(han.PathPrefix(), han)
+	rtr.PathPrefix(han.PathPrefix()).Handler(han)
 }
