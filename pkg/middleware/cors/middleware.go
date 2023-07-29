@@ -33,7 +33,5 @@ func NewMiddleware(c MiddlewareConfig) *Middleware {
 }
 
 func (m *Middleware) Handler(h http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		m.crs.ServeHTTP(w, r, h.ServeHTTP)
-	})
+	return m.crs.Handler(h)
 }

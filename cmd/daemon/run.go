@@ -10,6 +10,7 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/NaoNaoOnline/apiserver/pkg/envvar"
 	"github.com/NaoNaoOnline/apiserver/pkg/handler"
 	"github.com/NaoNaoOnline/apiserver/pkg/handler/label"
 	"github.com/NaoNaoOnline/apiserver/pkg/hook/failed"
@@ -38,6 +39,11 @@ func (r *run) runE(cmd *cobra.Command, args []string) error {
 	}
 
 	// --------------------------------------------------------------------- //
+
+	var env envvar.Env
+	{
+		env = envvar.Load()
+	}
 
 	var log logger.Interface
 	{
@@ -68,8 +74,14 @@ func (r *run) runE(cmd *cobra.Command, args []string) error {
 
 	{
 		rtr.Use(
-			cors.NewMiddleware(cors.MiddlewareConfig{Log: log}).Handler,
-			auth.NewMiddleware(auth.MiddlewareConfig{Log: log}).Handler,
+			cors.NewMiddleware(cors.MiddlewareConfig{
+				Log: log,
+			}).Handler,
+			auth.NewMiddleware(auth.MiddlewareConfig{
+				Aud: env.OauthAud,
+				Iss: env.OauthIss,
+				Log: log,
+			}).Handler,
 		)
 	}
 
