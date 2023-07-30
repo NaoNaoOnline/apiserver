@@ -7,12 +7,10 @@ import (
 )
 
 type Env struct {
-	HttpHost  string `split_words:"true" default:"127.0.0.1"`
-	HttpPort  string `split_words:"true" default:"7777"`
-	OauthAud  string `split_words:"true" required:"true"`
-	OauthIss  string `split_words:"true" required:"true"`
-	RedisHost string `split_words:"true" default:"127.0.0.1"`
-	RedisPort string `split_words:"true" default:"6379"`
+	HttpHost string `split_words:"true" default:"127.0.0.1"`
+	HttpPort string `split_words:"true" default:"7777"`
+	OauthAud string `split_words:"true" required:"true"`
+	OauthIss string `split_words:"true" required:"true"`
 }
 
 func Load() Env {
