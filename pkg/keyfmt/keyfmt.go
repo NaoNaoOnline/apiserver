@@ -8,7 +8,7 @@ const (
 	// representation is our own unified user ID, which would then become the
 	// value stored using the created subject claim key.
 	//
-	//     external subject claim          internal uuid v4
+	//     external subject claim          internal user id
 	//                               ->
 	//     sub:google-oauth2|1234          964295a1-ae56-4b85-af41-1cb1910d7e36
 	//
