@@ -88,15 +88,16 @@ func (r *run) runE(cmd *cobra.Command, args []string) error {
 		signal.Notify(sig, os.Interrupt, syscall.SIGTERM)
 	}
 
-	select {
-	case <-sig:
-		select {
-		case <-time.After(10 * time.Second):
-			// One SIGTERM gives the daemon some time to tear down gracefully.
-		case <-sig:
-			// Two SIGTERMs stop the immediatelly.
-		}
-
-		return nil
+	{
+		<-sig
 	}
+
+	select {
+	case <-time.After(10 * time.Second):
+		// One SIGTERM gives the daemon some time to tear down gracefully.
+	case <-sig:
+		// Two SIGTERMs stop the immediatelly.
+	}
+
+	return nil
 }

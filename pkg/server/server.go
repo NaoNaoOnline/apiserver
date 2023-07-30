@@ -74,9 +74,7 @@ func New(c Config) *Server {
 	}
 }
 
-func (s *Server) Serve() error {
-	var err error
-
+func (s *Server) Serve() {
 	{
 		s.log.Log(
 			context.Background(),
@@ -86,11 +84,9 @@ func (s *Server) Serve() error {
 	}
 
 	{
-		err = s.srv.Serve(s.lis)
+		err := s.srv.Serve(s.lis)
 		if err != nil {
-			tracer.Mask(err)
+			tracer.Panic(tracer.Mask(err))
 		}
 	}
-
-	return nil
 }
