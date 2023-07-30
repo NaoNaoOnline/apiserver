@@ -14,11 +14,13 @@ import (
 	"github.com/NaoNaoOnline/apiserver/pkg/hook/failed"
 	"github.com/NaoNaoOnline/apiserver/pkg/middleware/auth"
 	"github.com/NaoNaoOnline/apiserver/pkg/middleware/cors"
+	"github.com/NaoNaoOnline/apiserver/pkg/middleware/user"
 	"github.com/NaoNaoOnline/apiserver/pkg/server"
 	"github.com/gorilla/mux"
 	"github.com/spf13/cobra"
 	"github.com/twitchtv/twirp"
 	"github.com/xh3b4sd/logger"
+	"github.com/xh3b4sd/redigo"
 	"github.com/xh3b4sd/tracer"
 )
 
@@ -52,6 +54,11 @@ func (r *run) runE(cmd *cobra.Command, args []string) error {
 		}
 	}
 
+	var red redigo.Interface
+	{
+		red = redigo.Default()
+	}
+
 	// --------------------------------------------------------------------- //
 
 	var srv *server.Server
@@ -68,6 +75,7 @@ func (r *run) runE(cmd *cobra.Command, args []string) error {
 			Mid: []mux.MiddlewareFunc{
 				cors.NewMiddleware(cors.MiddlewareConfig{Log: log}).Handler,
 				auth.NewMiddleware(auth.MiddlewareConfig{Aud: env.OauthAud, Iss: env.OauthIss, Log: log}).Handler,
+				user.NewMiddleware(user.MiddlewareConfig{Log: log, Red: red}).Handler,
 			},
 		})
 	}
