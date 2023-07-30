@@ -2,9 +2,7 @@ package daemon
 
 import (
 	"context"
-	"fmt"
 	"net"
-	"net/http"
 	"os"
 	"os/signal"
 	"syscall"
@@ -16,6 +14,7 @@ import (
 	"github.com/NaoNaoOnline/apiserver/pkg/hook/failed"
 	"github.com/NaoNaoOnline/apiserver/pkg/middleware/auth"
 	"github.com/NaoNaoOnline/apiserver/pkg/middleware/cors"
+	"github.com/NaoNaoOnline/apiserver/pkg/server"
 	"github.com/gorilla/mux"
 	"github.com/spf13/cobra"
 	"github.com/twitchtv/twirp"
@@ -27,16 +26,6 @@ type run struct{}
 
 func (r *run) runE(cmd *cobra.Command, args []string) error {
 	var err error
-
-	var erc chan error
-	var sig chan os.Signal
-	{
-		erc = make(chan error, 1)
-		sig = make(chan os.Signal, 2)
-
-		defer close(erc)
-		defer close(sig)
-	}
 
 	// --------------------------------------------------------------------- //
 
@@ -55,98 +44,60 @@ func (r *run) runE(cmd *cobra.Command, args []string) error {
 		}
 	}
 
-	var erh func(ctx context.Context, err twirp.Error) context.Context
+	var lis net.Listener
 	{
-		erh = failed.NewHook(failed.HookConfig{Log: log}).Error()
-	}
-
-	var han []handler.Interface
-	{
-		han = []handler.Interface{
-			label.NewHandler(label.HandlerConfig{Log: log}),
-		}
-	}
-
-	var rtr *mux.Router
-	{
-		rtr = mux.NewRouter()
-	}
-
-	{
-		rtr.Use(
-			cors.NewMiddleware(cors.MiddlewareConfig{
-				Log: log,
-			}).Handler,
-			auth.NewMiddleware(auth.MiddlewareConfig{
-				Aud: env.OauthAud,
-				Iss: env.OauthIss,
-				Log: log,
-			}).Handler,
-		)
-	}
-
-	var hoo *twirp.ServerHooks
-	{
-		hoo = &twirp.ServerHooks{
-			Error: func(ctx context.Context, err twirp.Error) context.Context {
-				ctx = erh(ctx, err)
-				return ctx
-			},
-		}
-	}
-
-	for _, x := range han {
-		x.Attach(rtr, twirp.WithServerHooks(hoo), twirp.WithServerPathPrefix(""))
-	}
-
-	var ser *http.Server
-	{
-		ser = &http.Server{
-			Handler: rtr,
-		}
-	}
-
-	// --------------------------------------------------------------------- //
-
-	go func() {
-		var lis net.Listener
-		{
-			lis, err = net.Listen("tcp", net.JoinHostPort("127.0.0.1", "7777"))
-			if err != nil {
-				erc <- tracer.Mask(err)
-				return
-			}
-		}
-
-		log.Log(context.Background(), "level", "info", "message", fmt.Sprintf("rpc server running at %s", lis.Addr().String()))
-
-		{
-			err = ser.Serve(lis)
-			if err != nil {
-				erc <- tracer.Mask(err)
-				return
-			}
-		}
-	}()
-
-	// --------------------------------------------------------------------- //
-
-	{
-		signal.Notify(sig, os.Interrupt, syscall.SIGTERM)
-
-		select {
-		case err := <-erc:
+		lis, err = net.Listen("tcp", net.JoinHostPort(env.HttpHost, env.HttpPort))
+		if err != nil {
 			return tracer.Mask(err)
-
-		case <-sig:
-			select {
-			case <-time.After(10 * time.Second):
-				// One SIGTERM gives the daemon some time to tear down gracefully.
-			case <-sig:
-				// Two SIGTERMs stop the immediatelly.
-			}
-
-			return nil
 		}
 	}
+
+	// --------------------------------------------------------------------- //
+
+	var srv *server.Server
+	{
+		srv = server.New(server.Config{
+			Erh: []func(ctx context.Context, err twirp.Error) context.Context{
+				failed.NewHook(failed.HookConfig{Log: log}).Error(),
+			},
+			Han: []handler.Interface{
+				label.NewHandler(label.HandlerConfig{Log: log}),
+			},
+			Lis: lis,
+			Log: log,
+			Mid: []mux.MiddlewareFunc{
+				cors.NewMiddleware(cors.MiddlewareConfig{Log: log}).Handler,
+				auth.NewMiddleware(auth.MiddlewareConfig{Aud: env.OauthAud, Iss: env.OauthIss, Log: log}).Handler,
+			},
+		})
+	}
+
+	{
+		go srv.Serve()
+	}
+
+	// --------------------------------------------------------------------- //
+
+	var sig chan os.Signal
+	{
+		sig = make(chan os.Signal, 2)
+	}
+
+	{
+		defer close(sig)
+		signal.Notify(sig, os.Interrupt, syscall.SIGTERM)
+	}
+
+	{
+		<-sig
+	}
+
+	select {
+	case <-time.After(10 * time.Second):
+		// One SIGTERM gives the daemon some time to tear down gracefully.
+	case <-sig:
+		// Two SIGTERMs stop the immediatelly.
+	}
+
+	return nil
 }
