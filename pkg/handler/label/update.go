@@ -8,6 +8,6 @@ import (
 )
 
 func (h *Handler) Update(ctx context.Context, req *label.UpdateI) (*label.UpdateO, error) {
-	fmt.Printf("apigocode/pkg/label.Update not implemented\n")
+	fmt.Printf("/label.API/Update not implemented\n")
 	return &label.UpdateO{}, nil
 }

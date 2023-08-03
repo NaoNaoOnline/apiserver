@@ -8,6 +8,6 @@ import (
 )
 
 func (h *Handler) Delete(ctx context.Context, req *label.DeleteI) (*label.DeleteO, error) {
-	fmt.Printf("apigocode/pkg/label.Delete not implemented\n")
+	fmt.Printf("/label.API/Delete not implemented\n")
 	return &label.DeleteO{}, nil
 }

@@ -3,7 +3,7 @@ module github.com/NaoNaoOnline/apiserver
 go 1.20
 
 require (
-	github.com/NaoNaoOnline/apigocode v0.1.0
+	github.com/NaoNaoOnline/apigocode v0.1.1
 	github.com/auth0/go-jwt-middleware/v2 v2.1.0
 	github.com/google/uuid v1.3.0
 	github.com/gorilla/mux v1.8.0

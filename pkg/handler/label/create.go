@@ -8,6 +8,6 @@ import (
 )
 
 func (h *Handler) Create(ctx context.Context, req *label.CreateI) (*label.CreateO, error) {
-	fmt.Printf("apigocode/pkg/label.Create not implemented\n")
+	fmt.Printf("/label.API/Create not implemented\n")
 	return &label.CreateO{}, nil
 }
