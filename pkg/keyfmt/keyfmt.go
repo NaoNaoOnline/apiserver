@@ -13,4 +13,12 @@ const (
 	//     sub:google-oauth2|1234          964295a1-ae56-4b85-af41-1cb1910d7e36
 	//
 	SubjectClaim = "sub:%s"
+	// UserObject is used to store our internal representation of a user,
+	// abstracted away from third party mechanisms.
+	//
+	//     internal user id                               internal user object
+	//                                             ->
+	//     964295a1-ae56-4b85-af41-1cb1910d7e36           {"key": "val"}
+	//
+	UserObject = "use:%s"
 )
