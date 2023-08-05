@@ -1,4 +1,4 @@
-package auth
+package authmiddleware
 
 import (
 	"fmt"

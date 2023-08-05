@@ -1,4 +1,4 @@
-package label
+package labelhandler
 
 import (
 	"github.com/NaoNaoOnline/apigocode/pkg/label"

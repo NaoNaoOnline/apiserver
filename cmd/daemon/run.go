@@ -10,14 +10,15 @@ import (
 
 	"github.com/NaoNaoOnline/apiserver/pkg/envvar"
 	"github.com/NaoNaoOnline/apiserver/pkg/handler"
-	handlerlabl "github.com/NaoNaoOnline/apiserver/pkg/handler/label"
-	handleruser "github.com/NaoNaoOnline/apiserver/pkg/handler/user"
+	"github.com/NaoNaoOnline/apiserver/pkg/handler/labelhandler"
+	"github.com/NaoNaoOnline/apiserver/pkg/handler/userhandler"
 	"github.com/NaoNaoOnline/apiserver/pkg/hook/failed"
-	"github.com/NaoNaoOnline/apiserver/pkg/middleware/auth"
-	"github.com/NaoNaoOnline/apiserver/pkg/middleware/cors"
-	"github.com/NaoNaoOnline/apiserver/pkg/middleware/user"
+	"github.com/NaoNaoOnline/apiserver/pkg/middleware/authmiddleware"
+	"github.com/NaoNaoOnline/apiserver/pkg/middleware/corsmiddleware"
+	"github.com/NaoNaoOnline/apiserver/pkg/middleware/usermiddleware"
 	"github.com/NaoNaoOnline/apiserver/pkg/server"
-	storageuser "github.com/NaoNaoOnline/apiserver/pkg/storage/user"
+	"github.com/NaoNaoOnline/apiserver/pkg/storage/labelstorage"
+	"github.com/NaoNaoOnline/apiserver/pkg/storage/userstorage"
 	"github.com/gorilla/mux"
 	"github.com/spf13/cobra"
 	"github.com/twitchtv/twirp"
@@ -61,9 +62,17 @@ func (r *run) runE(cmd *cobra.Command, args []string) error {
 		red = redigo.Default()
 	}
 
-	var use storageuser.Interface
+	var lab labelstorage.Interface
 	{
-		use = storageuser.NewRedis(storageuser.RedisConfig{
+		lab = labelstorage.NewRedis(labelstorage.RedisConfig{
+			Log: log,
+			Red: red,
+		})
+	}
+
+	var use userstorage.Interface
+	{
+		use = userstorage.NewRedis(userstorage.RedisConfig{
 			Log: log,
 			Red: red,
 		})
@@ -78,15 +87,15 @@ func (r *run) runE(cmd *cobra.Command, args []string) error {
 				failed.NewHook(failed.HookConfig{Log: log}).Error(),
 			},
 			Han: []handler.Interface{
-				handlerlabl.NewHandler(handlerlabl.HandlerConfig{Log: log}),
-				handleruser.NewHandler(handleruser.HandlerConfig{Log: log, Use: use}),
+				labelhandler.NewHandler(labelhandler.HandlerConfig{Lab: lab, Log: log}),
+				userhandler.NewHandler(userhandler.HandlerConfig{Log: log, Use: use}),
 			},
 			Lis: lis,
 			Log: log,
 			Mid: []mux.MiddlewareFunc{
-				cors.NewMiddleware(cors.MiddlewareConfig{Log: log}).Handler,
-				auth.NewMiddleware(auth.MiddlewareConfig{Aud: env.OauthAud, Iss: env.OauthIss, Log: log}).Handler,
-				user.NewMiddleware(user.MiddlewareConfig{Log: log, Use: use}).Handler,
+				corsmiddleware.NewMiddleware(corsmiddleware.MiddlewareConfig{Log: log}).Handler,
+				authmiddleware.NewMiddleware(authmiddleware.MiddlewareConfig{Aud: env.OauthAud, Iss: env.OauthIss, Log: log}).Handler,
+				usermiddleware.NewMiddleware(usermiddleware.MiddlewareConfig{Log: log, Use: use}).Handler,
 			},
 		})
 	}
