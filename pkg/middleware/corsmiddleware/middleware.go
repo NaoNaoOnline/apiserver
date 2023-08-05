@@ -1,4 +1,4 @@
-package cors
+package corsmiddleware
 
 import (
 	"fmt"

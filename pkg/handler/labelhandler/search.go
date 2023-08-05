@@ -1,4 +1,4 @@
-package label
+package labelhandler
 
 import (
 	"context"

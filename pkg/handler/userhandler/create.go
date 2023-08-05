@@ -1,26 +1,21 @@
-package user
+package userhandler
 
 import (
 	"context"
 	"strconv"
 
 	"github.com/NaoNaoOnline/apigocode/pkg/user"
-	storageuser "github.com/NaoNaoOnline/apiserver/pkg/storage/user"
+	"github.com/NaoNaoOnline/apiserver/pkg/storage/userstorage"
 	jwtmiddleware "github.com/auth0/go-jwt-middleware/v2"
 	"github.com/auth0/go-jwt-middleware/v2/validator"
 	"github.com/xh3b4sd/tracer"
 )
 
-func (h *Handler) Search(ctx context.Context, req *user.SearchI) (*user.SearchO, error) {
+func (h *Handler) Create(ctx context.Context, req *user.CreateI) (*user.CreateO, error) {
 	var err error
 
-	var use string
-	{
-		use = req.Object[0].Intern.User
-	}
-
 	var sub string
-	if use == "" {
+	{
 		cla, _ := ctx.Value(jwtmiddleware.ContextKey{}).(*validator.ValidatedClaims)
 		if cla == nil || cla.RegisteredClaims.Subject == "" {
 			return nil, tracer.Mask(subjectClaimEmptyError)
@@ -29,26 +24,29 @@ func (h *Handler) Search(ctx context.Context, req *user.SearchI) (*user.SearchO,
 		sub = cla.RegisteredClaims.Subject
 	}
 
-	var obj *storageuser.Object
+	var img string
+	var nam string
 	{
-		obj, err = h.use.Search(sub, use)
+		img = req.Object[0].Public.Imag
+		nam = req.Object[0].Public.Name
+	}
+
+	var obj *userstorage.Object
+	{
+		obj, err = h.use.Create(sub, img, nam)
 		if err != nil {
 			return nil, tracer.Mask(err)
 		}
 	}
 
-	var out *user.SearchO
+	var out *user.CreateO
 	{
-		out = &user.SearchO{
-			Object: []*user.SearchO_Object{
+		out = &user.CreateO{
+			Object: []*user.CreateO_Object{
 				{
-					Intern: &user.SearchO_Object_Intern{
+					Intern: &user.CreateO_Object_Intern{
 						Crtd: strconv.Itoa(int(obj.Crtd.Unix())),
 						User: obj.User,
-					},
-					Public: &user.SearchO_Object_Public{
-						Imag: obj.Imag,
-						Name: obj.Name,
 					},
 				},
 			},

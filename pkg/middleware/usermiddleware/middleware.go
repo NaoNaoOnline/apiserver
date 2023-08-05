@@ -1,4 +1,4 @@
-package user
+package usermiddleware
 
 import (
 	"context"
@@ -7,7 +7,7 @@ import (
 	"strconv"
 
 	"github.com/NaoNaoOnline/apiserver/pkg/context/userid"
-	"github.com/NaoNaoOnline/apiserver/pkg/storage/user"
+	"github.com/NaoNaoOnline/apiserver/pkg/storage/userstorage"
 	jwtmiddleware "github.com/auth0/go-jwt-middleware/v2"
 	"github.com/auth0/go-jwt-middleware/v2/validator"
 	"github.com/xh3b4sd/logger"
@@ -16,12 +16,12 @@ import (
 
 type MiddlewareConfig struct {
 	Log logger.Interface
-	Use user.Interface
+	Use userstorage.Interface
 }
 
 type Middleware struct {
 	log logger.Interface
-	use user.Interface
+	use userstorage.Interface
 }
 
 func NewMiddleware(c MiddlewareConfig) *Middleware {
@@ -59,10 +59,10 @@ func (m *Middleware) Handler(h http.Handler) http.Handler {
 			}
 		}
 
-		var obj *user.Object
+		var obj *userstorage.Object
 		{
 			obj, err = m.use.Search(cla.RegisteredClaims.Subject, "")
-			if user.IsNotFound(err) {
+			if userstorage.IsNotFound(err) {
 				h.ServeHTTP(w, r)
 				return
 			} else if err != nil {

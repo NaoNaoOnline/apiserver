@@ -1,21 +1,21 @@
-package user
+package userhandler
 
 import (
 	"fmt"
 
-	"github.com/NaoNaoOnline/apiserver/pkg/storage/user"
+	"github.com/NaoNaoOnline/apiserver/pkg/storage/userstorage"
 	"github.com/xh3b4sd/logger"
 	"github.com/xh3b4sd/tracer"
 )
 
 type HandlerConfig struct {
 	Log logger.Interface
-	Use user.Interface
+	Use userstorage.Interface
 }
 
 type Handler struct {
 	log logger.Interface
-	use user.Interface
+	use userstorage.Interface
 }
 
 func NewHandler(c HandlerConfig) *Handler {
