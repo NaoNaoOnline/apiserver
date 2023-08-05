@@ -9,25 +9,25 @@ import (
 )
 
 type HandlerConfig struct {
-	Log logger.Interface
 	Lab labelstorage.Interface
+	Log logger.Interface
 }
 
 type Handler struct {
-	log logger.Interface
 	lab labelstorage.Interface
+	log logger.Interface
 }
 
 func NewHandler(c HandlerConfig) *Handler {
-	if c.Log == nil {
-		tracer.Panic(tracer.Mask(fmt.Errorf("%T.Log must not be empty", c)))
-	}
 	if c.Lab == nil {
 		tracer.Panic(tracer.Mask(fmt.Errorf("%T.Lab must not be empty", c)))
 	}
+	if c.Log == nil {
+		tracer.Panic(tracer.Mask(fmt.Errorf("%T.Log must not be empty", c)))
+	}
 
 	return &Handler{
-		log: c.Log,
 		lab: c.Lab,
+		log: c.Log,
 	}
 }

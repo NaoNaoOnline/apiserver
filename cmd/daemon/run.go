@@ -17,6 +17,7 @@ import (
 	"github.com/NaoNaoOnline/apiserver/pkg/middleware/corsmiddleware"
 	"github.com/NaoNaoOnline/apiserver/pkg/middleware/usermiddleware"
 	"github.com/NaoNaoOnline/apiserver/pkg/server"
+	"github.com/NaoNaoOnline/apiserver/pkg/storage/labelstorage"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/userstorage"
 	"github.com/gorilla/mux"
 	"github.com/spf13/cobra"
@@ -61,6 +62,14 @@ func (r *run) runE(cmd *cobra.Command, args []string) error {
 		red = redigo.Default()
 	}
 
+	var lab labelstorage.Interface
+	{
+		lab = labelstorage.NewRedis(labelstorage.RedisConfig{
+			Log: log,
+			Red: red,
+		})
+	}
+
 	var use userstorage.Interface
 	{
 		use = userstorage.NewRedis(userstorage.RedisConfig{
@@ -78,7 +87,7 @@ func (r *run) runE(cmd *cobra.Command, args []string) error {
 				failed.NewHook(failed.HookConfig{Log: log}).Error(),
 			},
 			Han: []handler.Interface{
-				labelhandler.NewHandler(labelhandler.HandlerConfig{Log: log}),
+				labelhandler.NewHandler(labelhandler.HandlerConfig{Lab: lab, Log: log}),
 				userhandler.NewHandler(userhandler.HandlerConfig{Log: log, Use: use}),
 			},
 			Lis: lis,
