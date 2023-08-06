@@ -3,27 +3,31 @@ package keyfmt
 const (
 	// LabelCategory is used to store all the IDs of category labels.
 	//
-	//     lab/cat    ->    1234,5678
+	//     kind category          label object IDs
+	//                      ->
+	//     lab/cat                1234,5678
 	//
 	LabelCategory = "lab/cat"
 	// LabelHost is used to store all the IDs of host labels.
 	//
-	//     lab/hos    ->    1234,5678
+	//     kind host          label object IDs
+	//                  ->
+	//     lab/hos            1234,5678
 	//
 	LabelHost = "lab/hos"
 	// LabelObject is used to store our internal representation of a label object.
 	//
-	//     label id                          label object
-	//                                 ->
-	//     lab/obj/1355803846369828          {"key": "val"}
+	//     label ID              label object
+	//                     ->
+	//     lab/obj/1234          {"key": "val"}
 	//
 	LabelObject = "lab/obj/%s"
 	// LabelUser is used to store all the IDs of labels created by a specific
 	// user.
 	//
-	//     internal user id                  label id
-	//                                 ->
-	//     lab/use/1257894840369014          1234,5678
+	//     internal user ID          label ID
+	//                         ->
+	//     lab/use/5678              1234,5678
 	//
 	LabelUser = "lab/use/%s"
 	// UserClaim is used to store user mappings between external and internal user
@@ -33,16 +37,16 @@ const (
 	// representation is our own unified user ID, which would then become the
 	// value stored using the created subject claim key.
 	//
-	//     external subject claim              internal user id
+	//     external subject claim              internal user ID
 	//                                   ->
-	//     use/sub/google-oauth2|1234          1257894840369014
+	//     use/sub/google-oauth2|1234          5678
 	//
 	UserClaim = "use/sub/%s"
 	// UserObject is used to store our internal representation of a user object.
 	//
-	//     internal user id                  user object
-	//                                 ->
-	//     use/obj/1257894840369014          {"key": "val"}
+	//     internal user ID          user object
+	//                         ->
+	//     use/obj/5678              {"key": "val"}
 	//
 	UserObject = "use/obj/%s"
 )
