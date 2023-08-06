@@ -48,8 +48,21 @@ func (r *Redis) Create(inp *Object) (*Object, error) {
 		return nil, tracer.Mask(invalidInputError)
 	}
 
-	// At first we create the normalized key-value pair so that we can search for
-	// label objects using their IDs.
+	// At first we need to validate whether the label does already exist, since
+	// our label names must be unique.
+	{
+		exi, err := r.red.Sorted().Exists().Index(keyKin(inp.Kind), inp.Name)
+		if err != nil {
+			return nil, tracer.Mask(err)
+		}
+
+		if exi {
+			return nil, tracer.Mask(alreadyExistsError)
+		}
+	}
+
+	// Once we know the label is unique, we create the normalized key-value pair
+	// so that we can search for label objects using their IDs.
 	{
 		err = r.red.Simple().Create().Element(keyObj(inp.Labl), musStr(inp))
 		if err != nil {
@@ -58,9 +71,11 @@ func (r *Redis) Create(inp *Object) (*Object, error) {
 	}
 
 	// Now we create the global and user specific mappings for global and user
-	// specific search queries.
+	// specific search queries. For the global queries we ensure the label names
+	// are unique by using the label name as additional index within the redis
+	// sorted sets.
 	{
-		err = r.red.Sorted().Create().Element(keyKin(inp.Kind), inp.Labl.String(), inp.Labl.Float())
+		err = r.red.Sorted().Create().Element(keyKin(inp.Kind), inp.Labl.String(), inp.Labl.Float(), inp.Name)
 		if err != nil {
 			return nil, tracer.Mask(err)
 		}
@@ -71,7 +86,7 @@ func (r *Redis) Create(inp *Object) (*Object, error) {
 		}
 	}
 
-	return nil, nil
+	return inp, nil
 }
 
 func keyKin(kin string) string {

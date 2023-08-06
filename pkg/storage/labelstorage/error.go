@@ -6,6 +6,15 @@ import (
 	"github.com/xh3b4sd/tracer"
 )
 
+var alreadyExistsError = &tracer.Error{
+	Kind: "alreadyExistsError",
+	Desc: "Labels must be unique. A label with the provided name was found to exist already. Therefore the request failed.",
+}
+
+func IsAlreadyExists(err error) bool {
+	return errors.Is(err, alreadyExistsError)
+}
+
 var invalidInputError = &tracer.Error{
 	Kind: "invalidInputError",
 }

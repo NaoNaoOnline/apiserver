@@ -27,5 +27,11 @@ type Object struct {
 }
 
 type Interface interface {
+	// Create persists a new label object, if none exists already with the given
+	// name.
+	//
+	//     @inp[0] the label object providing label specific information
+	//     @out[0] the label object mapped to its internal label ID
+	//
 	Create(*Object) (*Object, error)
 }
