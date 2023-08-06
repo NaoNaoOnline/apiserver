@@ -23,7 +23,7 @@ type Object struct {
 	// Twit is the label's Twitter link.
 	Twit string `json:"twit"`
 	// User is the user ID creating this label.
-	User string `json:"user"`
+	User scoreid.String `json:"user"`
 }
 
 type Interface interface {
@@ -34,4 +34,10 @@ type Interface interface {
 	//     @out[0] the label object mapped to its internal label ID
 	//
 	Create(*Object) (*Object, error)
+	// Search returns the label objects of the given kind.
+	//
+	//     @inp[0] the label kind under which label objects are grouped together
+	//     @out[0] the list of label objects of either kind category or kind host
+	//
+	Search(string) ([]*Object, error)
 }

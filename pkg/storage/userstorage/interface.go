@@ -33,9 +33,9 @@ type Interface interface {
 	// exists. Search will return an error if there is no user mapping already
 	// persisted between the external subject claim and the internal user ID.
 	//
-	//     @inp[0] external subject claim, if given user id must be empty
-	//     @inp[1] internal user id, if given subject claim must be empty
-	//     @out[0] the user object mapped to the given subject claim or user id
+	//     @inp[0] external subject claim, if given user ID must be empty
+	//     @inp[1] internal user ID, if given subject claim must be empty
+	//     @out[0] the user object mapped to the given subject claim or user ID
 	//
 	Search(string, string) (*Object, error)
 }
