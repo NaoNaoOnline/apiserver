@@ -6,6 +6,7 @@ import (
 
 	"github.com/NaoNaoOnline/apigocode/pkg/label"
 	"github.com/NaoNaoOnline/apiserver/pkg/context/userid"
+	"github.com/NaoNaoOnline/apiserver/pkg/scoreid"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/labelstorage"
 	"github.com/xh3b4sd/tracer"
 )
@@ -13,7 +14,7 @@ import (
 func (h *Handler) Create(ctx context.Context, req *label.CreateI) (*label.CreateO, error) {
 	var err error
 
-	var use string
+	var use scoreid.String
 	{
 		use = userid.FromContext(ctx)
 	}
