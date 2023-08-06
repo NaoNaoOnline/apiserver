@@ -29,31 +29,31 @@ func (h *Handler) Search(ctx context.Context, req *user.SearchI) (*user.SearchO,
 		sub = cla.RegisteredClaims.Subject
 	}
 
-	var obj *userstorage.Object
+	var out *userstorage.Object
 	{
-		obj, err = h.use.Search(sub, use)
+		out, err = h.use.Search(sub, use)
 		if err != nil {
 			return nil, tracer.Mask(err)
 		}
 	}
 
-	var out *user.SearchO
+	var res *user.SearchO
 	{
-		out = &user.SearchO{
+		res = &user.SearchO{
 			Object: []*user.SearchO_Object{
 				{
 					Intern: &user.SearchO_Object_Intern{
-						Crtd: strconv.Itoa(int(obj.Crtd.Unix())),
-						User: obj.User,
+						Crtd: strconv.Itoa(int(out.Crtd.Unix())),
+						User: out.User.String(),
 					},
 					Public: &user.SearchO_Object_Public{
-						Imag: obj.Imag,
-						Name: obj.Name,
+						Imag: out.Imag,
+						Name: out.Name,
 					},
 				},
 			},
 		}
 	}
 
-	return out, nil
+	return res, nil
 }

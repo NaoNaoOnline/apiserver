@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"github.com/NaoNaoOnline/apiserver/pkg/keyfmt"
-	"github.com/google/uuid"
+	"github.com/NaoNaoOnline/apiserver/pkg/scoreid"
 	"github.com/xh3b4sd/logger"
 	"github.com/xh3b4sd/redigo"
 	"github.com/xh3b4sd/redigo/pkg/simple"
@@ -37,69 +37,57 @@ func NewRedis(c RedisConfig) *Redis {
 	}
 }
 
-func (r *Redis) Create(sub string, img string, nam string) (*Object, error) {
+func (r *Redis) Create(inp *Object) (*Object, error) {
 	var err error
 
-	var obj *Object
+	var out *Object
 	{
-		obj, err = r.Search(sub, "")
+		out, err = r.Search(inp.Subj[0], "")
 		if IsNotFound(err) {
 			// The user does not appear to exist. So first, create the mapping between
 			// external subject claim and internal user ID.
-			var use string
 			{
-				use = uuid.NewString()
+				inp.Crtd = time.Now().UTC()
+				inp.User = scoreid.New(inp.Crtd)
 			}
 
 			{
-				err = r.red.Simple().Create().Element(fmt.Sprintf(keyfmt.SubjectClaim, sub), use)
+				err = r.red.Simple().Create().Element(fmt.Sprintf(keyfmt.UserClaim, inp.Subj[0]), inp.User.String())
 				if err != nil {
 					return nil, tracer.Mask(err)
 				}
 			}
 
-			// In the middle of the two step process, register the new user object for
-			// the local execution scope, so that we return the user object we just
-			// created.
-			{
-				obj = &Object{
-					Crtd: time.Now().UTC(),
-					Imag: img,
-					Name: nam,
-					User: use,
-				}
-			}
-
-			// Second create the mapping between internal user ID and internal user
+			// Second, create the mapping between internal user ID and internal user
 			// object.
 			var jsn string
 			{
-				jsn = musStr(obj)
+				jsn = musStr(inp)
 			}
 
 			{
-				err = r.red.Simple().Create().Element(fmt.Sprintf(keyfmt.UserObject, use), jsn)
+				err = r.red.Simple().Create().Element(fmt.Sprintf(keyfmt.UserObject, inp.User), jsn)
 				if err != nil {
 					return nil, tracer.Mask(err)
 				}
 			}
 		} else if err != nil {
 			return nil, tracer.Mask(err)
-		} else if obj.Imag != img || obj.Name != nam {
+		} else if out.Imag != inp.Imag || out.Name != inp.Name {
 			// The user exists and we update it due to changes in profile picture
 			// and/or username.
 			{
-				obj.Imag = img
-				obj.Name = nam
+				out.Imag = inp.Imag
+				out.Name = inp.Name
 			}
 
 			var jsn string
 			{
-				jsn = musStr(obj)
+				jsn = musStr(out)
 			}
 
 			{
-				err = r.red.Simple().Create().Element(fmt.Sprintf(keyfmt.UserObject, obj.User), jsn)
+				err = r.red.Simple().Create().Element(fmt.Sprintf(keyfmt.UserObject, out.User), jsn)
 				if err != nil {
 					return nil, tracer.Mask(err)
 				}
@@ -107,7 +95,7 @@ func (r *Redis) Create(sub string, img string, nam string) (*Object, error) {
 		}
 	}
 
-	return obj, nil
+	return out, nil
 }
 
 func (r *Redis) Search(sub string, use string) (*Object, error) {
@@ -121,7 +109,7 @@ func (r *Redis) Search(sub string, use string) (*Object, error) {
 	}
 
 	if use == "" {
-		use, err = r.red.Simple().Search().Value(fmt.Sprintf(keyfmt.SubjectClaim, sub))
+		use, err = r.red.Simple().Search().Value(fmt.Sprintf(keyfmt.UserClaim, sub))
 		if simple.IsNotFound(err) {
 			return nil, tracer.Mask(notFoundError)
 		} else if err != nil {
@@ -139,15 +127,15 @@ func (r *Redis) Search(sub string, use string) (*Object, error) {
 		}
 	}
 
-	var obj Object
+	var out Object
 	{
-		err = json.Unmarshal([]byte(jsn), &obj)
+		err = json.Unmarshal([]byte(jsn), &out)
 		if err != nil {
 			return nil, tracer.Mask(err)
 		}
 	}
 
-	return &obj, nil
+	return &out, nil
 }
 
 func musStr(obj *Object) string {
