@@ -24,34 +24,36 @@ func (h *Handler) Create(ctx context.Context, req *user.CreateI) (*user.CreateO,
 		sub = cla.RegisteredClaims.Subject
 	}
 
-	var img string
-	var nam string
+	var inp *userstorage.Object
 	{
-		img = req.Object[0].Public.Imag
-		nam = req.Object[0].Public.Name
+		inp = &userstorage.Object{
+			Subj: []string{sub},
+			Imag: req.Object[0].Public.Imag,
+			Name: req.Object[0].Public.Name,
+		}
 	}
 
-	var obj *userstorage.Object
+	var out *userstorage.Object
 	{
-		obj, err = h.use.Create(sub, img, nam)
+		out, err = h.use.Create(inp)
 		if err != nil {
 			return nil, tracer.Mask(err)
 		}
 	}
 
-	var out *user.CreateO
+	var res *user.CreateO
 	{
-		out = &user.CreateO{
+		res = &user.CreateO{
 			Object: []*user.CreateO_Object{
 				{
 					Intern: &user.CreateO_Object_Intern{
-						Crtd: strconv.Itoa(int(obj.Crtd.Unix())),
-						User: obj.User,
+						Crtd: strconv.Itoa(int(out.Crtd.Unix())),
+						User: out.User.String(),
 					},
 				},
 			},
 		}
 	}
 
-	return out, nil
+	return res, nil
 }

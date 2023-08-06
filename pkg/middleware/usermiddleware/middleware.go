@@ -74,7 +74,7 @@ func (m *Middleware) Handler(h http.Handler) http.Handler {
 		// Finally we looked up our internal user ID and add it to the request
 		// context for further use.
 		{
-			r = r.Clone(userid.NewContext(ctx, obj.User))
+			r = r.Clone(userid.NewContext(ctx, obj.User.String()))
 		}
 
 		// Continue processing the request. The next handler may execute another
