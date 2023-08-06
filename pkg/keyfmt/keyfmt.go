@@ -13,11 +13,11 @@ const (
 	LabelHost = "lab/hos"
 	// LabelObject is used to store our internal representation of a label object.
 	//
-	//     label id                      label object
-	//                             ->
-	//     lab/1355803846369828          {"key": "val"}
+	//     label id                          label object
+	//                                 ->
+	//     lab/obj/1355803846369828          {"key": "val"}
 	//
-	LabelObject = "lab/%s"
+	LabelObject = "lab/obj/%s"
 	// LabelUser is used to store all the IDs of labels created by a specific
 	// user.
 	//
@@ -26,23 +26,23 @@ const (
 	//     lab/use/1257894840369014          1234,5678
 	//
 	LabelUser = "lab/use/%s"
-	// SubjectClaim is used to store user mappings between external and internal
-	// user representations. An external representation might be an OAuth subject
-	// claim provided with an access token when authenticating via Google. This
-	// subject claim would become part of the key used here. The internal user
+	// UserClaim is used to store user mappings between external and internal user
+	// representations. An external representation might be an OAuth subject claim
+	// provided with an access token when authenticating via Google. This subject
+	// claim would become part of the key used here. The internal user
 	// representation is our own unified user ID, which would then become the
 	// value stored using the created subject claim key.
 	//
-	//     external subject claim          internal user id
-	//                               ->
-	//     sub/google-oauth2|1234          1257894840369014
+	//     external subject claim              internal user id
+	//                                   ->
+	//     use/sub/google-oauth2|1234          1257894840369014
 	//
-	SubjectClaim = "sub/%s"
+	UserClaim = "use/sub/%s"
 	// UserObject is used to store our internal representation of a user object.
 	//
-	//     internal user id          user object
-	//                         ->
-	//     1257894840369014          {"key": "val"}
+	//     internal user id                  user object
+	//                                 ->
+	//     use/obj/1257894840369014          {"key": "val"}
 	//
-	UserObject = "use/%s"
+	UserObject = "use/obj/%s"
 )

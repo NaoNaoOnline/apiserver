@@ -52,7 +52,7 @@ func (r *Redis) Create(inp *Object) (*Object, error) {
 			}
 
 			{
-				err = r.red.Simple().Create().Element(fmt.Sprintf(keyfmt.SubjectClaim, inp.Subj[0]), inp.User.String())
+				err = r.red.Simple().Create().Element(fmt.Sprintf(keyfmt.UserClaim, inp.Subj[0]), inp.User.String())
 				if err != nil {
 					return nil, tracer.Mask(err)
 				}
@@ -109,7 +109,7 @@ func (r *Redis) Search(sub string, use string) (*Object, error) {
 	}
 
 	if use == "" {
-		use, err = r.red.Simple().Search().Value(fmt.Sprintf(keyfmt.SubjectClaim, sub))
+		use, err = r.red.Simple().Search().Value(fmt.Sprintf(keyfmt.UserClaim, sub))
 		if simple.IsNotFound(err) {
 			return nil, tracer.Mask(notFoundError)
 		} else if err != nil {
