@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"fmt"
 
+	"github.com/NaoNaoOnline/apiserver/pkg/keyfmt"
+	"github.com/NaoNaoOnline/apiserver/pkg/scoreid"
 	"github.com/xh3b4sd/logger"
 	"github.com/xh3b4sd/redigo"
 	"github.com/xh3b4sd/tracer"
@@ -31,6 +33,14 @@ func NewRedis(c RedisConfig) *Redis {
 		log: c.Log,
 		red: c.Red,
 	}
+}
+
+func useCla(str string) string {
+	return fmt.Sprintf(keyfmt.UserClaim, str)
+}
+
+func useObj(sid scoreid.String) string {
+	return fmt.Sprintf(keyfmt.UserObject, sid)
 }
 
 func musStr(obj *Object) string {

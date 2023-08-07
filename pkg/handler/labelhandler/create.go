@@ -6,22 +6,12 @@ import (
 
 	"github.com/NaoNaoOnline/apigocode/pkg/label"
 	"github.com/NaoNaoOnline/apiserver/pkg/context/userid"
-	"github.com/NaoNaoOnline/apiserver/pkg/scoreid"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/labelstorage"
 	"github.com/xh3b4sd/tracer"
 )
 
 func (h *Handler) Create(ctx context.Context, req *label.CreateI) (*label.CreateO, error) {
 	var err error
-
-	var use scoreid.String
-	{
-		use = userid.FromContext(ctx)
-	}
-
-	if use == "" {
-		return nil, tracer.Mask(userIDEmptyError)
-	}
 
 	var inp *labelstorage.Object
 	{
@@ -31,7 +21,7 @@ func (h *Handler) Create(ctx context.Context, req *label.CreateI) (*label.Create
 			Kind: req.Object[0].Public.Kind,
 			Name: req.Object[0].Public.Name,
 			Twit: req.Object[0].Public.Twit,
-			User: use,
+			User: userid.FromContext(ctx),
 		}
 	}
 

@@ -11,19 +11,19 @@ func (r *Redis) Search(kin string) ([]*Object, error) {
 	var err error
 
 	if kin != "cate" && kin != "host" {
-		return nil, tracer.Mask(invalidInputError)
+		return nil, tracer.Mask(invalidLabelKindError)
 	}
 
 	var key []string
 	{
-		key, err = r.red.Sorted().Search().Order(keyKin(kin), 0, -1)
+		key, err = r.red.Sorted().Search().Order(labKin(kin), 0, -1)
 		if err != nil {
 			return nil, tracer.Mask(err)
 		}
 	}
 
 	for i := range key {
-		key[i] = keyObj(scoreid.String(key[i]))
+		key[i] = labObj(scoreid.String(key[i]))
 	}
 
 	var jsn []string

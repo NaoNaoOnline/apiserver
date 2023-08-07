@@ -5,29 +5,18 @@ import (
 	"strconv"
 
 	"github.com/NaoNaoOnline/apigocode/pkg/user"
+	"github.com/NaoNaoOnline/apiserver/pkg/context/subjectclaim"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/userstorage"
-	jwtmiddleware "github.com/auth0/go-jwt-middleware/v2"
-	"github.com/auth0/go-jwt-middleware/v2/validator"
 	"github.com/xh3b4sd/tracer"
 )
 
 func (h *Handler) Create(ctx context.Context, req *user.CreateI) (*user.CreateO, error) {
 	var err error
 
-	var sub string
-	{
-		cla, _ := ctx.Value(jwtmiddleware.ContextKey{}).(*validator.ValidatedClaims)
-		if cla == nil || cla.RegisteredClaims.Subject == "" {
-			return nil, tracer.Mask(subjectClaimEmptyError)
-		}
-
-		sub = cla.RegisteredClaims.Subject
-	}
-
 	var inp *userstorage.Object
 	{
 		inp = &userstorage.Object{
-			Subj: []string{sub},
+			Subj: []string{subjectclaim.FromContext(ctx)},
 			Imag: req.Object[0].Public.Imag,
 			Name: req.Object[0].Public.Name,
 		}

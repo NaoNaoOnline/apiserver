@@ -5,28 +5,23 @@ import (
 	"strconv"
 
 	"github.com/NaoNaoOnline/apigocode/pkg/user"
+	"github.com/NaoNaoOnline/apiserver/pkg/context/subjectclaim"
+	"github.com/NaoNaoOnline/apiserver/pkg/scoreid"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/userstorage"
-	jwtmiddleware "github.com/auth0/go-jwt-middleware/v2"
-	"github.com/auth0/go-jwt-middleware/v2/validator"
 	"github.com/xh3b4sd/tracer"
 )
 
 func (h *Handler) Search(ctx context.Context, req *user.SearchI) (*user.SearchO, error) {
 	var err error
 
-	var use string
+	var use scoreid.String
 	{
-		use = req.Object[0].Intern.User
+		use = scoreid.String(req.Object[0].Intern.User)
 	}
 
 	var sub string
 	if use == "" {
-		cla, _ := ctx.Value(jwtmiddleware.ContextKey{}).(*validator.ValidatedClaims)
-		if cla == nil || cla.RegisteredClaims.Subject == "" {
-			return nil, tracer.Mask(subjectClaimEmptyError)
-		}
-
-		sub = cla.RegisteredClaims.Subject
+		sub = subjectclaim.FromContext(ctx)
 	}
 
 	var out *userstorage.Object

@@ -21,3 +21,12 @@ var notFoundError = &tracer.Error{
 func IsNotFound(err error) bool {
 	return errors.Is(err, notFoundError)
 }
+
+var subjectClaimEmptyError = &tracer.Error{
+	Kind: "subjectClaimEmptyError",
+	Desc: "The request expects a valid OAuth access token containing an external subject claim. No subject claim was found for the request. Therefore it failed.",
+}
+
+func IsSubjectClaimEmpty(err error) bool {
+	return errors.Is(err, subjectClaimEmptyError)
+}

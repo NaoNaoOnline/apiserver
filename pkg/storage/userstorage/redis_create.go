@@ -1,16 +1,18 @@
 package userstorage
 
 import (
-	"fmt"
 	"time"
 
-	"github.com/NaoNaoOnline/apiserver/pkg/keyfmt"
 	"github.com/NaoNaoOnline/apiserver/pkg/scoreid"
 	"github.com/xh3b4sd/tracer"
 )
 
 func (r *Redis) Create(inp *Object) (*Object, error) {
 	var err error
+
+	if len(inp.Subj) != 1 || inp.Subj[0] == "" {
+		return nil, tracer.Mask(subjectClaimEmptyError)
+	}
 
 	var out *Object
 	{
@@ -24,7 +26,7 @@ func (r *Redis) Create(inp *Object) (*Object, error) {
 			}
 
 			{
-				err = r.red.Simple().Create().Element(fmt.Sprintf(keyfmt.UserClaim, inp.Subj[0]), inp.User.String())
+				err = r.red.Simple().Create().Element(useCla(inp.Subj[0]), inp.User.String())
 				if err != nil {
 					return nil, tracer.Mask(err)
 				}
@@ -38,7 +40,7 @@ func (r *Redis) Create(inp *Object) (*Object, error) {
 			}
 
 			{
-				err = r.red.Simple().Create().Element(fmt.Sprintf(keyfmt.UserObject, inp.User), jsn)
+				err = r.red.Simple().Create().Element(useObj(inp.User), jsn)
 				if err != nil {
 					return nil, tracer.Mask(err)
 				}
@@ -59,7 +61,7 @@ func (r *Redis) Create(inp *Object) (*Object, error) {
 			}
 
 			{
-				err = r.red.Simple().Create().Element(fmt.Sprintf(keyfmt.UserObject, out.User), jsn)
+				err = r.red.Simple().Create().Element(useObj(out.User), jsn)
 				if err != nil {
 					return nil, tracer.Mask(err)
 				}
