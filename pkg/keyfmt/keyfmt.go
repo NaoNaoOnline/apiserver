@@ -1,6 +1,18 @@
 package keyfmt
 
 const (
+	// DescriptionEvent is used to store all the IDs of descriptions mapped to a
+	// specific event.
+	DescriptionEvent = "des/eve/%s"
+	// DescriptionObject is used to store our internal representation of a
+	// description object.
+	DescriptionObject = "des/obj/%s"
+	// DescriptionUser is used to store all the IDs of descriptions created by a
+	// specific user.
+	DescriptionUser = "des/use/%s"
+	// EventObject is used to store our internal representation of an event
+	// object.
+	EventObject = "eve/obj/%s"
 	// LabelCategory is used to store all the IDs of category labels.
 	//
 	//     kind category          label object IDs

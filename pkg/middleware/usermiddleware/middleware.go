@@ -6,10 +6,9 @@ import (
 	"net/http"
 	"strconv"
 
+	"github.com/NaoNaoOnline/apiserver/pkg/context/subjectclaim"
 	"github.com/NaoNaoOnline/apiserver/pkg/context/userid"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/userstorage"
-	jwtmiddleware "github.com/auth0/go-jwt-middleware/v2"
-	"github.com/auth0/go-jwt-middleware/v2/validator"
 	"github.com/xh3b4sd/logger"
 	"github.com/xh3b4sd/tracer"
 )
@@ -50,10 +49,10 @@ func (m *Middleware) Handler(h http.Handler) http.Handler {
 		// Lookup the OAuth subject claim if available. If no subject claim is
 		// present we are dealing with an unauthenticated request and simply execute
 		// the next handler, since data may be returned to anyone on the internet.
-		var cla *validator.ValidatedClaims
+		var sub string
 		{
-			cla, _ = ctx.Value(jwtmiddleware.ContextKey{}).(*validator.ValidatedClaims)
-			if cla == nil || cla.RegisteredClaims.Subject == "" {
+			sub = subjectclaim.FromContext(ctx)
+			if sub == "" {
 				h.ServeHTTP(w, r)
 				return
 			}
@@ -61,7 +60,7 @@ func (m *Middleware) Handler(h http.Handler) http.Handler {
 
 		var obj *userstorage.Object
 		{
-			obj, err = m.use.Search(cla.RegisteredClaims.Subject, "")
+			obj, err = m.use.Search(sub, "")
 			if userstorage.IsNotFound(err) {
 				h.ServeHTTP(w, r)
 				return

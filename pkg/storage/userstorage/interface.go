@@ -37,5 +37,5 @@ type Interface interface {
 	//     @inp[1] internal user ID, if given subject claim must be empty
 	//     @out[0] the user object mapped to the given subject claim or user ID
 	//
-	Search(string, string) (*Object, error)
+	Search(string, scoreid.String) (*Object, error)
 }

@@ -1,4 +1,4 @@
-package labelstorage
+package descriptionstorage
 
 import (
 	"encoding/json"
@@ -35,24 +35,20 @@ func NewRedis(c RedisConfig) *Redis {
 	}
 }
 
-func labKin(kin string) string {
-	if kin == "cate" {
-		return keyfmt.LabelCategory
-	}
-
-	if kin == "host" {
-		return keyfmt.LabelHost
-	}
-
-	panic(fmt.Sprintf("kin must be cate or host, got %s", kin))
+func desEve(sid scoreid.String) string {
+	return fmt.Sprintf(keyfmt.DescriptionEvent, sid)
 }
 
-func labObj(sid scoreid.String) string {
-	return fmt.Sprintf(keyfmt.LabelObject, sid)
+func desObj(sid scoreid.String) string {
+	return fmt.Sprintf(keyfmt.DescriptionObject, sid)
 }
 
-func labUse(use scoreid.String) string {
-	return fmt.Sprintf(keyfmt.LabelUser, use)
+func desUse(sid scoreid.String) string {
+	return fmt.Sprintf(keyfmt.DescriptionUser, sid)
+}
+
+func eveObj(sid scoreid.String) string {
+	return fmt.Sprintf(keyfmt.EventObject, sid)
 }
 
 func musStr(obj *Object) string {

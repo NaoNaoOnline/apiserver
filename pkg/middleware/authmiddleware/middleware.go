@@ -1,11 +1,13 @@
 package authmiddleware
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 	"net/url"
 	"time"
 
+	"github.com/NaoNaoOnline/apiserver/pkg/context/subjectclaim"
 	jwtmiddleware "github.com/auth0/go-jwt-middleware/v2"
 	"github.com/auth0/go-jwt-middleware/v2/jwks"
 	"github.com/auth0/go-jwt-middleware/v2/validator"
@@ -59,10 +61,23 @@ func (m *Middleware) Handler(h http.Handler) http.Handler {
 	// CheckJWT extracts and validates the bearer access token provided with the
 	// request's authorization header, if any. Any valid claims are put into the
 	// request's context and can be accessed like shown below.
-	//
-	//     claims, ok := r.Context().Value(jwtmiddleware.ContextKey{}).(*validator.ValidatedClaims)
-	//
-	return m.jwt.CheckJWT(h)
+	return m.jwt.CheckJWT(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		var ctx context.Context
+		{
+			ctx = r.Context()
+		}
+
+		{
+			cla, _ := ctx.Value(jwtmiddleware.ContextKey{}).(*validator.ValidatedClaims)
+			if cla != nil {
+				r = r.Clone(subjectclaim.NewContext(ctx, cla.RegisteredClaims.Subject))
+			}
+		}
+
+		{
+			h.ServeHTTP(w, r)
+		}
+	}))
 }
 
 func musUrl(str string) *url.URL {

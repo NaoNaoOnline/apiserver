@@ -10,6 +10,7 @@ import (
 
 	"github.com/NaoNaoOnline/apiserver/pkg/envvar"
 	"github.com/NaoNaoOnline/apiserver/pkg/handler"
+	"github.com/NaoNaoOnline/apiserver/pkg/handler/descriptionhandler"
 	"github.com/NaoNaoOnline/apiserver/pkg/handler/labelhandler"
 	"github.com/NaoNaoOnline/apiserver/pkg/handler/userhandler"
 	"github.com/NaoNaoOnline/apiserver/pkg/hook/failed"
@@ -17,6 +18,7 @@ import (
 	"github.com/NaoNaoOnline/apiserver/pkg/middleware/corsmiddleware"
 	"github.com/NaoNaoOnline/apiserver/pkg/middleware/usermiddleware"
 	"github.com/NaoNaoOnline/apiserver/pkg/server"
+	"github.com/NaoNaoOnline/apiserver/pkg/storage/descriptionstorage"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/labelstorage"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/userstorage"
 	"github.com/gorilla/mux"
@@ -62,20 +64,15 @@ func (r *run) runE(cmd *cobra.Command, args []string) error {
 		red = redigo.Default()
 	}
 
-	var lab labelstorage.Interface
-	{
-		lab = labelstorage.NewRedis(labelstorage.RedisConfig{
-			Log: log,
-			Red: red,
-		})
-	}
+	// --------------------------------------------------------------------- //
 
+	var des descriptionstorage.Interface
+	var lab labelstorage.Interface
 	var use userstorage.Interface
 	{
-		use = userstorage.NewRedis(userstorage.RedisConfig{
-			Log: log,
-			Red: red,
-		})
+		des = descriptionstorage.NewRedis(descriptionstorage.RedisConfig{Log: log, Red: red})
+		lab = labelstorage.NewRedis(labelstorage.RedisConfig{Log: log, Red: red})
+		use = userstorage.NewRedis(userstorage.RedisConfig{Log: log, Red: red})
 	}
 
 	// --------------------------------------------------------------------- //
@@ -87,6 +84,7 @@ func (r *run) runE(cmd *cobra.Command, args []string) error {
 				failed.NewHook(failed.HookConfig{Log: log}).Error(),
 			},
 			Han: []handler.Interface{
+				descriptionhandler.NewHandler(descriptionhandler.HandlerConfig{Des: des, Log: log}),
 				labelhandler.NewHandler(labelhandler.HandlerConfig{Lab: lab, Log: log}),
 				userhandler.NewHandler(userhandler.HandlerConfig{Log: log, Use: use}),
 			},
