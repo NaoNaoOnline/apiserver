@@ -62,12 +62,12 @@ func (r *Redis) validateCreate(inp *Object) error {
 	}
 
 	{
-		exi, err := r.red.Simple().Exists().Element(eveObj(inp.Evnt))
+		cou, err := r.red.Simple().Exists().Multi(eveObj(inp.Evnt))
 		if err != nil {
 			return tracer.Mask(err)
 		}
 
-		if !exi {
+		if cou != 1 {
 			return tracer.Mask(eventNotFoundError)
 		}
 	}

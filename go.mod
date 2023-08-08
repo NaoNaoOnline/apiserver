@@ -12,7 +12,7 @@ require (
 	github.com/spf13/cobra v1.7.0
 	github.com/twitchtv/twirp v8.1.3+incompatible
 	github.com/xh3b4sd/logger v0.6.0
-	github.com/xh3b4sd/redigo v0.29.0
+	github.com/xh3b4sd/redigo v0.30.0
 	github.com/xh3b4sd/tracer v0.6.0
 )
 
