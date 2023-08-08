@@ -3,16 +3,52 @@ package keyfmt
 const (
 	// DescriptionEvent is used to store all the IDs of descriptions mapped to a
 	// specific event.
+	//
+	//     event object ID          description object IDs
+	//                        ->
+	//     des/eve/5678             1234,5678
+	//
 	DescriptionEvent = "des/eve/%s"
 	// DescriptionObject is used to store our internal representation of a
 	// description object.
+	//
+	//     description ID          description object
+	//                       ->
+	//     des/obj/1234            {"key": "val"}
+	//
 	DescriptionObject = "des/obj/%s"
 	// DescriptionUser is used to store all the IDs of descriptions created by a
 	// specific user.
+	//
+	//     user object ID          description object IDs
+	//                       ->
+	//     des/use/5678            1234,5678
+	//
 	DescriptionUser = "des/use/%s"
+	// EventLabel is used to store all the IDs of events mapped to a specific
+	// label.
+	//
+	//     label object ID          event object IDs
+	//                        ->
+	//     eve/lab/5678             1234,5678
+	//
+	EventLabel = "eve/lab/%s"
 	// EventObject is used to store our internal representation of an event
 	// object.
+	//
+	//     event ID              event object
+	//                     ->
+	//     eve/obj/1234          {"key": "val"}
+	//
 	EventObject = "eve/obj/%s"
+	// EventUser is used to store all the IDs of events created by a specific
+	// user.
+	//
+	//     user object ID          event object IDs
+	//                       ->
+	//     eve/use/5678            1234,5678
+	//
+	EventUser = "eve/use/%s"
 	// LabelCategory is used to store all the IDs of category labels.
 	//
 	//     kind category          label object IDs
@@ -37,9 +73,9 @@ const (
 	// LabelUser is used to store all the IDs of labels created by a specific
 	// user.
 	//
-	//     internal user ID          label ID
-	//                         ->
-	//     lab/use/5678              1234,5678
+	//     user object ID          label object IDs
+	//                       ->
+	//     lab/use/5678            1234,5678
 	//
 	LabelUser = "lab/use/%s"
 	// UserClaim is used to store user mappings between external and internal user
@@ -56,9 +92,9 @@ const (
 	UserClaim = "use/sub/%s"
 	// UserObject is used to store our internal representation of a user object.
 	//
-	//     internal user ID          user object
-	//                         ->
-	//     use/obj/5678              {"key": "val"}
+	//     user object ID          user object
+	//                       ->
+	//     use/obj/5678            {"key": "val"}
 	//
 	UserObject = "use/obj/%s"
 )
