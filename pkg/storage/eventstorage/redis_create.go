@@ -37,7 +37,7 @@ func (r *Redis) Create(inp *Object) (*Object, error) {
 
 	// Now we create the label and user specific mappings for label and user
 	// specific search queries.
-	for _, x := range inp.Cate {
+	for _, x := range append(inp.Cate, inp.Host) {
 		err = r.red.Sorted().Create().Element(eveLab(x), inp.Evnt.String(), inp.Evnt.Float())
 		if err != nil {
 			return nil, tracer.Mask(err)
