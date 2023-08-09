@@ -51,7 +51,7 @@ func (r *Redis) Create(inp *Object) (*Object, error) {
 		}
 	}
 
-	return nil, nil
+	return inp, nil
 }
 
 func (r *Redis) validateCreate(inp *Object) error {

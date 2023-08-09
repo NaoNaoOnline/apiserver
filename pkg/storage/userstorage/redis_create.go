@@ -45,6 +45,8 @@ func (r *Redis) Create(inp *Object) (*Object, error) {
 					return nil, tracer.Mask(err)
 				}
 			}
+
+			return inp, nil
 		} else if err != nil {
 			return nil, tracer.Mask(err)
 		} else if out.Imag != inp.Imag || out.Name != inp.Name {
