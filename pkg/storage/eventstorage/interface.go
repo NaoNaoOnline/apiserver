@@ -34,5 +34,11 @@ type Interface interface {
 	//     @out[0] the event object persisted internally
 	//
 	Create(*Object) (*Object, error)
-	Search() ([]*Object, error)
+	// Search returns the event objects grouped under all the given labels.
+	//
+	//     @inp[0] the host label to include in the search query, if any
+	//     @inp[1] the category labels to include in the search query, if any
+	//     @out[0] the list of event objects associated to all the given labels
+	//
+	Search(scoreid.String, ...scoreid.String) ([]*Object, error)
 }

@@ -34,6 +34,7 @@ func (h *Hook) Error() func(ctx context.Context, err twirp.Error) context.Contex
 			"level", "error",
 			"code", string(err.Code()),
 			"message", err.Msg(),
+			"stack", tracer.JSON(err),
 		)
 
 		return ctx
