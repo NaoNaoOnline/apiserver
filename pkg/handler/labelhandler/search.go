@@ -12,9 +12,14 @@ import (
 func (h *Handler) Search(ctx context.Context, req *label.SearchI) (*label.SearchO, error) {
 	var err error
 
-	var kin string
-	{
-		kin = req.Object[0].Intern.Kind
+	uni := map[string]struct{}{}
+	for _, x := range req.Object {
+		uni[x.Intern.Kind] = struct{}{}
+	}
+
+	var kin []string
+	for k := range uni {
+		kin = append(kin, k)
 	}
 
 	var out []*labelstorage.Object
@@ -40,7 +45,7 @@ func (h *Handler) Search(ctx context.Context, req *label.SearchI) (*label.Search
 			Public: &label.SearchO_Object_Public{
 				Desc: x.Desc,
 				Disc: x.Disc,
-				Kind: kin,
+				Kind: x.Kind,
 				Name: x.Name,
 				Twit: x.Twit,
 			},

@@ -47,7 +47,7 @@ func (h *Handler) Search(ctx context.Context, req *event.SearchI) (*event.Search
 				Cate: outCat(x.Cate),
 				Dura: outDur(x.Dura),
 				Host: string(x.Host),
-				Link: x.Link.String(),
+				Link: x.Link,
 				Time: outTim(x.Time),
 			},
 		})

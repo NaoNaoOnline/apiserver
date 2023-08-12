@@ -15,13 +15,13 @@ func IsEventDurationEmpty(err error) bool {
 	return errors.Is(err, eventDurationEmptyError)
 }
 
-var eventLinkEmptyError = &tracer.Error{
-	Kind: "eventLinkEmptyError",
-	Desc: "The request expects a valid event link for the event object. No event link was found for the request. Therefore it failed.",
+var eventLinkInvalidError = &tracer.Error{
+	Kind: "eventLinkInvalidError",
+	Desc: "The request expects a valid event link for the event object. The event link must not be empty and it must be a valid URL. No valid event link was found for the request. Therefore it failed.",
 }
 
-func IsEventLinkEmpty(err error) bool {
-	return errors.Is(err, eventLinkEmptyError)
+func IsEventLinkInvalid(err error) bool {
+	return errors.Is(err, eventLinkInvalidError)
 }
 
 var eventTimeInvalidError = &tracer.Error{

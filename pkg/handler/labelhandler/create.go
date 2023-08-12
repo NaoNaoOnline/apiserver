@@ -13,19 +13,19 @@ import (
 func (h *Handler) Create(ctx context.Context, req *label.CreateI) (*label.CreateO, error) {
 	var err error
 
-	var inp *labelstorage.Object
-	{
-		inp = &labelstorage.Object{
-			Desc: req.Object[0].Public.Desc,
-			Disc: req.Object[0].Public.Disc,
-			Kind: req.Object[0].Public.Kind,
-			Name: req.Object[0].Public.Name,
-			Twit: req.Object[0].Public.Twit,
+	var inp []*labelstorage.Object
+	for _, x := range req.Object {
+		inp = append(inp, &labelstorage.Object{
+			Desc: x.Public.Desc,
+			Disc: x.Public.Disc,
+			Kind: x.Public.Kind,
+			Name: x.Public.Name,
+			Twit: x.Public.Twit,
 			User: userid.FromContext(ctx),
-		}
+		})
 	}
 
-	var out *labelstorage.Object
+	var out []*labelstorage.Object
 	{
 		out, err = h.lab.Create(inp)
 		if err != nil {
@@ -35,16 +35,16 @@ func (h *Handler) Create(ctx context.Context, req *label.CreateI) (*label.Create
 
 	var res *label.CreateO
 	{
-		res = &label.CreateO{
-			Object: []*label.CreateO_Object{
-				{
-					Intern: &label.CreateO_Object_Intern{
-						Crtd: strconv.Itoa(int(out.Crtd.Unix())),
-						Labl: out.Labl.String(),
-					},
-				},
+		res = &label.CreateO{}
+	}
+
+	for _, x := range out {
+		res.Object = append(res.Object, &label.CreateO_Object{
+			Intern: &label.CreateO_Object_Intern{
+				Crtd: strconv.Itoa(int(x.Crtd.Unix())),
+				Labl: x.Labl.String(),
 			},
-		}
+		})
 	}
 
 	return res, nil

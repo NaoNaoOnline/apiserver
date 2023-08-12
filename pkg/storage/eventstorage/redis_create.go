@@ -1,6 +1,7 @@
 package eventstorage
 
 import (
+	"net/url"
 	"time"
 
 	"github.com/NaoNaoOnline/apiserver/pkg/scoreid"
@@ -59,8 +60,8 @@ func (r *Redis) validateCreate(inp *Object) error {
 		return tracer.Mask(eventDurationEmptyError)
 	}
 
-	if inp.Link == nil {
-		return tracer.Mask(eventLinkEmptyError)
+	if !valLin(inp.Link) {
+		return tracer.Mask(eventLinkInvalidError)
 	}
 
 	if inp.Time.IsZero() {
@@ -95,4 +96,21 @@ func (r *Redis) validateCreate(inp *Object) error {
 	}
 
 	return nil
+}
+
+func valLin(str string) bool {
+	if str == "" {
+		return false
+	}
+
+	poi, err := url.Parse(str)
+	if err != nil {
+		return false
+	}
+
+	if poi.Scheme != "https" {
+		return false
+	}
+
+	return true
 }

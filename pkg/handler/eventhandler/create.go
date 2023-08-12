@@ -20,7 +20,7 @@ func (h *Handler) Create(ctx context.Context, req *event.CreateI) (*event.Create
 			Cate: inpCat(req.Object[0].Public.Cate),
 			Dura: inpDur(req.Object[0].Public.Dura),
 			Host: scoreid.String(req.Object[0].Public.Host),
-			Link: inpLin(req.Object[0].Public.Link),
+			Link: req.Object[0].Public.Link,
 			Time: inpTim(req.Object[0].Public.Time),
 			User: userid.FromContext(ctx),
 		}

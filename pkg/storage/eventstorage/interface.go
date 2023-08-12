@@ -1,7 +1,6 @@
 package eventstorage
 
 import (
-	"net/url"
 	"time"
 
 	"github.com/NaoNaoOnline/apiserver/pkg/scoreid"
@@ -20,7 +19,7 @@ type Object struct {
 	Host scoreid.String `json:"host"`
 	// Link is the online location at which the event is expected to take place.
 	// For IRL events this may just be some informational website.
-	Link *url.URL `json:"link"`
+	Link string `json:"link"`
 	// Time is the date time at which the event is expected to start.
 	Time time.Time `json:"time"`
 	// User is the user ID creating this event.
