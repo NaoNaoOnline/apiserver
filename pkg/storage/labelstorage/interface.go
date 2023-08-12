@@ -15,7 +15,7 @@ type Object struct {
 	Disc string `json:"disc"`
 	// Kind is the label type, e.g. host for host labels and cate for category
 	// labels.
-	Kind string `json:"-"`
+	Kind string `json:"kind"`
 	// Labl is the ID of the label being created.
 	Labl scoreid.String `json:"labl"`
 	// Name is the label name.
@@ -30,14 +30,14 @@ type Interface interface {
 	// Create persists a new label object, if none exists already with the given
 	// name.
 	//
-	//     @inp[0] the label object providing label specific information
-	//     @out[0] the label object mapped to its internal label ID
+	//     @inp[0] the label objects providing label specific information
+	//     @out[0] the label objects mapped to its internal label ID
 	//
-	Create(*Object) (*Object, error)
+	Create([]*Object) ([]*Object, error)
 	// Search returns the label objects of the given kind.
 	//
-	//     @inp[0] the label kind under which label objects are grouped together
+	//     @inp[0] the label kinds under which label objects are grouped together
 	//     @out[0] the list of label objects of either kind category or kind host
 	//
-	Search(string) ([]*Object, error)
+	Search([]string) ([]*Object, error)
 }

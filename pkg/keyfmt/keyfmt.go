@@ -53,16 +53,16 @@ const (
 	//
 	//     kind category          label object IDs
 	//                      ->
-	//     lab/cat                1234,5678
+	//     lab/kin/cat            1234,5678
 	//
-	LabelCategory = "lab/cat"
+	LabelCategory = "lab/kin/cat"
 	// LabelHost is used to store all the IDs of host labels.
 	//
-	//     kind host          label object IDs
-	//                  ->
-	//     lab/hos            1234,5678
+	//     kind host            label object IDs
+	//                    ->
+	//     lab/kin/hos          1234,5678
 	//
-	LabelHost = "lab/hos"
+	LabelHost = "lab/kin/hos"
 	// LabelObject is used to store our internal representation of a label object.
 	//
 	//     label ID              label object

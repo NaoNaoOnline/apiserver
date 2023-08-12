@@ -2,7 +2,6 @@ package eventhandler
 
 import (
 	"fmt"
-	"net/url"
 	"strconv"
 	"strings"
 	"time"
@@ -54,15 +53,6 @@ func inpDur(str string) time.Duration {
 	}
 
 	return time.Duration(sec) * time.Second
-}
-
-func inpLin(str string) *url.URL {
-	poi, err := url.Parse(str)
-	if err != nil {
-		return nil
-	}
-
-	return poi
 }
 
 func inpTim(str string) time.Time {
