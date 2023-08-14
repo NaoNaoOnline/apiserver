@@ -3,6 +3,7 @@ package eventstorage
 import (
 	"encoding/json"
 
+	"github.com/NaoNaoOnline/apiserver/pkg/keyfmt"
 	"github.com/NaoNaoOnline/apiserver/pkg/scoreid"
 	"github.com/xh3b4sd/tracer"
 )
@@ -10,14 +11,9 @@ import (
 func (r *Redis) SearchEvnt(evn []scoreid.String) ([]*Object, error) {
 	var err error
 
-	var key []string
-	for _, x := range evn {
-		key = append(key, eveObj(x))
-	}
-
 	var jsn []string
 	{
-		jsn, err = r.red.Simple().Search().Multi(key...)
+		jsn, err = r.red.Simple().Search().Multi(scoreid.Fmt(evn, keyfmt.EventObject)...)
 		if err != nil {
 			return nil, tracer.Mask(err)
 		}
@@ -41,29 +37,20 @@ func (r *Redis) SearchEvnt(evn []scoreid.String) ([]*Object, error) {
 	return out, nil
 }
 
-func (r *Redis) SearchLabl(inp []scoreid.String) ([]*Object, error) {
+func (r *Redis) SearchLabl(lab []scoreid.String) ([]*Object, error) {
 	var err error
-
-	var lab []string
-	for _, x := range inp {
-		lab = append(lab, eveLab(x))
-	}
 
 	var key []string
 	{
-		key, err = r.red.Sorted().Search().Inter(lab...)
+		key, err = r.red.Sorted().Search().Inter(scoreid.Fmt(lab, keyfmt.EventLabel)...)
 		if err != nil {
 			return nil, tracer.Mask(err)
 		}
 	}
 
-	for i := range key {
-		key[i] = eveObj(scoreid.String(key[i]))
-	}
-
 	var jsn []string
 	{
-		jsn, err = r.red.Simple().Search().Multi(key...)
+		jsn, err = r.red.Simple().Search().Multi(scoreid.Fmt(key, keyfmt.EventObject)...)
 		if err != nil {
 			return nil, tracer.Mask(err)
 		}

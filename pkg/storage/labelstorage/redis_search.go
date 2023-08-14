@@ -3,6 +3,7 @@ package labelstorage
 import (
 	"encoding/json"
 
+	"github.com/NaoNaoOnline/apiserver/pkg/keyfmt"
 	"github.com/NaoNaoOnline/apiserver/pkg/scoreid"
 	"github.com/xh3b4sd/tracer"
 )
@@ -24,13 +25,9 @@ func (r *Redis) Search(inp []string) ([]*Object, error) {
 			}
 		}
 
-		for i := range key {
-			key[i] = labObj(scoreid.String(key[i]))
-		}
-
 		var jsn []string
 		{
-			jsn, err = r.red.Simple().Search().Multi(key...)
+			jsn, err = r.red.Simple().Search().Multi(scoreid.Fmt(key, keyfmt.LabelObject)...)
 			if err != nil {
 				return nil, tracer.Mask(err)
 			}
