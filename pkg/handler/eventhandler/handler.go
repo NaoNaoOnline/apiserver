@@ -36,7 +36,7 @@ func NewHandler(c HandlerConfig) *Handler {
 	}
 }
 
-func inpCat(str string) []scoreid.String {
+func inpLab(str string) []scoreid.String {
 	var lis []scoreid.String
 
 	for _, x := range strings.Split(str, ",") {
@@ -64,7 +64,11 @@ func inpTim(str string) time.Time {
 	return time.Unix(sec, 0)
 }
 
-func outCat(sco []scoreid.String) string {
+func outDur(dur time.Duration) string {
+	return strconv.Itoa(int(dur.Seconds()))
+}
+
+func outLab(sco []scoreid.String) string {
 	var str []string
 
 	for _, x := range sco {
@@ -72,10 +76,6 @@ func outCat(sco []scoreid.String) string {
 	}
 
 	return strings.Join(str, ",")
-}
-
-func outDur(dur time.Duration) string {
-	return strconv.Itoa(int(dur.Seconds()))
 }
 
 func outTim(tim time.Time) string {

@@ -2,6 +2,7 @@ package eventhandler
 
 import (
 	"context"
+	"fmt"
 	"strconv"
 
 	"github.com/NaoNaoOnline/apigocode/pkg/event"
@@ -11,24 +12,44 @@ import (
 )
 
 func (h *Handler) Search(ctx context.Context, req *event.SearchI) (*event.SearchO, error) {
-	var err error
-
-	var hos scoreid.String
-	{
-		hos = scoreid.String(req.Object[0].Intern.Host)
-	}
-
-	var cat []scoreid.String
-	{
-		cat = inpCat(req.Object[0].Intern.Cate)
+	for _, x := range req.Object {
+		if x.Intern.Evnt != "" && (x.Intern.Cate != "" || x.Intern.Host != "") {
+			return nil, tracer.Mask(fmt.Errorf("request object must not contain evnt if either cate or host is given"))
+		}
 	}
 
 	var out []*eventstorage.Object
+
+	var evn []scoreid.String
+	for _, x := range req.Object {
+		if x.Intern.Evnt != "" {
+			evn = append(evn, scoreid.String(x.Intern.Host))
+		}
+	}
+
 	{
-		out, err = h.eve.Search(hos, cat...)
+		lis, err := h.eve.SearchEvnt(evn)
 		if err != nil {
 			return nil, tracer.Mask(err)
 		}
+
+		out = append(out, lis...)
+	}
+
+	var lab [][]scoreid.String
+	for _, x := range req.Object {
+		if x.Intern.Cate != "" || x.Intern.Host != "" {
+			lab = append(lab, append(inpLab(x.Intern.Cate), inpLab(x.Intern.Host)...))
+		}
+	}
+
+	for _, x := range lab {
+		lis, err := h.eve.SearchLabl(x)
+		if err != nil {
+			return nil, tracer.Mask(err)
+		}
+
+		out = append(out, lis...)
 	}
 
 	var res *event.SearchO
@@ -44,9 +65,9 @@ func (h *Handler) Search(ctx context.Context, req *event.SearchI) (*event.Search
 				User: x.User.String(),
 			},
 			Public: &event.SearchO_Object_Public{
-				Cate: outCat(x.Cate),
+				Cate: outLab(x.Cate),
 				Dura: outDur(x.Dura),
-				Host: string(x.Host),
+				Host: outLab(x.Host),
 				Link: x.Link,
 				Time: outTim(x.Time),
 			},

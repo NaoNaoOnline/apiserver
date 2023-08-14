@@ -8,47 +8,49 @@ import (
 	"github.com/xh3b4sd/tracer"
 )
 
-func (r *Redis) Create(inp *Object) (*Object, error) {
+func (r *Redis) Create(inp []*Object) ([]*Object, error) {
 	var err error
 
-	// At first we need to validate the given input object and, amongst others,
-	// ensure whether the labels mapped to the event do already exist. For
-	// instance, we cannot create an event for a label that is not there.
-	{
-		err = r.validateCreate(inp)
-		if err != nil {
-			return nil, tracer.Mask(err)
+	for i := range inp {
+		// At first we need to validate the given input object and, amongst others,
+		// ensure whether the labels mapped to the event do already exist. For
+		// instance, we cannot create an event for a label that is not there.
+		{
+			err = r.validateCreate(inp[i])
+			if err != nil {
+				return nil, tracer.Mask(err)
+			}
 		}
-	}
 
-	{
-		inp.Crtd = time.Now().UTC()
-		inp.Evnt = scoreid.New(inp.Crtd)
-	}
-
-	// Once we know the associated labels exist, we create the normalized
-	// key-value pair for the event object, so that we can search for event
-	// objects using their IDs.
-	{
-		err = r.red.Simple().Create().Element(eveObj(inp.Evnt), musStr(inp))
-		if err != nil {
-			return nil, tracer.Mask(err)
+		{
+			inp[i].Crtd = time.Now().UTC()
+			inp[i].Evnt = scoreid.New(inp[i].Crtd)
 		}
-	}
 
-	// Now we create the label and user specific mappings for label and user
-	// specific search queries.
-	for _, x := range append(inp.Cate, inp.Host) {
-		err = r.red.Sorted().Create().Element(eveLab(x), inp.Evnt.String(), inp.Evnt.Float())
-		if err != nil {
-			return nil, tracer.Mask(err)
+		// Once we know the associated labels exist, we create the normalized
+		// key-value pair for the event object, so that we can search for event
+		// objects using their IDs.
+		{
+			err = r.red.Simple().Create().Element(eveObj(inp[i].Evnt), musStr(inp[i]))
+			if err != nil {
+				return nil, tracer.Mask(err)
+			}
 		}
-	}
 
-	{
-		err = r.red.Sorted().Create().Element(eveUse(inp.User), inp.Evnt.String(), inp.Evnt.Float())
-		if err != nil {
-			return nil, tracer.Mask(err)
+		// Now we create the label and user specific mappings for label and user
+		// specific search queries.
+		for _, x := range append(inp[i].Cate, inp[i].Host...) {
+			err = r.red.Sorted().Create().Element(eveLab(x), inp[i].Evnt.String(), inp[i].Evnt.Float())
+			if err != nil {
+				return nil, tracer.Mask(err)
+			}
+		}
+
+		{
+			err = r.red.Sorted().Create().Element(eveUse(inp[i].User), inp[i].Evnt.String(), inp[i].Evnt.Float())
+			if err != nil {
+				return nil, tracer.Mask(err)
+			}
 		}
 	}
 
@@ -77,11 +79,7 @@ func (r *Redis) validateCreate(inp *Object) error {
 
 	{
 		var key []string
-		{
-			key = append(key, labObj(inp.Host))
-		}
-
-		for _, x := range inp.Cate {
+		for _, x := range append(inp.Cate, inp.Host...) {
 			key = append(key, labObj(x))
 		}
 
