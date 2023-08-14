@@ -14,11 +14,11 @@ import (
 )
 
 type Config struct {
-	// Erh are the Twirp specific error hooks.
-	Erh []func(ctx context.Context, err twirp.Error) context.Context
 	// Han are the RPC specific handlers implementing the actual business logic
 	// abstracted away from any protocol specific transport layer.
 	Han []handler.Interface
+	// Int are the Twirp specific interceptors wrapping the endpoint handlers.
+	Int []twirp.Interceptor
 	// Lis is the main HTTP listener bound to some configured host and port.
 	Lis net.Listener
 	Log logger.Interface
@@ -50,21 +50,8 @@ func New(c Config) *Server {
 		rtr.Use(c.Mid...)
 	}
 
-	var hoo *twirp.ServerHooks
-	{
-		hoo = &twirp.ServerHooks{
-			Error: func(ctx context.Context, err twirp.Error) context.Context {
-				for _, x := range c.Erh {
-					ctx = x(ctx, err)
-				}
-
-				return ctx
-			},
-		}
-	}
-
 	for _, x := range c.Han {
-		x.Attach(rtr, twirp.WithServerHooks(hoo), twirp.WithServerPathPrefix(""))
+		x.Attach(rtr, twirp.WithServerInterceptors(c.Int...), twirp.WithServerPathPrefix(""))
 	}
 
 	return &Server{

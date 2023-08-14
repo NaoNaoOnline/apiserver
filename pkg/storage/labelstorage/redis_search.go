@@ -7,11 +7,11 @@ import (
 	"github.com/xh3b4sd/tracer"
 )
 
-func (r *Redis) Search(kin []string) ([]*Object, error) {
+func (r *Redis) Search(inp []string) ([]*Object, error) {
 	var err error
 
 	var out []*Object
-	for _, x := range kin {
+	for _, x := range inp {
 		if x != "cate" && x != "host" {
 			return nil, tracer.Mask(invalidLabelKindError)
 		}

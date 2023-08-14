@@ -1,7 +1,6 @@
 package daemon
 
 import (
-	"context"
 	"net"
 	"os"
 	"os/signal"
@@ -14,7 +13,7 @@ import (
 	"github.com/NaoNaoOnline/apiserver/pkg/handler/eventhandler"
 	"github.com/NaoNaoOnline/apiserver/pkg/handler/labelhandler"
 	"github.com/NaoNaoOnline/apiserver/pkg/handler/userhandler"
-	"github.com/NaoNaoOnline/apiserver/pkg/hook/failed"
+	"github.com/NaoNaoOnline/apiserver/pkg/interceptor/failedinterceptor"
 	"github.com/NaoNaoOnline/apiserver/pkg/middleware/authmiddleware"
 	"github.com/NaoNaoOnline/apiserver/pkg/middleware/corsmiddleware"
 	"github.com/NaoNaoOnline/apiserver/pkg/middleware/usermiddleware"
@@ -84,14 +83,14 @@ func (r *run) runE(cmd *cobra.Command, args []string) error {
 	var srv *server.Server
 	{
 		srv = server.New(server.Config{
-			Erh: []func(ctx context.Context, err twirp.Error) context.Context{
-				failed.NewHook(failed.HookConfig{Log: log}).Error(),
-			},
 			Han: []handler.Interface{
 				descriptionhandler.NewHandler(descriptionhandler.HandlerConfig{Des: des, Log: log}),
 				eventhandler.NewHandler(eventhandler.HandlerConfig{Eve: eve, Log: log}),
 				labelhandler.NewHandler(labelhandler.HandlerConfig{Lab: lab, Log: log}),
 				userhandler.NewHandler(userhandler.HandlerConfig{Log: log, Use: use}),
+			},
+			Int: []twirp.Interceptor{
+				failedinterceptor.NewInterceptor(failedinterceptor.InterceptorConfig{Log: log}).Interceptor,
 			},
 			Lis: lis,
 			Log: log,

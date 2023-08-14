@@ -3,11 +3,13 @@ package labelstorage
 import (
 	"errors"
 
+	"github.com/twitchtv/twirp"
 	"github.com/xh3b4sd/tracer"
 )
 
 var labelAlreadyExistsError = &tracer.Error{
 	Kind: "labelAlreadyExistsError",
+	Code: string(twirp.InvalidArgument),
 	Desc: "Labels must be unique. A label with the provided name was found to exist already. Therefore the request failed.",
 }
 
