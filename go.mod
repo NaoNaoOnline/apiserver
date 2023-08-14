@@ -13,7 +13,7 @@ require (
 	github.com/twitchtv/twirp v8.1.3+incompatible
 	github.com/xh3b4sd/logger v0.6.0
 	github.com/xh3b4sd/redigo v0.30.1
-	github.com/xh3b4sd/tracer v0.6.0
+	github.com/xh3b4sd/tracer v0.9.0
 )
 
 require (
