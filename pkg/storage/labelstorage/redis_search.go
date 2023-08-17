@@ -17,12 +17,20 @@ func (r *Redis) Search(inp []string) ([]*Object, error) {
 			return nil, tracer.Mask(invalidLabelKindError)
 		}
 
+		// key will result in a list of all label IDs grouped under the given label
+		// kind, if any.
 		var key []string
 		{
 			key, err = r.red.Sorted().Search().Order(labKin(x), 0, -1)
 			if err != nil {
 				return nil, tracer.Mask(err)
 			}
+		}
+
+		// There might not be any keys, and so we do not proceed, but instead
+		// continue with the next label kind, if any.
+		if len(key) == 0 {
+			continue
 		}
 
 		var jsn []string
