@@ -3,6 +3,8 @@ package labelstorage
 import (
 	"encoding/json"
 	"fmt"
+	"net/url"
+	"strings"
 
 	"github.com/NaoNaoOnline/apiserver/pkg/keyfmt"
 	"github.com/NaoNaoOnline/apiserver/pkg/scoreid"
@@ -53,6 +55,14 @@ func labObj(sid scoreid.String) string {
 
 func labUse(use scoreid.String) string {
 	return fmt.Sprintf(keyfmt.LabelUser, use)
+}
+
+// clnInd is to clean label names for their use as index keys. We want to ensure
+// that letters define labels and not their casing, because the same word but
+// with a different capitalization should not make for a new event group. Thus
+// MEV is indexed with mev and DeFi is indexed with defi.
+func clnInd(str string) string {
+	return url.PathEscape(strings.ToLower(str))
 }
 
 func musStr(obj *Object) string {

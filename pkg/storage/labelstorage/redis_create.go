@@ -1,7 +1,6 @@
 package labelstorage
 
 import (
-	"net/url"
 	"time"
 
 	"github.com/NaoNaoOnline/apiserver/pkg/scoreid"
@@ -40,7 +39,7 @@ func (r *Redis) Create(inp []*Object) ([]*Object, error) {
 		// are unique by using the label name as additional index within the redis
 		// sorted sets.
 		{
-			err = r.red.Sorted().Create().Element(labKin(inp[i].Kind), inp[i].Labl.String(), inp[i].Labl.Float(), url.PathEscape(inp[i].Name))
+			err = r.red.Sorted().Create().Element(labKin(inp[i].Kind), inp[i].Labl.String(), inp[i].Labl.Float(), clnInd(inp[i].Name))
 			if err != nil {
 				return nil, tracer.Mask(err)
 			}
@@ -69,7 +68,7 @@ func (r *Redis) validateCreate(inp *Object) error {
 	}
 
 	{
-		exi, err := r.red.Sorted().Exists().Index(labKin(inp.Kind), url.PathEscape(inp.Name))
+		exi, err := r.red.Sorted().Exists().Index(labKin(inp.Kind), clnInd(inp.Name))
 		if err != nil {
 			return tracer.Mask(err)
 		}

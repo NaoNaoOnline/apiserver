@@ -49,7 +49,20 @@ func (i *Interceptor) Interceptor(nex twirp.Method) twirp.Method {
 					c = twirp.Internal
 				}
 
-				return nil, twirp.NewError(c, e.Error()).WithMeta("desc", e.Desc).WithMeta("kind", e.Kind)
+				var t twirp.Error
+				{
+					t = twirp.NewError(c, e.Error())
+				}
+
+				if e.Desc != "" {
+					t = t.WithMeta("desc", e.Desc)
+				}
+
+				if e.Kind != "" {
+					t = t.WithMeta("kind", e.Kind)
+				}
+
+				return nil, t
 			} else {
 				i.log.Log(
 					ctx,
