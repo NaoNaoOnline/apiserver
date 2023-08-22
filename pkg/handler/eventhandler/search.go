@@ -23,7 +23,7 @@ func (h *Handler) Search(ctx context.Context, req *event.SearchI) (*event.Search
 	var evn []scoreid.String
 	for _, x := range req.Object {
 		if x.Intern.Evnt != "" {
-			evn = append(evn, scoreid.String(x.Intern.Host))
+			evn = append(evn, scoreid.String(x.Intern.Evnt))
 		}
 	}
 

@@ -5,16 +5,19 @@ import (
 
 	"github.com/NaoNaoOnline/apiserver/pkg/keyfmt"
 	"github.com/NaoNaoOnline/apiserver/pkg/scoreid"
+	"github.com/xh3b4sd/redigo/pkg/simple"
 	"github.com/xh3b4sd/tracer"
 )
 
-func (r *Redis) SearchEvnt(evn []scoreid.String) ([]*Object, error) {
+func (r *Redis) SearchEvnt(eve []scoreid.String) ([]*Object, error) {
 	var err error
 
 	var jsn []string
 	{
-		jsn, err = r.red.Simple().Search().Multi(scoreid.Fmt(evn, keyfmt.EventObject)...)
-		if err != nil {
+		jsn, err = r.red.Simple().Search().Multi(scoreid.Fmt(eve, keyfmt.EventObject)...)
+		if simple.IsNotFound(err) {
+			return nil, tracer.Maskf(eventNotFoundError, "%v", eve)
+		} else if err != nil {
 			return nil, tracer.Mask(err)
 		}
 	}
