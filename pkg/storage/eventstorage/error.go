@@ -24,6 +24,15 @@ func IsEventLinkInvalid(err error) bool {
 	return errors.Is(err, eventLinkInvalidError)
 }
 
+var eventNotFoundError = &tracer.Error{
+	Kind: "eventNotFoundError",
+	Desc: "The request expected an event object to be found for the given event ID. No event object was found for the request. Therefore it failed.",
+}
+
+func IsEventNotFound(err error) bool {
+	return errors.Is(err, eventNotFoundError)
+}
+
 var eventTimeInvalidError = &tracer.Error{
 	Kind: "eventTimeInvalidError",
 	Desc: "The request expects a valid event time for the event object. The event time must not be empty and it must be in the future. No valid event time was found for the request. Therefore it failed.",
@@ -38,7 +47,7 @@ var labelNotFoundError = &tracer.Error{
 	Desc: "The request expects a valid label ID for the event object. No label object was found for the request. Therefore it failed.",
 }
 
-func IsEventNotFound(err error) bool {
+func IsLabelNotFound(err error) bool {
 	return errors.Is(err, labelNotFoundError)
 }
 
