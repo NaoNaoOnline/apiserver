@@ -24,6 +24,15 @@ func IsEventNotFound(err error) bool {
 	return errors.Is(err, eventNotFoundError)
 }
 
+var invalidEventIDError = &tracer.Error{
+	Kind: "invalidEventIDError",
+	Desc: "The request expects a valid event ID for the description object. No event ID was found for the request. Therefore it failed.",
+}
+
+func IsInvalidEventID(err error) bool {
+	return errors.Is(err, invalidEventIDError)
+}
+
 var userIDEmptyError = &tracer.Error{
 	Kind: "userIDEmptyError",
 	Desc: "The request expects a valid OAuth access token mapping to an internal user ID. No user ID was found for the request. Therefore it failed.",
