@@ -61,7 +61,7 @@ func inpTim(str string) time.Time {
 		return time.Time{}
 	}
 
-	return time.Unix(sec, 0)
+	return time.Unix(sec, 0).UTC()
 }
 
 func outDur(dur time.Duration) string {

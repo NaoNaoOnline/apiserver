@@ -60,12 +60,12 @@ func (m *Middleware) Handler(h http.Handler) http.Handler {
 
 		var obj *userstorage.Object
 		{
-			obj, err = m.use.Search(sub, "")
-			if userstorage.IsNotFound(err) {
+			obj, err = m.use.SearchSubj(sub)
+			if userstorage.IsSubjectClaimMapping(err) {
 				h.ServeHTTP(w, r)
 				return
 			} else if err != nil {
-				m.werror(ctx, w, err)
+				m.werror(ctx, w, tracer.Mask(err))
 				return
 			}
 		}
@@ -90,6 +90,7 @@ func (m *Middleware) werror(ctx context.Context, wri http.ResponseWriter, err er
 		"level", "error",
 		"code", strconv.Itoa(http.StatusInternalServerError),
 		"message", err.Error(),
+		"stack", tracer.Stack(err),
 	)
 
 	{

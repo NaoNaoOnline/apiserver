@@ -16,8 +16,8 @@ func (r *Redis) Create(inp *Object) (*Object, error) {
 
 	var out *Object
 	{
-		out, err = r.Search(inp.Subj[0], "")
-		if IsNotFound(err) {
+		out, err = r.SearchSubj(inp.Subj[0])
+		if IsSubjectClaimMapping(err) {
 			// The user does not appear to exist. So first, create the mapping between
 			// external subject claim and internal user ID.
 			{

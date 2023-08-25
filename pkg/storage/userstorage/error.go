@@ -14,12 +14,13 @@ func IsInvalidInput(err error) bool {
 	return errors.Is(err, invalidInputError)
 }
 
-var notFoundError = &tracer.Error{
-	Kind: "notFoundError",
+var userNotFoundError = &tracer.Error{
+	Kind: "userNotFoundError",
+	Desc: "The request expected an user object to be found for the user ID. No user object was found for the request. Therefore it failed.",
 }
 
 func IsNotFound(err error) bool {
-	return errors.Is(err, notFoundError)
+	return errors.Is(err, userNotFoundError)
 }
 
 var subjectClaimEmptyError = &tracer.Error{
@@ -29,4 +30,13 @@ var subjectClaimEmptyError = &tracer.Error{
 
 func IsSubjectClaimEmpty(err error) bool {
 	return errors.Is(err, subjectClaimEmptyError)
+}
+
+var subjectClaimMappingError = &tracer.Error{
+	Kind: "subjectClaimMappingError",
+	Desc: "The request expects a mapping between external subject claim and internal user ID. No mapping was found for the request. Therefore it failed.",
+}
+
+func IsSubjectClaimMapping(err error) bool {
+	return errors.Is(err, subjectClaimMappingError)
 }
