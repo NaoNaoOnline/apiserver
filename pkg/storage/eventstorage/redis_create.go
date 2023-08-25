@@ -69,8 +69,7 @@ func (r *Redis) validateCreate(inp *Object) error {
 	if inp.Time.IsZero() {
 		return tracer.Maskf(eventTimeInvalidError, "time must not be empty")
 	}
-	now := time.Now().UTC()
-	if inp.Time.Compare(now) != +1 {
+	if inp.Time.Compare(time.Now().UTC()) != +1 {
 		return tracer.Maskf(eventTimeInvalidError, "time must be in the future")
 	}
 
