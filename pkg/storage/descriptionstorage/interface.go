@@ -13,13 +13,17 @@ type Object struct {
 	Desc scoreid.String `json:"desc"`
 	// Evnt is the event ID this description is mapped to.
 	Evnt scoreid.String `json:"evnt"`
+	// Rntg is the map of aggregated quality measurement for this description
+	// based on user reactions where the map key is the rating ID.
+	Rtng map[string]Rtng `json:"rtng"`
 	// Text is the description explaining what an event is about.
 	Text string `json:"text"`
 	// User is the user ID creating this description.
 	User scoreid.String `json:"user"`
-	// Vote is the aggregated quality measurement for this description based on
-	// user likes and dislikes.
-	Vote int `json:"vote"`
+}
+
+type Rtng struct {
+	Amnt int `json:"amnt"`
 }
 
 type Interface interface {
@@ -29,5 +33,10 @@ type Interface interface {
 	//     @out[0] the description object mapped to its associated event object
 	//
 	Create(*Object) (*Object, error)
-	Search() ([]*Object, error)
+	// Search returns the description objects belonging to the given event IDs.
+	//
+	//     @inp[0] the event IDs to search descriptions for
+	//     @out[0] the list of description objects belonging the given event IDs
+	//
+	Search([]scoreid.String) ([]*Object, error)
 }
