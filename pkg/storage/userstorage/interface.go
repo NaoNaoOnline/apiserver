@@ -30,7 +30,7 @@ type Interface interface {
 	//
 	Create(*Object) (*Object, error)
 	// SearchSubj returns the user object mapped to the given subject claim, it it
-	// exists. SearchAuth will return an error if there is no user mapping already
+	// exists. SearchSubj will return an error if there is no user mapping already
 	// persisted between the external subject claim and the internal user ID.
 	//
 	//     @inp[0] external subject claim mapped to some internal user ID
