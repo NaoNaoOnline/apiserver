@@ -29,13 +29,18 @@ type Interface interface {
 	//     @out[0] the user object mapped to the given subject claim
 	//
 	Create(*Object) (*Object, error)
-	// Search returns the user object mapped to the given subject claim, it it
-	// exists. Search will return an error if there is no user mapping already
+	// SearchSubj returns the user object mapped to the given subject claim, it it
+	// exists. SearchAuth will return an error if there is no user mapping already
 	// persisted between the external subject claim and the internal user ID.
 	//
-	//     @inp[0] external subject claim, if given user ID must be empty
-	//     @inp[1] internal user ID, if given subject claim must be empty
-	//     @out[0] the user object mapped to the given subject claim or user ID
+	//     @inp[0] external subject claim mapped to some internal user ID
+	//     @out[0] the user object mapped to the given subject claim
 	//
-	Search(string, scoreid.String) (*Object, error)
+	SearchSubj(string) (*Object, error)
+	// SearchUser returns the user objects matching the given user IDs.
+	//
+	//     @inp[0] the user IDs to search for
+	//     @out[0] the list of user objects matching the given IDs
+	//
+	SearchUser([]scoreid.String) ([]*Object, error)
 }

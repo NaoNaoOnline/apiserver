@@ -29,9 +29,11 @@ func (r *Redis) SearchEvnt(eve []scoreid.String) ([]*Object, error) {
 			obj = &Object{}
 		}
 
-		err = json.Unmarshal([]byte(x), obj)
-		if err != nil {
-			return nil, tracer.Mask(err)
+		if x != "" {
+			err = json.Unmarshal([]byte(x), obj)
+			if err != nil {
+				return nil, tracer.Mask(err)
+			}
 		}
 
 		out = append(out, obj)
@@ -62,7 +64,9 @@ func (r *Redis) SearchLabl(lab []scoreid.String) ([]*Object, error) {
 	var jsn []string
 	{
 		jsn, err = r.red.Simple().Search().Multi(scoreid.Fmt(key, keyfmt.EventObject)...)
-		if err != nil {
+		if simple.IsNotFound(err) {
+			return nil, tracer.Maskf(eventNotFoundError, "%v", key)
+		} else if err != nil {
 			return nil, tracer.Mask(err)
 		}
 	}
@@ -74,9 +78,11 @@ func (r *Redis) SearchLabl(lab []scoreid.String) ([]*Object, error) {
 			obj = &Object{}
 		}
 
-		err = json.Unmarshal([]byte(x), obj)
-		if err != nil {
-			return nil, tracer.Mask(err)
+		if x != "" {
+			err = json.Unmarshal([]byte(x), obj)
+			if err != nil {
+				return nil, tracer.Mask(err)
+			}
 		}
 
 		out = append(out, obj)

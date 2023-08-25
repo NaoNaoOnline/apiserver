@@ -7,6 +7,15 @@ import (
 	"github.com/xh3b4sd/tracer"
 )
 
+var invalidLabelKindError = &tracer.Error{
+	Kind: "invalidLabelKindError",
+	Desc: "The request expects a valid label kind for the label object, e.g. cate or host. No valid label kind was found for the request. Therefore it failed.",
+}
+
+func IsInvalidLabelKind(err error) bool {
+	return errors.Is(err, invalidLabelKindError)
+}
+
 var labelAlreadyExistsError = &tracer.Error{
 	Kind: "labelAlreadyExistsError",
 	Code: string(twirp.InvalidArgument),
@@ -26,13 +35,13 @@ func IsLabelNameEmpty(err error) bool {
 	return errors.Is(err, labelNameEmptyError)
 }
 
-var invalidLabelKindError = &tracer.Error{
-	Kind: "invalidLabelKindError",
-	Desc: "The request expects a valid label kind for the label object, e.g. cate or host. No valid label kind was found for the request. Therefore it failed.",
+var labelNotFoundError = &tracer.Error{
+	Kind: "labelNotFoundError",
+	Desc: "The request expects a valid label ID for the label object. No label object was found for the request. Therefore it failed.",
 }
 
-func IsInvalidLabelKind(err error) bool {
-	return errors.Is(err, invalidLabelKindError)
+func IsLabelNotFound(err error) bool {
+	return errors.Is(err, labelNotFoundError)
 }
 
 var userIDEmptyError = &tracer.Error{
