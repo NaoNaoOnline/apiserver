@@ -14,7 +14,7 @@ func (h *Handler) Search(ctx context.Context, req *label.SearchI) (*label.Search
 
 	uni := map[string]struct{}{}
 	for _, x := range req.Object {
-		uni[x.Intern.Kind] = struct{}{}
+		uni[x.Public.Kind] = struct{}{}
 	}
 
 	var kin []string

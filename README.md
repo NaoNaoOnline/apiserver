@@ -24,14 +24,14 @@ docker run --name redis-stack -p 6379:6379 -p 8001:8001 redis/redis-stack:latest
 Calling the apiserver locally.
 
 ```
-% curl -s --request "POST" --header "Content-Type: application/json" --data '{}' http://127.0.0.1:7777/rating.API/Search | jq .
+% curl -s --request "POST" --header "Content-Type: application/json" --data '{}' http://127.0.0.1:7777/reaction.API/Search | jq .
 {
   "filter": null,
   "object": [
     {
       "intern": {
         "crtd": "1692392942",
-        "rtng": "1692392942673667",
+        "rctn": "1692392942673667",
         "user": ""
       },
       "public": {
@@ -42,7 +42,7 @@ Calling the apiserver locally.
     {
       "intern": {
         "crtd": "1692393021",
-        "rtng": "1692393021407686",
+        "rctn": "1692393021407686",
         "user": ""
       },
       "public": {

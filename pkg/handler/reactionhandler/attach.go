@@ -1,11 +1,11 @@
-package ratinghandler
+package reactionhandler
 
 import (
-	"github.com/NaoNaoOnline/apigocode/pkg/rating"
+	"github.com/NaoNaoOnline/apigocode/pkg/reaction"
 	"github.com/gorilla/mux"
 )
 
 func (h *Handler) Attach(rtr *mux.Router, opt ...interface{}) {
-	han := rating.NewAPIServer(h, opt...)
+	han := reaction.NewAPIServer(h, opt...)
 	rtr.PathPrefix(han.PathPrefix()).Handler(han)
 }

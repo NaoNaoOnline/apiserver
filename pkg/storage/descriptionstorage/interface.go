@@ -13,16 +13,13 @@ type Object struct {
 	Desc scoreid.String `json:"desc"`
 	// Evnt is the event ID this description is mapped to.
 	Evnt scoreid.String `json:"evnt"`
-	// Rntg is the map of aggregated quality measurement for this description
-	// based on user reactions where the map key is the rating ID.
-	Rtng map[string]Rtng `json:"rtng"`
 	// Text is the description explaining what an event is about.
 	Text string `json:"text"`
 	// User is the user ID creating this description.
 	User scoreid.String `json:"user"`
 }
 
-type Rtng struct {
+type Rctn struct {
 	Amnt int `json:"amnt"`
 }
 

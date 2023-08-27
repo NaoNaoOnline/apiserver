@@ -51,6 +51,15 @@ func IsLabelNotFound(err error) bool {
 	return errors.Is(err, labelNotFoundError)
 }
 
+var tooManyLabelsError = &tracer.Error{
+	Kind: "tooManyLabelsError",
+	Desc: "The request expects a maximum of 5 category and host labels for the event object. Too many labels were found for the request. Therefore it failed.",
+}
+
+func IsTooManyLabels(err error) bool {
+	return errors.Is(err, tooManyLabelsError)
+}
+
 var userIDEmptyError = &tracer.Error{
 	Kind: "userIDEmptyError",
 	Desc: "The request expects a valid OAuth access token mapping to an internal user ID. No user ID was found for the request. Therefore it failed.",

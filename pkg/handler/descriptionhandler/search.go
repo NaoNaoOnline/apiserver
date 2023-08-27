@@ -13,7 +13,7 @@ import (
 func (h *Handler) Search(ctx context.Context, req *description.SearchI) (*description.SearchO, error) {
 	var evn []scoreid.String
 	for _, x := range req.Object {
-		evn = append(evn, scoreid.String(x.Intern.Evnt))
+		evn = append(evn, scoreid.String(x.Public.Evnt))
 	}
 
 	var out []*descriptionstorage.Object
@@ -40,7 +40,6 @@ func (h *Handler) Search(ctx context.Context, req *description.SearchI) (*descri
 			},
 			Public: &description.SearchO_Object_Public{
 				Evnt: x.Evnt.String(),
-				Rtng: outRat(x.Rtng),
 				Text: x.Text,
 			},
 		})
