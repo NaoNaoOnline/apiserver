@@ -19,10 +19,6 @@ type Object struct {
 	User scoreid.String `json:"user"`
 }
 
-type Rctn struct {
-	Amnt int `json:"amnt"`
-}
-
 type Interface interface {
 	// Create persists a new description object mapped to the referenced event.
 	//
