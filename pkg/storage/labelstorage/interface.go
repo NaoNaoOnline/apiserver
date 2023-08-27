@@ -27,7 +27,7 @@ type Object struct {
 }
 
 type Interface interface {
-	// Create persists a new label object, if none exists already with the given
+	// Create persists new label objects, if none exists already with the given
 	// name.
 	//
 	//     @inp[0] the label objects providing label specific information

@@ -12,7 +12,7 @@ import (
 	"github.com/NaoNaoOnline/apiserver/pkg/handler/descriptionhandler"
 	"github.com/NaoNaoOnline/apiserver/pkg/handler/eventhandler"
 	"github.com/NaoNaoOnline/apiserver/pkg/handler/labelhandler"
-	"github.com/NaoNaoOnline/apiserver/pkg/handler/ratinghandler"
+	"github.com/NaoNaoOnline/apiserver/pkg/handler/reactionhandler"
 	"github.com/NaoNaoOnline/apiserver/pkg/handler/userhandler"
 	"github.com/NaoNaoOnline/apiserver/pkg/interceptor/failedinterceptor"
 	"github.com/NaoNaoOnline/apiserver/pkg/middleware/authmiddleware"
@@ -22,7 +22,7 @@ import (
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/descriptionstorage"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/eventstorage"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/labelstorage"
-	"github.com/NaoNaoOnline/apiserver/pkg/storage/ratingstorage"
+	"github.com/NaoNaoOnline/apiserver/pkg/storage/reactionstorage"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/userstorage"
 	"github.com/gorilla/mux"
 	"github.com/spf13/cobra"
@@ -72,13 +72,13 @@ func (r *run) runE(cmd *cobra.Command, args []string) error {
 	var des descriptionstorage.Interface
 	var eve eventstorage.Interface
 	var lab labelstorage.Interface
-	var rat ratingstorage.Interface
+	var rat reactionstorage.Interface
 	var use userstorage.Interface
 	{
 		des = descriptionstorage.NewRedis(descriptionstorage.RedisConfig{Log: log, Red: red})
 		eve = eventstorage.NewRedis(eventstorage.RedisConfig{Log: log, Red: red})
 		lab = labelstorage.NewRedis(labelstorage.RedisConfig{Log: log, Red: red})
-		rat = ratingstorage.NewRedis(ratingstorage.RedisConfig{Log: log, Red: red})
+		rat = reactionstorage.NewRedis(reactionstorage.RedisConfig{Log: log, Red: red})
 		use = userstorage.NewRedis(userstorage.RedisConfig{Log: log, Red: red})
 	}
 
@@ -91,7 +91,7 @@ func (r *run) runE(cmd *cobra.Command, args []string) error {
 				descriptionhandler.NewHandler(descriptionhandler.HandlerConfig{Des: des, Log: log}),
 				eventhandler.NewHandler(eventhandler.HandlerConfig{Eve: eve, Log: log}),
 				labelhandler.NewHandler(labelhandler.HandlerConfig{Lab: lab, Log: log}),
-				ratinghandler.NewHandler(ratinghandler.HandlerConfig{Log: log, Rat: rat}),
+				reactionhandler.NewHandler(reactionhandler.HandlerConfig{Log: log, Rat: rat}),
 				userhandler.NewHandler(userhandler.HandlerConfig{Use: use, Log: log}),
 			},
 			Int: []twirp.Interceptor{

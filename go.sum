@@ -1,7 +1,7 @@
 github.com/FZambia/sentinel v1.1.1 h1:0ovTimlR7Ldm+wR15GgO+8C2dt7kkn+tm3PQS+Qk3Ek=
 github.com/FZambia/sentinel v1.1.1/go.mod h1:ytL1Am/RLlAoAXG6Kj5LNuw/TRRQrv2rt2FT26vP5gI=
-github.com/NaoNaoOnline/apigocode v0.2.0 h1:A2jZihrdupXbVQ8825rN+5rxn9nCrkOydk6XDkSU5dw=
-github.com/NaoNaoOnline/apigocode v0.2.0/go.mod h1:gEIhGtjAQm05l9JkDaMmIgM34rkgUCYn2Q3WmowWcE0=
+github.com/NaoNaoOnline/apigocode v0.4.0 h1:QA7ANkr7jBtvwDI3sTMMypDd18iLECN6phFwNV350Qk=
+github.com/NaoNaoOnline/apigocode v0.4.0/go.mod h1:gEIhGtjAQm05l9JkDaMmIgM34rkgUCYn2Q3WmowWcE0=
 github.com/auth0/go-jwt-middleware/v2 v2.1.0 h1:VU4LsC3aFPoqXVyEp8EixU6FNM+ZNIjECszRTvtGQI8=
 github.com/auth0/go-jwt-middleware/v2 v2.1.0/go.mod h1:CpzcJoleayAACpv+vt0AP8/aYn5TDngsqzLapV1nM4c=
 github.com/bsm/ginkgo/v2 v2.5.0/go.mod h1:AiKlXPm7ItEHNc/2+OkrNG4E0ITzojb9/xWzvQ9XZ9w=

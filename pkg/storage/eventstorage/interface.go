@@ -27,7 +27,7 @@ type Object struct {
 }
 
 type Interface interface {
-	// Create persists a new event object.
+	// Create persists new event objects.
 	//
 	//     @inp[0] the list of event objects providing event specific information
 	//     @out[0] the list of event objects persisted internally

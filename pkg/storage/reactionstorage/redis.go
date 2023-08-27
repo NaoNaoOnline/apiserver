@@ -1,4 +1,4 @@
-package ratingstorage
+package reactionstorage
 
 import (
 	"fmt"

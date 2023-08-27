@@ -1,21 +1,21 @@
-package ratinghandler
+package reactionhandler
 
 import (
 	"fmt"
 
-	"github.com/NaoNaoOnline/apiserver/pkg/storage/ratingstorage"
+	"github.com/NaoNaoOnline/apiserver/pkg/storage/reactionstorage"
 	"github.com/xh3b4sd/logger"
 	"github.com/xh3b4sd/tracer"
 )
 
 type HandlerConfig struct {
 	Log logger.Interface
-	Rat ratingstorage.Interface
+	Rat reactionstorage.Interface
 }
 
 type Handler struct {
 	log logger.Interface
-	rat ratingstorage.Interface
+	rat reactionstorage.Interface
 }
 
 func NewHandler(c HandlerConfig) *Handler {

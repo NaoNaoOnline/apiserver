@@ -3,7 +3,6 @@ package descriptionhandler
 import (
 	"fmt"
 
-	"github.com/NaoNaoOnline/apigocode/pkg/description"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/descriptionstorage"
 	"github.com/xh3b4sd/logger"
 	"github.com/xh3b4sd/tracer"
@@ -31,16 +30,4 @@ func NewHandler(c HandlerConfig) *Handler {
 		des: c.Des,
 		log: c.Log,
 	}
-}
-
-func outRat(rat map[string]descriptionstorage.Rtng) map[string]*description.SearchO_Object_Public_Rtng {
-	out := map[string]*description.SearchO_Object_Public_Rtng{}
-
-	for k, v := range rat {
-		out[k] = &description.SearchO_Object_Public_Rtng{
-			Amnt: int32(v.Amnt),
-		}
-	}
-
-	return out
 }

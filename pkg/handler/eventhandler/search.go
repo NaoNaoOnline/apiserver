@@ -13,7 +13,7 @@ import (
 
 func (h *Handler) Search(ctx context.Context, req *event.SearchI) (*event.SearchO, error) {
 	for _, x := range req.Object {
-		if x.Intern.Evnt != "" && (x.Intern.Cate != "" || x.Intern.Host != "") {
+		if x.Intern.Evnt != "" && (x.Public.Cate != "" || x.Public.Host != "") {
 			return nil, tracer.Mask(fmt.Errorf("request object must not contain evnt if either cate or host is given"))
 		}
 	}
@@ -38,8 +38,8 @@ func (h *Handler) Search(ctx context.Context, req *event.SearchI) (*event.Search
 
 	var lab [][]scoreid.String
 	for _, x := range req.Object {
-		if x.Intern.Cate != "" || x.Intern.Host != "" {
-			lab = append(lab, append(inpLab(x.Intern.Cate), inpLab(x.Intern.Host)...))
+		if x.Public.Cate != "" || x.Public.Host != "" {
+			lab = append(lab, append(inpLab(x.Public.Cate), inpLab(x.Public.Host)...))
 		}
 	}
 

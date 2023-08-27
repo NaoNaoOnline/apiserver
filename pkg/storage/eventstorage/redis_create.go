@@ -58,8 +58,16 @@ func (r *Redis) Create(inp []*Object) ([]*Object, error) {
 }
 
 func (r *Redis) validateCreate(inp *Object) error {
+	if len(inp.Cate) > 5 {
+		return tracer.Maskf(tooManyLabelsError, "allowed are up to 5 category labels")
+	}
+
 	if inp.Dura == 0 {
 		return tracer.Mask(eventDurationEmptyError)
+	}
+
+	if len(inp.Host) > 5 {
+		return tracer.Maskf(tooManyLabelsError, "allowed are up to 5 host labels")
 	}
 
 	if !valLin(inp.Link) {
