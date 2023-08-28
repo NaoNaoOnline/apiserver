@@ -3,7 +3,7 @@ package userstorage
 import (
 	"time"
 
-	"github.com/NaoNaoOnline/apiserver/pkg/scoreid"
+	"github.com/NaoNaoOnline/apiserver/pkg/objectid"
 )
 
 type Object struct {
@@ -17,7 +17,7 @@ type Object struct {
 	// created.
 	Subj []string `json:"subj"`
 	// User is the internal ID of the user being created.
-	User scoreid.String `json:"user"`
+	User objectid.String `json:"user"`
 }
 
 type Interface interface {
@@ -40,7 +40,7 @@ type Interface interface {
 	// SearchUser returns the user objects matching the given user IDs.
 	//
 	//     @inp[0] the user IDs to search for
-	//     @out[0] the list of user objects matching the given IDs
+	//     @out[0] the list of user objects matching the given user IDs
 	//
-	SearchUser([]scoreid.String) ([]*Object, error)
+	SearchUser([]objectid.String) ([]*Object, error)
 }

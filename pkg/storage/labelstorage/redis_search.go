@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 
 	"github.com/NaoNaoOnline/apiserver/pkg/keyfmt"
-	"github.com/NaoNaoOnline/apiserver/pkg/scoreid"
+	"github.com/NaoNaoOnline/apiserver/pkg/objectid"
 	"github.com/xh3b4sd/redigo/pkg/simple"
 	"github.com/xh3b4sd/tracer"
 )
@@ -36,7 +36,7 @@ func (r *Redis) Search(inp []string) ([]*Object, error) {
 
 		var jsn []string
 		{
-			jsn, err = r.red.Simple().Search().Multi(scoreid.Fmt(key, keyfmt.LabelObject)...)
+			jsn, err = r.red.Simple().Search().Multi(objectid.Fmt(key, keyfmt.LabelObject)...)
 			if simple.IsNotFound(err) {
 				return nil, tracer.Maskf(labelNotFoundError, "%v", key)
 			} else if err != nil {

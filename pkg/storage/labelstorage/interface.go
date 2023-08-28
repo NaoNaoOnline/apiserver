@@ -3,7 +3,7 @@ package labelstorage
 import (
 	"time"
 
-	"github.com/NaoNaoOnline/apiserver/pkg/scoreid"
+	"github.com/NaoNaoOnline/apiserver/pkg/objectid"
 )
 
 type Object struct {
@@ -17,13 +17,13 @@ type Object struct {
 	// labels.
 	Kind string `json:"kind"`
 	// Labl is the ID of the label being created.
-	Labl scoreid.String `json:"labl"`
+	Labl objectid.String `json:"labl"`
 	// Name is the label name.
 	Name string `json:"name"`
 	// Twit is the label's Twitter link.
 	Twit string `json:"twit"`
 	// User is the user ID creating this label.
-	User scoreid.String `json:"user"`
+	User objectid.String `json:"user"`
 }
 
 type Interface interface {
@@ -31,7 +31,7 @@ type Interface interface {
 	// name.
 	//
 	//     @inp[0] the label objects providing label specific information
-	//     @out[0] the label objects mapped to its internal label ID
+	//     @out[0] the label objects mapped to their internal label ID
 	//
 	Create([]*Object) ([]*Object, error)
 	// Search returns the label objects of the given kind.

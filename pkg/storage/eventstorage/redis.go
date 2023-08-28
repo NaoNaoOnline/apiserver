@@ -5,7 +5,7 @@ import (
 	"fmt"
 
 	"github.com/NaoNaoOnline/apiserver/pkg/keyfmt"
-	"github.com/NaoNaoOnline/apiserver/pkg/scoreid"
+	"github.com/NaoNaoOnline/apiserver/pkg/objectid"
 	"github.com/xh3b4sd/logger"
 	"github.com/xh3b4sd/redigo"
 	"github.com/xh3b4sd/tracer"
@@ -35,20 +35,20 @@ func NewRedis(c RedisConfig) *Redis {
 	}
 }
 
-func eveObj(sid scoreid.String) string {
-	return fmt.Sprintf(keyfmt.EventObject, sid)
+func eveObj(oid objectid.String) string {
+	return fmt.Sprintf(keyfmt.EventObject, oid)
 }
 
-func eveUse(sid scoreid.String) string {
-	return fmt.Sprintf(keyfmt.EventUser, sid)
+func eveUse(oid objectid.String) string {
+	return fmt.Sprintf(keyfmt.EventUser, oid)
 }
 
-func eveLab(sid scoreid.String) string {
-	return fmt.Sprintf(keyfmt.EventLabel, sid)
+func eveLab(oid objectid.String) string {
+	return fmt.Sprintf(keyfmt.EventLabel, oid)
 }
 
-func labObj(sid scoreid.String) string {
-	return fmt.Sprintf(keyfmt.LabelObject, sid)
+func labObj(oid objectid.String) string {
+	return fmt.Sprintf(keyfmt.LabelObject, oid)
 }
 
 func musStr(obj *Object) string {

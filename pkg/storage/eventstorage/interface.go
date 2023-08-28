@@ -3,27 +3,27 @@ package eventstorage
 import (
 	"time"
 
-	"github.com/NaoNaoOnline/apiserver/pkg/scoreid"
+	"github.com/NaoNaoOnline/apiserver/pkg/objectid"
 )
 
 type Object struct {
 	// Cate is the list of label IDs under which the event is categorized.
-	Cate []scoreid.String `json:"cate"`
+	Cate []objectid.String `json:"cate"`
 	// Crtd is the time at which the event got created.
 	Crtd time.Time `json:"crtd"`
 	// Dura is the estimated duration of the event.
 	Dura time.Duration `json:"dura"`
 	// Evnt is the ID of the event being created.
-	Evnt scoreid.String `json:"evnt"`
+	Evnt objectid.String `json:"evnt"`
 	// Host is the list of label IDs expected to host the event.
-	Host []scoreid.String `json:"host"`
+	Host []objectid.String `json:"host"`
 	// Link is the online location at which the event is expected to take place.
 	// For IRL events this may just be some informational website.
 	Link string `json:"link"`
 	// Time is the date time at which the event is expected to start.
 	Time time.Time `json:"time"`
 	// User is the user ID creating this event.
-	User scoreid.String `json:"user"`
+	User objectid.String `json:"user"`
 }
 
 type Interface interface {
@@ -36,13 +36,13 @@ type Interface interface {
 	// SearchEvnt returns the event objects matching the given event IDs.
 	//
 	//     @inp[0] the event IDs to search for
-	//     @out[0] the list of event objects matching the given IDs
+	//     @out[0] the list of event objects matching the given event IDs
 	//
-	SearchEvnt([]scoreid.String) ([]*Object, error)
+	SearchEvnt([]objectid.String) ([]*Object, error)
 	// SearchLabl returns the event objects grouped under all the given labels.
 	//
 	//     @inp[0] the category and/or host labels to include in the search query, if any
 	//     @out[0] the list of event objects associated to all the given labels
 	//
-	SearchLabl([]scoreid.String) ([]*Object, error)
+	SearchLabl([]objectid.String) ([]*Object, error)
 }
