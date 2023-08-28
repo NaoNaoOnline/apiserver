@@ -6,7 +6,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/NaoNaoOnline/apiserver/pkg/scoreid"
+	"github.com/NaoNaoOnline/apiserver/pkg/objectid"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/eventstorage"
 	"github.com/xh3b4sd/logger"
 	"github.com/xh3b4sd/tracer"
@@ -36,11 +36,11 @@ func NewHandler(c HandlerConfig) *Handler {
 	}
 }
 
-func inpLab(str string) []scoreid.String {
-	var lis []scoreid.String
+func inpLab(str string) []objectid.String {
+	var lis []objectid.String
 
 	for _, x := range strings.Split(str, ",") {
-		lis = append(lis, scoreid.String(x))
+		lis = append(lis, objectid.String(x))
 	}
 
 	return lis
@@ -68,7 +68,7 @@ func outDur(dur time.Duration) string {
 	return strconv.Itoa(int(dur.Seconds()))
 }
 
-func outLab(sco []scoreid.String) string {
+func outLab(sco []objectid.String) string {
 	var str []string
 
 	for _, x := range sco {

@@ -3,7 +3,7 @@ package descriptionstorage
 import (
 	"time"
 
-	"github.com/NaoNaoOnline/apiserver/pkg/scoreid"
+	"github.com/NaoNaoOnline/apiserver/pkg/objectid"
 	"github.com/xh3b4sd/tracer"
 )
 
@@ -22,7 +22,7 @@ func (r *Redis) Create(inp *Object) (*Object, error) {
 
 	{
 		inp.Crtd = time.Now().UTC()
-		inp.Desc = scoreid.New(inp.Crtd)
+		inp.Desc = objectid.New(inp.Crtd)
 	}
 
 	// Once we know the associated event exists, we create the normalized

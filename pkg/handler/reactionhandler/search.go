@@ -14,7 +14,7 @@ func (h *Handler) Search(ctx context.Context, req *reaction.SearchI) (*reaction.
 
 	var out []*reactionstorage.Object
 	{
-		out, err = h.rat.Search()
+		out, err = h.rct.Search()
 		if err != nil {
 			return nil, tracer.Mask(err)
 		}

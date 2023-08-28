@@ -4,7 +4,7 @@ import (
 	"net/url"
 	"time"
 
-	"github.com/NaoNaoOnline/apiserver/pkg/scoreid"
+	"github.com/NaoNaoOnline/apiserver/pkg/objectid"
 	"github.com/xh3b4sd/tracer"
 )
 
@@ -24,7 +24,7 @@ func (r *Redis) Create(inp []*Object) ([]*Object, error) {
 
 		{
 			inp[i].Crtd = time.Now().UTC()
-			inp[i].Evnt = scoreid.New(inp[i].Crtd)
+			inp[i].Evnt = objectid.New(inp[i].Crtd)
 		}
 
 		// Once we know the associated labels exist, we create the normalized

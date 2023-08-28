@@ -5,7 +5,7 @@ import (
 	"fmt"
 
 	"github.com/NaoNaoOnline/apiserver/pkg/keyfmt"
-	"github.com/NaoNaoOnline/apiserver/pkg/scoreid"
+	"github.com/NaoNaoOnline/apiserver/pkg/objectid"
 	"github.com/xh3b4sd/logger"
 	"github.com/xh3b4sd/redigo"
 	"github.com/xh3b4sd/tracer"
@@ -39,8 +39,8 @@ func useCla(str string) string {
 	return fmt.Sprintf(keyfmt.UserClaim, str)
 }
 
-func useObj(sid scoreid.String) string {
-	return fmt.Sprintf(keyfmt.UserObject, sid)
+func useObj(oid objectid.String) string {
+	return fmt.Sprintf(keyfmt.UserObject, oid)
 }
 
 func musStr(obj *Object) string {

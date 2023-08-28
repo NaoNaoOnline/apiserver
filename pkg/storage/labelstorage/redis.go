@@ -7,7 +7,7 @@ import (
 	"strings"
 
 	"github.com/NaoNaoOnline/apiserver/pkg/keyfmt"
-	"github.com/NaoNaoOnline/apiserver/pkg/scoreid"
+	"github.com/NaoNaoOnline/apiserver/pkg/objectid"
 	"github.com/xh3b4sd/logger"
 	"github.com/xh3b4sd/redigo"
 	"github.com/xh3b4sd/tracer"
@@ -49,11 +49,11 @@ func labKin(kin string) string {
 	panic(fmt.Sprintf("kin must be cate or host, got %s", kin))
 }
 
-func labObj(sid scoreid.String) string {
-	return fmt.Sprintf(keyfmt.LabelObject, sid)
+func labObj(oid objectid.String) string {
+	return fmt.Sprintf(keyfmt.LabelObject, oid)
 }
 
-func labUse(use scoreid.String) string {
+func labUse(use objectid.String) string {
 	return fmt.Sprintf(keyfmt.LabelUser, use)
 }
 

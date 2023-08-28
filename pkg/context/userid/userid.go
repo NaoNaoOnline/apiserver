@@ -3,18 +3,18 @@ package userid
 import (
 	"context"
 
-	"github.com/NaoNaoOnline/apiserver/pkg/scoreid"
+	"github.com/NaoNaoOnline/apiserver/pkg/objectid"
 )
 
 type t string
 
 var k t = "userid"
 
-func NewContext(ctx context.Context, v scoreid.String) context.Context {
+func NewContext(ctx context.Context, v objectid.String) context.Context {
 	return context.WithValue(ctx, k, v)
 }
 
-func FromContext(ctx context.Context) scoreid.String {
-	v, _ := ctx.Value(k).(scoreid.String)
+func FromContext(ctx context.Context) objectid.String {
+	v, _ := ctx.Value(k).(objectid.String)
 	return v
 }

@@ -3,7 +3,7 @@ package userstorage
 import (
 	"time"
 
-	"github.com/NaoNaoOnline/apiserver/pkg/scoreid"
+	"github.com/NaoNaoOnline/apiserver/pkg/objectid"
 	"github.com/xh3b4sd/tracer"
 )
 
@@ -22,7 +22,7 @@ func (r *Redis) Create(inp *Object) (*Object, error) {
 			// external subject claim and internal user ID.
 			{
 				inp.Crtd = time.Now().UTC()
-				inp.User = scoreid.New(inp.Crtd)
+				inp.User = objectid.New(inp.Crtd)
 			}
 
 			{

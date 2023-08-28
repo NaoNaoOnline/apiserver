@@ -5,15 +5,15 @@ import (
 	"strconv"
 
 	"github.com/NaoNaoOnline/apigocode/pkg/description"
-	"github.com/NaoNaoOnline/apiserver/pkg/scoreid"
+	"github.com/NaoNaoOnline/apiserver/pkg/objectid"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/descriptionstorage"
 	"github.com/xh3b4sd/tracer"
 )
 
 func (h *Handler) Search(ctx context.Context, req *description.SearchI) (*description.SearchO, error) {
-	var evn []scoreid.String
+	var evn []objectid.String
 	for _, x := range req.Object {
-		evn = append(evn, scoreid.String(x.Public.Evnt))
+		evn = append(evn, objectid.String(x.Public.Evnt))
 	}
 
 	var out []*descriptionstorage.Object

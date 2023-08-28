@@ -1,4 +1,4 @@
-package scoreid
+package objectid
 
 import "fmt"
 

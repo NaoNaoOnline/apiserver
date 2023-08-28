@@ -6,7 +6,7 @@ import (
 	"strconv"
 
 	"github.com/NaoNaoOnline/apigocode/pkg/event"
-	"github.com/NaoNaoOnline/apiserver/pkg/scoreid"
+	"github.com/NaoNaoOnline/apiserver/pkg/objectid"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/eventstorage"
 	"github.com/xh3b4sd/tracer"
 )
@@ -20,10 +20,10 @@ func (h *Handler) Search(ctx context.Context, req *event.SearchI) (*event.Search
 
 	var out []*eventstorage.Object
 
-	var evn []scoreid.String
+	var evn []objectid.String
 	for _, x := range req.Object {
 		if x.Intern.Evnt != "" {
-			evn = append(evn, scoreid.String(x.Intern.Evnt))
+			evn = append(evn, objectid.String(x.Intern.Evnt))
 		}
 	}
 
@@ -36,7 +36,7 @@ func (h *Handler) Search(ctx context.Context, req *event.SearchI) (*event.Search
 		out = append(out, lis...)
 	}
 
-	var lab [][]scoreid.String
+	var lab [][]objectid.String
 	for _, x := range req.Object {
 		if x.Public.Cate != "" || x.Public.Host != "" {
 			lab = append(lab, append(inpLab(x.Public.Cate), inpLab(x.Public.Host)...))

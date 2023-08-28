@@ -7,7 +7,7 @@ import (
 
 	"github.com/NaoNaoOnline/apigocode/pkg/user"
 	"github.com/NaoNaoOnline/apiserver/pkg/context/subjectclaim"
-	"github.com/NaoNaoOnline/apiserver/pkg/scoreid"
+	"github.com/NaoNaoOnline/apiserver/pkg/objectid"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/userstorage"
 	"github.com/xh3b4sd/tracer"
 )
@@ -36,9 +36,9 @@ func (h *Handler) Search(ctx context.Context, req *user.SearchI) (*user.SearchO,
 			}
 		}
 
-		var use []scoreid.String
+		var use []objectid.String
 		for _, x := range req.Object {
-			use = append(use, scoreid.String(x.Intern.User))
+			use = append(use, objectid.String(x.Intern.User))
 		}
 
 		{
