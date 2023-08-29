@@ -11,6 +11,7 @@ import (
 	jwtmiddleware "github.com/auth0/go-jwt-middleware/v2"
 	"github.com/auth0/go-jwt-middleware/v2/jwks"
 	"github.com/auth0/go-jwt-middleware/v2/validator"
+	"github.com/twitchtv/twirp"
 	"github.com/xh3b4sd/logger"
 	"github.com/xh3b4sd/tracer"
 )
@@ -53,6 +54,7 @@ func NewMiddleware(c MiddlewareConfig) *Middleware {
 			val.ValidateToken,
 			jwtmiddleware.WithCredentialsOptional(true),
 			jwtmiddleware.WithValidateOnOptions(false),
+			jwtmiddleware.WithErrorHandler(errHan),
 		),
 	}
 }
@@ -61,23 +63,30 @@ func (m *Middleware) Handler(h http.Handler) http.Handler {
 	// CheckJWT extracts and validates the bearer access token provided with the
 	// request's authorization header, if any. Any valid claims are put into the
 	// request's context and can be accessed like shown below.
-	return m.jwt.CheckJWT(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	return m.jwt.CheckJWT(http.HandlerFunc(func(wri http.ResponseWriter, req *http.Request) {
 		var ctx context.Context
 		{
-			ctx = r.Context()
+			ctx = req.Context()
 		}
 
 		{
 			cla, _ := ctx.Value(jwtmiddleware.ContextKey{}).(*validator.ValidatedClaims)
 			if cla != nil {
-				r = r.Clone(subjectclaim.NewContext(ctx, cla.RegisteredClaims.Subject))
+				req = req.Clone(subjectclaim.NewContext(ctx, cla.RegisteredClaims.Subject))
 			}
 		}
 
 		{
-			h.ServeHTTP(w, r)
+			h.ServeHTTP(wri, req)
 		}
 	}))
+}
+
+func errHan(wri http.ResponseWriter, req *http.Request, err error) {
+	e := twirp.WriteError(wri, err)
+	if e != nil {
+		tracer.Panic(tracer.Mask(err))
+	}
 }
 
 func musUrl(str string) *url.URL {
