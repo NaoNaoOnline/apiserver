@@ -83,7 +83,10 @@ func (m *Middleware) Handler(h http.Handler) http.Handler {
 }
 
 func errHan(wri http.ResponseWriter, req *http.Request, err error) {
-	twirp.WriteError(wri, err)
+	e := twirp.WriteError(wri, err)
+	if e != nil {
+		tracer.Panic(tracer.Mask(err))
+	}
 }
 
 func musUrl(str string) *url.URL {
