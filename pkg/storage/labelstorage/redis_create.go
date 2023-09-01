@@ -39,12 +39,12 @@ func (r *Redis) Create(inp []*Object) ([]*Object, error) {
 		// are unique by using the label name as additional index within the redis
 		// sorted sets.
 		{
-			err = r.red.Sorted().Create().Element(labKin(inp[i].Kind), inp[i].Labl.String(), inp[i].Labl.Float(), clnInd(inp[i].Name))
+			err = r.red.Sorted().Create().Score(labKin(inp[i].Kind), inp[i].Labl.String(), inp[i].Labl.Float(), clnInd(inp[i].Name))
 			if err != nil {
 				return nil, tracer.Mask(err)
 			}
 
-			err = r.red.Sorted().Create().Element(labUse(inp[i].User), inp[i].Labl.String(), inp[i].Labl.Float())
+			err = r.red.Sorted().Create().Score(labUse(inp[i].User), inp[i].Labl.String(), inp[i].Labl.Float())
 			if err != nil {
 				return nil, tracer.Mask(err)
 			}

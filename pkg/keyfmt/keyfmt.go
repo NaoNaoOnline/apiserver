@@ -41,6 +41,13 @@ const (
 	//     eve/obj/1234          {"key": "val"}
 	//
 	EventObject = "eve/obj/%s"
+	// EventTime is used to store all the timestamps of event objects.
+	//
+	//     kind category          object IDs
+	//                      ->
+	//     eve/kin/tim            1234,5678
+	//
+	EventTime = "eve/kin/tim"
 	// EventUser is used to store all the IDs of events created by a specific
 	// user.
 	//

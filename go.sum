@@ -1,7 +1,7 @@
 github.com/FZambia/sentinel v1.1.1 h1:0ovTimlR7Ldm+wR15GgO+8C2dt7kkn+tm3PQS+Qk3Ek=
 github.com/FZambia/sentinel v1.1.1/go.mod h1:ytL1Am/RLlAoAXG6Kj5LNuw/TRRQrv2rt2FT26vP5gI=
-github.com/NaoNaoOnline/apigocode v0.4.0 h1:QA7ANkr7jBtvwDI3sTMMypDd18iLECN6phFwNV350Qk=
-github.com/NaoNaoOnline/apigocode v0.4.0/go.mod h1:gEIhGtjAQm05l9JkDaMmIgM34rkgUCYn2Q3WmowWcE0=
+github.com/NaoNaoOnline/apigocode v0.4.1 h1:kN4O22igbTOZ2r1FOz0FTqRVZJ62LtftNlHZMKXIkZI=
+github.com/NaoNaoOnline/apigocode v0.4.1/go.mod h1:gEIhGtjAQm05l9JkDaMmIgM34rkgUCYn2Q3WmowWcE0=
 github.com/auth0/go-jwt-middleware/v2 v2.1.0 h1:VU4LsC3aFPoqXVyEp8EixU6FNM+ZNIjECszRTvtGQI8=
 github.com/auth0/go-jwt-middleware/v2 v2.1.0/go.mod h1:CpzcJoleayAACpv+vt0AP8/aYn5TDngsqzLapV1nM4c=
 github.com/bsm/ginkgo/v2 v2.5.0/go.mod h1:AiKlXPm7ItEHNc/2+OkrNG4E0ITzojb9/xWzvQ9XZ9w=
@@ -103,8 +103,8 @@ github.com/xh3b4sd/budget/v3 v3.3.0 h1:/mg11kyDuYHI4LOT8hctLsVnK6ZeGN+/Rw5wzZ/Zh
 github.com/xh3b4sd/budget/v3 v3.3.0/go.mod h1:epHdjvXVpg5PE63RcBirhgY8D/vVa5dbXkDjQ/ycT40=
 github.com/xh3b4sd/logger v0.7.2 h1:CxT3FBk3CeuqBuY4n7COV2ySK2R+WxAZ+IDuMCOy2J0=
 github.com/xh3b4sd/logger v0.7.2/go.mod h1:yGeKvRLw683dCu5TEziQAdJcsw1JGCTD9pNLCv9X1Bk=
-github.com/xh3b4sd/redigo v0.31.0 h1:sP/dD09MvrK96DHq5t5BPEXpRrwQtMWGIJB91Bga0DQ=
-github.com/xh3b4sd/redigo v0.31.0/go.mod h1:J1XOMXWZ347nZzmjsnjoXD7J+Hl4Tt5X9hIzIxpG9RE=
+github.com/xh3b4sd/redigo v0.32.0 h1:urESeNTRBFq/+ujT7npi9yAwqd8s1j6UrYrIdP2tF/g=
+github.com/xh3b4sd/redigo v0.32.0/go.mod h1:J1XOMXWZ347nZzmjsnjoXD7J+Hl4Tt5X9hIzIxpG9RE=
 github.com/xh3b4sd/tracer v0.10.1 h1:wuzVeQtqYsy51Nkb7P/XavZ8rQYptxxmlM1ivFJ8dXE=
 github.com/xh3b4sd/tracer v0.10.1/go.mod h1:8nRbNXXhSSDmPfyoRRYgwQt/RpzAUH+zNsagP9InH8M=
 github.com/yuin/goldmark v1.2.1/go.mod h1:3hX8gzYuyVAZsxl0MRgGTJEmQBFcNTphYh9decYSb74=

@@ -45,4 +45,9 @@ type Interface interface {
 	//     @out[0] the list of event objects associated to all the given labels
 	//
 	SearchLabl([]objectid.String) ([]*Object, error)
+	// SearchTime returns the event objects indexed to happen right now.
+	//
+	//     @out[0] the list of event objects indexed to happen right now
+	//
+	SearchTime() ([]*Object, error)
 }
