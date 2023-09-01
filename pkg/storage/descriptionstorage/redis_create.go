@@ -38,12 +38,12 @@ func (r *Redis) Create(inp *Object) (*Object, error) {
 	// Now we create the event and user specific mappings for event and user
 	// specific search queries.
 	{
-		err = r.red.Sorted().Create().Element(desEve(inp.Evnt), inp.Desc.String(), inp.Desc.Float())
+		err = r.red.Sorted().Create().Score(desEve(inp.Evnt), inp.Desc.String(), inp.Desc.Float())
 		if err != nil {
 			return nil, tracer.Mask(err)
 		}
 
-		err = r.red.Sorted().Create().Element(desUse(inp.User), inp.Desc.String(), inp.Desc.Float())
+		err = r.red.Sorted().Create().Score(desUse(inp.User), inp.Desc.String(), inp.Desc.Float())
 		if err != nil {
 			return nil, tracer.Mask(err)
 		}

@@ -12,6 +12,10 @@ import (
 )
 
 func (h *Handler) Search(ctx context.Context, req *event.SearchI) (*event.SearchO, error) {
+	//
+	// Validate the RPC integrity.
+	//
+
 	for _, x := range req.Object {
 		if x.Intern.Evnt != "" && (x.Public.Cate != "" || x.Public.Host != "") {
 			return nil, tracer.Mask(fmt.Errorf("request object must not contain evnt if either cate or host is given"))
@@ -20,6 +24,10 @@ func (h *Handler) Search(ctx context.Context, req *event.SearchI) (*event.Search
 
 	var out []*eventstorage.Object
 
+	//
+	// Search events by ID.
+	//
+
 	var evn []objectid.String
 	for _, x := range req.Object {
 		if x.Intern.Evnt != "" {
@@ -27,7 +35,7 @@ func (h *Handler) Search(ctx context.Context, req *event.SearchI) (*event.Search
 		}
 	}
 
-	{
+	if len(evn) != 0 {
 		lis, err := h.eve.SearchEvnt(evn)
 		if err != nil {
 			return nil, tracer.Mask(err)
@@ -35,6 +43,10 @@ func (h *Handler) Search(ctx context.Context, req *event.SearchI) (*event.Search
 
 		out = append(out, lis...)
 	}
+
+	//
+	// Search events by label.
+	//
 
 	var lab [][]objectid.String
 	for _, x := range req.Object {
@@ -51,6 +63,23 @@ func (h *Handler) Search(ctx context.Context, req *event.SearchI) (*event.Search
 
 		out = append(out, lis...)
 	}
+
+	//
+	// Search events by time.
+	//
+
+	if len(req.Object) == 0 {
+		lis, err := h.eve.SearchTime()
+		if err != nil {
+			return nil, tracer.Mask(err)
+		}
+
+		out = append(out, lis...)
+	}
+
+	//
+	// Construct RPC response.
+	//
 
 	var res *event.SearchO
 	{

@@ -15,6 +15,15 @@ func IsEventDurationEmpty(err error) bool {
 	return errors.Is(err, eventDurationEmptyError)
 }
 
+var eventDurationNegativeError = &tracer.Error{
+	Kind: "eventDurationNegativeError",
+	Desc: "The request expects a valid event duration for the event object. A negative event duration was found for the request. Therefore it failed.",
+}
+
+func IsEventDurationNegative(err error) bool {
+	return errors.Is(err, eventDurationNegativeError)
+}
+
 var eventLinkInvalidError = &tracer.Error{
 	Kind: "eventLinkInvalidError",
 	Desc: "The request expects a valid event link for the event object. The event link must not be empty and it must be a valid URL. No valid event link was found for the request. Therefore it failed.",

@@ -38,7 +38,7 @@ func (r *Redis) Create(inp []*Object) ([]*Object, error) {
 		// Now we create the description specific mappings for description specific
 		// search queries.
 		{
-			err = r.red.Sorted().Create().Element(votDes(inp[i].Desc), inp[i].Vote.String(), inp[i].Vote.Float())
+			err = r.red.Sorted().Create().Score(votDes(inp[i].Desc), inp[i].Vote.String(), inp[i].Vote.Float())
 			if err != nil {
 				return nil, tracer.Mask(err)
 			}
