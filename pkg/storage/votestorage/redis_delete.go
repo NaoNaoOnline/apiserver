@@ -39,10 +39,7 @@ func (r *Redis) Delete(inp []*Object) ([]objectstate.String, error) {
 		}
 
 		// Delete the event/user specific mappings for event/user specific search
-		// queries. Given we want to be able to retry deletion on failure, this must
-		// happen before the description object is being deleted, because we need
-		// the description object to resolve the event ID that the event/user
-		// specific mappings require.
+		// queries.
 		{
 			err = r.red.Sorted().Delete().Value(votUse(obj.Evnt, inp[i].User), inp[i].Vote.String())
 			if err != nil {
