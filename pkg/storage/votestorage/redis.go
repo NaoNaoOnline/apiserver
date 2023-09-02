@@ -54,6 +54,10 @@ func votObj(oid objectid.String) string {
 	return fmt.Sprintf(keyfmt.VoteObject, oid)
 }
 
+func votUse(ida objectid.String, idb objectid.String) string {
+	return fmt.Sprintf(keyfmt.VoteEventUser, ida, idb)
+}
+
 func musStr(obj *Object) string {
 	byt, err := json.Marshal(obj)
 	if err != nil {

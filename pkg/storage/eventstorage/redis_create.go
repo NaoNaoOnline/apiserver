@@ -83,6 +83,9 @@ func (r *Redis) validateCreate(inp *Object) error {
 	if inp.Dura < 0 {
 		return tracer.Mask(eventDurationNegativeError)
 	}
+	if inp.Dura > time.Duration(4)*time.Hour {
+		return tracer.Mask(eventDurationLimitError)
+	}
 
 	if len(inp.Host) > 5 {
 		return tracer.Maskf(tooManyLabelsError, "allowed are up to 5 host labels")

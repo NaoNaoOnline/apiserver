@@ -113,6 +113,14 @@ const (
 	//     vot/des/5678            1234,5678
 	//
 	VoteDescription = "vot/des/%s"
+	// VoteEventUser is used to store all the IDs of votes mapped to a specific
+	// event / user combination.
+	//
+	//     event ID / user ID             vote IDs
+	//                              ->
+	//     vot/eve/1234/use/5678          1234,5678
+	//
+	VoteEventUser = "vot/eve/%s/use/%s"
 	// VoteObject is used to store our internal representation of a vote object.
 	//
 	//     vote ID               vote object
