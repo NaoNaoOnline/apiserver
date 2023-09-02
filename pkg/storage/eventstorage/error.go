@@ -17,7 +17,7 @@ func IsEventDurationEmpty(err error) bool {
 
 var eventDurationLimitError = &tracer.Error{
 	Kind: "eventDurationLimitError",
-	Desc: "The request expects a valid event duration for the event object. An event duration longer than 4 hours was found for the request. Therefore it failed.",
+	Desc: "The request expects the event duration to be under 4 hours. An event duration over 4 hours was found for the request. Therefore it failed.",
 }
 
 func IsEventDurationLimit(err error) bool {
