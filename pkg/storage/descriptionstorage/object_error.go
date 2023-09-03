@@ -17,7 +17,7 @@ func IsDescriptionTextEmpty(err error) bool {
 
 var descriptionTextFormatError = &tracer.Error{
 	Kind: "descriptionTextFormatError",
-	Desc: `The request expects the description text to contain words, numbers and: , . : - ' " ! $ % & #. The description text was found to contain invalid characters for the request. Therefore it failed.`,
+	Desc: `The request expects the description text to contain words, numbers or: , . : - ' " ! $ % & #. The description text was found to contain invalid characters for the request. Therefore it failed.`,
 }
 
 func IsDescriptionTextFormat(err error) bool {
