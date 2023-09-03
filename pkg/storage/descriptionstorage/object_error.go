@@ -8,7 +8,7 @@ import (
 
 var descriptionTextEmptyError = &tracer.Error{
 	Kind: "descriptionTextEmptyError",
-	Desc: "The request expects the description text to not be empty. The description text was found to be empty for the request. Therefore it failed.",
+	Desc: "The request expects the description text not to be empty. The description text was found to be empty for the request. Therefore it failed.",
 }
 
 func IsDescriptionTextEmpty(err error) bool {
@@ -35,7 +35,7 @@ func IsDescriptionTextLength(err error) bool {
 
 var eventIDEmptyError = &tracer.Error{
 	Kind: "eventIDEmptyError",
-	Desc: "The request expects the event ID to not be empty. The event ID was found to be empty for the request. Therefore it failed.",
+	Desc: "The request expects the event ID not to be empty. The event ID was found to be empty for the request. Therefore it failed.",
 }
 
 func IsEventIDEmpty(err error) bool {
