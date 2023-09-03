@@ -3,6 +3,7 @@ package descriptionhandler
 import (
 	"fmt"
 
+	"github.com/NaoNaoOnline/apigocode/pkg/description"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/descriptionstorage"
 	"github.com/xh3b4sd/logger"
 	"github.com/xh3b4sd/tracer"
@@ -30,4 +31,26 @@ func NewHandler(c HandlerConfig) *Handler {
 		des: c.Des,
 		log: c.Log,
 	}
+}
+
+func inpPat(upd []*description.UpdateI_Object_Update) []*descriptionstorage.Patch {
+	var lis []*descriptionstorage.Patch
+
+	for _, x := range upd {
+		var p *descriptionstorage.Patch
+		{
+			p = &descriptionstorage.Patch{
+				Ope: x.Ope,
+				Pat: x.Pat,
+			}
+		}
+
+		if x.Val != nil {
+			p.Val = *x.Val
+		}
+
+		lis = append(lis, p)
+	}
+
+	return lis
 }

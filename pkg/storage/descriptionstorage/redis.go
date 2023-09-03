@@ -6,6 +6,7 @@ import (
 
 	"github.com/NaoNaoOnline/apiserver/pkg/keyfmt"
 	"github.com/NaoNaoOnline/apiserver/pkg/objectid"
+	jsonpatch "github.com/evanphx/json-patch/v5"
 	"github.com/xh3b4sd/logger"
 	"github.com/xh3b4sd/redigo"
 	"github.com/xh3b4sd/tracer"
@@ -51,8 +52,17 @@ func eveObj(oid objectid.String) string {
 	return fmt.Sprintf(keyfmt.EventObject, oid)
 }
 
-func musStr(obj *Object) string {
-	byt, err := json.Marshal(obj)
+func musPat(pat []*Patch) jsonpatch.Patch {
+	typ, err := jsonpatch.DecodePatch([]byte(musStr(pat)))
+	if err != nil {
+		tracer.Panic(tracer.Mask(err))
+	}
+
+	return typ
+}
+
+func musStr(any interface{}) string {
+	byt, err := json.Marshal(any)
 	if err != nil {
 		tracer.Panic(tracer.Mask(err))
 	}

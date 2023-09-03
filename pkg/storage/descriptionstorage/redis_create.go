@@ -14,9 +14,20 @@ func (r *Redis) Create(inp *Object) (*Object, error) {
 	// ensure whether the event mapped to the description does already exist. For
 	// instance, we cannot create a description for an event that is not there.
 	{
-		err = r.validateCreate(inp)
+		err := inp.Verify()
 		if err != nil {
 			return nil, tracer.Mask(err)
+		}
+	}
+
+	{
+		cou, err := r.red.Simple().Exists().Multi(eveObj(inp.Evnt))
+		if err != nil {
+			return nil, tracer.Mask(err)
+		}
+
+		if cou != 1 {
+			return nil, tracer.Mask(eventObjectNotFoundError)
 		}
 	}
 
@@ -50,27 +61,4 @@ func (r *Redis) Create(inp *Object) (*Object, error) {
 	}
 
 	return inp, nil
-}
-
-func (r *Redis) validateCreate(inp *Object) error {
-	if inp.Text == "" {
-		return tracer.Mask(descriptionTextEmptyError)
-	}
-
-	if inp.User == "" {
-		return tracer.Mask(userIDEmptyError)
-	}
-
-	{
-		cou, err := r.red.Simple().Exists().Multi(eveObj(inp.Evnt))
-		if err != nil {
-			return tracer.Mask(err)
-		}
-
-		if cou != 1 {
-			return tracer.Mask(eventNotFoundError)
-		}
-	}
-
-	return nil
 }
