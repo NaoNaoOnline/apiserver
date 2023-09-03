@@ -9,13 +9,46 @@ import (
 	"github.com/xh3b4sd/tracer"
 )
 
-func (r *Redis) Search(evn []objectid.String) ([]*Object, error) {
+func (r *Redis) SearchDesc(inp []objectid.String) ([]*Object, error) {
+	var err error
+
+	var jsn []string
+	{
+		jsn, err = r.red.Simple().Search().Multi(objectid.Fmt(inp, keyfmt.DescriptionObject)...)
+		if simple.IsNotFound(err) {
+			return nil, tracer.Maskf(descriptionObjectNotFoundError, "%v", inp)
+		} else if err != nil {
+			return nil, tracer.Mask(err)
+		}
+	}
+
+	var out []*Object
+	for _, x := range jsn {
+		var obj *Object
+		{
+			obj = &Object{}
+		}
+
+		if x != "" {
+			err = json.Unmarshal([]byte(x), obj)
+			if err != nil {
+				return nil, tracer.Mask(err)
+			}
+		}
+
+		out = append(out, obj)
+	}
+
+	return out, nil
+}
+
+func (r *Redis) SearchEvnt(evn []objectid.String) ([]*Object, error) {
 	var err error
 
 	var out []*Object
 	for _, x := range evn {
 		if x == "" {
-			return nil, tracer.Mask(invalidEventIDError)
+			return nil, tracer.Mask(eventIDEmptyError)
 		}
 
 		// key will result in a list of all description IDs belonging to the given
@@ -38,7 +71,7 @@ func (r *Redis) Search(evn []objectid.String) ([]*Object, error) {
 		{
 			jsn, err = r.red.Simple().Search().Multi(objectid.Fmt(key, keyfmt.DescriptionObject)...)
 			if simple.IsNotFound(err) {
-				return nil, tracer.Maskf(descriptionNotFoundError, "%v", key)
+				return nil, tracer.Maskf(descriptionObjectNotFoundError, "%v", key)
 			} else if err != nil {
 				return nil, tracer.Mask(err)
 			}

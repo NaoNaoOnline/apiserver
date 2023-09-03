@@ -14,6 +14,10 @@ import (
 func (h *Handler) Create(ctx context.Context, req *description.CreateI) (*description.CreateO, error) {
 	var err error
 
+	if userid.FromContext(ctx) == "" {
+		return nil, tracer.Mask(userIDEmptyError)
+	}
+
 	var inp *descriptionstorage.Object
 	{
 		inp = &descriptionstorage.Object{

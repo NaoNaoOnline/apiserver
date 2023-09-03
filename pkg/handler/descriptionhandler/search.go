@@ -18,7 +18,7 @@ func (h *Handler) Search(ctx context.Context, req *description.SearchI) (*descri
 
 	var out []*descriptionstorage.Object
 	{
-		lis, err := h.des.Search(evn)
+		lis, err := h.des.SearchEvnt(evn)
 		if err != nil {
 			return nil, tracer.Mask(err)
 		}
