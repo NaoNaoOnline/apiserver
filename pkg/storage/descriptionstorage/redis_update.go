@@ -13,7 +13,7 @@ func (r *Redis) Update(obj []*Object, pat [][]*Patch) ([]objectstate.String, err
 	var out []objectstate.String
 	for i := range obj {
 		// At first we need to validate the given JSON-Patches and ensure the
-		// modifications are permitted at all.
+		// desired modifications are permitted at all.
 		for _, x := range pat[i] {
 			err := x.Verify()
 			if err != nil {
