@@ -2,6 +2,7 @@ package descriptionhandler
 
 import (
 	"context"
+	"time"
 
 	"github.com/NaoNaoOnline/apigocode/pkg/description"
 	"github.com/NaoNaoOnline/apiserver/pkg/context/userid"
@@ -36,6 +37,9 @@ func (h *Handler) Update(ctx context.Context, req *description.UpdateI) (*descri
 	for _, x := range obj {
 		if userid.FromContext(ctx) != x.User {
 			return nil, tracer.Mask(userNotOwnerError)
+		}
+		if x.Crtd.Add(5 * time.Minute).Before(time.Now().UTC()) {
+			return nil, tracer.Mask(updatePeriodPastError)
 		}
 	}
 

@@ -6,6 +6,7 @@ import (
 	"strconv"
 
 	"github.com/NaoNaoOnline/apigocode/pkg/event"
+	"github.com/NaoNaoOnline/apiserver/pkg/context/userid"
 	"github.com/NaoNaoOnline/apiserver/pkg/objectid"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/eventstorage"
 	"github.com/xh3b4sd/tracer"
@@ -65,11 +66,40 @@ func (h *Handler) Search(ctx context.Context, req *event.SearchI) (*event.Search
 	}
 
 	//
+	// Search events by reactions.
+	//
+
+	if userid.FromContext(ctx) != "" {
+		var rct bool
+		for _, x := range req.Object {
+			if x.Symbol.Rctn == "default" {
+				rct = true
+			}
+		}
+
+		if rct {
+			lis, err := h.eve.SearchRctn(userid.FromContext(ctx))
+			if err != nil {
+				return nil, tracer.Mask(err)
+			}
+
+			out = append(out, lis...)
+		}
+	}
+
+	//
 	// Search events by time.
 	//
 
-	if len(req.Object) == 0 {
-		lis, err := h.eve.SearchTime()
+	var lts bool
+	for _, x := range req.Object {
+		if x.Symbol.Ltst == "default" {
+			lts = true
+		}
+	}
+
+	if lts {
+		lis, err := h.eve.SearchLtst()
 		if err != nil {
 			return nil, tracer.Mask(err)
 		}

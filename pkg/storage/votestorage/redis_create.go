@@ -7,6 +7,7 @@ import (
 	"github.com/NaoNaoOnline/apiserver/pkg/objectid"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/descriptionstorage"
 	"github.com/xh3b4sd/redigo/pkg/simple"
+	"github.com/xh3b4sd/redigo/pkg/sorted"
 	"github.com/xh3b4sd/tracer"
 )
 
@@ -71,6 +72,20 @@ func (r *Redis) Create(inp []*Object) ([]*Object, error) {
 		{
 			err = r.red.Sorted().Create().Score(votDes(inp[i].Desc), inp[i].Vote.String(), inp[i].Vote.Float())
 			if err != nil {
+				return nil, tracer.Mask(err)
+			}
+		}
+
+		// Create the reaction specific mappings for reaction specific search
+		// queries. With that we can search for events that the user reacted to. For
+		// user reaction indexing, we use the event ID as score. There might be many
+		// votes created per event per user. So we use Sorted.Create.Score, which
+		// allows us to use unique scores.
+		{
+			err = r.red.Sorted().Create().Score(eveVot(inp[i].User), obj.Evnt.String(), obj.Evnt.Float())
+			if sorted.IsAlreadyExistsError(err) {
+				// fall through
+			} else if err != nil {
 				return nil, tracer.Mask(err)
 			}
 		}

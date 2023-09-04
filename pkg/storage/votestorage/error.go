@@ -44,7 +44,7 @@ func IsReactionNotFound(err error) bool {
 
 var voteLimitError = &tracer.Error{
 	Kind: "voteLimitError",
-	Desc: "The request expects an upper limit of 5 vote objects per event per user. The upper limit of 5 vote objects per event per user were found for the request. Therefore it failed.",
+	Desc: "The request expects an upper limit of 5 vote objects per event per user. The upper limit of 5 vote objects per event per user was found for the request. Therefore it failed.",
 }
 
 func IsVoteLimit(err error) bool {

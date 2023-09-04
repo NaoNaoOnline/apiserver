@@ -13,6 +13,10 @@ import (
 func (h *Handler) Create(ctx context.Context, req *event.CreateI) (*event.CreateO, error) {
 	var err error
 
+	if userid.FromContext(ctx) == "" {
+		return nil, tracer.Mask(userIDEmptyError)
+	}
+
 	var inp []*eventstorage.Object
 	for _, x := range req.Object {
 		inp = append(inp, &eventstorage.Object{

@@ -35,6 +35,10 @@ func NewRedis(c RedisConfig) *Redis {
 	}
 }
 
+func eveLab(oid objectid.String) string {
+	return fmt.Sprintf(keyfmt.EventLabel, oid)
+}
+
 func eveObj(oid objectid.String) string {
 	return fmt.Sprintf(keyfmt.EventObject, oid)
 }
@@ -43,8 +47,8 @@ func eveUse(oid objectid.String) string {
 	return fmt.Sprintf(keyfmt.EventUser, oid)
 }
 
-func eveLab(oid objectid.String) string {
-	return fmt.Sprintf(keyfmt.EventLabel, oid)
+func eveVot(oid objectid.String) string {
+	return fmt.Sprintf(keyfmt.EventUserVote, oid)
 }
 
 func labObj(oid objectid.String) string {

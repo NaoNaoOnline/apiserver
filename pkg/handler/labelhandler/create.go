@@ -13,6 +13,10 @@ import (
 func (h *Handler) Create(ctx context.Context, req *label.CreateI) (*label.CreateO, error) {
 	var err error
 
+	if userid.FromContext(ctx) == "" {
+		return nil, tracer.Mask(userIDEmptyError)
+	}
+
 	var inp []*labelstorage.Object
 	for _, x := range req.Object {
 		inp = append(inp, &labelstorage.Object{

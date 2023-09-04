@@ -17,7 +17,7 @@ func (r *Redis) SearchEvnt(inp []objectid.String) ([]*Object, error) {
 	{
 		jsn, err = r.red.Simple().Search().Multi(objectid.Fmt(inp, keyfmt.EventObject)...)
 		if simple.IsNotFound(err) {
-			return nil, tracer.Maskf(eventNotFoundError, "%v", inp)
+			return nil, tracer.Maskf(eventObjectNotFoundError, "%v", inp)
 		} else if err != nil {
 			return nil, tracer.Mask(err)
 		}
@@ -66,7 +66,7 @@ func (r *Redis) SearchLabl(lab []objectid.String) ([]*Object, error) {
 	{
 		jsn, err = r.red.Simple().Search().Multi(objectid.Fmt(key, keyfmt.EventObject)...)
 		if simple.IsNotFound(err) {
-			return nil, tracer.Maskf(eventNotFoundError, "%v", key)
+			return nil, tracer.Maskf(eventObjectNotFoundError, "%v", key)
 		} else if err != nil {
 			return nil, tracer.Mask(err)
 		}
@@ -96,7 +96,7 @@ const (
 	oneWeek = time.Hour * 24 * 7
 )
 
-func (r *Redis) SearchTime() ([]*Object, error) {
+func (r *Redis) SearchLtst() ([]*Object, error) {
 	var err error
 
 	var now time.Time
@@ -129,7 +129,56 @@ func (r *Redis) SearchTime() ([]*Object, error) {
 	{
 		jsn, err = r.red.Simple().Search().Multi(objectid.Fmt(key, keyfmt.EventObject)...)
 		if simple.IsNotFound(err) {
-			return nil, tracer.Maskf(eventNotFoundError, "%v", key)
+			return nil, tracer.Maskf(eventObjectNotFoundError, "%v", key)
+		} else if err != nil {
+			return nil, tracer.Mask(err)
+		}
+	}
+
+	var out []*Object
+	for _, x := range jsn {
+		var obj *Object
+		{
+			obj = &Object{}
+		}
+
+		if x != "" {
+			err = json.Unmarshal([]byte(x), obj)
+			if err != nil {
+				return nil, tracer.Mask(err)
+			}
+		}
+
+		out = append(out, obj)
+	}
+
+	return out, nil
+}
+
+func (r *Redis) SearchRctn(use objectid.String) ([]*Object, error) {
+	var err error
+
+	var key []string
+	{
+		key, err = r.red.Sorted().Search().Order(eveVot(use), 0, -1)
+		if err != nil {
+			return nil, tracer.Mask(err)
+		}
+	}
+
+	// There might not be any keys, and so we do not proceed, but instead
+	// return nothing.
+	if len(key) == 0 {
+		return nil, nil
+	}
+
+	var jsn []string
+	{
+		jsn, err = r.red.Simple().Search().Multi(objectid.Fmt(key, keyfmt.EventObject)...)
+		if simple.IsNotFound(err) {
+			// It may happen that events get deleted, that users have reacted to. The
+			// event deletion process is not atomic and so it might happen that some
+			// event objects cannot be found anymore intermittently.
 		} else if err != nil {
 			return nil, tracer.Mask(err)
 		}
