@@ -8,10 +8,6 @@ import (
 	"github.com/xh3b4sd/tracer"
 )
 
-var (
-	textexpr = regexp.MustCompile(`^([A-Za-z0-9\s,.:\-'"!$%&#]+(?:\s*,\s*[A-Za-z0-9\s,.:\-'"!$%&#]+)*)$`)
-)
-
 type Object struct {
 	// Crtd is the time at which the description got created.
 	Crtd time.Time `json:"crtd"`
@@ -25,22 +21,30 @@ type Object struct {
 	User objectid.String `json:"user"`
 }
 
+var (
+	textexpr = regexp.MustCompile(`^([A-Za-z0-9\s,.:\-'"!$%&#]+(?:\s*,\s*[A-Za-z0-9\s,.:\-'"!$%&#]+)*)$`)
+)
+
 func (o *Object) Verify() error {
-	if o.Evnt == "" {
-		return tracer.Mask(eventIDEmptyError)
+	{
+		if o.Evnt == "" {
+			return tracer.Mask(eventIDEmptyError)
+		}
 	}
 
-	if o.Text == "" {
-		return tracer.Mask(descriptionTextEmptyError)
-	}
-	if !textexpr.MatchString(o.Text) {
-		return tracer.Mask(descriptionTextFormatError)
-	}
-	if len(o.Text) < 20 {
-		return tracer.Maskf(descriptionTextLengthError, "%d", len(o.Text))
-	}
-	if len(o.Text) > 120 {
-		return tracer.Maskf(descriptionTextLengthError, "%d", len(o.Text))
+	{
+		if o.Text == "" {
+			return tracer.Mask(descriptionTextEmptyError)
+		}
+		if !textexpr.MatchString(o.Text) {
+			return tracer.Mask(descriptionTextFormatError)
+		}
+		if len(o.Text) < 20 {
+			return tracer.Maskf(descriptionTextLengthError, "%d", len(o.Text))
+		}
+		if len(o.Text) > 120 {
+			return tracer.Maskf(descriptionTextLengthError, "%d", len(o.Text))
+		}
 	}
 
 	return nil

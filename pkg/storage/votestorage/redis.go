@@ -46,6 +46,10 @@ func desObj(oid objectid.String) string {
 	return fmt.Sprintf(keyfmt.DescriptionObject, oid)
 }
 
+func eveVot(oid objectid.String) string {
+	return fmt.Sprintf(keyfmt.EventUserVote, oid)
+}
+
 func votDes(oid objectid.String) string {
 	return fmt.Sprintf(keyfmt.VoteDescription, oid)
 }

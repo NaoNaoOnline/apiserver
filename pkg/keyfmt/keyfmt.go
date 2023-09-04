@@ -57,6 +57,14 @@ const (
 	//     eve/use/5678          1234,5678
 	//
 	EventUser = "eve/use/%s"
+	// EventUserVote is used to store all the IDs of events a specific
+	// user reacted to.
+	//
+	//     user ID                   event IDs
+	//                         ->
+	//     eve/use/5678/vot          1234,5678
+	//
+	EventUserVote = "eve/use/%s/vot"
 	// LabelCategory is used to store all the IDs of category labels.
 	//
 	//     kind category          label IDs

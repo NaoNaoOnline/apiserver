@@ -1,7 +1,6 @@
 package eventstorage
 
 import (
-	"net/url"
 	"time"
 
 	"github.com/NaoNaoOnline/apiserver/pkg/keyfmt"
@@ -17,9 +16,25 @@ func (r *Redis) Create(inp []*Object) ([]*Object, error) {
 		// ensure whether the labels mapped to the event do already exist. For
 		// instance, we cannot create an event for a label that is not there.
 		{
-			err = r.validateCreate(inp[i])
+			err := inp[i].Verify()
 			if err != nil {
 				return nil, tracer.Mask(err)
+			}
+		}
+
+		{
+			var key []string
+			for _, x := range append(inp[i].Cate, inp[i].Host...) {
+				key = append(key, labObj(x))
+			}
+
+			cou, err := r.red.Simple().Exists().Multi(key...)
+			if err != nil {
+				return nil, tracer.Mask(err)
+			}
+
+			if cou != int64(len(key)) {
+				return nil, tracer.Maskf(labelObjectNotFoundError, "%d labels do not exist", int64(len(key))-cou)
 			}
 		}
 
@@ -70,74 +85,4 @@ func (r *Redis) Create(inp []*Object) ([]*Object, error) {
 	}
 
 	return inp, nil
-}
-
-func (r *Redis) validateCreate(inp *Object) error {
-	if len(inp.Cate) > 5 {
-		return tracer.Maskf(tooManyLabelsError, "allowed are up to 5 category labels")
-	}
-
-	if inp.Dura == 0 {
-		return tracer.Mask(eventDurationEmptyError)
-	}
-	if inp.Dura < 0 {
-		return tracer.Mask(eventDurationNegativeError)
-	}
-	if inp.Dura > time.Duration(4)*time.Hour {
-		return tracer.Mask(eventDurationLimitError)
-	}
-
-	if len(inp.Host) > 5 {
-		return tracer.Maskf(tooManyLabelsError, "allowed are up to 5 host labels")
-	}
-
-	if !valLin(inp.Link) {
-		return tracer.Mask(eventLinkInvalidError)
-	}
-
-	if inp.Time.IsZero() {
-		return tracer.Maskf(eventTimeInvalidError, "time must not be empty")
-	}
-	if inp.Time.Compare(time.Now().UTC()) != +1 {
-		return tracer.Maskf(eventTimeInvalidError, "time must be in the future")
-	}
-
-	if inp.User == "" {
-		return tracer.Mask(userIDEmptyError)
-	}
-
-	{
-		var key []string
-		for _, x := range append(inp.Cate, inp.Host...) {
-			key = append(key, labObj(x))
-		}
-
-		cou, err := r.red.Simple().Exists().Multi(key...)
-		if err != nil {
-			return tracer.Mask(err)
-		}
-
-		if cou != int64(len(key)) {
-			return tracer.Maskf(labelNotFoundError, "%d labels do not exist", int64(len(key))-cou)
-		}
-	}
-
-	return nil
-}
-
-func valLin(str string) bool {
-	if str == "" {
-		return false
-	}
-
-	poi, err := url.Parse(str)
-	if err != nil {
-		return false
-	}
-
-	if poi.Scheme != "https" {
-		return false
-	}
-
-	return true
 }

@@ -1,30 +1,8 @@
 package eventstorage
 
 import (
-	"time"
-
 	"github.com/NaoNaoOnline/apiserver/pkg/objectid"
 )
-
-type Object struct {
-	// Cate is the list of label IDs under which the event is categorized.
-	Cate []objectid.String `json:"cate"`
-	// Crtd is the time at which the event got created.
-	Crtd time.Time `json:"crtd"`
-	// Dura is the estimated duration of the event.
-	Dura time.Duration `json:"dura"`
-	// Evnt is the ID of the event being created.
-	Evnt objectid.String `json:"evnt"`
-	// Host is the list of label IDs expected to host the event.
-	Host []objectid.String `json:"host"`
-	// Link is the online location at which the event is expected to take place.
-	// For IRL events this may just be some informational website.
-	Link string `json:"link"`
-	// Time is the date time at which the event is expected to start.
-	Time time.Time `json:"time"`
-	// User is the user ID creating this event.
-	User objectid.String `json:"user"`
-}
 
 type Interface interface {
 	// Create persists new event objects.
@@ -45,9 +23,15 @@ type Interface interface {
 	//     @out[0] the list of event objects associated to all the given labels
 	//
 	SearchLabl([]objectid.String) ([]*Object, error)
-	// SearchTime returns the event objects indexed to happen right now.
+	// SearchLtst returns the event objects known to happen right now.
 	//
-	//     @out[0] the list of event objects indexed to happen right now
+	//     @out[0] the list of event objects known to happen right now
 	//
-	SearchTime() ([]*Object, error)
+	SearchLtst() ([]*Object, error)
+	// SearchRctn returns the event objects the given user ID reacted to.
+	//
+	//     @inp[0] the user ID that reacted to events
+	//     @out[0] the list of event objects the given user ID reacted to
+	//
+	SearchRctn(objectid.String) ([]*Object, error)
 }

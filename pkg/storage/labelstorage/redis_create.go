@@ -3,6 +3,7 @@ package labelstorage
 import (
 	"time"
 
+	"github.com/NaoNaoOnline/apiserver/pkg/keyfmt"
 	"github.com/NaoNaoOnline/apiserver/pkg/objectid"
 	"github.com/xh3b4sd/tracer"
 )
@@ -14,15 +15,27 @@ func (r *Redis) Create(inp []*Object) ([]*Object, error) {
 		// At first we need to validate the given input object and, amongst others,
 		// whether the label does already exist, since our label names must be unique.
 		{
-			err = r.validateCreate(inp[i])
+			err := inp[i].Verify()
 			if err != nil {
 				return nil, tracer.Mask(err)
 			}
 		}
 
 		{
+			exi, err := r.red.Sorted().Exists().Index(labKin(inp[i].Kind), keyfmt.Index(inp[i].Name))
+			if err != nil {
+				return nil, tracer.Mask(err)
+			}
+
+			if exi {
+				return nil, tracer.Maskf(labelAlreadyExistsError, keyfmt.Index(inp[i].Name))
+			}
+		}
+
+		{
 			inp[i].Crtd = time.Now().UTC()
 			inp[i].Labl = objectid.New(inp[i].Crtd)
+			inp[i].Name = keyfmt.Label(inp[i].Name)
 		}
 
 		// Once we know the label is unique, we create the normalized key-value pair
@@ -39,7 +52,7 @@ func (r *Redis) Create(inp []*Object) ([]*Object, error) {
 		// are unique by using the label name as additional index within the redis
 		// sorted sets.
 		{
-			err = r.red.Sorted().Create().Score(labKin(inp[i].Kind), inp[i].Labl.String(), inp[i].Labl.Float(), clnInd(inp[i].Name))
+			err = r.red.Sorted().Create().Score(labKin(inp[i].Kind), inp[i].Labl.String(), inp[i].Labl.Float(), keyfmt.Index(inp[i].Name))
 			if err != nil {
 				return nil, tracer.Mask(err)
 			}
@@ -52,31 +65,4 @@ func (r *Redis) Create(inp []*Object) ([]*Object, error) {
 	}
 
 	return inp, nil
-}
-
-func (r *Redis) validateCreate(inp *Object) error {
-	if inp.Kind != "cate" && inp.Kind != "host" {
-		return tracer.Mask(invalidLabelKindError)
-	}
-
-	if inp.Name == "" {
-		return tracer.Mask(labelNameEmptyError)
-	}
-
-	if inp.User == "" {
-		return tracer.Mask(userIDEmptyError)
-	}
-
-	{
-		exi, err := r.red.Sorted().Exists().Index(labKin(inp.Kind), clnInd(inp.Name))
-		if err != nil {
-			return tracer.Mask(err)
-		}
-
-		if exi {
-			return tracer.Maskf(labelAlreadyExistsError, inp.Name)
-		}
-	}
-
-	return nil
 }

@@ -15,6 +15,15 @@ func IsUserIDEmpty(err error) bool {
 	return errors.Is(err, userIDEmptyError)
 }
 
+var updatePeriodPastError = &tracer.Error{
+	Kind: "updatePeriodPastError",
+	Desc: "The request expects changes on the description object to happen within 5 minutes of resource creation. The changes on the description object were found to be after 5 minutes of resource creation. Therefore it failed.",
+}
+
+func IsUpdatePeriodPast(err error) bool {
+	return errors.Is(err, updatePeriodPastError)
+}
+
 var userNotOwnerError = &tracer.Error{
 	Kind: "userNotOwnerError",
 	Desc: "The request expects the calling user to be the owner of the requested resource. The calling user was not found to be the owner of the requested resource. Therefore it failed.",

@@ -40,7 +40,9 @@ func inpLab(str string) []objectid.String {
 	var lis []objectid.String
 
 	for _, x := range strings.Split(str, ",") {
-		lis = append(lis, objectid.String(x))
+		if x != "" {
+			lis = append(lis, objectid.String(x))
+		}
 	}
 
 	return lis
