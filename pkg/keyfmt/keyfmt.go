@@ -129,7 +129,7 @@ const (
 	//
 	VoteUser = "vot/use/%s"
 	// VoteUserEvent is used to store all the IDs of votes mapped to a specific
-	// user / event combination.
+	// user/event combination.
 	//
 	//     user ID / event ID             vote IDs
 	//                              ->

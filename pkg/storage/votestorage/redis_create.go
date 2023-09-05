@@ -88,7 +88,7 @@ func (r *Redis) Create(inp []*Object) ([]*Object, error) {
 			}
 		}
 
-		// Now we create the event/user specific mappings for event/user specific
+		// Now we create the user/event specific mappings for user/event specific
 		// search queries. This allows us to search for the amount of votes a user
 		// made on an event.
 		{

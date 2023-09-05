@@ -10,7 +10,7 @@ func (r *Redis) Delete(inp []*Object) ([]objectstate.String, error) {
 
 	var out []objectstate.String
 	for i := range inp {
-		// Delete the event/user specific mappings for event/user specific search
+		// Delete the user/event specific mappings for user/event specific search
 		// queries.
 		{
 			err = r.red.Sorted().Delete().Value(votEve(inp[i].User, inp[i].Evnt), inp[i].Vote.String())
