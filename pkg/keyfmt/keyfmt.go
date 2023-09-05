@@ -57,14 +57,6 @@ const (
 	//     eve/use/5678          1234,5678
 	//
 	EventUser = "eve/use/%s"
-	// EventUserVote is used to store all the IDs of events a specific
-	// user reacted to.
-	//
-	//     user ID                   event IDs
-	//                         ->
-	//     eve/use/5678/vot          1234,5678
-	//
-	EventUserVote = "eve/use/%s/vot"
 	// LabelCategory is used to store all the IDs of category labels.
 	//
 	//     kind category          label IDs
@@ -121,14 +113,6 @@ const (
 	//     vot/des/5678            1234,5678
 	//
 	VoteDescription = "vot/des/%s"
-	// VoteEventUser is used to store all the IDs of votes mapped to a specific
-	// event / user combination.
-	//
-	//     event ID / user ID             vote IDs
-	//                              ->
-	//     vot/eve/1234/use/5678          1234,5678
-	//
-	VoteEventUser = "vot/eve/%s/use/%s"
 	// VoteObject is used to store our internal representation of a vote object.
 	//
 	//     vote ID               vote object
@@ -136,4 +120,20 @@ const (
 	//     vot/obj/1234          {"key": "val"}
 	//
 	VoteObject = "vot/obj/%s"
+	// VoteUser is used to store all the IDs of votes created by a specific
+	// user.
+	//
+	//     user ID               vote IDs
+	//                     ->
+	//     vot/use/5678          1234,5678
+	//
+	VoteUser = "vot/use/%s"
+	// VoteUserEvent is used to store all the IDs of votes mapped to a specific
+	// event / user combination.
+	//
+	//     user ID / event ID             vote IDs
+	//                              ->
+	//     vot/use/1234/eve/5678          1234,5678
+	//
+	VoteUserEvent = "vot/use/%s/eve/%s"
 )

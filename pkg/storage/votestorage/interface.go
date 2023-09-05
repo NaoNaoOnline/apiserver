@@ -12,6 +12,8 @@ type Object struct {
 	Crtd time.Time `json:"crtd"`
 	// Desc is the ID of the description the user voted on.
 	Desc objectid.String `json:"desc"`
+	// Evnt is the ID of the event the user voted on.
+	Evnt objectid.String `json:"evnt"`
 	// Rctn is the ID of the reaction the user used to vote.
 	Rctn objectid.String `json:"rctn"`
 	// User is the user ID creating this vote.

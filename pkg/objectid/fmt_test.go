@@ -5,7 +5,7 @@ import (
 	"testing"
 )
 
-func Test_ScoreID_Fmt_string(t *testing.T) {
+func Test_ObjectID_Fmt_string(t *testing.T) {
 	testCases := []struct {
 		ids []string
 		str string
@@ -35,7 +35,7 @@ func Test_ScoreID_Fmt_string(t *testing.T) {
 	}
 }
 
-func Test_ScoreID_Fmt_String(t *testing.T) {
+func Test_ObjectID_Fmt_String(t *testing.T) {
 	testCases := []struct {
 		ids []String
 		str string

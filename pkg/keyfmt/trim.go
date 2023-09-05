@@ -1,7 +1,6 @@
 package keyfmt
 
 import (
-	"net/url"
 	"regexp"
 	"strings"
 )
@@ -22,8 +21,8 @@ func Index(str string) string {
 	str = strings.TrimSpace(str)
 	// Ensure only lower case letters.
 	str = strings.ToLower(str)
-	// Escape special characters.
-	str = url.PathEscape(str)
+	// Escape left over spaces.
+	str = strings.ReplaceAll(str, " ", "-")
 
 	return str
 }
@@ -38,8 +37,6 @@ func Label(str string) string {
 	str = regex.ReplaceAllString(str, " ")
 	// Remove leading and trailing spaces.
 	str = strings.TrimSpace(str)
-	// Escape special characters.
-	str = url.PathEscape(str)
 
 	return str
 }

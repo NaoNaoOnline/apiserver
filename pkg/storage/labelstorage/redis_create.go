@@ -28,7 +28,7 @@ func (r *Redis) Create(inp []*Object) ([]*Object, error) {
 			}
 
 			if exi {
-				return nil, tracer.Maskf(labelAlreadyExistsError, keyfmt.Index(inp[i].Name))
+				return nil, tracer.Maskf(labelObjectAlreadyExistsError, keyfmt.Index(inp[i].Name))
 			}
 		}
 
