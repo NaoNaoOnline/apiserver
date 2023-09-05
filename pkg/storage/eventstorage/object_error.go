@@ -8,7 +8,7 @@ import (
 
 var eventDurationEmptyError = &tracer.Error{
 	Kind: "eventDurationEmptyError",
-	Desc: "The request expects a valid event duration for the event object. No event duration was found for the request. Therefore it failed.",
+	Desc: "The request expects the event duration not to be empty. The event duration was found to be empty for the request. Therefore it failed.",
 }
 
 func IsEventDurationEmpty(err error) bool {
@@ -17,7 +17,7 @@ func IsEventDurationEmpty(err error) bool {
 
 var eventDurationLimitError = &tracer.Error{
 	Kind: "eventDurationLimitError",
-	Desc: "The request expects the event duration to be under 4 hours. An event duration over 4 hours was found for the request. Therefore it failed.",
+	Desc: "The request expects the event duration not to be over 4 hours. The event duration was found to be over 4 hours for the request. Therefore it failed.",
 }
 
 func IsEventDurationLimit(err error) bool {
@@ -26,7 +26,7 @@ func IsEventDurationLimit(err error) bool {
 
 var eventDurationNegativeError = &tracer.Error{
 	Kind: "eventDurationNegativeError",
-	Desc: "The request expects a valid event duration for the event object. A negative event duration was found for the request. Therefore it failed.",
+	Desc: "The request expects the event duration not to be negative. The event duration was found to be negative for the request. Therefore it failed.",
 }
 
 func IsEventDurationNegative(err error) bool {

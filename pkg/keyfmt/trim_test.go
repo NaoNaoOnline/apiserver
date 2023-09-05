@@ -23,22 +23,22 @@ func Test_KeyFmt_Index(t *testing.T) {
 		// Case 002
 		{
 			str: "hello world",
-			trm: "hello%20world",
+			trm: "hello-world",
 		},
 		// Case 003
 		{
 			str: " hello    world  ",
-			trm: "hello%20world",
+			trm: "hello-world",
 		},
 		// Case 004
 		{
-			str: " \t\n Hello,     Gophers \n\t\r\n",
-			trm: "hello%2C%20gophers",
+			str: " \t\n Hello     Gophers \n\t\r\n",
+			trm: "hello-gophers",
 		},
 		// Case 005
 		{
 			str: " 030\t\naka     030 \n\t\r\n",
-			trm: "030%20aka%20030",
+			trm: "030-aka-030",
 		},
 		// Case 006
 		{
@@ -90,22 +90,22 @@ func Test_KeyFmt_Label(t *testing.T) {
 		// Case 002
 		{
 			str: "hello world",
-			trm: "hello%20world",
+			trm: "hello world",
 		},
 		// Case 003
 		{
 			str: " hello    world  ",
-			trm: "hello%20world",
+			trm: "hello world",
 		},
 		// Case 004
 		{
-			str: " \t\n Hello,     Gophers \n\t\r\n",
-			trm: "Hello%2C%20Gophers",
+			str: " \t\n Hello     Gophers \n\t\r\n",
+			trm: "Hello Gophers",
 		},
 		// Case 005
 		{
 			str: " 030\t\naka     030 \n\t\r\n",
-			trm: "030%20aka%20030",
+			trm: "030 aka 030",
 		},
 		// Case 006
 		{

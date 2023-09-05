@@ -34,7 +34,7 @@ var (
 
 func (o *Object) Verify() error {
 	if o.Kind != "cate" && o.Kind != "host" {
-		return tracer.Maskf(invalidLabelKindError, o.Kind)
+		return tracer.Maskf(labelKindInvalidError, o.Kind)
 	}
 
 	if o.Name == "" {

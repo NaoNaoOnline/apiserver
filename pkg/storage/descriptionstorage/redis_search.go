@@ -51,27 +51,27 @@ func (r *Redis) SearchEvnt(evn []objectid.String) ([]*Object, error) {
 			return nil, tracer.Mask(eventIDEmptyError)
 		}
 
-		// key will result in a list of all description IDs belonging to the given
+		// val will result in a list of all description IDs belonging to the given
 		// event ID, if any.
-		var key []string
+		var val []string
 		{
-			key, err = r.red.Sorted().Search().Order(desEve(x), 0, -1)
+			val, err = r.red.Sorted().Search().Order(desEve(x), 0, -1)
 			if err != nil {
 				return nil, tracer.Mask(err)
 			}
 		}
 
-		// There might not be any keys, and so we do not proceed, but instead
+		// There might not be any values, and so we do not proceed, but instead
 		// continue with the next event ID, if any.
-		if len(key) == 0 {
+		if len(val) == 0 {
 			continue
 		}
 
 		var jsn []string
 		{
-			jsn, err = r.red.Simple().Search().Multi(objectid.Fmt(key, keyfmt.DescriptionObject)...)
+			jsn, err = r.red.Simple().Search().Multi(objectid.Fmt(val, keyfmt.DescriptionObject)...)
 			if simple.IsNotFound(err) {
-				return nil, tracer.Maskf(descriptionObjectNotFoundError, "%v", key)
+				return nil, tracer.Maskf(descriptionObjectNotFoundError, "%v", val)
 			} else if err != nil {
 				return nil, tracer.Mask(err)
 			}

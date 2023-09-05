@@ -46,20 +46,20 @@ func desObj(oid objectid.String) string {
 	return fmt.Sprintf(keyfmt.DescriptionObject, oid)
 }
 
-func eveVot(oid objectid.String) string {
-	return fmt.Sprintf(keyfmt.EventUserVote, oid)
-}
-
 func votDes(oid objectid.String) string {
 	return fmt.Sprintf(keyfmt.VoteDescription, oid)
+}
+
+func votEve(ida objectid.String, idb objectid.String) string {
+	return fmt.Sprintf(keyfmt.VoteUserEvent, ida, idb)
 }
 
 func votObj(oid objectid.String) string {
 	return fmt.Sprintf(keyfmt.VoteObject, oid)
 }
 
-func votUse(ida objectid.String, idb objectid.String) string {
-	return fmt.Sprintf(keyfmt.VoteEventUser, ida, idb)
+func votUse(oid objectid.String) string {
+	return fmt.Sprintf(keyfmt.VoteUser, oid)
 }
 
 func musStr(obj *Object) string {

@@ -15,30 +15,30 @@ func (r *Redis) Search(inp []string) ([]*Object, error) {
 	var out []*Object
 	for _, x := range inp {
 		if x != "cate" && x != "host" {
-			return nil, tracer.Mask(invalidLabelKindError)
+			return nil, tracer.Mask(labelKindInvalidError)
 		}
 
-		// key will result in a list of all label IDs grouped under the given label
+		// val will result in a list of all label IDs grouped under the given label
 		// kind, if any.
-		var key []string
+		var val []string
 		{
-			key, err = r.red.Sorted().Search().Order(labKin(x), 0, -1)
+			val, err = r.red.Sorted().Search().Order(labKin(x), 0, -1)
 			if err != nil {
 				return nil, tracer.Mask(err)
 			}
 		}
 
-		// There might not be any keys, and so we do not proceed, but instead
+		// There might not be any values, and so we do not proceed, but instead
 		// continue with the next label kind, if any.
-		if len(key) == 0 {
+		if len(val) == 0 {
 			continue
 		}
 
 		var jsn []string
 		{
-			jsn, err = r.red.Simple().Search().Multi(objectid.Fmt(key, keyfmt.LabelObject)...)
+			jsn, err = r.red.Simple().Search().Multi(objectid.Fmt(val, keyfmt.LabelObject)...)
 			if simple.IsNotFound(err) {
-				return nil, tracer.Maskf(labelNotFoundError, "%v", key)
+				return nil, tracer.Maskf(labelObjectNotFoundError, "%v", val)
 			} else if err != nil {
 				return nil, tracer.Mask(err)
 			}

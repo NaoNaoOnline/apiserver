@@ -15,18 +15,18 @@ func IsFieldUnsupported(err error) bool {
 	return errors.Is(err, fieldUnsupportedError)
 }
 
-var invalidLabelKindError = &tracer.Error{
-	Kind: "invalidLabelKindError",
-	Desc: "The request expects a valid label kind for the label object, e.g. cate or host. No valid label kind was found for the request. Therefore it failed.",
+var labelKindInvalidError = &tracer.Error{
+	Kind: "labelKindInvalidError",
+	Desc: "The request expects the label kind to be one of [cate host]. The label kind was not found to be one of [cate host] for the request. Therefore it failed.",
 }
 
-func IsInvalidLabelKind(err error) bool {
-	return errors.Is(err, invalidLabelKindError)
+func IsLabelKindInvalid(err error) bool {
+	return errors.Is(err, labelKindInvalidError)
 }
 
 var labelNameEmptyError = &tracer.Error{
 	Kind: "labelNameEmptyError",
-	Desc: "The request expects a valid label name for the label object. No label name was found for the request. Therefore it failed.",
+	Desc: "The request expects the label name not to be empty. The label name was found to be empty for the request. Therefore it failed.",
 }
 
 func IsLabelNameEmpty(err error) bool {

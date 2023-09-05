@@ -14,9 +14,9 @@ func (r *Redis) SearchDesc(inp []objectid.String) ([]*Object, error) {
 
 	var out []*Object
 	for _, x := range inp {
-		var key []string
+		var val []string
 		{
-			key, err = r.red.Sorted().Search().Order(votDes(x), 0, -1)
+			val, err = r.red.Sorted().Search().Order(votDes(x), 0, -1)
 			if simple.IsNotFound(err) {
 				return nil, tracer.Maskf(voteNotFoundError, "%v", inp)
 			} else if err != nil {
@@ -24,17 +24,17 @@ func (r *Redis) SearchDesc(inp []objectid.String) ([]*Object, error) {
 			}
 		}
 
-		// There might not be any keys, and so we do not proceed, but instead
+		// There might not be any values, and so we do not proceed, but instead
 		// continue with the next description ID, if any.
-		if len(key) == 0 {
+		if len(val) == 0 {
 			continue
 		}
 
 		var jsn []string
 		{
-			jsn, err = r.red.Simple().Search().Multi(objectid.Fmt(key, keyfmt.VoteObject)...)
+			jsn, err = r.red.Simple().Search().Multi(objectid.Fmt(val, keyfmt.VoteObject)...)
 			if simple.IsNotFound(err) {
-				return nil, tracer.Maskf(voteNotFoundError, "%v", key)
+				return nil, tracer.Maskf(voteNotFoundError, "%v", val)
 			} else if err != nil {
 				return nil, tracer.Mask(err)
 			}

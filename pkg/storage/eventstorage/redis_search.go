@@ -46,27 +46,27 @@ func (r *Redis) SearchEvnt(inp []objectid.String) ([]*Object, error) {
 func (r *Redis) SearchLabl(lab []objectid.String) ([]*Object, error) {
 	var err error
 
-	// key will result in a list of all event IDs associated to the given label
+	// val will result in a list of all event IDs associated to the given label
 	// IDs, if any.
-	var key []string
+	var val []string
 	{
-		key, err = r.red.Sorted().Search().Inter(objectid.Fmt(lab, keyfmt.EventLabel)...)
+		val, err = r.red.Sorted().Search().Inter(objectid.Fmt(lab, keyfmt.EventLabel)...)
 		if err != nil {
 			return nil, tracer.Mask(err)
 		}
 	}
 
-	// There might not be any keys, and so we do not proceed, but instead
+	// There might not be any values, and so we do not proceed, but instead
 	// return nothing.
-	if len(key) == 0 {
+	if len(val) == 0 {
 		return nil, nil
 	}
 
 	var jsn []string
 	{
-		jsn, err = r.red.Simple().Search().Multi(objectid.Fmt(key, keyfmt.EventObject)...)
+		jsn, err = r.red.Simple().Search().Multi(objectid.Fmt(val, keyfmt.EventObject)...)
 		if simple.IsNotFound(err) {
-			return nil, tracer.Maskf(eventObjectNotFoundError, "%v", key)
+			return nil, tracer.Maskf(eventObjectNotFoundError, "%v", val)
 		} else if err != nil {
 			return nil, tracer.Mask(err)
 		}
@@ -111,25 +111,25 @@ func (r *Redis) SearchLtst() ([]*Object, error) {
 		min = float64(now.Add(-oneWeek).Unix())
 	}
 
-	var key []string
+	var val []string
 	{
-		key, err = r.red.Sorted().Search().Score(keyfmt.EventTime, max, min)
+		val, err = r.red.Sorted().Search().Value(keyfmt.EventTime, max, min)
 		if err != nil {
 			return nil, tracer.Mask(err)
 		}
 	}
 
-	// There might not be any keys, and so we do not proceed, but instead
+	// There might not be any values, and so we do not proceed, but instead
 	// return nothing.
-	if len(key) == 0 {
+	if len(val) == 0 {
 		return nil, nil
 	}
 
 	var jsn []string
 	{
-		jsn, err = r.red.Simple().Search().Multi(objectid.Fmt(key, keyfmt.EventObject)...)
+		jsn, err = r.red.Simple().Search().Multi(objectid.Fmt(val, keyfmt.EventObject)...)
 		if simple.IsNotFound(err) {
-			return nil, tracer.Maskf(eventObjectNotFoundError, "%v", key)
+			return nil, tracer.Maskf(eventObjectNotFoundError, "%v", val)
 		} else if err != nil {
 			return nil, tracer.Mask(err)
 		}
@@ -158,23 +158,26 @@ func (r *Redis) SearchLtst() ([]*Object, error) {
 func (r *Redis) SearchRctn(use objectid.String) ([]*Object, error) {
 	var err error
 
-	var key []string
+	// The user votes are indexed in a way were vote IDs are values and event IDs
+	// are scores. Below we lookup all scores, resulting in a list of event IDs
+	// that potentially contains duplicates.
+	var sco []string
 	{
-		key, err = r.red.Sorted().Search().Order(eveVot(use), 0, -1)
+		sco, err = r.red.Sorted().Search().Order(votUse(use), 0, -1, true)
 		if err != nil {
 			return nil, tracer.Mask(err)
 		}
 	}
 
-	// There might not be any keys, and so we do not proceed, but instead
+	// There might not be any values, and so we do not proceed, but instead
 	// return nothing.
-	if len(key) == 0 {
+	if len(sco) == 0 {
 		return nil, nil
 	}
 
 	var jsn []string
 	{
-		jsn, err = r.red.Simple().Search().Multi(objectid.Fmt(key, keyfmt.EventObject)...)
+		jsn, err = r.red.Simple().Search().Multi(objectid.Fmt(objectid.Uni(sco), keyfmt.EventObject)...)
 		if simple.IsNotFound(err) {
 			// It may happen that events get deleted, that users have reacted to. The
 			// event deletion process is not atomic and so it might happen that some

@@ -47,12 +47,12 @@ func eveUse(oid objectid.String) string {
 	return fmt.Sprintf(keyfmt.EventUser, oid)
 }
 
-func eveVot(oid objectid.String) string {
-	return fmt.Sprintf(keyfmt.EventUserVote, oid)
-}
-
 func labObj(oid objectid.String) string {
 	return fmt.Sprintf(keyfmt.LabelObject, oid)
+}
+
+func votUse(oid objectid.String) string {
+	return fmt.Sprintf(keyfmt.VoteUser, oid)
 }
 
 func musStr(obj *Object) string {
