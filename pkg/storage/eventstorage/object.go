@@ -2,6 +2,7 @@ package eventstorage
 
 import (
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/NaoNaoOnline/apiserver/pkg/objectid"
@@ -26,6 +27,31 @@ type Object struct {
 	Time time.Time `json:"time"`
 	// User is the user ID creating this event.
 	User objectid.String `json:"user"`
+}
+
+// Ovrlap returns whether o and x have a time overlap, based on their Time and
+// Dura properties.
+func (o *Object) Ovrlap(lis []*Object) bool {
+	for _, x := range o.Host {
+		for _, y := range lis {
+			if slices.Contains(y.Host, x) {
+				// Check if the first time range is entirely before the second.
+				if o.Time.Add(o.Dura).Before(y.Time) || o.Time.Add(o.Dura).Equal(y.Time) {
+					continue
+				}
+
+				// Check if the second time range is entirely before the first.
+				if y.Time.Add(y.Dura).Before(o.Time) || y.Time.Add(y.Dura).Equal(o.Time) {
+					continue
+				}
+
+				// If the above conditions are not met, the time ranges overlap.
+				return true
+			}
+		}
+	}
+
+	return false
 }
 
 func (o *Object) Verify() error {
@@ -91,21 +117,4 @@ func (o *Object) Verify() error {
 	}
 
 	return nil
-}
-
-// tmvrlp returns whether o and x have a time overlap, based on their Time and
-// Dura properties.
-func (o *Object) tmvrlp(x *Object) bool {
-	// Check if the first time range is entirely before the second.
-	if o.Time.Add(o.Dura).Before(x.Time) || o.Time.Add(o.Dura).Equal(x.Time) {
-		return false
-	}
-
-	// Check if the second time range is entirely before the first.
-	if x.Time.Add(x.Dura).Before(o.Time) || x.Time.Add(x.Dura).Equal(o.Time) {
-		return false
-	}
-
-	// If the above conditions are not met, the time ranges overlap.
-	return true
 }

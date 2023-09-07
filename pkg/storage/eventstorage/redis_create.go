@@ -1,7 +1,6 @@
 package eventstorage
 
 import (
-	"slices"
 	"time"
 
 	"github.com/NaoNaoOnline/apiserver/pkg/keyfmt"
@@ -64,20 +63,11 @@ func (r *Redis) Create(inp []*Object) ([]*Object, error) {
 			}
 
 			// If any of inp[i].Host can be found in obj[j].Host, and if both event
-			// durations overlap on the timeline, then return error, because the hosts
-			// for the event we want to create cannot be on two events simultaneously.
-			for _, x := range inp[i].Host {
-				for _, y := range obj {
-					if slices.Contains(y.Host, x) {
-						// At this point we have found an existing event object that defines
-						// at least one host label equal to the event object we want to
-						// create. Now we verify if the two events have overlapping event
-						// durations.
-						if inp[i].tmvrlp(y) {
-							return nil, tracer.Maskf(hostParticipationConflictError, x.String())
-						}
-					}
-				}
+			// durations overlap on the timeline, then we return an error, because
+			// neither host for the event we want to create can be on two events
+			// simultaneously.
+			if inp[i].Ovrlap(obj) {
+				return nil, tracer.Mask(hostParticipationConflictError)
 			}
 		}
 
