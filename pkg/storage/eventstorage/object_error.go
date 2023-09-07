@@ -33,40 +33,13 @@ func IsEventDurationNegative(err error) bool {
 	return errors.Is(err, eventDurationNegativeError)
 }
 
-var eventLinkEmptyError = &tracer.Error{
-	Kind: "eventLinkEmptyError",
-	Desc: "The request expects the event link not to be empty. The event link was found to be empty for the request. Therefore it failed.",
+var eventLabelDuplicateError = &tracer.Error{
+	Kind: "eventLabelDuplicateError",
+	Desc: "The request expects the event labels not to be duplicated. The event labels were found to be duplicated for the request. Therefore it failed.",
 }
 
-func IsEventLinkEmpty(err error) bool {
-	return errors.Is(err, eventLinkEmptyError)
-}
-
-var eventLinkFormatError = &tracer.Error{
-	Kind: "eventLinkFormatError",
-	Desc: "The request expects the event link to be a valid https URL. The event link was not found to be a valid https URL for the request. Therefore it failed.",
-}
-
-func IsLabelLinkFormat(err error) bool {
-	return errors.Is(err, eventLinkFormatError)
-}
-
-var eventTimeEmptyError = &tracer.Error{
-	Kind: "eventTimeEmptyError",
-	Desc: "The request expects the event time not to be empty. The event time was found to be empty for the request. Therefore it failed.",
-}
-
-func IsEventTimeEmpty(err error) bool {
-	return errors.Is(err, eventTimeEmptyError)
-}
-
-var eventTimePastError = &tracer.Error{
-	Kind: "eventTimePastError",
-	Desc: "The request expects the event time not to be in the past. The event time was found to be in the past for the request. Therefore it failed.",
-}
-
-func IsEventTimePast(err error) bool {
-	return errors.Is(err, eventTimePastError)
+func IsEventLabelDuplicate(err error) bool {
+	return errors.Is(err, eventLabelDuplicateError)
 }
 
 var eventLabelEmptyError = &tracer.Error{
@@ -83,6 +56,51 @@ var eventLabelLimitError = &tracer.Error{
 	Desc: "The request expects an upper limit of 5 label IDs per event. The upper limit of 5 label IDs per event was found for the request. Therefore it failed.",
 }
 
-func IsLabelLimitError(err error) bool {
+func IsEventLabelLimit(err error) bool {
 	return errors.Is(err, eventLabelLimitError)
+}
+
+var eventLinkEmptyError = &tracer.Error{
+	Kind: "eventLinkEmptyError",
+	Desc: "The request expects the event link not to be empty. The event link was found to be empty for the request. Therefore it failed.",
+}
+
+func IsEventLinkEmpty(err error) bool {
+	return errors.Is(err, eventLinkEmptyError)
+}
+
+var eventLinkFormatError = &tracer.Error{
+	Kind: "eventLinkFormatError",
+	Desc: "The request expects the event link to be a valid https URL. The event link was not found to be a valid https URL for the request. Therefore it failed.",
+}
+
+func IsEventLinkFormat(err error) bool {
+	return errors.Is(err, eventLinkFormatError)
+}
+
+var eventTimeEmptyError = &tracer.Error{
+	Kind: "eventTimeEmptyError",
+	Desc: "The request expects the event time not to be empty. The event time was found to be empty for the request. Therefore it failed.",
+}
+
+func IsEventTimeEmpty(err error) bool {
+	return errors.Is(err, eventTimeEmptyError)
+}
+
+var eventTimeFutureError = &tracer.Error{
+	Kind: "eventTimeFutureError",
+	Desc: "The request expects the event time to be within the next 30 days. The event time was not found to be within the next 30 days for the request. Therefore it failed.",
+}
+
+func IsEventTimeFuture(err error) bool {
+	return errors.Is(err, eventTimeFutureError)
+}
+
+var eventTimePastError = &tracer.Error{
+	Kind: "eventTimePastError",
+	Desc: "The request expects the event time not to be in the past. The event time was found to be in the past for the request. Therefore it failed.",
+}
+
+func IsEventTimePast(err error) bool {
+	return errors.Is(err, eventTimePastError)
 }

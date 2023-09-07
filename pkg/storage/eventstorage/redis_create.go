@@ -22,6 +22,7 @@ func (r *Redis) Create(inp []*Object) ([]*Object, error) {
 			}
 		}
 
+		// Check if the labels the event we want to create do even exist.
 		{
 			var key []string
 			for _, x := range append(inp[i].Cate, inp[i].Host...) {
@@ -35,6 +36,38 @@ func (r *Redis) Create(inp []*Object) ([]*Object, error) {
 
 			if cou != int64(len(key)) {
 				return nil, tracer.Maskf(labelObjectNotFoundError, "%d labels do not exist", int64(len(key))-cou)
+			}
+		}
+
+		// Make sure the hosts of the event being created are not already indexed to
+		// be online during the new expected event duration. Here we need to look
+		// for all events within the following "minus-four-hours" time range,
+		// because events can be 4 hours long.
+		//
+		//     < minus four hours > < new event start > < new event end >
+		//
+		{
+			var min time.Time
+			var max time.Time
+			{
+				min = inp[i].Time.Add(-(time.Hour * 4))
+				max = inp[i].Time.Add(inp[i].Dura)
+			}
+
+			var obj []*Object
+			{
+				obj, err = r.searchTime(min, max)
+				if err != nil {
+					return nil, tracer.Mask(err)
+				}
+			}
+
+			// If any of inp[i].Host can be found in obj[j].Host, and if both event
+			// durations overlap on the timeline, then we return an error, because
+			// neither host for the event we want to create can be on two events
+			// simultaneously.
+			if inp[i].Ovrlap(obj) {
+				return nil, tracer.Mask(hostParticipationConflictError)
 			}
 		}
 

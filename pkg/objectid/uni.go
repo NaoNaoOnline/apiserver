@@ -1,5 +1,6 @@
 package objectid
 
+// Uni returns a list of unique items.
 func Uni[T string | String](lis []T) []T {
 	see := map[T]struct{}{}
 
@@ -10,6 +11,9 @@ func Uni[T string | String](lis []T) []T {
 			if exi {
 				continue
 			}
+		}
+
+		{
 			see[x] = struct{}{}
 		}
 

@@ -1,6 +1,6 @@
 module github.com/NaoNaoOnline/apiserver
 
-go 1.20
+go 1.21
 
 require (
 	github.com/NaoNaoOnline/apigocode v0.4.2

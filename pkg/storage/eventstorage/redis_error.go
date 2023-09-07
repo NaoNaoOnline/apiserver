@@ -15,6 +15,15 @@ func IsEventObjectNotFound(err error) bool {
 	return errors.Is(err, eventObjectNotFoundError)
 }
 
+var hostParticipationConflictError = &tracer.Error{
+	Kind: "hostParticipationConflictError",
+	Desc: "The request expects the host not to participate on multiple events at the same time. The host was found to particpate on multiple events at the same time for the request. Therefore it failed.",
+}
+
+func IsEventParticipationConflict(err error) bool {
+	return errors.Is(err, hostParticipationConflictError)
+}
+
 var labelObjectNotFoundError = &tracer.Error{
 	Kind: "labelObjectNotFoundError",
 	Desc: "The request expects a label object associated to the event object. The associated label object was not found for the request. Therefore it failed.",

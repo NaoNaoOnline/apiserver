@@ -1,6 +1,6 @@
 # apiserver
 
-Golang based [Twirp] apiserver.
+Golang based [Twirp] apiserver. Requires at least `go1.21.1`.
 
 
 

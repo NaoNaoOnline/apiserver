@@ -14,12 +14,12 @@ func (r *Redis) SearchDesc(inp []objectid.String) ([]*Object, error) {
 
 	var out []*Object
 	for _, x := range inp {
+		// val will result in a list of all vote IDs belonging to the given
+		// description ID, if any.
 		var val []string
 		{
 			val, err = r.red.Sorted().Search().Order(votDes(x), 0, -1)
-			if simple.IsNotFound(err) {
-				return nil, tracer.Maskf(voteNotFoundError, "%v", inp)
-			} else if err != nil {
+			if err != nil {
 				return nil, tracer.Mask(err)
 			}
 		}
@@ -34,7 +34,7 @@ func (r *Redis) SearchDesc(inp []objectid.String) ([]*Object, error) {
 		{
 			jsn, err = r.red.Simple().Search().Multi(objectid.Fmt(val, keyfmt.VoteObject)...)
 			if simple.IsNotFound(err) {
-				return nil, tracer.Maskf(voteNotFoundError, "%v", val)
+				return nil, tracer.Maskf(voteObjectNotFoundError, "%v", val)
 			} else if err != nil {
 				return nil, tracer.Mask(err)
 			}
@@ -67,7 +67,7 @@ func (r *Redis) SearchVote(inp []objectid.String) ([]*Object, error) {
 	{
 		jsn, err = r.red.Simple().Search().Multi(objectid.Fmt(inp, keyfmt.VoteObject)...)
 		if simple.IsNotFound(err) {
-			return nil, tracer.Maskf(voteNotFoundError, "%v", inp)
+			return nil, tracer.Maskf(voteObjectNotFoundError, "%v", inp)
 		} else if err != nil {
 			return nil, tracer.Mask(err)
 		}

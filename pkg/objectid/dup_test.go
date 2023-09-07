@@ -2,19 +2,18 @@ package objectid
 
 import (
 	"fmt"
-	"slices"
 	"testing"
 )
 
-func Test_ObjectID_Uni_string(t *testing.T) {
+func Test_ObjectID_Dup_string(t *testing.T) {
 	testCases := []struct {
 		lis []string
-		uni []string
+		dup bool
 	}{
 		// Case 000
 		{
 			lis: []string{},
-			uni: nil,
+			dup: false,
 		},
 		// Case 001
 		{
@@ -22,10 +21,7 @@ func Test_ObjectID_Uni_string(t *testing.T) {
 				"55",
 				"44",
 			},
-			uni: []string{
-				"55",
-				"44",
-			},
+			dup: false,
 		},
 		// Case 002
 		{
@@ -35,10 +31,7 @@ func Test_ObjectID_Uni_string(t *testing.T) {
 				"33",
 				"33",
 			},
-			uni: []string{
-				"33",
-				"44",
-			},
+			dup: true,
 		},
 		// Case 003
 		{
@@ -53,7 +46,11 @@ func Test_ObjectID_Uni_string(t *testing.T) {
 				"55",
 				"88",
 			},
-			uni: []string{
+			dup: true,
+		},
+		// Case 004
+		{
+			lis: []string{
 				"33",
 				"44",
 				"88",
@@ -61,28 +58,29 @@ func Test_ObjectID_Uni_string(t *testing.T) {
 				"55",
 				"66",
 			},
+			dup: false,
 		},
 	}
 
 	for i, tc := range testCases {
 		t.Run(fmt.Sprintf("%03d", i), func(t *testing.T) {
-			uni := Uni(tc.lis)
-			if !slices.Equal(uni, tc.uni) {
-				t.Fatalf("expected %#v got %#v", tc.uni, uni)
+			dup := Dup(tc.lis)
+			if dup != tc.dup {
+				t.Fatalf("expected %#v got %#v", tc.dup, dup)
 			}
 		})
 	}
 }
 
-func Test_ObjectID_Uni_String(t *testing.T) {
+func Test_ObjectID_Dup_String(t *testing.T) {
 	testCases := []struct {
 		lis []String
-		uni []String
+		dup bool
 	}{
 		// Case 000
 		{
 			lis: []String{},
-			uni: nil,
+			dup: false,
 		},
 		// Case 001
 		{
@@ -90,10 +88,7 @@ func Test_ObjectID_Uni_String(t *testing.T) {
 				"55",
 				"44",
 			},
-			uni: []String{
-				"55",
-				"44",
-			},
+			dup: false,
 		},
 		// Case 002
 		{
@@ -103,10 +98,7 @@ func Test_ObjectID_Uni_String(t *testing.T) {
 				"33",
 				"33",
 			},
-			uni: []String{
-				"33",
-				"44",
-			},
+			dup: true,
 		},
 		// Case 003
 		{
@@ -121,7 +113,11 @@ func Test_ObjectID_Uni_String(t *testing.T) {
 				"55",
 				"88",
 			},
-			uni: []String{
+			dup: true,
+		},
+		// Case 004
+		{
+			lis: []String{
 				"33",
 				"44",
 				"88",
@@ -129,14 +125,15 @@ func Test_ObjectID_Uni_String(t *testing.T) {
 				"55",
 				"66",
 			},
+			dup: false,
 		},
 	}
 
 	for i, tc := range testCases {
 		t.Run(fmt.Sprintf("%03d", i), func(t *testing.T) {
-			uni := Uni(tc.lis)
-			if !slices.Equal(uni, tc.uni) {
-				t.Fatalf("expected %#v got %#v", tc.uni, uni)
+			dup := Dup(tc.lis)
+			if dup != tc.dup {
+				t.Fatalf("expected %#v got %#v", tc.dup, dup)
 			}
 		})
 	}

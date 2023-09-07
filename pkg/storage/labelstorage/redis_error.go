@@ -8,7 +8,7 @@ import (
 
 var labelObjectAlreadyExistsError = &tracer.Error{
 	Kind: "labelObjectAlreadyExistsError",
-	Desc: "The request expects the label object to not exist already. The label object was not found to exist already for the request. Therefore it failed.",
+	Desc: "The request expects a label object not to exist already. The label object was found to exist already for the request. Therefore it failed.",
 }
 
 func IsLabelObjectAlreadyExists(err error) bool {
