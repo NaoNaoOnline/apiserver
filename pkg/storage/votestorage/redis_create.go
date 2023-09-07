@@ -19,11 +19,18 @@ func (r *Redis) Create(inp []*Object) ([]*Object, error) {
 		// create broken mappings. We do also need the event ID for user specific
 		// mappings, and so we search for the description object and get the event
 		// ID from there, catching two birds with one stone.
+		{
+			err := inp[i].Verify()
+			if err != nil {
+				return nil, tracer.Mask(err)
+			}
+		}
+
 		var jsn string
 		{
 			jsn, err = r.red.Simple().Search().Value(desObj(inp[i].Desc))
 			if simple.IsNotFound(err) {
-				return nil, tracer.Maskf(descriptionNotFoundError, inp[i].Desc.String())
+				return nil, tracer.Maskf(descriptionObjectNotFoundError, inp[i].Desc.String())
 			} else if err != nil {
 				return nil, tracer.Mask(err)
 			}
@@ -41,13 +48,10 @@ func (r *Redis) Create(inp []*Object) ([]*Object, error) {
 			}
 		}
 
-		// We need to validate the given input object and, amongst others, whether
-		// the mapped reaction object does in fact exist, since we must not create
-		// broken mappings.
+		// Ensure the reaction used by the user does in fact exist.
 		{
-			err = r.validateCreate(obj.Evnt, inp[i])
-			if err != nil {
-				return nil, tracer.Mask(err)
+			if !r.rct.Exists(inp[i].Rctn) {
+				return nil, tracer.Maskf(reactionObjectNotFoundError, inp[i].Rctn.String())
 			}
 		}
 
@@ -55,6 +59,30 @@ func (r *Redis) Create(inp []*Object) ([]*Object, error) {
 			inp[i].Crtd = time.Now().UTC()
 			inp[i].Evnt = obj.Evnt
 			inp[i].Vote = objectid.New(inp[i].Crtd)
+		}
+
+		// Ensure the user vote limit globally is respected.
+		{
+			cou, err := r.red.Sorted().Metric().Count(votUse(inp[i].User))
+			if err != nil {
+				return nil, tracer.Mask(err)
+			}
+
+			if cou >= 100 {
+				return nil, tracer.Mask(voteUserLimitError)
+			}
+		}
+
+		// Ensure the user vote limit per event is respected.
+		{
+			cou, err := r.red.Sorted().Metric().Count(votEve(inp[i].User, inp[i].Evnt))
+			if err != nil {
+				return nil, tracer.Mask(err)
+			}
+
+			if cou >= 5 {
+				return nil, tracer.Mask(voteEventLimitError)
+			}
 		}
 
 		// Once we know the mapped objects exist, we create the normalized key-value
@@ -100,31 +128,4 @@ func (r *Redis) Create(inp []*Object) ([]*Object, error) {
 	}
 
 	return inp, nil
-}
-
-func (r *Redis) validateCreate(eve objectid.String, inp *Object) error {
-	if inp.Desc == "" {
-		return tracer.Mask(descriptionIDEmptyError)
-	}
-
-	if inp.Rctn == "" {
-		return tracer.Mask(reactionIDEmptyError)
-	}
-
-	{
-		cou, err := r.red.Sorted().Metric().Count(votEve(inp.User, eve))
-		if err != nil {
-			return tracer.Mask(err)
-		}
-
-		if cou >= 5 {
-			return tracer.Mask(voteLimitError)
-		}
-	}
-
-	if !r.rct.Exists(inp.Rctn) {
-		return tracer.Maskf(reactionNotFoundError, inp.Rctn.String())
-	}
-
-	return nil
 }

@@ -6,56 +6,47 @@ import (
 	"github.com/xh3b4sd/tracer"
 )
 
-var descriptionIDEmptyError = &tracer.Error{
-	Kind: "descriptionIDEmptyError",
-	Desc: "The request expects a valid description ID for the associated description object. No description ID was found for the request. Therefore it failed.",
+var descriptionObjectNotFoundError = &tracer.Error{
+	Kind: "descriptionObjectNotFoundError",
+	Desc: "The request expects a description object to exist. The description object was not found to exist for the request. Therefore it failed.",
 }
 
-func IsDescriptionIDEmpty(err error) bool {
-	return errors.Is(err, descriptionIDEmptyError)
+func IsDescriptionObjectNotFound(err error) bool {
+	return errors.Is(err, descriptionObjectNotFoundError)
 }
 
-var descriptionNotFoundError = &tracer.Error{
-	Kind: "descriptionNotFoundError",
-	Desc: "The request expects a valid description ID for the associated description object. No description object was found for the request. Therefore it failed.",
+var reactionObjectNotFoundError = &tracer.Error{
+	Kind: "reactionObjectNotFoundError",
+	Desc: "The request expects a reaction object to exist. The reaction object was not found to exist for the request. Therefore it failed.",
 }
 
-func IsDescriptionNotFound(err error) bool {
-	return errors.Is(err, descriptionNotFoundError)
+func IsReactionObjectNotFound(err error) bool {
+	return errors.Is(err, reactionObjectNotFoundError)
 }
 
-var reactionIDEmptyError = &tracer.Error{
-	Kind: "reactionIDEmptyError",
-	Desc: "The request expects a valid reaction ID for the associated reaction object. No reaction ID was found for the request. Therefore it failed.",
-}
-
-func IsReactionIDEmpty(err error) bool {
-	return errors.Is(err, reactionIDEmptyError)
-}
-
-var reactionNotFoundError = &tracer.Error{
-	Kind: "reactionNotFoundError",
-	Desc: "The request expects a valid reaction ID for the associated reaction object. No reaction object was found for the request. Therefore it failed.",
-}
-
-func IsReactionNotFound(err error) bool {
-	return errors.Is(err, reactionNotFoundError)
-}
-
-var voteLimitError = &tracer.Error{
-	Kind: "voteLimitError",
+var voteEventLimitError = &tracer.Error{
+	Kind: "voteEventLimitError",
 	Desc: "The request expects an upper limit of 5 vote objects per event per user. The upper limit of 5 vote objects per event per user was found for the request. Therefore it failed.",
 }
 
-func IsVoteLimit(err error) bool {
-	return errors.Is(err, voteLimitError)
+func IsVoteEventLimit(err error) bool {
+	return errors.Is(err, voteEventLimitError)
 }
 
-var voteNotFoundError = &tracer.Error{
-	Kind: "voteNotFoundError",
-	Desc: "The request expects a valid vote ID for the associated vote object. No vote object was found for the request. Therefore it failed.",
+var voteObjectNotFoundError = &tracer.Error{
+	Kind: "voteObjectNotFoundError",
+	Desc: "The request expects a vote object to exist. The vote object was not found to exist for the request. Therefore it failed.",
 }
 
-func IsVoteNotFound(err error) bool {
-	return errors.Is(err, voteNotFoundError)
+func IsVoteObjectNotFound(err error) bool {
+	return errors.Is(err, voteObjectNotFoundError)
+}
+
+var voteUserLimitError = &tracer.Error{
+	Kind: "voteUserLimitError",
+	Desc: "The request expects an upper limit of 100 vote objects per user globally. The upper limit of 100 vote objects per user globally was found for the request. Therefore it failed.",
+}
+
+func IsVoteUserLimit(err error) bool {
+	return errors.Is(err, voteUserLimitError)
 }

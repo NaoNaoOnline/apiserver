@@ -104,16 +104,32 @@ func (r *Redis) SearchLtst() ([]*Object, error) {
 		now = time.Now().UTC()
 	}
 
-	var max float64
-	var min float64
+	var min time.Time
+	var max time.Time
 	{
-		max = float64(now.Add(+oneWeek).Unix())
-		min = float64(now.Add(-oneWeek).Unix())
+		min = now.Add(-oneWeek)
+		max = now.Add(+oneWeek)
 	}
 
+	var out []*Object
+	{
+		out, err = r.searchTime(min, max)
+		if err != nil {
+			return nil, tracer.Mask(err)
+		}
+	}
+
+	return out, nil
+}
+
+func (r *Redis) searchTime(min time.Time, max time.Time) ([]*Object, error) {
+	var err error
+
+	// val will result in a list of all event IDs indexed to happen during the
+	// given time period. kind, if any.
 	var val []string
 	{
-		val, err = r.red.Sorted().Search().Value(keyfmt.EventTime, max, min)
+		val, err = r.red.Sorted().Search().Value(keyfmt.EventTime, float64(max.Unix()), float64(min.Unix()))
 		if err != nil {
 			return nil, tracer.Mask(err)
 		}

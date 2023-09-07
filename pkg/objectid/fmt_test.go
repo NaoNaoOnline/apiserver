@@ -2,6 +2,7 @@ package objectid
 
 import (
 	"fmt"
+	"slices"
 	"testing"
 )
 
@@ -28,7 +29,7 @@ func Test_ObjectID_Fmt_string(t *testing.T) {
 	for i, tc := range testCases {
 		t.Run(fmt.Sprintf("%03d", i), func(t *testing.T) {
 			key := Fmt(tc.ids, tc.str)
-			if !equal(key, tc.key) {
+			if !slices.Equal(key, tc.key) {
 				t.Fatalf("expected %#v got %#v", tc.key, key)
 			}
 		})
@@ -58,22 +59,9 @@ func Test_ObjectID_Fmt_String(t *testing.T) {
 	for i, tc := range testCases {
 		t.Run(fmt.Sprintf("%03d", i), func(t *testing.T) {
 			key := Fmt(tc.ids, tc.str)
-			if !equal(key, tc.key) {
+			if !slices.Equal(key, tc.key) {
 				t.Fatalf("expected %#v got %#v", tc.key, key)
 			}
 		})
 	}
-}
-
-// equal is copied from the go1.21 source at https://pkg.go.dev/slices#Equal.
-func equal[S ~[]E, E comparable](s1, s2 S) bool {
-	if len(s1) != len(s2) {
-		return false
-	}
-	for i := range s1 {
-		if s1[i] != s2[i] {
-			return false
-		}
-	}
-	return true
 }

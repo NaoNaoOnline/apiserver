@@ -30,6 +30,12 @@ type Object struct {
 
 func (o *Object) Verify() error {
 	{
+		if objectid.Dup(append(o.Cate, o.Host...)) {
+			return tracer.Mask(eventLabelDuplicateError)
+		}
+	}
+
+	{
 		if len(o.Cate) == 0 {
 			return tracer.Maskf(eventLabelEmptyError, "cate")
 		}
@@ -76,10 +82,30 @@ func (o *Object) Verify() error {
 		if o.Time.IsZero() {
 			return tracer.Mask(eventTimeEmptyError)
 		}
+		if o.Time.Compare(time.Now().UTC().Add(time.Hour*24*30)) == +1 {
+			return tracer.Mask(eventTimeFutureError)
+		}
 		if o.Time.Compare(time.Now().UTC()) != +1 {
 			return tracer.Mask(eventTimePastError)
 		}
 	}
 
 	return nil
+}
+
+// tmvrlp returns whether o and x have a time overlap, based on their Time and
+// Dura properties.
+func (o *Object) tmvrlp(x *Object) bool {
+	// Check if the first time range is entirely before the second.
+	if o.Time.Add(o.Dura).Before(x.Time) || o.Time.Add(o.Dura).Equal(x.Time) {
+		return false
+	}
+
+	// Check if the second time range is entirely before the first.
+	if x.Time.Add(x.Dura).Before(o.Time) || x.Time.Add(x.Dura).Equal(o.Time) {
+		return false
+	}
+
+	// If the above conditions are not met, the time ranges overlap.
+	return true
 }
