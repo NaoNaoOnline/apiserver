@@ -8,7 +8,7 @@ import (
 
 var descriptionObjectNotFoundError = &tracer.Error{
 	Kind: "descriptionObjectNotFoundError",
-	Desc: "The request expects a description object to exist. The description object was not found to exist for the request. Therefore it failed.",
+	Desc: "The request expects a description object to exist. The description object was not found to exist for the request. Therefore the request failed.",
 }
 
 func IsDescriptionObjectNotFound(err error) bool {
@@ -17,7 +17,7 @@ func IsDescriptionObjectNotFound(err error) bool {
 
 var reactionObjectNotFoundError = &tracer.Error{
 	Kind: "reactionObjectNotFoundError",
-	Desc: "The request expects a reaction object to exist. The reaction object was not found to exist for the request. Therefore it failed.",
+	Desc: "The request expects a reaction object to exist. The reaction object was not found to exist for the request. Therefore the request failed.",
 }
 
 func IsReactionObjectNotFound(err error) bool {
@@ -26,7 +26,7 @@ func IsReactionObjectNotFound(err error) bool {
 
 var voteEventLimitError = &tracer.Error{
 	Kind: "voteEventLimitError",
-	Desc: "The request expects an upper limit of 5 vote objects per event per user. The upper limit of 5 vote objects per event per user was found for the request. Therefore it failed.",
+	Desc: "The request expects an upper limit of 5 vote objects per event per user. The upper limit of 5 vote objects per event per user was found for the request. Therefore the request failed.",
 }
 
 func IsVoteEventLimit(err error) bool {
@@ -35,7 +35,7 @@ func IsVoteEventLimit(err error) bool {
 
 var voteObjectNotFoundError = &tracer.Error{
 	Kind: "voteObjectNotFoundError",
-	Desc: "The request expects a vote object to exist. The vote object was not found to exist for the request. Therefore it failed.",
+	Desc: "The request expects a vote object to exist. The vote object was not found to exist for the request. Therefore the request failed.",
 }
 
 func IsVoteObjectNotFound(err error) bool {
@@ -44,7 +44,7 @@ func IsVoteObjectNotFound(err error) bool {
 
 var voteUserLimitError = &tracer.Error{
 	Kind: "voteUserLimitError",
-	Desc: "The request expects an upper limit of 100 vote objects per user globally. The upper limit of 100 vote objects per user globally was found for the request. Therefore it failed.",
+	Desc: "The request expects an upper limit of 100 vote objects per user globally. The upper limit of 100 vote objects per user globally was found for the request. Therefore the request failed.",
 }
 
 func IsVoteUserLimit(err error) bool {

@@ -6,12 +6,12 @@ import (
 )
 
 type Interface interface {
-	// Create persists a new description object mapped to the referenced event.
+	// Create persists new description objects mapped to the referenced events.
 	//
-	//     @inp[0] the description object providing description specific information
-	//     @out[0] the description object mapped to its associated event object
+	//     @inp[0] the description objects mapped to the referenced events
+	//     @out[0] the description objects mapped to their internal description ID
 	//
-	Create(*Object) (*Object, error)
+	Create([]*Object) ([]*Object, error)
 	// SearchDesc returns the description objects matching the given description
 	// IDs.
 	//

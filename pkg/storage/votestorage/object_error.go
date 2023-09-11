@@ -8,7 +8,7 @@ import (
 
 var descriptionIDEmptyError = &tracer.Error{
 	Kind: "descriptionIDEmptyError",
-	Desc: "The request expects the description ID not to be empty. The description ID was found to be empty for the request. Therefore it failed.",
+	Desc: "The request expects the description ID not to be empty. The description ID was found to be empty for the request. Therefore the request failed.",
 }
 
 func IsDescriptionIDEmpty(err error) bool {
@@ -17,7 +17,7 @@ func IsDescriptionIDEmpty(err error) bool {
 
 var reactionIDEmptyError = &tracer.Error{
 	Kind: "reactionIDEmptyError",
-	Desc: "The request expects the reaction ID not to be empty. The reaction ID was found to be empty for the request. Therefore it failed.",
+	Desc: "The request expects the reaction ID not to be empty. The reaction ID was found to be empty for the request. Therefore the request failed.",
 }
 
 func IsReactionIDEmpty(err error) bool {

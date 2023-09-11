@@ -18,16 +18,16 @@ func (h *Handler) Create(ctx context.Context, req *description.CreateI) (*descri
 		return nil, tracer.Mask(userIDEmptyError)
 	}
 
-	var inp *descriptionstorage.Object
-	{
-		inp = &descriptionstorage.Object{
-			Evnt: objectid.String(req.Object[0].Public.Evnt),
-			Text: req.Object[0].Public.Text,
+	var inp []*descriptionstorage.Object
+	for _, x := range req.Object {
+		inp = append(inp, &descriptionstorage.Object{
+			Evnt: objectid.String(x.Public.Evnt),
+			Text: x.Public.Text,
 			User: userid.FromContext(ctx),
-		}
+		})
 	}
 
-	var out *descriptionstorage.Object
+	var out []*descriptionstorage.Object
 	{
 		out, err = h.des.Create(inp)
 		if err != nil {
@@ -37,16 +37,16 @@ func (h *Handler) Create(ctx context.Context, req *description.CreateI) (*descri
 
 	var res *description.CreateO
 	{
-		res = &description.CreateO{
-			Object: []*description.CreateO_Object{
-				{
-					Intern: &description.CreateO_Object_Intern{
-						Crtd: strconv.Itoa(int(out.Crtd.Unix())),
-						Desc: out.Desc.String(),
-					},
-				},
+		res = &description.CreateO{}
+	}
+
+	for _, x := range out {
+		res.Object = append(res.Object, &description.CreateO_Object{
+			Intern: &description.CreateO_Object_Intern{
+				Crtd: strconv.Itoa(int(x.Crtd.Unix())),
+				Desc: x.Desc.String(),
 			},
-		}
+		})
 	}
 
 	return res, nil
