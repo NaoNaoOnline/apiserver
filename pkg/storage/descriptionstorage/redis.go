@@ -53,7 +53,12 @@ func eveObj(oid objectid.String) string {
 }
 
 func musPat(pat []*Patch) jsonpatch.Patch {
-	typ, err := jsonpatch.DecodePatch([]byte(musStr(pat)))
+	byt, err := json.Marshal(pat)
+	if err != nil {
+		tracer.Panic(tracer.Mask(err))
+	}
+
+	typ, err := jsonpatch.DecodePatch(byt)
 	if err != nil {
 		tracer.Panic(tracer.Mask(err))
 	}
@@ -61,8 +66,8 @@ func musPat(pat []*Patch) jsonpatch.Patch {
 	return typ
 }
 
-func musStr(any interface{}) string {
-	byt, err := json.Marshal(any)
+func musStr(obj *Object) string {
+	byt, err := json.Marshal(obj)
 	if err != nil {
 		tracer.Panic(tracer.Mask(err))
 	}
