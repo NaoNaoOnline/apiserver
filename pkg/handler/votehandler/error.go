@@ -8,7 +8,7 @@ import (
 
 var userIDEmptyError = &tracer.Error{
 	Kind: "userIDEmptyError",
-	Desc: "The request expects a valid OAuth access token mapping to an internal user ID. No user ID was found for the request. Therefore it failed.",
+	Desc: "The request expects a valid OAuth access token mapping to an internal user ID. No user ID was found for the request. Therefore the request failed.",
 }
 
 func IsUserIDEmpty(err error) bool {
@@ -17,7 +17,7 @@ func IsUserIDEmpty(err error) bool {
 
 var userNotOwnerError = &tracer.Error{
 	Kind: "userNotOwnerError",
-	Desc: "The request expects the calling user to be the owner of the requested resource. The calling user was not found to be the owner of the requested resource. Therefore it failed.",
+	Desc: "The request expects the calling user to be the owner of the requested resource. The calling user was not found to be the owner of the requested resource. Therefore the request failed.",
 }
 
 func IsUserNotOwner(err error) bool {

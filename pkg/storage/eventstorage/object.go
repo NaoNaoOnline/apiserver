@@ -29,6 +29,10 @@ type Object struct {
 	User objectid.String `json:"user"`
 }
 
+func (o *Object) Hppned() bool {
+	return o.Time.Add(o.Dura).Before(time.Now().UTC())
+}
+
 // Ovrlap returns whether o and x have a time overlap, based on their Time and
 // Dura properties.
 func (o *Object) Ovrlap(lis []*Object) bool {

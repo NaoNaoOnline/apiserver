@@ -8,7 +8,7 @@ import (
 
 var eventDurationEmptyError = &tracer.Error{
 	Kind: "eventDurationEmptyError",
-	Desc: "The request expects the event duration not to be empty. The event duration was found to be empty for the request. Therefore it failed.",
+	Desc: "The request expects the event duration not to be empty. The event duration was found to be empty for the request. Therefore the request failed.",
 }
 
 func IsEventDurationEmpty(err error) bool {
@@ -17,7 +17,7 @@ func IsEventDurationEmpty(err error) bool {
 
 var eventDurationLimitError = &tracer.Error{
 	Kind: "eventDurationLimitError",
-	Desc: "The request expects the event duration not to be over 4 hours. The event duration was found to be over 4 hours for the request. Therefore it failed.",
+	Desc: "The request expects the event duration not to be over 4 hours. The event duration was found to be over 4 hours for the request. Therefore the request failed.",
 }
 
 func IsEventDurationLimit(err error) bool {
@@ -26,7 +26,7 @@ func IsEventDurationLimit(err error) bool {
 
 var eventDurationNegativeError = &tracer.Error{
 	Kind: "eventDurationNegativeError",
-	Desc: "The request expects the event duration not to be negative. The event duration was found to be negative for the request. Therefore it failed.",
+	Desc: "The request expects the event duration not to be negative. The event duration was found to be negative for the request. Therefore the request failed.",
 }
 
 func IsEventDurationNegative(err error) bool {
@@ -35,7 +35,7 @@ func IsEventDurationNegative(err error) bool {
 
 var eventLabelDuplicateError = &tracer.Error{
 	Kind: "eventLabelDuplicateError",
-	Desc: "The request expects the event labels not to be duplicated. The event labels were found to be duplicated for the request. Therefore it failed.",
+	Desc: "The request expects the event labels not to be duplicated. The event labels were found to be duplicated for the request. Therefore the request failed.",
 }
 
 func IsEventLabelDuplicate(err error) bool {
@@ -44,7 +44,7 @@ func IsEventLabelDuplicate(err error) bool {
 
 var eventLabelEmptyError = &tracer.Error{
 	Kind: "eventLabelEmptyError",
-	Desc: "The request expects the event labels not to be empty. The event labels were found to be empty for the request. Therefore it failed.",
+	Desc: "The request expects the event labels not to be empty. The event labels were found to be empty for the request. Therefore the request failed.",
 }
 
 func IsEventLabelEmpty(err error) bool {
@@ -53,7 +53,7 @@ func IsEventLabelEmpty(err error) bool {
 
 var eventLabelLimitError = &tracer.Error{
 	Kind: "eventLabelLimitError",
-	Desc: "The request expects an upper limit of 5 label IDs per event. The upper limit of 5 label IDs per event was found for the request. Therefore it failed.",
+	Desc: "The request expects an upper limit of 5 label IDs per event. The upper limit of 5 label IDs per event was found for the request. Therefore the request failed.",
 }
 
 func IsEventLabelLimit(err error) bool {
@@ -62,7 +62,7 @@ func IsEventLabelLimit(err error) bool {
 
 var eventLinkEmptyError = &tracer.Error{
 	Kind: "eventLinkEmptyError",
-	Desc: "The request expects the event link not to be empty. The event link was found to be empty for the request. Therefore it failed.",
+	Desc: "The request expects the event link not to be empty. The event link was found to be empty for the request. Therefore the request failed.",
 }
 
 func IsEventLinkEmpty(err error) bool {
@@ -71,7 +71,7 @@ func IsEventLinkEmpty(err error) bool {
 
 var eventLinkFormatError = &tracer.Error{
 	Kind: "eventLinkFormatError",
-	Desc: "The request expects the event link to be a valid https URL. The event link was not found to be a valid https URL for the request. Therefore it failed.",
+	Desc: "The request expects the event link to be a valid https URL. The event link was not found to be a valid https URL for the request. Therefore the request failed.",
 }
 
 func IsEventLinkFormat(err error) bool {
@@ -80,7 +80,7 @@ func IsEventLinkFormat(err error) bool {
 
 var eventTimeEmptyError = &tracer.Error{
 	Kind: "eventTimeEmptyError",
-	Desc: "The request expects the event time not to be empty. The event time was found to be empty for the request. Therefore it failed.",
+	Desc: "The request expects the event time not to be empty. The event time was found to be empty for the request. Therefore the request failed.",
 }
 
 func IsEventTimeEmpty(err error) bool {
@@ -89,7 +89,7 @@ func IsEventTimeEmpty(err error) bool {
 
 var eventTimeFutureError = &tracer.Error{
 	Kind: "eventTimeFutureError",
-	Desc: "The request expects the event time to be within the next 30 days. The event time was not found to be within the next 30 days for the request. Therefore it failed.",
+	Desc: "The request expects the event time to be within the next 30 days. The event time was not found to be within the next 30 days for the request. Therefore the request failed.",
 }
 
 func IsEventTimeFuture(err error) bool {
@@ -98,7 +98,7 @@ func IsEventTimeFuture(err error) bool {
 
 var eventTimePastError = &tracer.Error{
 	Kind: "eventTimePastError",
-	Desc: "The request expects the event time not to be in the past. The event time was found to be in the past for the request. Therefore it failed.",
+	Desc: "The request expects the event time not to be in the past. The event time was found to be in the past for the request. Therefore the request failed.",
 }
 
 func IsEventTimePast(err error) bool {
