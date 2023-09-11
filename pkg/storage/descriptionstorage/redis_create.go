@@ -63,7 +63,7 @@ func (r *Redis) Create(inp []*Object) ([]*Object, error) {
 		// key-value pair for the description object, so that we can search for
 		// description objects using their IDs.
 		{
-			err = r.red.Simple().Create().Element(desObj(inp[i].Desc), musStr(inp))
+			err = r.red.Simple().Create().Element(desObj(inp[i].Desc), musStr(inp[i]))
 			if err != nil {
 				return nil, tracer.Mask(err)
 			}
