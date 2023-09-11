@@ -31,7 +31,7 @@ func (r *Redis) Create(inp []*Object) ([]*Object, error) {
 		{
 			jsn, err = r.red.Simple().Search().Value(eveObj(inp[i].Evnt))
 			if simple.IsNotFound(err) {
-				return nil, tracer.Maskf(eventObjectNotFoundError, inp[i].Desc.String())
+				return nil, tracer.Maskf(eventObjectNotFoundError, inp[i].Evnt.String())
 			} else if err != nil {
 				return nil, tracer.Mask(err)
 			}
