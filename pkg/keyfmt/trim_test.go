@@ -5,7 +5,7 @@ import (
 	"testing"
 )
 
-func Test_KeyFmt_Index(t *testing.T) {
+func Test_KeyFmt_Indx(t *testing.T) {
 	testCases := []struct {
 		str string
 		trm string
@@ -64,7 +64,7 @@ func Test_KeyFmt_Index(t *testing.T) {
 
 	for i, tc := range testCases {
 		t.Run(fmt.Sprintf("%03d", i), func(t *testing.T) {
-			trm := Index(tc.str)
+			trm := Indx(tc.str)
 			if trm != tc.trm {
 				t.Fatalf("expected %#v got %#v", tc.trm, trm)
 			}
@@ -72,7 +72,7 @@ func Test_KeyFmt_Index(t *testing.T) {
 	}
 }
 
-func Test_KeyFmt_Label(t *testing.T) {
+func Test_KeyFmt_Name(t *testing.T) {
 	testCases := []struct {
 		str string
 		trm string
@@ -131,7 +131,7 @@ func Test_KeyFmt_Label(t *testing.T) {
 
 	for i, tc := range testCases {
 		t.Run(fmt.Sprintf("%03d", i), func(t *testing.T) {
-			trm := Label(tc.str)
+			trm := Name(tc.str)
 			if trm != tc.trm {
 				t.Fatalf("expected %#v got %#v", tc.trm, trm)
 			}

@@ -2,6 +2,7 @@ package labelhandler
 
 import (
 	"context"
+	"fmt"
 	"strconv"
 
 	"github.com/NaoNaoOnline/apigocode/pkg/label"
@@ -13,8 +14,22 @@ import (
 func (h *Handler) Create(ctx context.Context, req *label.CreateI) (*label.CreateO, error) {
 	var err error
 
+	//
+	// Validate the RPC integrity.
+	//
+
 	if userid.FromContext(ctx) == "" {
 		return nil, tracer.Mask(userIDEmptyError)
+	}
+
+	// It is super important to validate the label kind for labels that can be
+	// created via RPC, since we have natively supported and individually created
+	// label kinds. Label kind bltn must not be created via RPC, since the system
+	// itself is the only authority to manage those labels internally.
+	for _, x := range req.Object {
+		if x.Public.Kind != "cate" && x.Public.Kind != "host" {
+			return nil, tracer.Mask(fmt.Errorf("request object must either contain cate or host"))
+		}
 	}
 
 	var inp []*labelstorage.Object

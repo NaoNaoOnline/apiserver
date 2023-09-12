@@ -15,8 +15,12 @@ type Object struct {
 	Desc string `json:"desc"`
 	// Disc is the label's Discord link.
 	Disc string `json:"disc"`
-	// Kind is the label type, e.g. host for host labels and cate for category
-	// labels.
+	// Kind is the label type.
+	//
+	//     bltn for system labels
+	//     cate for category labels
+	//     host for host labels
+	//
 	Kind string `json:"kind"`
 	// Labl is the ID of the label being created.
 	Labl objectid.String `json:"labl"`
@@ -33,7 +37,7 @@ var (
 )
 
 func (o *Object) Verify() error {
-	if o.Kind != "cate" && o.Kind != "host" {
+	if o.Kind != "bltn" && o.Kind != "cate" && o.Kind != "host" {
 		return tracer.Maskf(labelKindInvalidError, o.Kind)
 	}
 

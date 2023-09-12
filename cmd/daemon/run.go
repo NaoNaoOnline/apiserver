@@ -83,7 +83,27 @@ func (r *run) runE(cmd *cobra.Command, args []string) error {
 		lab = labelstorage.NewRedis(labelstorage.RedisConfig{Log: log, Red: red})
 		rct = reactionstorage.NewRedis(reactionstorage.RedisConfig{Log: log, Red: red})
 		use = userstorage.NewRedis(userstorage.RedisConfig{Log: log, Red: red})
-		vot = votestorage.NewRedis(votestorage.RedisConfig{Log: log, Rct: rct, Red: red})
+		vot = votestorage.NewRedis(votestorage.RedisConfig{Log: log, Red: red})
+	}
+
+	// --------------------------------------------------------------------- //
+
+	{
+		_, err := lab.Create(lab.SearchBltn())
+		if labelstorage.IsLabelObjectAlreadyExists(err) {
+			// fall through
+		} else if err != nil {
+			return tracer.Mask(err)
+		}
+	}
+
+	{
+		_, err := rct.Create(rct.SearchBltn())
+		if reactionstorage.IsReactionObjectAlreadyExists(err) {
+			// fall through
+		} else if err != nil {
+			return tracer.Mask(err)
+		}
 	}
 
 	// --------------------------------------------------------------------- //

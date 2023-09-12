@@ -3,6 +3,7 @@ package eventstorage
 import (
 	"net/url"
 	"slices"
+	"strings"
 	"time"
 
 	"github.com/NaoNaoOnline/apiserver/pkg/objectid"
@@ -58,6 +59,29 @@ func (o *Object) Ovrlap(lis []*Object) bool {
 	return false
 }
 
+func (o *Object) Pltfrm() string {
+	var err error
+
+	var par *url.URL
+	{
+		par, err = url.Parse(o.Link)
+		if err != nil {
+			tracer.Panic(tracer.Mask(err))
+		}
+	}
+
+	var spl []string
+	{
+		spl = strings.Split(par.Hostname(), ".")
+	}
+
+	if len(spl) == 1 {
+		return spl[0]
+	}
+
+	return spl[len(spl)-2]
+}
+
 func (o *Object) Verify() error {
 	{
 		if objectid.Dup(append(o.Cate, o.Host...)) {
@@ -99,11 +123,11 @@ func (o *Object) Verify() error {
 		if o.Link == "" {
 			return tracer.Mask(eventLinkEmptyError)
 		}
-		poi, err := url.Parse(o.Link)
+		par, err := url.Parse(o.Link)
 		if err != nil {
 			return tracer.Mask(eventLinkFormatError)
 		}
-		if poi.Scheme != "https" {
+		if par.Scheme != "https" {
 			return tracer.Mask(eventLinkFormatError)
 		}
 	}

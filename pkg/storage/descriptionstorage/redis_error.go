@@ -8,7 +8,7 @@ import (
 
 var descriptionObjectNotFoundError = &tracer.Error{
 	Kind: "descriptionObjectNotFoundError",
-	Desc: "The request expects a description object to exist. The description object was not found to exist for the request. Therefore the request failed.",
+	Desc: "The request expects a description object to exist. The description object was not found to exist. Therefore the request failed.",
 }
 
 func IsDescriptionObjectNotFound(err error) bool {
@@ -26,7 +26,7 @@ func IsEventAlreadyHappened(err error) bool {
 
 var eventObjectNotFoundError = &tracer.Error{
 	Kind: "eventObjectNotFoundError",
-	Desc: "The request expects an event object associated to the description object. The associated event object was not found for the request. Therefore the request failed.",
+	Desc: "The request expects an event object associated to the description object. The associated event object was not found. Therefore the request failed.",
 }
 
 func IsEventObjectNotFound(err error) bool {

@@ -9,12 +9,42 @@ import (
 	"github.com/xh3b4sd/tracer"
 )
 
-func (r *Redis) Search(inp []string) ([]*Object, error) {
+func (r *Redis) SearchBltn() []*Object {
+	return []*Object{
+		{
+			Kind: "bltn",
+			Name: "Discord",
+			User: objectid.System(),
+		},
+		{
+			Kind: "bltn",
+			Name: "Google",
+			User: objectid.System(),
+		},
+		{
+			Kind: "bltn",
+			Name: "Twitch",
+			User: objectid.System(),
+		},
+		{
+			Kind: "bltn",
+			Name: "Twitter",
+			User: objectid.System(),
+		},
+		{
+			Kind: "bltn",
+			Name: "YouTube",
+			User: objectid.System(),
+		},
+	}
+}
+
+func (r *Redis) SearchKind(inp []string) ([]*Object, error) {
 	var err error
 
 	var out []*Object
 	for _, x := range inp {
-		if x != "cate" && x != "host" {
+		if x != "bltn" && x != "cate" && x != "host" {
 			return nil, tracer.Mask(labelKindInvalidError)
 		}
 
