@@ -1,12 +1,15 @@
 package reactionstorage
 
 import (
-	"time"
+	"encoding/json"
 
+	"github.com/NaoNaoOnline/apiserver/pkg/keyfmt"
 	"github.com/NaoNaoOnline/apiserver/pkg/objectid"
+	"github.com/xh3b4sd/redigo/pkg/simple"
+	"github.com/xh3b4sd/tracer"
 )
 
-func (r *Redis) Search() ([]*Object, error) {
+func (r *Redis) SearchBltn() []*Object {
 	return []*Object{
 
 		//
@@ -14,40 +17,40 @@ func (r *Redis) Search() ([]*Object, error) {
 		//
 
 		{
-			Crtd: time.Unix(1692392942, 0).UTC(),
 			Html: "️😍", // https://emojipedia.org/smiling-face-with-heart-eyes
-			Name: "smiling-face-with-heart-eyes",
-			Rctn: objectid.String("1692392942673667"),
+			Kind: "bltn",
+			Name: "Smiling Face With Heart Eyes",
+			User: objectid.System(),
 		},
 		{
-			Crtd: time.Unix(1692393021, 0).UTC(),
 			Html: "😂", // https://emojipedia.org/face-with-tears-of-joy
-			Name: "face-with-tears-of-joy",
-			Rctn: objectid.String("1692393021407686"),
+			Kind: "bltn",
+			Name: "Face With Tears Of Joy",
+			User: objectid.System(),
 		},
 		{
-			Crtd: time.Unix(1692394796, 0).UTC(),
 			Html: "😲", // https://emojipedia.org/astonished-face
-			Name: "astonished-face",
-			Rctn: objectid.String("1692394796326052"),
+			Kind: "bltn",
+			Name: "Astonished Face",
+			User: objectid.System(),
 		},
 		{
-			Crtd: time.Unix(1692393087, 0).UTC(),
 			Html: "🥳", // https://emojipedia.org/partying-face
-			Name: "partying-face",
-			Rctn: objectid.String("1692393087605581"),
+			Kind: "bltn",
+			Name: "Partying Face",
+			User: objectid.System(),
 		},
 		{
-			Crtd: time.Unix(1692393078, 0).UTC(),
 			Html: "😎", // https://emojipedia.org/smiling-face-with-sunglasses
-			Name: "smiling-face-with-sunglasses",
-			Rctn: objectid.String("1692393078554976"),
+			Kind: "bltn",
+			Name: "Smiling Face With Sunglasses",
+			User: objectid.System(),
 		},
 		{
-			Crtd: time.Unix(1692393028, 0).UTC(),
 			Html: "🫡", // https://emojipedia.org/saluting-face
-			Name: "saluting-face",
-			Rctn: objectid.String("1692393028348327"),
+			Kind: "bltn",
+			Name: "Saluting Face",
+			User: objectid.System(),
 		},
 
 		//
@@ -55,40 +58,40 @@ func (r *Redis) Search() ([]*Object, error) {
 		//
 
 		{
-			Crtd: time.Unix(1692393035, 0).UTC(),
 			Html: "👍", // https://emojipedia.org/thumbs-up
-			Name: "thumbs-up",
-			Rctn: objectid.String("1692393035303485"),
+			Kind: "bltn",
+			Name: "Thumbs Up",
+			User: objectid.System(),
 		},
 		{
-			Crtd: time.Unix(1692393047, 0).UTC(),
 			Html: "💪", // https://emojipedia.org/flexed-biceps
-			Name: "flexed-biceps",
-			Rctn: objectid.String("1692393047919758"),
+			Kind: "bltn",
+			Name: "Flexed Biceps",
+			User: objectid.System(),
 		},
 		{
-			Crtd: time.Unix(1692393053, 0).UTC(),
 			Html: "👏", // https://emojipedia.org/clapping-hands
-			Name: "clapping-hands",
-			Rctn: objectid.String("1692393053200333"),
+			Kind: "bltn",
+			Name: "Clapping Hands",
+			User: objectid.System(),
 		},
 		{
-			Crtd: time.Unix(1692393068, 0).UTC(),
 			Html: "✊", // https://emojipedia.org/raised-fist
-			Name: "raised-fist",
-			Rctn: objectid.String("1692393068586868"),
+			Kind: "bltn",
+			Name: "Raised Fist",
+			User: objectid.System(),
 		},
 		{
-			Crtd: time.Unix(1692393073, 0).UTC(),
 			Html: "🤝", // https://emojipedia.org/handshake
-			Name: "handshake",
-			Rctn: objectid.String("1692393073988751"),
+			Kind: "bltn",
+			Name: "Handshake",
+			User: objectid.System(),
 		},
 		{
-			Crtd: time.Unix(1692394815, 0).UTC(),
 			Html: "🙏", // https://emojipedia.org/folded-hands
-			Name: "folded-hands",
-			Rctn: objectid.String("1692394815339622"),
+			Kind: "bltn",
+			Name: "Folded Hands",
+			User: objectid.System(),
 		},
 
 		//
@@ -96,40 +99,40 @@ func (r *Redis) Search() ([]*Object, error) {
 		//
 
 		{
-			Crtd: time.Unix(1692392933, 0).UTC(),
 			Html: "🚀", // https://emojipedia.org/rocket
-			Name: "rocket",
-			Rctn: objectid.String("1692392933890022"),
+			Kind: "bltn",
+			Name: "Rocket",
+			User: objectid.System(),
 		},
 		{
-			Crtd: time.Unix(1692392959, 0).UTC(),
 			Html: "💡", // https://emojipedia.org/light-bulb
-			Name: "light-bulb",
-			Rctn: objectid.String("1692392959842025"),
+			Kind: "bltn",
+			Name: "Light Bulb",
+			User: objectid.System(),
 		},
 		{
-			Crtd: time.Unix(1692393041, 0).UTC(),
 			Html: "👑", // https://emojipedia.org/crown
-			Name: "crown",
-			Rctn: objectid.String("1692393041522806"),
+			Kind: "bltn",
+			Name: "Crown",
+			User: objectid.System(),
 		},
 		{
-			Crtd: time.Unix(1692392978, 0).UTC(),
 			Html: "⭐", // https://emojipedia.org/star
-			Name: "star",
-			Rctn: objectid.String("1692392978215007"),
+			Kind: "bltn",
+			Name: "Star",
+			User: objectid.System(),
 		},
 		{
-			Crtd: time.Unix(1692392985, 0).UTC(),
 			Html: "🦄", // https://emojipedia.org/unicorn
-			Name: "unicorn",
-			Rctn: objectid.String("1692392985448935"),
+			Kind: "bltn",
+			Name: "Unicorn",
+			User: objectid.System(),
 		},
 		{
-			Crtd: time.Unix(1692394828, 0).UTC(),
 			Html: "🤖", // https://emojipedia.org/robot
-			Name: "robot",
-			Rctn: objectid.String("1692394828509033"),
+			Kind: "bltn",
+			Name: "Robot",
+			User: objectid.System(),
 		},
 
 		//
@@ -137,40 +140,95 @@ func (r *Redis) Search() ([]*Object, error) {
 		//
 
 		{
-			Crtd: time.Unix(1692393094, 0).UTC(),
 			Html: "💦", // https://emojipedia.org/sweat-droplets
-			Name: "sweat-droplets",
-			Rctn: objectid.String("1692393094788405"),
+			Kind: "bltn",
+			Name: "Sweat Droplets",
+			User: objectid.System(),
 		},
 		{
-			Crtd: time.Unix(1692392918, 0).UTC(),
 			Html: "🔥", // https://emojipedia.org/fire
-			Name: "fire",
-			Rctn: objectid.String("1692392918537493"),
+			Kind: "bltn",
+			Name: "Fire",
+			User: objectid.System(),
 		},
 		{
-			Crtd: time.Unix(1692393000, 0).UTC(),
 			Html: "👀", // https://emojipedia.org/eyes
-			Name: "eyes",
-			Rctn: objectid.String("1692393000623173"),
+			Kind: "bltn",
+			Name: "Eyes",
+			User: objectid.System(),
 		},
 		{
-			Crtd: time.Unix(1692394843, 0).UTC(),
 			Html: "✅", // https://emojipedia.org/check-mark-button
-			Name: "check-mark-button",
-			Rctn: objectid.String("1692394843604468"),
+			Kind: "bltn",
+			Name: "Check Mark Button",
+			User: objectid.System(),
 		},
 		{
-			Crtd: time.Unix(1692392966, 0).UTC(),
 			Html: "❗", // https://emojipedia.org/exclamation-mark
-			Name: "exclamation-mark",
-			Rctn: objectid.String("1692392966745970"),
+			Kind: "bltn",
+			Name: "Exclamation Mark",
+			User: objectid.System(),
 		},
 		{
-			Crtd: time.Unix(1692393010, 0).UTC(),
 			Html: "💯", // https://emojipedia.org/hundred-points
-			Name: "hundred-points",
-			Rctn: objectid.String("1692393010008146"),
+			Kind: "bltn",
+			Name: "Hundred Points",
+			User: objectid.System(),
 		},
-	}, nil
+	}
+}
+
+func (r *Redis) SearchKind(inp []string) ([]*Object, error) {
+	var err error
+
+	var out []*Object
+	for _, x := range inp {
+		if x != "bltn" && x != "user" {
+			return nil, tracer.Mask(reactionKindInvalidError)
+		}
+
+		// val will result in a list of all reaction IDs grouped under the given
+		// reaction kind, if any.
+		var val []string
+		{
+			val, err = r.red.Sorted().Search().Order(rctKin(x), 0, -1)
+			if err != nil {
+				return nil, tracer.Mask(err)
+			}
+		}
+
+		// There might not be any values, and so we do not proceed, but instead
+		// continue with the next reaction kind, if any.
+		if len(val) == 0 {
+			continue
+		}
+
+		var jsn []string
+		{
+			jsn, err = r.red.Simple().Search().Multi(objectid.Fmt(val, keyfmt.ReactionObject)...)
+			if simple.IsNotFound(err) {
+				return nil, tracer.Maskf(reactionObjectNotFoundError, "%v", val)
+			} else if err != nil {
+				return nil, tracer.Mask(err)
+			}
+		}
+
+		for _, x := range jsn {
+			var obj *Object
+			{
+				obj = &Object{}
+			}
+
+			if x != "" {
+				err = json.Unmarshal([]byte(x), obj)
+				if err != nil {
+					return nil, tracer.Mask(err)
+				}
+			}
+
+			out = append(out, obj)
+		}
+	}
+
+	return out, nil
 }

@@ -50,7 +50,12 @@ func (r *Redis) Create(inp []*Object) ([]*Object, error) {
 
 		// Ensure the reaction used by the user does in fact exist.
 		{
-			if !r.rct.Exists(inp[i].Rctn) {
+			cou, err := r.red.Simple().Exists().Multi(rctObj(inp[i].Rctn))
+			if err != nil {
+				return nil, tracer.Mask(err)
+			}
+
+			if cou != 1 {
 				return nil, tracer.Maskf(reactionObjectNotFoundError, inp[i].Rctn.String())
 			}
 		}

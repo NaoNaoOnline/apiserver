@@ -1,8 +1,11 @@
 package reactionstorage
 
 import (
+	"encoding/json"
 	"fmt"
 
+	"github.com/NaoNaoOnline/apiserver/pkg/keyfmt"
+	"github.com/NaoNaoOnline/apiserver/pkg/objectid"
 	"github.com/xh3b4sd/logger"
 	"github.com/xh3b4sd/redigo"
 	"github.com/xh3b4sd/tracer"
@@ -30,4 +33,33 @@ func NewRedis(c RedisConfig) *Redis {
 		log: c.Log,
 		red: c.Red,
 	}
+}
+
+func rctKin(kin string) string {
+	if kin == "bltn" {
+		return keyfmt.ReactionSystem
+	}
+
+	if kin == "user" {
+		return keyfmt.ReactionCustom
+	}
+
+	panic(fmt.Sprintf("kin must be bltn or user, got %s", kin))
+}
+
+func rctObj(oid objectid.String) string {
+	return fmt.Sprintf(keyfmt.ReactionObject, oid)
+}
+
+func rctUse(oid objectid.String) string {
+	return fmt.Sprintf(keyfmt.ReactionUser, oid)
+}
+
+func musStr(obj *Object) string {
+	byt, err := json.Marshal(obj)
+	if err != nil {
+		tracer.Panic(tracer.Mask(err))
+	}
+
+	return string(byt)
 }

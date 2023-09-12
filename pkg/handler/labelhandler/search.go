@@ -5,6 +5,7 @@ import (
 	"strconv"
 
 	"github.com/NaoNaoOnline/apigocode/pkg/label"
+	"github.com/NaoNaoOnline/apiserver/pkg/objectid"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/labelstorage"
 	"github.com/xh3b4sd/tracer"
 )
@@ -12,19 +13,14 @@ import (
 func (h *Handler) Search(ctx context.Context, req *label.SearchI) (*label.SearchO, error) {
 	var err error
 
-	uni := map[string]struct{}{}
-	for _, x := range req.Object {
-		uni[x.Public.Kind] = struct{}{}
-	}
-
 	var kin []string
-	for k := range uni {
-		kin = append(kin, k)
+	for _, x := range req.Object {
+		kin = append(kin, x.Public.Kind)
 	}
 
 	var out []*labelstorage.Object
 	{
-		out, err = h.lab.Search(kin)
+		out, err = h.lab.SearchKind(objectid.Uni(kin))
 		if err != nil {
 			return nil, tracer.Mask(err)
 		}

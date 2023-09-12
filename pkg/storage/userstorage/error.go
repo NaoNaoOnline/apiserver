@@ -16,7 +16,7 @@ func IsInvalidInput(err error) bool {
 
 var userNotFoundError = &tracer.Error{
 	Kind: "userNotFoundError",
-	Desc: "The request expected an user object to be found for the user ID. No user object was found for the request. Therefore the request failed.",
+	Desc: "The request expected an user object to be found for the user ID. No user object was found. Therefore the request failed.",
 }
 
 func IsNotFound(err error) bool {
@@ -25,7 +25,7 @@ func IsNotFound(err error) bool {
 
 var subjectClaimEmptyError = &tracer.Error{
 	Kind: "subjectClaimEmptyError",
-	Desc: "The request expects a valid OAuth access token containing an external subject claim. No subject claim was found for the request. Therefore the request failed.",
+	Desc: "The request expects a valid OAuth access token containing an external subject claim. No subject claim was found. Therefore the request failed.",
 }
 
 func IsSubjectClaimEmpty(err error) bool {
@@ -34,7 +34,7 @@ func IsSubjectClaimEmpty(err error) bool {
 
 var subjectClaimMappingError = &tracer.Error{
 	Kind: "subjectClaimMappingError",
-	Desc: "The request expects a mapping between external subject claim and internal user ID. No mapping was found for the request. Therefore the request failed.",
+	Desc: "The request expects a mapping between external subject claim and internal user ID. No mapping was found. Therefore the request failed.",
 }
 
 func IsSubjectClaimMapping(err error) bool {

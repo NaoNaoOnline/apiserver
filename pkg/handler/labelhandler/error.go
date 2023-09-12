@@ -8,7 +8,7 @@ import (
 
 var userIDEmptyError = &tracer.Error{
 	Kind: "userIDEmptyError",
-	Desc: "The request expects a valid OAuth access token mapping to an internal user ID. No user ID was found for the request. Therefore the request failed.",
+	Desc: "The request expects a valid OAuth access token mapping to an internal user ID. No user ID was found. Therefore the request failed.",
 }
 
 func IsUserIDEmpty(err error) bool {

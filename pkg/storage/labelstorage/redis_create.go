@@ -22,20 +22,20 @@ func (r *Redis) Create(inp []*Object) ([]*Object, error) {
 		}
 
 		{
-			exi, err := r.red.Sorted().Exists().Index(labKin(inp[i].Kind), keyfmt.Index(inp[i].Name))
+			exi, err := r.red.Sorted().Exists().Index(labKin(inp[i].Kind), keyfmt.Indx(inp[i].Name))
 			if err != nil {
 				return nil, tracer.Mask(err)
 			}
 
 			if exi {
-				return nil, tracer.Maskf(labelObjectAlreadyExistsError, keyfmt.Index(inp[i].Name))
+				return nil, tracer.Maskf(labelObjectAlreadyExistsError, keyfmt.Indx(inp[i].Name))
 			}
 		}
 
 		{
 			inp[i].Crtd = time.Now().UTC()
 			inp[i].Labl = objectid.New(inp[i].Crtd)
-			inp[i].Name = keyfmt.Label(inp[i].Name)
+			inp[i].Name = keyfmt.Name(inp[i].Name)
 		}
 
 		// Once we know the label is unique, we create the normalized key-value pair
@@ -47,16 +47,20 @@ func (r *Redis) Create(inp []*Object) ([]*Object, error) {
 			}
 		}
 
-		// Now we create the global and user specific mappings for global and user
-		// specific search queries. For the global queries we ensure the label names
-		// are unique by using the label name as additional index within the redis
-		// sorted sets.
+		// Now we create the label kind mappings for label kind search queries. With
+		// that we can search for labels of a given kind. Note that we ensure the
+		// label names are unique by using the label name as additional index within
+		// the redis sorted sets.
 		{
-			err = r.red.Sorted().Create().Score(labKin(inp[i].Kind), inp[i].Labl.String(), inp[i].Labl.Float(), keyfmt.Index(inp[i].Name))
+			err = r.red.Sorted().Create().Score(labKin(inp[i].Kind), inp[i].Labl.String(), inp[i].Labl.Float(), keyfmt.Indx(inp[i].Name))
 			if err != nil {
 				return nil, tracer.Mask(err)
 			}
+		}
 
+		// Create the user specific mappings for user specific search queries.
+		// With that we can show the user all reactions they created.
+		{
 			err = r.red.Sorted().Create().Score(labUse(inp[i].User), inp[i].Labl.String(), inp[i].Labl.Float())
 			if err != nil {
 				return nil, tracer.Mask(err)

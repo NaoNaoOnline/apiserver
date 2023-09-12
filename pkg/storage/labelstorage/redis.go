@@ -36,6 +36,10 @@ func NewRedis(c RedisConfig) *Redis {
 }
 
 func labKin(kin string) string {
+	if kin == "bltn" {
+		return keyfmt.LabelSystem
+	}
+
 	if kin == "cate" {
 		return keyfmt.LabelCategory
 	}
@@ -44,7 +48,7 @@ func labKin(kin string) string {
 		return keyfmt.LabelHost
 	}
 
-	panic(fmt.Sprintf("kin must be cate or host, got %s", kin))
+	panic(fmt.Sprintf("kin must be bltn, cate or host, got %s", kin))
 }
 
 func labObj(oid objectid.String) string {

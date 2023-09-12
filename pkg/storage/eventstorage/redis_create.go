@@ -5,6 +5,7 @@ import (
 
 	"github.com/NaoNaoOnline/apiserver/pkg/keyfmt"
 	"github.com/NaoNaoOnline/apiserver/pkg/objectid"
+	"github.com/xh3b4sd/redigo/pkg/sorted"
 	"github.com/xh3b4sd/tracer"
 )
 
@@ -22,7 +23,7 @@ func (r *Redis) Create(inp []*Object) ([]*Object, error) {
 			}
 		}
 
-		// Check if the labels the event we want to create do even exist.
+		// Check if the labels of the event we want to create do even exist.
 		{
 			var key []string
 			for _, x := range append(inp[i].Cate, inp[i].Host...) {
@@ -36,6 +37,19 @@ func (r *Redis) Create(inp []*Object) ([]*Object, error) {
 
 			if cou != int64(len(key)) {
 				return nil, tracer.Maskf(labelObjectNotFoundError, "%d labels do not exist", int64(len(key))-cou)
+			}
+		}
+
+		// Check whether we can assign the natively supported category label for the
+		// platform referenced in the event link.
+		{
+			key, err := r.red.Sorted().Search().Index(keyfmt.LabelSystem, keyfmt.Indx(inp[i].Pltfrm()))
+			if sorted.IsNotFound(err) {
+				// fall through
+			} else if err != nil {
+				return nil, tracer.Mask(err)
+			} else {
+				inp[i].Cate = append(inp[i].Cate, objectid.String(key))
 			}
 		}
 
