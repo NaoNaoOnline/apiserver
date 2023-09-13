@@ -39,6 +39,10 @@ func useCla(str string) string {
 	return fmt.Sprintf(keyfmt.UserClaim, str)
 }
 
+func useNam(str string) string {
+	return fmt.Sprintf(keyfmt.UserName, str)
+}
+
 func useObj(oid objectid.String) string {
 	return fmt.Sprintf(keyfmt.UserObject, oid)
 }

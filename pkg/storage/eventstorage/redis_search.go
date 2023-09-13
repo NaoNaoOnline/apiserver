@@ -126,7 +126,7 @@ func (r *Redis) searchTime(min time.Time, max time.Time) ([]*Object, error) {
 	var err error
 
 	// val will result in a list of all event IDs indexed to happen during the
-	// given time period. kind, if any.
+	// given time period, if any.
 	var val []string
 	{
 		val, err = r.red.Sorted().Search().Value(keyfmt.EventTime, float64(max.Unix()), float64(min.Unix()))
@@ -218,6 +218,57 @@ func (r *Redis) SearchRctn(use objectid.String) ([]*Object, error) {
 		}
 
 		out = append(out, obj)
+	}
+
+	return out, nil
+}
+
+func (r *Redis) SearchUser(use []objectid.String) ([]*Object, error) {
+	var err error
+
+	var out []*Object
+	for _, x := range use {
+		// val will result in a list of all event IDs created by the given user ID, if
+		// any.
+		var val []string
+		{
+			val, err = r.red.Sorted().Search().Order(eveUse(x), 0, -1)
+			if err != nil {
+				return nil, tracer.Mask(err)
+			}
+		}
+
+		// There might not be any values, and so we do not proceed, but instead
+		// continue with the next user ID, if any.
+		if len(val) == 0 {
+			continue
+		}
+
+		var jsn []string
+		{
+			jsn, err = r.red.Simple().Search().Multi(objectid.Fmt(val, keyfmt.EventObject)...)
+			if simple.IsNotFound(err) {
+				return nil, tracer.Maskf(eventObjectNotFoundError, "%v", val)
+			} else if err != nil {
+				return nil, tracer.Mask(err)
+			}
+		}
+
+		for _, x := range jsn {
+			var obj *Object
+			{
+				obj = &Object{}
+			}
+
+			if x != "" {
+				err = json.Unmarshal([]byte(x), obj)
+				if err != nil {
+					return nil, tracer.Mask(err)
+				}
+			}
+
+			out = append(out, obj)
+		}
 	}
 
 	return out, nil

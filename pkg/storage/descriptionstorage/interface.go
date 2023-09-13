@@ -12,6 +12,7 @@ type Interface interface {
 	//     @out[0] the description objects mapped to their internal description ID
 	//
 	Create([]*Object) ([]*Object, error)
+
 	// SearchDesc returns the description objects matching the given description
 	// IDs.
 	//
@@ -19,6 +20,7 @@ type Interface interface {
 	//     @out[0] the list of description objects matching the given description IDs
 	//
 	SearchDesc([]objectid.String) ([]*Object, error)
+
 	// SearchEvnt returns the description objects belonging to the given event
 	// IDs.
 	//
@@ -26,6 +28,7 @@ type Interface interface {
 	//     @out[0] the list of description objects belonging the given event IDs
 	//
 	SearchEvnt([]objectid.String) ([]*Object, error)
+
 	// Update modifies the existing description objects by applying the given
 	// RFC6902 JSON-Patches to the underlying JSON documents. The list items are
 	// used according to their respective indices, e.g. the second patch is
