@@ -23,15 +23,6 @@ func IsNotFound(err error) bool {
 	return errors.Is(err, userNotFoundError)
 }
 
-var subjectClaimEmptyError = &tracer.Error{
-	Kind: "subjectClaimEmptyError",
-	Desc: "The request expects a valid OAuth access token containing an external subject claim. No subject claim was found. Therefore the request failed.",
-}
-
-func IsSubjectClaimEmpty(err error) bool {
-	return errors.Is(err, subjectClaimEmptyError)
-}
-
 var subjectClaimMappingError = &tracer.Error{
 	Kind: "subjectClaimMappingError",
 	Desc: "The request expects a mapping between external subject claim and internal user ID. No mapping was found. Therefore the request failed.",

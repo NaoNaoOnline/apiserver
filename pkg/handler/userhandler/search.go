@@ -2,7 +2,6 @@ package userhandler
 
 import (
 	"context"
-	"fmt"
 	"strconv"
 
 	"github.com/NaoNaoOnline/apigocode/pkg/user"
@@ -15,7 +14,7 @@ import (
 func (h *Handler) Search(ctx context.Context, req *user.SearchI) (*user.SearchO, error) {
 	var out []*userstorage.Object
 
-	if len(req.Object) == 0 || (len(req.Object) == 1 && req.Object[0].Intern.User == "") {
+	if len(req.Object) == 0 {
 		var sub string
 		{
 			sub = subjectclaim.FromContext(ctx)
@@ -30,18 +29,51 @@ func (h *Handler) Search(ctx context.Context, req *user.SearchI) (*user.SearchO,
 			out = append(out, obj)
 		}
 	} else {
+		//
+		// Validate the RPC integrity.
+		//
+
 		for _, x := range req.Object {
-			if x.Intern.User == "" {
-				return nil, tracer.Mask(fmt.Errorf("multiple request objects must all contain user IDs"))
+			if x.Intern.User != "" && (x.Public.Name != "") {
+				return nil, tracer.Mask(searchUserConflictError)
+			}
+			if x.Public.Name != "" && (x.Intern.User != "") {
+				return nil, tracer.Mask(searchNameConflictError)
 			}
 		}
 
-		var use []objectid.String
+		//
+		// Search users by name.
+		//
+
+		var nam []string
 		for _, x := range req.Object {
-			use = append(use, objectid.String(x.Intern.User))
+			if x.Public.Name != "" {
+				nam = append(nam, x.Public.Name)
+			}
 		}
 
-		{
+		if len(nam) != 0 {
+			lis, err := h.use.SearchName(nam)
+			if err != nil {
+				return nil, tracer.Mask(err)
+			}
+
+			out = append(out, lis...)
+		}
+
+		//
+		// Search users by ID.
+		//
+
+		var use []objectid.String
+		for _, x := range req.Object {
+			if x.Intern.User != "" {
+				use = append(use, objectid.String(x.Intern.User))
+			}
+		}
+
+		if len(use) != 0 {
 			lis, err := h.use.SearchUser(use)
 			if err != nil {
 				return nil, tracer.Mask(err)

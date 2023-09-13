@@ -4,6 +4,7 @@ import (
 	"time"
 
 	"github.com/NaoNaoOnline/apiserver/pkg/objectid"
+	"github.com/xh3b4sd/tracer"
 )
 
 type Object struct {
@@ -18,4 +19,32 @@ type Object struct {
 	Subj []string `json:"subj"`
 	// User is the internal ID of the user being created.
 	User objectid.String `json:"user"`
+}
+
+func (o *Object) Verify() error {
+	{
+		if o.Imag == "" {
+			return tracer.Mask(userImageEmptyError)
+		}
+	}
+
+	{
+		if o.Name == "" {
+			return tracer.Mask(userNameEmptyError)
+		}
+		if len(o.Name) < 2 {
+			return tracer.Maskf(userNameLengthError, "%d", len(o.Name))
+		}
+		if len(o.Name) > 30 {
+			return tracer.Maskf(userNameLengthError, "%d", len(o.Name))
+		}
+	}
+
+	{
+		if len(o.Subj) != 1 || o.Subj[0] == "" {
+			return tracer.Mask(userSubjectEmptyError)
+		}
+	}
+
+	return nil
 }

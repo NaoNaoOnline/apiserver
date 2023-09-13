@@ -7,10 +7,12 @@ type Interface interface {
 	//     @out[0] the list of reaction objects persisted internally
 	//
 	Create([]*Object) ([]*Object, error)
+
 	// SearchBltn returns the static list of curated reaction icons natively
 	// supported by the system. This method should only be used to bootstrap the
 	// initial system state, never to serve RPC requests.
 	SearchBltn() []*Object
+
 	// SearchKind returns the reaction objects of the given kind, e.g. bltn or
 	// user.
 	//

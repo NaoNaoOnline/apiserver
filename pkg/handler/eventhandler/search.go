@@ -2,7 +2,6 @@ package eventhandler
 
 import (
 	"context"
-	"fmt"
 	"strconv"
 
 	"github.com/NaoNaoOnline/apigocode/pkg/event"
@@ -18,8 +17,11 @@ func (h *Handler) Search(ctx context.Context, req *event.SearchI) (*event.Search
 	//
 
 	for _, x := range req.Object {
-		if x.Intern.Evnt != "" && (x.Public.Cate != "" || x.Public.Host != "") {
-			return nil, tracer.Mask(fmt.Errorf("request object must not contain evnt if either cate or host is given"))
+		if x.Intern.Evnt != "" && (x.Intern.User != "" || x.Public.Cate != "" || x.Public.Host != "") {
+			return nil, tracer.Mask(searchEvntConflictError)
+		}
+		if x.Intern.User != "" && (x.Intern.Evnt != "" || x.Public.Cate != "" || x.Public.Host != "") {
+			return nil, tracer.Mask(searchUserConflictError)
 		}
 	}
 
@@ -100,6 +102,26 @@ func (h *Handler) Search(ctx context.Context, req *event.SearchI) (*event.Search
 
 	if lts {
 		lis, err := h.eve.SearchLtst()
+		if err != nil {
+			return nil, tracer.Mask(err)
+		}
+
+		out = append(out, lis...)
+	}
+
+	//
+	// Search events by user.
+	//
+
+	var use []objectid.String
+	for _, x := range req.Object {
+		if x.Intern.User != "" {
+			use = append(use, objectid.String(x.Intern.User))
+		}
+	}
+
+	if len(use) != 0 {
+		lis, err := h.eve.SearchUser(use)
 		if err != nil {
 			return nil, tracer.Mask(err)
 		}

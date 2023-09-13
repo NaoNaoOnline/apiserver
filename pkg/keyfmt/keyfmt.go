@@ -154,6 +154,14 @@ const (
 	//
 	UserClaim = "use/sub/%s"
 
+	// UserName is used to store user mappings between user names and user IDs.
+	//
+	//     user name            user ID
+	//                    ->
+	//     use/nam/foo          5678
+	//
+	UserName = "use/nam/%s"
+
 	// UserObject is used to store our internal representation of a user object.
 	//
 	//     user ID               user object

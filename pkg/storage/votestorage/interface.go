@@ -13,18 +13,21 @@ type Interface interface {
 	//     @out[0] the vote objects mapped to their internal vote ID
 	//
 	Create([]*Object) ([]*Object, error)
+
 	// Delete purges the given vote objects.
 	//
 	//     @inp[0] the vote objects to delete
 	//     @out[0] the list of operation states related to the purged vote objects
 	//
 	Delete([]*Object) ([]objectstate.String, error)
+
 	// SearchDesc returns all vote objects associated to the given description IDs.
 	//
 	//     @inp[0] the description IDs any vote object might be associated with
 	//     @out[0] the list of all vote objects associated with the given description IDs
 	//
 	SearchDesc([]objectid.String) ([]*Object, error)
+
 	// SearchVote returns the vote objects matching the given vote IDs.
 	//
 	//     @inp[0] the vote IDs to search for
