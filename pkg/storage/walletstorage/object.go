@@ -31,7 +31,7 @@ type Object struct {
 	Wllt objectid.String `json:"wllt"`
 
 	// Message, public key and signature are only ephemeral data we use in
-	// transit. The properties below are part of the crptographic verification
+	// transit. The properties below are part of the cryptographic verification
 	// process to ensure that a user does in fact own the wallet they create.
 
 	// Mess is the message to sign.
