@@ -20,6 +20,6 @@ var reactionObjectNotFoundError = &tracer.Error{
 	Desc: "The request expects a reaction object to exist. The reaction object was not found to exist. Therefore the request failed.",
 }
 
-func IsEventObjectNotFound(err error) bool {
+func IsReactionObjectNotFound(err error) bool {
 	return errors.Is(err, reactionObjectNotFoundError)
 }
