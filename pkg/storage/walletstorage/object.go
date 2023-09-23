@@ -36,8 +36,8 @@ type Object struct {
 
 	// Mess is the message to sign.
 	Mess string `json:"-"`
-	// Pubk is the hex encoded compressed public key expected to be recovered from
-	// the given signature.
+	// Pubk is the hex encoded public key expected to be recovered from the given
+	// signature.
 	Pubk string `json:"-"`
 	// Sign is the signature of the given message.
 	Sign string `json:"-"`
