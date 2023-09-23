@@ -9,7 +9,7 @@ type Interface interface {
 	// Create persists new description objects mapped to the referenced events.
 	//
 	//     @inp[0] the description objects mapped to the referenced events
-	//     @out[0] the description objects mapped to their internal description ID
+	//     @out[0] the description objects mapped to their internal description IDs
 	//
 	Create([]*Object) ([]*Object, error)
 
@@ -36,7 +36,7 @@ type Interface interface {
 	//
 	//     @inp[0] the list of description objects to modify
 	//     @inp[1] the list of RFC6902 compliant JSON-Patches
-	//     @out[0] the list of operation states related to the modified description object
+	//     @out[0] the list of operation states related to the modified description objects
 	//
 	Update([]*Object, [][]*Patch) ([]objectstate.String, error)
 }

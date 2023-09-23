@@ -24,6 +24,18 @@ func Test_ObjectID_Fmt_string(t *testing.T) {
 				"des/eve/bar",
 			},
 		},
+		// Case 001
+		{
+			ids: []string{
+				"foo",
+				"bar",
+			},
+			str: fmt.Sprintf("wal/use/%s/obj/%s", "1234", "%s"),
+			key: []string{
+				"wal/use/1234/obj/foo",
+				"wal/use/1234/obj/bar",
+			},
+		},
 	}
 
 	for i, tc := range testCases {
@@ -52,6 +64,18 @@ func Test_ObjectID_Fmt_String(t *testing.T) {
 			key: []string{
 				"des/eve/foo",
 				"des/eve/bar",
+			},
+		},
+		// Case 001
+		{
+			ids: []String{
+				"foo",
+				"bar",
+			},
+			str: fmt.Sprintf("wal/use/%s/obj/%s", "1234", "%s"),
+			key: []string{
+				"wal/use/1234/obj/foo",
+				"wal/use/1234/obj/bar",
 			},
 		},
 	}

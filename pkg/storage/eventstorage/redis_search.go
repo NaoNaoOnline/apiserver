@@ -62,31 +62,12 @@ func (r *Redis) SearchLabl(lab []objectid.String) ([]*Object, error) {
 		return nil, nil
 	}
 
-	var jsn []string
+	var out []*Object
 	{
-		jsn, err = r.red.Simple().Search().Multi(objectid.Fmt(val, keyfmt.EventObject)...)
-		if simple.IsNotFound(err) {
-			return nil, tracer.Maskf(eventObjectNotFoundError, "%v", val)
-		} else if err != nil {
+		out, err = r.SearchEvnt(objectid.Strings(val))
+		if err != nil {
 			return nil, tracer.Mask(err)
 		}
-	}
-
-	var out []*Object
-	for _, x := range jsn {
-		var obj *Object
-		{
-			obj = &Object{}
-		}
-
-		if x != "" {
-			err = json.Unmarshal([]byte(x), obj)
-			if err != nil {
-				return nil, tracer.Mask(err)
-			}
-		}
-
-		out = append(out, obj)
 	}
 
 	return out, nil
@@ -141,31 +122,12 @@ func (r *Redis) searchTime(min time.Time, max time.Time) ([]*Object, error) {
 		return nil, nil
 	}
 
-	var jsn []string
+	var out []*Object
 	{
-		jsn, err = r.red.Simple().Search().Multi(objectid.Fmt(val, keyfmt.EventObject)...)
-		if simple.IsNotFound(err) {
-			return nil, tracer.Maskf(eventObjectNotFoundError, "%v", val)
-		} else if err != nil {
+		out, err = r.SearchEvnt(objectid.Strings(val))
+		if err != nil {
 			return nil, tracer.Mask(err)
 		}
-	}
-
-	var out []*Object
-	for _, x := range jsn {
-		var obj *Object
-		{
-			obj = &Object{}
-		}
-
-		if x != "" {
-			err = json.Unmarshal([]byte(x), obj)
-			if err != nil {
-				return nil, tracer.Mask(err)
-			}
-		}
-
-		out = append(out, obj)
 	}
 
 	return out, nil
@@ -244,30 +206,13 @@ func (r *Redis) SearchUser(use []objectid.String) ([]*Object, error) {
 			continue
 		}
 
-		var jsn []string
 		{
-			jsn, err = r.red.Simple().Search().Multi(objectid.Fmt(val, keyfmt.EventObject)...)
-			if simple.IsNotFound(err) {
-				return nil, tracer.Maskf(eventObjectNotFoundError, "%v", val)
-			} else if err != nil {
+			lis, err := r.SearchEvnt(objectid.Strings(val))
+			if err != nil {
 				return nil, tracer.Mask(err)
 			}
-		}
 
-		for _, x := range jsn {
-			var obj *Object
-			{
-				obj = &Object{}
-			}
-
-			if x != "" {
-				err = json.Unmarshal([]byte(x), obj)
-				if err != nil {
-					return nil, tracer.Mask(err)
-				}
-			}
-
-			out = append(out, obj)
+			out = append(out, lis...)
 		}
 	}
 

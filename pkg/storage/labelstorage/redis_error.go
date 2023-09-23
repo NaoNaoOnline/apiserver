@@ -17,9 +17,9 @@ func IsLabelObjectAlreadyExists(err error) bool {
 
 var labelObjectNotFoundError = &tracer.Error{
 	Kind: "labelObjectNotFoundError",
-	Desc: "The request expects an label object to exist. The label object was not found to exist. Therefore the request failed.",
+	Desc: "The request expects a label object to exist. The label object was not found to exist. Therefore the request failed.",
 }
 
-func IsEventObjectNotFound(err error) bool {
+func IsLabelObjectNotFound(err error) bool {
 	return errors.Is(err, labelObjectNotFoundError)
 }

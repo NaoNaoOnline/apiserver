@@ -37,19 +37,25 @@ var (
 )
 
 func (o *Object) Verify() error {
-	if o.Kind != "bltn" && o.Kind != "cate" && o.Kind != "host" {
-		return tracer.Maskf(labelKindInvalidError, o.Kind)
+	{
+		if o.Kind != "bltn" && o.Kind != "cate" && o.Kind != "host" {
+			return tracer.Maskf(labelKindInvalidError, o.Kind)
+		}
 	}
 
-	if o.Name == "" {
-		return tracer.Mask(labelNameEmptyError)
-	}
-	if !lablexpr.MatchString(o.Name) {
-		return tracer.Maskf(labelNameFormatError, o.Name)
+	{
+		if o.Name == "" {
+			return tracer.Mask(labelNameEmptyError)
+		}
+		if !lablexpr.MatchString(o.Name) {
+			return tracer.Maskf(labelNameFormatError, o.Name)
+		}
 	}
 
-	if o.Desc != "" || o.Disc != "" || o.Twit != "" {
-		return tracer.Mask(fieldUnsupportedError)
+	{
+		if o.Desc != "" || o.Disc != "" || o.Twit != "" {
+			return tracer.Mask(fieldUnsupportedError)
+		}
 	}
 
 	return nil

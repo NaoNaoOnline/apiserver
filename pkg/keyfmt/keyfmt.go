@@ -204,4 +204,30 @@ const (
 	//     vot/use/1234/eve/5678          1234,5678
 	//
 	VoteUserEvent = "vot/use/%s/eve/%s"
+
+	// WalletEthereum is used to store all the IDs of user wallets with kind eth.
+	//
+	//     kind eth                      wallet IDs
+	//                             ->
+	//     wal/use/1234/kin/eth          1234,5678
+	//
+	WalletEthereum = "wal/use/%s/kin/eth"
+
+	// Walletbject is used to store all the IDs of wallets mapped to a specific
+	// user/wallet combination.
+	//
+	//     user ID / wallet ID            wallet object
+	//                              ->
+	//     wal/use/1234/obj/1234          {"key": "val"}
+	//
+	WalletObject = "wal/use/%s/obj/%s"
+
+	// WalletUser is used to store all the IDs of wallets created by a specific
+	// user.
+	//
+	//     user ID               wallet IDs
+	//                     ->
+	//     wal/use/5678          1234,5678
+	//
+	WalletUser = "wal/use/%s"
 )
