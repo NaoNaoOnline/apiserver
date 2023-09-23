@@ -6,7 +6,7 @@ require (
 	github.com/NaoNaoOnline/apigocode v0.5.3
 	github.com/auth0/go-jwt-middleware/v2 v2.1.0
 	github.com/ethereum/go-ethereum v1.13.1
-	github.com/evanphx/json-patch/v5 v5.6.0
+	github.com/evanphx/json-patch/v5 v5.7.0
 	github.com/gorilla/mux v1.8.0
 	github.com/joho/godotenv v1.5.1
 	github.com/kelseyhightower/envconfig v1.4.0
