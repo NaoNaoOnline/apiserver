@@ -71,7 +71,7 @@ func IsWalletSignEmpty(err error) bool {
 
 var walletSignFormatError = &tracer.Error{
 	Kind: "walletSignFormatError",
-	Desc: `The request expects the wallet signature to be in hex format including 0x prefix. The wallet signature was not found to be in hex format including 0x prefix. Therefore the request failed.`,
+	Desc: "The request expects the wallet signature to be in hex format including 0x prefix. The wallet signature was not found to be in hex format including 0x prefix. Therefore the request failed.",
 }
 
 func IsWalletSignFormat(err error) bool {
