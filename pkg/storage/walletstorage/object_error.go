@@ -44,7 +44,7 @@ func IsWalletPubkEmpty(err error) bool {
 
 var walletPubkFormatError = &tracer.Error{
 	Kind: "walletPubkFormatError",
-	Desc: `The request expects the wallet public key to be in hex format including 0x prefix. The wallet public key was not found to be in hex format including 0x prefix. Therefore the request failed.`,
+	Desc: "The request expects the wallet public key to be in hex format including 0x prefix. The wallet public key was not found to be in hex format including 0x prefix. Therefore the request failed.",
 }
 
 func IsWalletPubkFormat(err error) bool {
