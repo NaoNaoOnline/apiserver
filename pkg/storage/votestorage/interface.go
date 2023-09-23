@@ -10,7 +10,7 @@ type Interface interface {
 	// between internal resources.
 	//
 	//     @inp[0] the vote objects providing vote specific information
-	//     @out[0] the vote objects mapped to their internal vote ID
+	//     @out[0] the vote objects mapped to their internal vote IDs
 	//
 	Create([]*Object) ([]*Object, error)
 

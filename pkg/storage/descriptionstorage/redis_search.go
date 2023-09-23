@@ -67,30 +67,13 @@ func (r *Redis) SearchEvnt(evn []objectid.String) ([]*Object, error) {
 			continue
 		}
 
-		var jsn []string
 		{
-			jsn, err = r.red.Simple().Search().Multi(objectid.Fmt(val, keyfmt.DescriptionObject)...)
-			if simple.IsNotFound(err) {
-				return nil, tracer.Maskf(descriptionObjectNotFoundError, "%v", val)
-			} else if err != nil {
+			lis, err := r.SearchDesc(objectid.Strings(val))
+			if err != nil {
 				return nil, tracer.Mask(err)
 			}
-		}
 
-		for _, x := range jsn {
-			var obj *Object
-			{
-				obj = &Object{}
-			}
-
-			if x != "" {
-				err = json.Unmarshal([]byte(x), obj)
-				if err != nil {
-					return nil, tracer.Mask(err)
-				}
-			}
-
-			out = append(out, obj)
+			out = append(out, lis...)
 		}
 	}
 

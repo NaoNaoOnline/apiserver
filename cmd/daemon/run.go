@@ -15,6 +15,7 @@ import (
 	"github.com/NaoNaoOnline/apiserver/pkg/handler/reactionhandler"
 	"github.com/NaoNaoOnline/apiserver/pkg/handler/userhandler"
 	"github.com/NaoNaoOnline/apiserver/pkg/handler/votehandler"
+	"github.com/NaoNaoOnline/apiserver/pkg/handler/wallethandler"
 	"github.com/NaoNaoOnline/apiserver/pkg/interceptor/failedinterceptor"
 	"github.com/NaoNaoOnline/apiserver/pkg/middleware/authmiddleware"
 	"github.com/NaoNaoOnline/apiserver/pkg/middleware/corsmiddleware"
@@ -26,6 +27,7 @@ import (
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/reactionstorage"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/userstorage"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/votestorage"
+	"github.com/NaoNaoOnline/apiserver/pkg/storage/walletstorage"
 	"github.com/gorilla/mux"
 	"github.com/spf13/cobra"
 	"github.com/twitchtv/twirp"
@@ -77,6 +79,7 @@ func (r *run) runE(cmd *cobra.Command, args []string) error {
 	var rct reactionstorage.Interface
 	var use userstorage.Interface
 	var vot votestorage.Interface
+	var wal walletstorage.Interface
 	{
 		des = descriptionstorage.NewRedis(descriptionstorage.RedisConfig{Log: log, Red: red})
 		eve = eventstorage.NewRedis(eventstorage.RedisConfig{Log: log, Red: red})
@@ -84,6 +87,7 @@ func (r *run) runE(cmd *cobra.Command, args []string) error {
 		rct = reactionstorage.NewRedis(reactionstorage.RedisConfig{Log: log, Red: red})
 		use = userstorage.NewRedis(userstorage.RedisConfig{Log: log, Red: red})
 		vot = votestorage.NewRedis(votestorage.RedisConfig{Log: log, Red: red})
+		wal = walletstorage.NewRedis(walletstorage.RedisConfig{Log: log, Red: red})
 	}
 
 	// --------------------------------------------------------------------- //
@@ -116,8 +120,9 @@ func (r *run) runE(cmd *cobra.Command, args []string) error {
 				eventhandler.NewHandler(eventhandler.HandlerConfig{Eve: eve, Log: log}),
 				labelhandler.NewHandler(labelhandler.HandlerConfig{Lab: lab, Log: log}),
 				reactionhandler.NewHandler(reactionhandler.HandlerConfig{Log: log, Rct: rct}),
-				userhandler.NewHandler(userhandler.HandlerConfig{Use: use, Log: log}),
-				votehandler.NewHandler(votehandler.HandlerConfig{Vot: vot, Log: log}),
+				userhandler.NewHandler(userhandler.HandlerConfig{Log: log, Use: use}),
+				votehandler.NewHandler(votehandler.HandlerConfig{Log: log, Vot: vot}),
+				wallethandler.NewHandler(wallethandler.HandlerConfig{Log: log, Wal: wal}),
 			},
 			Int: []twirp.Interceptor{
 				failedinterceptor.NewInterceptor(failedinterceptor.InterceptorConfig{Log: log}).Interceptor,

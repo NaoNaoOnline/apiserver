@@ -13,11 +13,11 @@ type Interface interface {
 	// initial system state, never to serve RPC requests.
 	SearchBltn() []*Object
 
-	// SearchKind returns the reaction objects of the given kind, e.g. bltn or
-	// user.
+	// SearchKind returns the reaction objects matching the given reaction kinds,
+	// e.g. bltn or user.
 	//
 	//     @inp[0] the reaction kinds under which reaction objects are grouped together
-	//     @out[0] the list of reaction objects of either kind category or kind host
+	//     @out[0] the list of reaction objects matching the given reaction kinds
 	//
 	SearchKind([]string) ([]*Object, error)
 }

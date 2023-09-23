@@ -2,7 +2,7 @@ package objectstate
 
 const (
 	Deleted String = "deleted"
-	Updated String = "Updated"
+	Updated String = "updated"
 )
 
 type String string

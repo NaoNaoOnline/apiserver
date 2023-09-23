@@ -17,9 +17,9 @@ func IsReactionObjectAlreadyExists(err error) bool {
 
 var reactionObjectNotFoundError = &tracer.Error{
 	Kind: "reactionObjectNotFoundError",
-	Desc: "The request expects an reaction object to exist. The reaction object was not found to exist. Therefore the request failed.",
+	Desc: "The request expects a reaction object to exist. The reaction object was not found to exist. Therefore the request failed.",
 }
 
-func IsEventObjectNotFound(err error) bool {
+func IsReactionObjectNotFound(err error) bool {
 	return errors.Is(err, reactionObjectNotFoundError)
 }
