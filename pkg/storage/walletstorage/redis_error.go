@@ -20,6 +20,6 @@ var walletUserLimitError = &tracer.Error{
 	Desc: "The request expects an upper limit of 5 wallet objects per user globally. The upper limit of 5 wallet objects per user globally was found. Therefore the request failed.",
 }
 
-func IsVoteUserLimit(err error) bool {
+func IsWalletUserLimit(err error) bool {
 	return errors.Is(err, walletUserLimitError)
 }
