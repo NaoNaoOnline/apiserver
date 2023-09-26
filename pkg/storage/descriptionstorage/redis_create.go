@@ -50,7 +50,7 @@ func (r *Redis) Create(inp []*Object) ([]*Object, error) {
 		}
 
 		// Ensure descriptions cannot be added to events that have already happened.
-		if obj.Hppned() {
+		if obj.Happnd() {
 			return nil, tracer.Mask(eventAlreadyHappenedError)
 		}
 

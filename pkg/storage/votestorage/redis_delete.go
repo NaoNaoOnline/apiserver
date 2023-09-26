@@ -2,6 +2,7 @@ package votestorage
 
 import (
 	"github.com/NaoNaoOnline/apiserver/pkg/objectstate"
+	"github.com/NaoNaoOnline/apiserver/pkg/storage/eventstorage"
 	"github.com/xh3b4sd/tracer"
 )
 
@@ -10,6 +11,21 @@ func (r *Redis) Delete(inp []*Object) ([]objectstate.String, error) {
 
 	var out []objectstate.String
 	for i := range inp {
+		var eve *eventstorage.Object
+		{
+			eve, err = r.searchEvnt(inp[i].Evnt)
+			if err != nil {
+				return nil, tracer.Mask(err)
+			}
+		}
+
+		// Ensure votes cannot be removed from events that have already happened.
+		{
+			if eve.Happnd() {
+				return nil, tracer.Mask(eventAlreadyHappenedError)
+			}
+		}
+
 		// Delete the user/event specific mappings for user/event specific search
 		// queries.
 		{
@@ -19,8 +35,7 @@ func (r *Redis) Delete(inp []*Object) ([]objectstate.String, error) {
 			}
 		}
 
-		// Delete the reaction specific mappings for reaction specific search
-		// queries.
+		// Delete the user specific mappings for user specific search queries.
 		{
 			err = r.red.Sorted().Delete().Value(votUse(inp[i].User), inp[i].Vote.String())
 			if err != nil {

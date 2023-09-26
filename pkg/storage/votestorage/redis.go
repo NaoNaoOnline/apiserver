@@ -39,6 +39,10 @@ func desObj(oid objectid.String) string {
 	return fmt.Sprintf(keyfmt.DescriptionObject, oid)
 }
 
+func eveObj(oid objectid.String) string {
+	return fmt.Sprintf(keyfmt.EventObject, oid)
+}
+
 func rctObj(oid objectid.String) string {
 	return fmt.Sprintf(keyfmt.ReactionObject, oid)
 }
