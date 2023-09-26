@@ -1,12 +1,11 @@
 package votestorage
 
 import (
-	"encoding/json"
 	"time"
 
 	"github.com/NaoNaoOnline/apiserver/pkg/objectid"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/descriptionstorage"
-	"github.com/xh3b4sd/redigo/pkg/simple"
+	"github.com/NaoNaoOnline/apiserver/pkg/storage/eventstorage"
 	"github.com/xh3b4sd/tracer"
 )
 
@@ -26,25 +25,26 @@ func (r *Redis) Create(inp []*Object) ([]*Object, error) {
 			}
 		}
 
-		var jsn string
+		var des *descriptionstorage.Object
 		{
-			jsn, err = r.red.Simple().Search().Value(desObj(inp[i].Desc))
-			if simple.IsNotFound(err) {
-				return nil, tracer.Maskf(descriptionObjectNotFoundError, inp[i].Desc.String())
-			} else if err != nil {
+			des, err = r.searchDesc(inp[i].Desc)
+			if err != nil {
 				return nil, tracer.Mask(err)
 			}
 		}
 
-		var obj *descriptionstorage.Object
+		var eve *eventstorage.Object
 		{
-			obj = &descriptionstorage.Object{}
-		}
-
-		{
-			err = json.Unmarshal([]byte(jsn), obj)
+			eve, err = r.searchEvnt(des.Evnt)
 			if err != nil {
 				return nil, tracer.Mask(err)
+			}
+		}
+
+		// Ensure votes cannot be added to events that have already happened.
+		{
+			if eve.Happnd() {
+				return nil, tracer.Mask(eventAlreadyHappenedError)
 			}
 		}
 
@@ -62,7 +62,7 @@ func (r *Redis) Create(inp []*Object) ([]*Object, error) {
 
 		{
 			inp[i].Crtd = time.Now().UTC()
-			inp[i].Evnt = obj.Evnt
+			inp[i].Evnt = eve.Evnt
 			inp[i].Vote = objectid.New(inp[i].Crtd)
 		}
 

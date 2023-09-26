@@ -30,7 +30,7 @@ type Object struct {
 	User objectid.String `json:"user"`
 }
 
-func (o *Object) Hppned() bool {
+func (o *Object) Happnd() bool {
 	return o.Time.Add(o.Dura).Before(time.Now().UTC())
 }
 
