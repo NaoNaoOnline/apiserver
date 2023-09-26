@@ -30,6 +30,18 @@ func (r *Redis) CreateXtrn(inp []*Object) ([]*Object, error) {
 			inp[i].Wllt = objectid.New(inp[i].Crtd)
 		}
 
+		// Ensure the user wallet limit globally is respected.
+		{
+			cou, err := r.red.Sorted().Metric().Count(walUse(inp[i].User))
+			if err != nil {
+				return nil, tracer.Mask(err)
+			}
+
+			if cou >= 5 {
+				return nil, tracer.Mask(walletUserLimitError)
+			}
+		}
+
 		// Once we know the wallet's signature is valid, we create the normalized
 		// key-value pair so that we can search for wallet objects using their IDs.
 		{

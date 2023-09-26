@@ -14,3 +14,12 @@ var walletObjectNotFoundError = &tracer.Error{
 func IsWalletObjectNotFound(err error) bool {
 	return errors.Is(err, walletObjectNotFoundError)
 }
+
+var walletUserLimitError = &tracer.Error{
+	Kind: "walletUserLimitError",
+	Desc: "The request expects an upper limit of 5 wallet objects per user globally. The upper limit of 5 wallet objects per user globally was found. Therefore the request failed.",
+}
+
+func IsWalletUserLimit(err error) bool {
+	return errors.Is(err, walletUserLimitError)
+}
