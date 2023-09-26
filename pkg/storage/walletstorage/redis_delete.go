@@ -1,4 +1,4 @@
-package votestorage
+package walletstorage
 
 import (
 	"github.com/NaoNaoOnline/apiserver/pkg/objectstate"
@@ -10,27 +10,17 @@ func (r *Redis) Delete(inp []*Object) ([]objectstate.String, error) {
 
 	var out []objectstate.String
 	for i := range inp {
-		// Delete the user/event specific mappings for user/event specific search
-		// queries.
+		// Delete the user specific mappings for user specific search queries.
 		{
-			err = r.red.Sorted().Delete().Value(votEve(inp[i].User, inp[i].Evnt), inp[i].Vote.String())
+			err = r.red.Sorted().Delete().Value(walUse(inp[i].User), inp[i].Wllt.String())
 			if err != nil {
 				return nil, tracer.Mask(err)
 			}
 		}
 
-		// Delete the reaction specific mappings for reaction specific search
-		// queries.
+		// Delete the wallet kind mappings for wallet kind search queries.
 		{
-			err = r.red.Sorted().Delete().Value(votUse(inp[i].User), inp[i].Vote.String())
-			if err != nil {
-				return nil, tracer.Mask(err)
-			}
-		}
-
-		// Delete the vote description mappings for vote description search queries.
-		{
-			err = r.red.Sorted().Delete().Value(votDes(inp[i].Desc), inp[i].Vote.String())
+			err = r.red.Sorted().Delete().Value(walKin(inp[i].User, inp[i].Kind), inp[i].Wllt.String())
 			if err != nil {
 				return nil, tracer.Mask(err)
 			}
@@ -40,7 +30,7 @@ func (r *Redis) Delete(inp []*Object) ([]objectstate.String, error) {
 		// the handler, we delete it as the very last step, so the operation can
 		// eventually be retried.
 		{
-			_, err = r.red.Simple().Delete().Multi(votObj(inp[i].Vote))
+			_, err = r.red.Simple().Delete().Multi(walObj(inp[i].User, inp[i].Wllt))
 			if err != nil {
 				return nil, tracer.Mask(err)
 			}

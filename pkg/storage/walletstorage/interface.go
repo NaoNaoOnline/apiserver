@@ -14,6 +14,13 @@ type Interface interface {
 	//
 	CreateXtrn([]*Object) ([]*Object, error)
 
+	// Delete purges the given wallet objects.
+	//
+	//     @inp[0] the wallet objects to delete
+	//     @out[0] the list of operation states related to the purged wallet objects
+	//
+	Delete([]*Object) ([]objectstate.String, error)
+
 	// SearchKind returns the wallet objects for the given user, matching the
 	// given wallet kinds, e.g. eth.
 	//
