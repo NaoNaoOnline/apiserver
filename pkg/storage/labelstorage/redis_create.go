@@ -52,7 +52,7 @@ func (r *Redis) Create(inp []*Object) ([]*Object, error) {
 		// label names are unique by using the label name as additional index within
 		// the redis sorted sets.
 		{
-			err = r.red.Sorted().Create().Score(labKin(inp[i].Kind), inp[i].Labl.String(), inp[i].Labl.Float(), keyfmt.Indx(inp[i].Name))
+			err = r.red.Sorted().Create().Index(labKin(inp[i].Kind), inp[i].Labl.String(), inp[i].Labl.Float(), keyfmt.Indx(inp[i].Name))
 			if err != nil {
 				return nil, tracer.Mask(err)
 			}
@@ -61,7 +61,7 @@ func (r *Redis) Create(inp []*Object) ([]*Object, error) {
 		// Create the user specific mappings for user specific search queries.
 		// With that we can show the user all reactions they created.
 		{
-			err = r.red.Sorted().Create().Score(labUse(inp[i].User), inp[i].Labl.String(), inp[i].Labl.Float())
+			err = r.red.Sorted().Create().Index(labUse(inp[i].User), inp[i].Labl.String(), inp[i].Labl.Float())
 			if err != nil {
 				return nil, tracer.Mask(err)
 			}
