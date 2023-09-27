@@ -54,7 +54,7 @@ func (r *Redis) CreateXtrn(inp []*Object) ([]*Object, error) {
 		// Now we create the wallet kind mappings for wallet kind search queries.
 		// With that we can search for wallets of a given kind.
 		{
-			err = r.red.Sorted().Create().Index(walKin(inp[i].User, inp[i].Kind), inp[i].Wllt.String(), inp[i].Wllt.Float())
+			err = r.red.Sorted().Create().Score(walKin(inp[i].User, inp[i].Kind), inp[i].Wllt.String(), inp[i].Wllt.Float())
 			if err != nil {
 				return nil, tracer.Mask(err)
 			}

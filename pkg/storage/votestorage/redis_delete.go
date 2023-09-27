@@ -29,7 +29,7 @@ func (r *Redis) Delete(inp []*Object) ([]objectstate.String, error) {
 		// Delete the user/event specific mappings for user/event specific search
 		// queries.
 		{
-			err = r.red.Sorted().Delete().Value(votEve(inp[i].User, inp[i].Evnt), inp[i].Vote.String())
+			err = r.red.Sorted().Delete().Score(votEve(inp[i].User, inp[i].Evnt), inp[i].Vote.Float())
 			if err != nil {
 				return nil, tracer.Mask(err)
 			}
@@ -37,7 +37,7 @@ func (r *Redis) Delete(inp []*Object) ([]objectstate.String, error) {
 
 		// Delete the user specific mappings for user specific search queries.
 		{
-			err = r.red.Sorted().Delete().Value(votUse(inp[i].User), inp[i].Vote.String())
+			err = r.red.Sorted().Delete().Score(votUse(inp[i].User), inp[i].Evnt.Float())
 			if err != nil {
 				return nil, tracer.Mask(err)
 			}
@@ -45,7 +45,7 @@ func (r *Redis) Delete(inp []*Object) ([]objectstate.String, error) {
 
 		// Delete the vote description mappings for vote description search queries.
 		{
-			err = r.red.Sorted().Delete().Value(votDes(inp[i].Desc), inp[i].Vote.String())
+			err = r.red.Sorted().Delete().Score(votDes(inp[i].Desc), inp[i].Vote.Float())
 			if err != nil {
 				return nil, tracer.Mask(err)
 			}
