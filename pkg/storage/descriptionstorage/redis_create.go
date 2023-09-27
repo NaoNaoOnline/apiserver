@@ -27,9 +27,9 @@ func (r *Redis) Create(inp []*Object) ([]*Object, error) {
 		// We want to verify whether the associated event has already happened. For
 		// that we have to fetch the event object, so we can access its time
 		// information.
-		var jsn string
+		var jsn []string
 		{
-			jsn, err = r.red.Simple().Search().Value(eveObj(inp[i].Evnt))
+			jsn, err = r.red.Simple().Search().Multi(eveObj(inp[i].Evnt))
 			if simple.IsNotFound(err) {
 				return nil, tracer.Maskf(eventObjectNotFoundError, inp[i].Evnt.String())
 			} else if err != nil {
@@ -43,7 +43,7 @@ func (r *Redis) Create(inp []*Object) ([]*Object, error) {
 		}
 
 		{
-			err = json.Unmarshal([]byte(jsn), obj)
+			err = json.Unmarshal([]byte(jsn[0]), obj)
 			if err != nil {
 				return nil, tracer.Mask(err)
 			}

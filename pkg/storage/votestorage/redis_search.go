@@ -81,9 +81,9 @@ func (r *Redis) SearchVote(inp []objectid.String) ([]*Object, error) {
 func (r *Redis) searchDesc(des objectid.String) (*descriptionstorage.Object, error) {
 	var err error
 
-	var jsn string
+	var jsn []string
 	{
-		jsn, err = r.red.Simple().Search().Value(desObj(des))
+		jsn, err = r.red.Simple().Search().Multi(desObj(des))
 		if simple.IsNotFound(err) {
 			return nil, tracer.Maskf(descriptionObjectNotFoundError, des.String())
 		} else if err != nil {
@@ -97,7 +97,7 @@ func (r *Redis) searchDesc(des objectid.String) (*descriptionstorage.Object, err
 	}
 
 	{
-		err = json.Unmarshal([]byte(jsn), obj)
+		err = json.Unmarshal([]byte(jsn[0]), obj)
 		if err != nil {
 			return nil, tracer.Mask(err)
 		}
@@ -109,9 +109,9 @@ func (r *Redis) searchDesc(des objectid.String) (*descriptionstorage.Object, err
 func (r *Redis) searchEvnt(eve objectid.String) (*eventstorage.Object, error) {
 	var err error
 
-	var jsn string
+	var jsn []string
 	{
-		jsn, err = r.red.Simple().Search().Value(eveObj(eve))
+		jsn, err = r.red.Simple().Search().Multi(eveObj(eve))
 		if simple.IsNotFound(err) {
 			return nil, tracer.Maskf(eventObjectNotFoundError, eve.String())
 		} else if err != nil {
@@ -125,7 +125,7 @@ func (r *Redis) searchEvnt(eve objectid.String) (*eventstorage.Object, error) {
 	}
 
 	{
-		err = json.Unmarshal([]byte(jsn), obj)
+		err = json.Unmarshal([]byte(jsn[0]), obj)
 		if err != nil {
 			return nil, tracer.Mask(err)
 		}
