@@ -14,7 +14,7 @@ require (
 	github.com/spf13/cobra v1.7.0
 	github.com/twitchtv/twirp v8.1.3+incompatible
 	github.com/xh3b4sd/logger v0.7.2
-	github.com/xh3b4sd/redigo v0.33.1
+	github.com/xh3b4sd/redigo v0.33.2
 	github.com/xh3b4sd/tracer v0.10.1
 )
 
@@ -27,7 +27,7 @@ require (
 	github.com/crate-crypto/go-kzg-4844 v0.3.0 // indirect
 	github.com/decred/dcrd/dcrec/secp256k1/v4 v4.0.1 // indirect
 	github.com/ethereum/c-kzg-4844 v0.3.1 // indirect
-	github.com/go-redsync/redsync/v4 v4.8.1 // indirect
+	github.com/go-redsync/redsync/v4 v4.9.0 // indirect
 	github.com/go-stack/stack v1.8.1 // indirect
 	github.com/gomodule/redigo v1.8.9 // indirect
 	github.com/hashicorp/errwrap v1.1.0 // indirect

@@ -48,23 +48,21 @@ func (r *Redis) SearchSubj(sub string) (*Object, error) {
 		return nil, tracer.Mask(userSubjectEmptyError)
 	}
 
-	var use objectid.String
+	var use []string
 	{
-		val, err := r.red.Simple().Search().Value(useCla(sub))
+		use, err = r.red.Simple().Search().Multi(useCla(sub))
 		if simple.IsNotFound(err) {
 			return nil, tracer.Mask(subjectClaimMappingError)
 		} else if err != nil {
 			return nil, tracer.Mask(err)
 		}
-
-		use = objectid.String(val)
 	}
 
-	var jsn string
+	var jsn []string
 	{
-		jsn, err = r.red.Simple().Search().Value(useObj(use))
+		jsn, err = r.red.Simple().Search().Multi(useObj(objectid.String(use[0])))
 		if simple.IsNotFound(err) {
-			return nil, tracer.Maskf(userNotFoundError, use.String())
+			return nil, tracer.Maskf(userNotFoundError, use[0])
 		} else if err != nil {
 			return nil, tracer.Mask(err)
 		}
@@ -72,7 +70,7 @@ func (r *Redis) SearchSubj(sub string) (*Object, error) {
 
 	var out Object
 	{
-		err = json.Unmarshal([]byte(jsn), &out)
+		err = json.Unmarshal([]byte(jsn[0]), &out)
 		if err != nil {
 			return nil, tracer.Mask(err)
 		}
