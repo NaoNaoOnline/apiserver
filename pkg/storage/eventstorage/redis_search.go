@@ -110,7 +110,7 @@ func (r *Redis) searchTime(min time.Time, max time.Time) ([]*Object, error) {
 	// given time period, if any.
 	var val []string
 	{
-		val, err = r.red.Sorted().Search().Value(keyfmt.EventTime, float64(max.Unix()), float64(min.Unix()))
+		val, err = r.red.Sorted().Search().Score(keyfmt.EventTime, float64(max.Unix()), float64(min.Unix()))
 		if err != nil {
 			return nil, tracer.Mask(err)
 		}
