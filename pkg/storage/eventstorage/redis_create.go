@@ -103,7 +103,7 @@ func (r *Redis) Create(inp []*Object) ([]*Object, error) {
 		// Create the time specific mappings for time specific search queries. With
 		// that we can search for events that are happening right now. For event
 		// time indexing, we use the event time as score. There might be many events
-		// happening at the same time. So we use Sorted.Create.Value, which allows
+		// happening at the same time. So we use Sorted.Create.Score, which allows
 		// us to use duplicated scores.
 		{
 			err = r.red.Sorted().Create().Score(keyfmt.EventTime, inp[i].Evnt.String(), float64(inp[i].Time.Unix()))

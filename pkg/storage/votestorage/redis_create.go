@@ -112,7 +112,7 @@ func (r *Redis) Create(inp []*Object) ([]*Object, error) {
 		// Create the reaction specific mappings for reaction specific search
 		// queries. With that we can search for events that the user reacted to. For
 		// user reaction indexing, we use the event ID as score. There might be many
-		// votes created per event per user. So we use Sorted.Create.Value, which
+		// votes created per event per user. So we use Sorted.Create.Score, which
 		// allows us to use duplicated scores.
 		{
 			err = r.red.Sorted().Create().Score(votUse(inp[i].User), inp[i].Vote.String(), inp[i].Evnt.Float())

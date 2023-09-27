@@ -35,9 +35,14 @@ func (r *Redis) Delete(inp []*Object) ([]objectstate.String, error) {
 			}
 		}
 
-		// Delete the user specific mappings for user specific search queries.
+		// Delete the user specific mappings for user specific search queries. Note
+		// that the user specific mapping is created via Sorted.Create.Score, using
+		// the event ID as score. Here we want to remove a single specific vote
+		// object reference. So we use Sorted.Delete.Value to remove a single vote
+		// from the given event. Otherwise we would remove all vote object
+		// references from an event.
 		{
-			err = r.red.Sorted().Delete().Score(votUse(inp[i].User), inp[i].Evnt.Float())
+			err = r.red.Sorted().Delete().Value(votUse(inp[i].User), inp[i].Vote.String())
 			if err != nil {
 				return nil, tracer.Mask(err)
 			}
