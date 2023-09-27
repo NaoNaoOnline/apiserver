@@ -103,7 +103,7 @@ func (r *Redis) Create(inp []*Object) ([]*Object, error) {
 		// search queries. This allows us to search for all votes associated to a
 		// description.
 		{
-			err = r.red.Sorted().Create().Score(votDes(inp[i].Desc), inp[i].Vote.String(), inp[i].Vote.Float())
+			err = r.red.Sorted().Create().Index(votDes(inp[i].Desc), inp[i].Vote.String(), inp[i].Vote.Float())
 			if err != nil {
 				return nil, tracer.Mask(err)
 			}
@@ -125,7 +125,7 @@ func (r *Redis) Create(inp []*Object) ([]*Object, error) {
 		// search queries. This allows us to search for the amount of votes a user
 		// made on an event.
 		{
-			err = r.red.Sorted().Create().Score(votEve(inp[i].User, inp[i].Evnt), inp[i].Vote.String(), inp[i].Vote.Float())
+			err = r.red.Sorted().Create().Index(votEve(inp[i].User, inp[i].Evnt), inp[i].Vote.String(), inp[i].Vote.Float())
 			if err != nil {
 				return nil, tracer.Mask(err)
 			}
