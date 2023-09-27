@@ -12,7 +12,7 @@ func (r *Redis) Delete(inp []*Object) ([]objectstate.String, error) {
 	for i := range inp {
 		// Delete the user specific mappings for user specific search queries.
 		{
-			err = r.red.Sorted().Delete().Value(walUse(inp[i].User), inp[i].Wllt.String())
+			err = r.red.Sorted().Delete().Index(walUse(inp[i].User), inp[i].Wllt.String())
 			if err != nil {
 				return nil, tracer.Mask(err)
 			}
@@ -20,7 +20,7 @@ func (r *Redis) Delete(inp []*Object) ([]objectstate.String, error) {
 
 		// Delete the wallet kind mappings for wallet kind search queries.
 		{
-			err = r.red.Sorted().Delete().Value(walKin(inp[i].User, inp[i].Kind), inp[i].Wllt.String())
+			err = r.red.Sorted().Delete().Score(walKin(inp[i].User, inp[i].Kind), inp[i].Wllt.Float())
 			if err != nil {
 				return nil, tracer.Mask(err)
 			}
