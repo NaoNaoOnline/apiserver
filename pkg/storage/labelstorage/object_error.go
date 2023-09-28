@@ -41,3 +41,12 @@ var labelNameFormatError = &tracer.Error{
 func IsLabelNameFormat(err error) bool {
 	return errors.Is(err, labelNameFormatError)
 }
+
+var labelNameLengthError = &tracer.Error{
+	Kind: "labelNameLengthError",
+	Desc: "The request expects the label name to have between 3 and 20 characters. The label name was not found to have between 3 and 20 characters. Therefore the request failed.",
+}
+
+func IsDescriptionNameLength(err error) bool {
+	return errors.Is(err, labelNameLengthError)
+}
