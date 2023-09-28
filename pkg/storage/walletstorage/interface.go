@@ -1,8 +1,8 @@
 package walletstorage
 
 import (
-	"github.com/NaoNaoOnline/apiserver/pkg/objectid"
-	"github.com/NaoNaoOnline/apiserver/pkg/objectstate"
+	"github.com/NaoNaoOnline/apiserver/pkg/object/objectid"
+	"github.com/NaoNaoOnline/apiserver/pkg/object/objectstate"
 )
 
 type Interface interface {
@@ -44,7 +44,8 @@ type Interface interface {
 	// time of execution.
 	//
 	//     @inp[0] the list of wallet objects to modify
-	//     @out[0] the list of operation states related to the modified wallet objects
+	//     @out[0] the list of modified wallet objects
+	//     @out[1] the list of operation states related to the modified wallet objects
 	//
-	Update([]*Object) ([]objectstate.String, error)
+	Update([]*Object) ([]*Object, []objectstate.String, error)
 }

@@ -1,8 +1,8 @@
 package votestorage
 
 import (
-	"github.com/NaoNaoOnline/apiserver/pkg/objectid"
-	"github.com/NaoNaoOnline/apiserver/pkg/objectstate"
+	"github.com/NaoNaoOnline/apiserver/pkg/object/objectid"
+	"github.com/NaoNaoOnline/apiserver/pkg/object/objectstate"
 )
 
 type Interface interface {

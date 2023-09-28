@@ -6,8 +6,8 @@ import (
 
 	"github.com/NaoNaoOnline/apigocode/pkg/description"
 	"github.com/NaoNaoOnline/apiserver/pkg/context/userid"
-	"github.com/NaoNaoOnline/apiserver/pkg/objectid"
-	"github.com/NaoNaoOnline/apiserver/pkg/objectstate"
+	"github.com/NaoNaoOnline/apiserver/pkg/object/objectid"
+	"github.com/NaoNaoOnline/apiserver/pkg/object/objectstate"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/descriptionstorage"
 	"github.com/xh3b4sd/tracer"
 )

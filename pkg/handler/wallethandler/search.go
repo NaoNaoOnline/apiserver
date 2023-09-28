@@ -6,7 +6,7 @@ import (
 
 	"github.com/NaoNaoOnline/apigocode/pkg/wallet"
 	"github.com/NaoNaoOnline/apiserver/pkg/context/userid"
-	"github.com/NaoNaoOnline/apiserver/pkg/objectid"
+	"github.com/NaoNaoOnline/apiserver/pkg/object/objectid"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/walletstorage"
 	"github.com/xh3b4sd/tracer"
 )
@@ -77,13 +77,15 @@ func (h *Handler) Search(ctx context.Context, req *wallet.SearchI) (*wallet.Sear
 	for _, x := range out {
 		res.Object = append(res.Object, &wallet.SearchO_Object{
 			Intern: &wallet.SearchO_Object_Intern{
+				Addr: &wallet.SearchO_Object_Intern_Addr{
+					Time: strconv.Itoa(int(x.Addr.Time.Unix())),
+				},
 				Crtd: strconv.Itoa(int(x.Crtd.Unix())),
-				Last: strconv.Itoa(int(x.Last.Unix())),
 				User: x.User.String(),
 				Wllt: x.Wllt.String(),
 			},
 			Public: &wallet.SearchO_Object_Public{
-				Addr: x.Addr,
+				Addr: x.Addr.Data,
 				Kind: x.Kind,
 			},
 		})

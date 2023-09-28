@@ -6,7 +6,7 @@ import (
 
 	"github.com/NaoNaoOnline/apigocode/pkg/user"
 	"github.com/NaoNaoOnline/apiserver/pkg/context/subjectclaim"
-	"github.com/NaoNaoOnline/apiserver/pkg/objectid"
+	"github.com/NaoNaoOnline/apiserver/pkg/object/objectid"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/userstorage"
 	"github.com/xh3b4sd/tracer"
 )

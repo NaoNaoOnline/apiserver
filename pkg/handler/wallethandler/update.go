@@ -2,11 +2,12 @@ package wallethandler
 
 import (
 	"context"
+	"strconv"
 
 	"github.com/NaoNaoOnline/apigocode/pkg/wallet"
 	"github.com/NaoNaoOnline/apiserver/pkg/context/userid"
-	"github.com/NaoNaoOnline/apiserver/pkg/objectid"
-	"github.com/NaoNaoOnline/apiserver/pkg/objectstate"
+	"github.com/NaoNaoOnline/apiserver/pkg/object/objectid"
+	"github.com/NaoNaoOnline/apiserver/pkg/object/objectstate"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/walletstorage"
 	"github.com/xh3b4sd/tracer"
 )
@@ -52,9 +53,10 @@ func (h *Handler) Update(ctx context.Context, req *wallet.UpdateI) (*wallet.Upda
 		}
 	}
 
-	var out []objectstate.String
+	var out []*walletstorage.Object
+	var sta []objectstate.String
 	{
-		out, err = h.wal.Update(obj)
+		out, sta, err = h.wal.Update(obj)
 		if err != nil {
 			return nil, tracer.Mask(err)
 		}
@@ -65,10 +67,13 @@ func (h *Handler) Update(ctx context.Context, req *wallet.UpdateI) (*wallet.Upda
 		res = &wallet.UpdateO{}
 	}
 
-	for _, x := range out {
+	for i := range out {
 		res.Object = append(res.Object, &wallet.UpdateO_Object{
 			Intern: &wallet.UpdateO_Object_Intern{
-				Stts: x.String(),
+				Addr: &wallet.UpdateO_Object_Intern_Addr{
+					Time: strconv.Itoa(int(out[i].Addr.Time.Unix())),
+				},
+				Stts: sta[i].String(),
 			},
 			Public: &wallet.UpdateO_Object_Public{},
 		})

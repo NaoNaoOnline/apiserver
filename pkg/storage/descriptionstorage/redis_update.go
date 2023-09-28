@@ -3,7 +3,7 @@ package descriptionstorage
 import (
 	"encoding/json"
 
-	"github.com/NaoNaoOnline/apiserver/pkg/objectstate"
+	"github.com/NaoNaoOnline/apiserver/pkg/object/objectstate"
 	"github.com/xh3b4sd/tracer"
 )
 
