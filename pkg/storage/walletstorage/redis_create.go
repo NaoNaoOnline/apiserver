@@ -35,7 +35,7 @@ func (r *Redis) CreateXtrn(inp []*Object) ([]*Object, error) {
 				Time: now,
 			}
 			inp[i].Crtd = now
-			inp[i].Wllt = objectid.New(inp[i].Crtd)
+			inp[i].Wllt = objectid.Random(objectid.Time(now))
 		}
 
 		// Ensure the user wallet limit globally is respected.

@@ -21,7 +21,7 @@ func (h *Handler) Create(ctx context.Context, req *description.CreateI) (*descri
 	var inp []*descriptionstorage.Object
 	for _, x := range req.Object {
 		inp = append(inp, &descriptionstorage.Object{
-			Evnt: objectid.String(x.Public.Evnt),
+			Evnt: objectid.ID(x.Public.Evnt),
 			Text: x.Public.Text,
 			User: userid.FromContext(ctx),
 		})

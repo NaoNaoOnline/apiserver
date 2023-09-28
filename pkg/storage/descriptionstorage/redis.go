@@ -36,19 +36,19 @@ func NewRedis(c RedisConfig) *Redis {
 	}
 }
 
-func desEve(oid objectid.String) string {
+func desEve(oid objectid.ID) string {
 	return fmt.Sprintf(keyfmt.DescriptionEvent, oid)
 }
 
-func desObj(oid objectid.String) string {
+func desObj(oid objectid.ID) string {
 	return fmt.Sprintf(keyfmt.DescriptionObject, oid)
 }
 
-func desUse(oid objectid.String) string {
+func desUse(oid objectid.ID) string {
 	return fmt.Sprintf(keyfmt.DescriptionUser, oid)
 }
 
-func eveObj(oid objectid.String) string {
+func eveObj(oid objectid.ID) string {
 	return fmt.Sprintf(keyfmt.EventObject, oid)
 }
 

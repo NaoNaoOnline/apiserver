@@ -53,10 +53,10 @@ func (h *Handler) Search(ctx context.Context, req *wallet.SearchI) (*wallet.Sear
 	// Search wallets by ID.
 	//
 
-	var wal []objectid.String
+	var wal []objectid.ID
 	for _, x := range req.Object {
 		if x.Intern.Wllt != "" {
-			wal = append(wal, objectid.String(x.Intern.Wllt))
+			wal = append(wal, objectid.ID(x.Intern.Wllt))
 		}
 	}
 

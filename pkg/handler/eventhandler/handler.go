@@ -36,12 +36,12 @@ func NewHandler(c HandlerConfig) *Handler {
 	}
 }
 
-func inpLab(str string) []objectid.String {
-	var lis []objectid.String
+func inpLab(str string) []objectid.ID {
+	var lis []objectid.ID
 
 	for _, x := range strings.Split(str, ",") {
 		if x != "" {
-			lis = append(lis, objectid.String(x))
+			lis = append(lis, objectid.ID(x))
 		}
 	}
 
@@ -70,7 +70,7 @@ func outDur(dur time.Duration) string {
 	return strconv.Itoa(int(dur.Seconds()))
 }
 
-func outLab(sco []objectid.String) string {
+func outLab(sco []objectid.ID) string {
 	var str []string
 
 	for _, x := range sco {

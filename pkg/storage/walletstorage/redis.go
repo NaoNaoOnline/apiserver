@@ -35,7 +35,7 @@ func NewRedis(c RedisConfig) *Redis {
 	}
 }
 
-func walKin(use objectid.String, kin string) string {
+func walKin(use objectid.ID, kin string) string {
 	if kin == "eth" {
 		return fmt.Sprintf(keyfmt.WalletEthereum, use)
 	}
@@ -43,11 +43,11 @@ func walKin(use objectid.String, kin string) string {
 	panic(fmt.Sprintf("kin must be eth, got %s", kin))
 }
 
-func walObj(use objectid.String, oid objectid.String) string {
+func walObj(use objectid.ID, oid objectid.ID) string {
 	return fmt.Sprintf(keyfmt.WalletObject, use, oid)
 }
 
-func walUse(use objectid.String) string {
+func walUse(use objectid.ID) string {
 	return fmt.Sprintf(keyfmt.WalletUser, use)
 }
 

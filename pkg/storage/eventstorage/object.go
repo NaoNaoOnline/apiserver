@@ -12,22 +12,22 @@ import (
 
 type Object struct {
 	// Cate is the list of label IDs under which the event is categorized.
-	Cate []objectid.String `json:"cate"`
+	Cate []objectid.ID `json:"cate"`
 	// Crtd is the time at which the event got created.
 	Crtd time.Time `json:"crtd"`
 	// Dura is the estimated duration of the event.
 	Dura time.Duration `json:"dura"`
 	// Evnt is the ID of the event being created.
-	Evnt objectid.String `json:"evnt"`
+	Evnt objectid.ID `json:"evnt"`
 	// Host is the list of label IDs expected to host the event.
-	Host []objectid.String `json:"host"`
+	Host []objectid.ID `json:"host"`
 	// Link is the online location at which the event is expected to take place.
 	// For IRL events this may just be some informational website.
 	Link string `json:"link"`
 	// Time is the date time at which the event is expected to start.
 	Time time.Time `json:"time"`
 	// User is the user ID creating this event.
-	User objectid.String `json:"user"`
+	User objectid.ID `json:"user"`
 }
 
 func (o *Object) Happnd() bool {

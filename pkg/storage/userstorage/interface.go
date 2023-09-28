@@ -35,5 +35,5 @@ type Interface interface {
 	//     @inp[0] the user IDs to search for
 	//     @out[0] the list of user objects matching the given user IDs
 	//
-	SearchUser([]objectid.String) ([]*Object, error)
+	SearchUser([]objectid.ID) ([]*Object, error)
 }

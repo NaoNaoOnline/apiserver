@@ -19,10 +19,10 @@ func (h *Handler) Update(ctx context.Context, req *description.UpdateI) (*descri
 		return nil, tracer.Mask(userIDEmptyError)
 	}
 
-	var des []objectid.String
+	var des []objectid.ID
 	var pat [][]*descriptionstorage.Patch
 	for _, x := range req.Object {
-		des = append(des, objectid.String(x.Intern.Desc))
+		des = append(des, objectid.ID(x.Intern.Desc))
 		pat = append(pat, inpPat(x.Update))
 	}
 

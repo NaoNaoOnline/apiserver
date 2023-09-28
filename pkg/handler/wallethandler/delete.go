@@ -18,9 +18,9 @@ func (h *Handler) Delete(ctx context.Context, req *wallet.DeleteI) (*wallet.Dele
 		return nil, tracer.Mask(userIDEmptyError)
 	}
 
-	var wal []objectid.String
+	var wal []objectid.ID
 	for _, x := range req.Object {
-		wal = append(wal, objectid.String(x.Intern.Wllt))
+		wal = append(wal, objectid.ID(x.Intern.Wllt))
 	}
 
 	var obj []*walletstorage.Object

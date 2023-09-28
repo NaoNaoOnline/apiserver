@@ -10,7 +10,7 @@ import (
 	"github.com/xh3b4sd/tracer"
 )
 
-func (r *Redis) SearchEvnt(inp []objectid.String) ([]*Object, error) {
+func (r *Redis) SearchEvnt(inp []objectid.ID) ([]*Object, error) {
 	var err error
 
 	var jsn []string
@@ -43,7 +43,7 @@ func (r *Redis) SearchEvnt(inp []objectid.String) ([]*Object, error) {
 	return out, nil
 }
 
-func (r *Redis) SearchLabl(lab []objectid.String) ([]*Object, error) {
+func (r *Redis) SearchLabl(lab []objectid.ID) ([]*Object, error) {
 	var err error
 
 	// val will result in a list of all event IDs associated to the given label
@@ -133,7 +133,7 @@ func (r *Redis) searchTime(min time.Time, max time.Time) ([]*Object, error) {
 	return out, nil
 }
 
-func (r *Redis) SearchRctn(use objectid.String) ([]*Object, error) {
+func (r *Redis) SearchRctn(use objectid.ID) ([]*Object, error) {
 	var err error
 
 	// The user votes are indexed in a way were vote IDs are values and event IDs
@@ -185,7 +185,7 @@ func (r *Redis) SearchRctn(use objectid.String) ([]*Object, error) {
 	return out, nil
 }
 
-func (r *Redis) SearchUser(use []objectid.String) ([]*Object, error) {
+func (r *Redis) SearchUser(use []objectid.ID) ([]*Object, error) {
 	var err error
 
 	var out []*Object

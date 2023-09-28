@@ -60,10 +60,15 @@ func (r *Redis) Create(inp []*Object) ([]*Object, error) {
 			}
 		}
 
+		var now time.Time
 		{
-			inp[i].Crtd = time.Now().UTC()
+			now = time.Now().UTC()
+		}
+
+		{
+			inp[i].Crtd = now
 			inp[i].Evnt = eve.Evnt
-			inp[i].Vote = objectid.New(inp[i].Crtd)
+			inp[i].Vote = objectid.Random(objectid.Time(now))
 		}
 
 		// Ensure the user vote limit globally is respected.

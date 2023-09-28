@@ -21,9 +21,9 @@ type Object struct {
 	// Name is the reaction name.
 	Name string `json:"name"`
 	// Rctn is the ID of the reaction being created.
-	Rctn objectid.String `json:"rctn"`
+	Rctn objectid.ID `json:"rctn"`
 	// User is the user ID creating this reaction.
-	User objectid.String `json:"user"`
+	User objectid.ID `json:"user"`
 }
 
 func (o *Object) Verify() error {

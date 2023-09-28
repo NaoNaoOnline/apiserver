@@ -49,7 +49,7 @@ func (r *Redis) Create(inp []*Object) ([]*Object, error) {
 			} else if err != nil {
 				return nil, tracer.Mask(err)
 			} else {
-				inp[i].Cate = append(inp[i].Cate, objectid.String(key))
+				inp[i].Cate = append(inp[i].Cate, objectid.ID(key))
 			}
 		}
 
@@ -85,9 +85,14 @@ func (r *Redis) Create(inp []*Object) ([]*Object, error) {
 			}
 		}
 
+		var now time.Time
 		{
-			inp[i].Crtd = time.Now().UTC()
-			inp[i].Evnt = objectid.New(inp[i].Crtd)
+			now = time.Now().UTC()
+		}
+
+		{
+			inp[i].Crtd = now
+			inp[i].Evnt = objectid.Random(objectid.Time(now))
 		}
 
 		// Once we know the associated labels exist, we create the normalized

@@ -43,7 +43,7 @@ func useNam(str string) string {
 	return fmt.Sprintf(keyfmt.UserName, str)
 }
 
-func useObj(oid objectid.String) string {
+func useObj(oid objectid.ID) string {
 	return fmt.Sprintf(keyfmt.UserObject, oid)
 }
 

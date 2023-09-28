@@ -13,9 +13,9 @@ import (
 func (h *Handler) Search(ctx context.Context, req *vote.SearchI) (*vote.SearchO, error) {
 	var err error
 
-	var des []objectid.String
+	var des []objectid.ID
 	for _, x := range req.Object {
-		des = append(des, objectid.String(x.Public.Desc))
+		des = append(des, objectid.ID(x.Public.Desc))
 	}
 
 	var out []*votestorage.Object

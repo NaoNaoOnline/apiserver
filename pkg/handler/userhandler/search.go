@@ -66,10 +66,10 @@ func (h *Handler) Search(ctx context.Context, req *user.SearchI) (*user.SearchO,
 		// Search users by ID.
 		//
 
-		var use []objectid.String
+		var use []objectid.ID
 		for _, x := range req.Object {
 			if x.Intern.User != "" {
-				use = append(use, objectid.String(x.Intern.User))
+				use = append(use, objectid.ID(x.Intern.User))
 			}
 		}
 

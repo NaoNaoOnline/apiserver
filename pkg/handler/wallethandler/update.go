@@ -19,18 +19,18 @@ func (h *Handler) Update(ctx context.Context, req *wallet.UpdateI) (*wallet.Upda
 		return nil, tracer.Mask(userIDEmptyError)
 	}
 
-	upd := map[objectid.String]walletstorage.Object{}
+	upd := map[objectid.ID]walletstorage.Object{}
 	for _, x := range req.Object {
-		upd[objectid.String(x.Intern.Wllt)] = walletstorage.Object{
+		upd[objectid.ID(x.Intern.Wllt)] = walletstorage.Object{
 			Mess: x.Public.Mess,
 			Pubk: x.Public.Pubk,
 			Sign: x.Public.Sign,
 		}
 	}
 
-	var wal []objectid.String
+	var wal []objectid.ID
 	for _, x := range req.Object {
-		wal = append(wal, objectid.String(x.Intern.Wllt))
+		wal = append(wal, objectid.ID(x.Intern.Wllt))
 	}
 
 	var obj []*walletstorage.Object

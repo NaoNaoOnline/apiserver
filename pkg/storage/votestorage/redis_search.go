@@ -11,7 +11,7 @@ import (
 	"github.com/xh3b4sd/tracer"
 )
 
-func (r *Redis) SearchDesc(inp []objectid.String) ([]*Object, error) {
+func (r *Redis) SearchDesc(inp []objectid.ID) ([]*Object, error) {
 	var err error
 
 	var out []*Object
@@ -45,7 +45,7 @@ func (r *Redis) SearchDesc(inp []objectid.String) ([]*Object, error) {
 	return out, nil
 }
 
-func (r *Redis) SearchVote(inp []objectid.String) ([]*Object, error) {
+func (r *Redis) SearchVote(inp []objectid.ID) ([]*Object, error) {
 	var err error
 
 	var jsn []string
@@ -78,7 +78,7 @@ func (r *Redis) SearchVote(inp []objectid.String) ([]*Object, error) {
 	return out, nil
 }
 
-func (r *Redis) searchDesc(des objectid.String) (*descriptionstorage.Object, error) {
+func (r *Redis) searchDesc(des objectid.ID) (*descriptionstorage.Object, error) {
 	var err error
 
 	var jsn []string
@@ -106,7 +106,7 @@ func (r *Redis) searchDesc(des objectid.String) (*descriptionstorage.Object, err
 	return obj, nil
 }
 
-func (r *Redis) searchEvnt(eve objectid.String) (*eventstorage.Object, error) {
+func (r *Redis) searchEvnt(eve objectid.ID) (*eventstorage.Object, error) {
 	var err error
 
 	var jsn []string

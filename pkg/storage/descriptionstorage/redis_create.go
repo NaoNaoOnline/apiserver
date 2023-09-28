@@ -54,9 +54,14 @@ func (r *Redis) Create(inp []*Object) ([]*Object, error) {
 			return nil, tracer.Mask(eventAlreadyHappenedError)
 		}
 
+		var now time.Time
 		{
-			inp[i].Crtd = time.Now().UTC()
-			inp[i].Desc = objectid.New(inp[i].Crtd)
+			now = time.Now().UTC()
+		}
+
+		{
+			inp[i].Crtd = now
+			inp[i].Desc = objectid.Random(objectid.Time(now))
 		}
 
 		// Once we know the associated event exists, we create the normalized

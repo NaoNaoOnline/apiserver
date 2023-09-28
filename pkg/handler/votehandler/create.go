@@ -21,8 +21,8 @@ func (h *Handler) Create(ctx context.Context, req *vote.CreateI) (*vote.CreateO,
 	var inp []*votestorage.Object
 	for _, x := range req.Object {
 		inp = append(inp, &votestorage.Object{
-			Desc: objectid.String(x.Public.Desc),
-			Rctn: objectid.String(x.Public.Rctn),
+			Desc: objectid.ID(x.Public.Desc),
+			Rctn: objectid.ID(x.Public.Rctn),
 			User: userid.FromContext(ctx),
 		})
 	}

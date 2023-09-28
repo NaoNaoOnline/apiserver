@@ -28,7 +28,7 @@ type Interface interface {
 	//     @inp[1] the wallet kinds under which wallet objects are grouped together
 	//     @out[0] the list of wallet objects for the given user, matching the given wallet kinds
 	//
-	SearchKind(objectid.String, []string) ([]*Object, error)
+	SearchKind(objectid.ID, []string) ([]*Object, error)
 
 	// SearchWllt returns the wallet objects for the given user, matching the
 	// given wallet IDs.
@@ -37,7 +37,7 @@ type Interface interface {
 	//     @inp[1] the wallet IDs to search for
 	//     @out[0] the list of wallet objects for the given user, matching the given wallet IDs
 	//
-	SearchWllt(objectid.String, []objectid.String) ([]*Object, error)
+	SearchWllt(objectid.ID, []objectid.ID) ([]*Object, error)
 
 	// Update modifies the existing wallet objects by solving the signature
 	// verification challenge again. On success object.intern.last is set to the

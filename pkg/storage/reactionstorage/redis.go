@@ -47,11 +47,11 @@ func rctKin(kin string) string {
 	panic(fmt.Sprintf("kin must be bltn or user, got %s", kin))
 }
 
-func rctObj(oid objectid.String) string {
+func rctObj(oid objectid.ID) string {
 	return fmt.Sprintf(keyfmt.ReactionObject, oid)
 }
 
-func rctUse(oid objectid.String) string {
+func rctUse(oid objectid.ID) string {
 	return fmt.Sprintf(keyfmt.ReactionUser, oid)
 }
 

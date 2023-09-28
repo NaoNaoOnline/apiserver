@@ -23,13 +23,13 @@ type Object struct {
 	//
 	Kind string `json:"kind"`
 	// Labl is the ID of the label being created.
-	Labl objectid.String `json:"labl"`
+	Labl objectid.ID `json:"labl"`
 	// Name is the label name.
 	Name string `json:"name"`
 	// Twit is the label's Twitter link.
 	Twit string `json:"twit"`
 	// User is the user ID creating this label.
-	User objectid.String `json:"user"`
+	User objectid.ID `json:"user"`
 }
 
 var (
