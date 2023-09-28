@@ -5,7 +5,7 @@ import (
 	"fmt"
 
 	"github.com/NaoNaoOnline/apiserver/pkg/keyfmt"
-	"github.com/NaoNaoOnline/apiserver/pkg/objectid"
+	"github.com/NaoNaoOnline/apiserver/pkg/object/objectid"
 	"github.com/xh3b4sd/logger"
 	"github.com/xh3b4sd/redigo"
 	"github.com/xh3b4sd/tracer"

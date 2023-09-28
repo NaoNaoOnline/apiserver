@@ -5,7 +5,7 @@ import (
 	"strconv"
 
 	"github.com/NaoNaoOnline/apigocode/pkg/description"
-	"github.com/NaoNaoOnline/apiserver/pkg/objectid"
+	"github.com/NaoNaoOnline/apiserver/pkg/object/objectid"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/descriptionstorage"
 	"github.com/xh3b4sd/tracer"
 )

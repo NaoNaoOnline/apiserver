@@ -4,7 +4,8 @@ import (
 	"regexp"
 	"time"
 
-	"github.com/NaoNaoOnline/apiserver/pkg/objectid"
+	"github.com/NaoNaoOnline/apiserver/pkg/object/objectfield"
+	"github.com/NaoNaoOnline/apiserver/pkg/object/objectid"
 	"github.com/ethereum/go-ethereum/accounts"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/common/hexutil"
@@ -14,7 +15,7 @@ import (
 
 type Object struct {
 	// Addr is the hex encoded wallet address.
-	Addr string `json:"addr"`
+	Addr objectfield.String `json:"addr"`
 	// Crtd is the time at which the wallet got created.
 	Crtd time.Time `json:"crtd"`
 	// Kind is the wallet type.
@@ -22,9 +23,6 @@ type Object struct {
 	//     eth for ethereum wallets
 	//
 	Kind string `json:"kind"`
-	// Last is the most recent time at which this wallet got re-validated by
-	// signing a message again.
-	Last time.Time `json:"last"`
 	// User is the user ID creating this wallet.
 	User objectid.String `json:"user"`
 	// Wllt is the ID of the wallet being created.
@@ -126,7 +124,7 @@ func (o *Object) Verify() error {
 	// again, we need to ensure that the recovered address does not change across
 	// the lifetime of the wallet object.
 	{
-		if o.Addr != "" && o.Addr != o.Comadd().Hex() {
+		if o.Addr.Data != "" && o.Addr.Data != o.Comadd().Hex() {
 			return tracer.Mask(walletAddrChangeError)
 		}
 	}

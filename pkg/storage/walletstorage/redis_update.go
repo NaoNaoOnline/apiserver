@@ -3,14 +3,14 @@ package walletstorage
 import (
 	"time"
 
-	"github.com/NaoNaoOnline/apiserver/pkg/objectstate"
+	"github.com/NaoNaoOnline/apiserver/pkg/object/objectstate"
 	"github.com/xh3b4sd/tracer"
 )
 
-func (r *Redis) Update(inp []*Object) ([]objectstate.String, error) {
+func (r *Redis) Update(inp []*Object) ([]*Object, []objectstate.String, error) {
 	var err error
 
-	var out []objectstate.String
+	var sta []objectstate.String
 	for i := range inp {
 		// At first we need to validate the given input object and, amongst others,
 		// ensure whether the provided wallet signature is in fact valid. For
@@ -19,12 +19,12 @@ func (r *Redis) Update(inp []*Object) ([]objectstate.String, error) {
 		{
 			err := inp[i].Verify()
 			if err != nil {
-				return nil, tracer.Mask(err)
+				return nil, nil, tracer.Mask(err)
 			}
 		}
 
 		{
-			inp[i].Last = time.Now().UTC()
+			inp[i].Addr.Time = time.Now().UTC()
 		}
 
 		// Once we know the wallet's signature is valid, we update the normalized
@@ -33,14 +33,14 @@ func (r *Redis) Update(inp []*Object) ([]objectstate.String, error) {
 		{
 			err = r.red.Simple().Create().Element(walObj(inp[i].User, inp[i].Wllt), musStr(inp[i]))
 			if err != nil {
-				return nil, tracer.Mask(err)
+				return nil, nil, tracer.Mask(err)
 			}
 		}
 
 		{
-			out = append(out, objectstate.Updated)
+			sta = append(sta, objectstate.Updated)
 		}
 	}
 
-	return out, nil
+	return inp, sta, nil
 }

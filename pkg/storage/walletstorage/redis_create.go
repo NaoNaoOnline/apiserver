@@ -4,7 +4,8 @@ import (
 	"time"
 
 	"github.com/NaoNaoOnline/apiserver/pkg/keyfmt"
-	"github.com/NaoNaoOnline/apiserver/pkg/objectid"
+	"github.com/NaoNaoOnline/apiserver/pkg/object/objectfield"
+	"github.com/NaoNaoOnline/apiserver/pkg/object/objectid"
 	"github.com/xh3b4sd/tracer"
 )
 
@@ -23,10 +24,17 @@ func (r *Redis) CreateXtrn(inp []*Object) ([]*Object, error) {
 			}
 		}
 
+		var now time.Time
 		{
-			inp[i].Addr = inp[i].Comadd().Hex()
-			inp[i].Crtd = time.Now().UTC()
-			inp[i].Last = inp[i].Crtd
+			now = time.Now().UTC()
+		}
+
+		{
+			inp[i].Addr = objectfield.String{
+				Data: inp[i].Comadd().Hex(),
+				Time: now,
+			}
+			inp[i].Crtd = now
 			inp[i].Wllt = objectid.New(inp[i].Crtd)
 		}
 
@@ -65,7 +73,7 @@ func (r *Redis) CreateXtrn(inp []*Object) ([]*Object, error) {
 		// the user's wallets by their wallet addresses. With that we can search for
 		// a user wallet only knowing their wallet address.
 		{
-			err = r.red.Sorted().Create().Index(walUse(inp[i].User), inp[i].Wllt.String(), inp[i].Wllt.Float(), keyfmt.Indx(inp[i].Addr))
+			err = r.red.Sorted().Create().Index(walUse(inp[i].User), inp[i].Wllt.String(), inp[i].Wllt.Float(), keyfmt.Indx(inp[i].Addr.Data))
 			if err != nil {
 				return nil, tracer.Mask(err)
 			}

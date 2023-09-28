@@ -5,7 +5,7 @@ import (
 	"fmt"
 
 	"github.com/NaoNaoOnline/apiserver/pkg/keyfmt"
-	"github.com/NaoNaoOnline/apiserver/pkg/objectid"
+	"github.com/NaoNaoOnline/apiserver/pkg/object/objectid"
 	jsonpatch "github.com/evanphx/json-patch/v5"
 	"github.com/xh3b4sd/logger"
 	"github.com/xh3b4sd/redigo"

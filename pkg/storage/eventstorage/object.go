@@ -6,7 +6,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/NaoNaoOnline/apiserver/pkg/objectid"
+	"github.com/NaoNaoOnline/apiserver/pkg/object/objectid"
 	"github.com/xh3b4sd/tracer"
 )
 

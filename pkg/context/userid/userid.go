@@ -3,7 +3,7 @@ package userid
 import (
 	"context"
 
-	"github.com/NaoNaoOnline/apiserver/pkg/objectid"
+	"github.com/NaoNaoOnline/apiserver/pkg/object/objectid"
 )
 
 type t string
