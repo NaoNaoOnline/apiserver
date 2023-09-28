@@ -24,9 +24,9 @@ type Object struct {
 	//
 	Kind string `json:"kind"`
 	// User is the user ID creating this wallet.
-	User objectid.String `json:"user"`
+	User objectid.ID `json:"user"`
 	// Wllt is the ID of the wallet being created.
-	Wllt objectid.String `json:"wllt"`
+	Wllt objectid.ID `json:"wllt"`
 
 	// Message, public key and signature are only ephemeral data we use in
 	// transit. The properties below are part of the cryptographic verification

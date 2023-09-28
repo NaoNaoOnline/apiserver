@@ -9,7 +9,7 @@ import (
 	"github.com/xh3b4sd/tracer"
 )
 
-func (r *Redis) SearchDesc(inp []objectid.String) ([]*Object, error) {
+func (r *Redis) SearchDesc(inp []objectid.ID) ([]*Object, error) {
 	var err error
 
 	var jsn []string
@@ -42,7 +42,7 @@ func (r *Redis) SearchDesc(inp []objectid.String) ([]*Object, error) {
 	return out, nil
 }
 
-func (r *Redis) SearchEvnt(evn []objectid.String) ([]*Object, error) {
+func (r *Redis) SearchEvnt(evn []objectid.ID) ([]*Object, error) {
 	var err error
 
 	var out []*Object

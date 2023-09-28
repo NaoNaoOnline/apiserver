@@ -35,31 +35,31 @@ func NewRedis(c RedisConfig) *Redis {
 	}
 }
 
-func desObj(oid objectid.String) string {
+func desObj(oid objectid.ID) string {
 	return fmt.Sprintf(keyfmt.DescriptionObject, oid)
 }
 
-func eveObj(oid objectid.String) string {
+func eveObj(oid objectid.ID) string {
 	return fmt.Sprintf(keyfmt.EventObject, oid)
 }
 
-func rctObj(oid objectid.String) string {
+func rctObj(oid objectid.ID) string {
 	return fmt.Sprintf(keyfmt.ReactionObject, oid)
 }
 
-func votDes(oid objectid.String) string {
+func votDes(oid objectid.ID) string {
 	return fmt.Sprintf(keyfmt.VoteDescription, oid)
 }
 
-func votEve(ida objectid.String, idb objectid.String) string {
+func votEve(ida objectid.ID, idb objectid.ID) string {
 	return fmt.Sprintf(keyfmt.VoteUserEvent, ida, idb)
 }
 
-func votObj(oid objectid.String) string {
+func votObj(oid objectid.ID) string {
 	return fmt.Sprintf(keyfmt.VoteObject, oid)
 }
 
-func votUse(oid objectid.String) string {
+func votUse(oid objectid.ID) string {
 	return fmt.Sprintf(keyfmt.VoteUser, oid)
 }
 

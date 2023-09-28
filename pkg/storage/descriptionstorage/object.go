@@ -12,13 +12,13 @@ type Object struct {
 	// Crtd is the time at which the description got created.
 	Crtd time.Time `json:"crtd"`
 	// Desc is the ID of the description being created.
-	Desc objectid.String `json:"desc"`
+	Desc objectid.ID `json:"desc"`
 	// Evnt is the event ID this description is mapped to.
-	Evnt objectid.String `json:"evnt"`
+	Evnt objectid.ID `json:"evnt"`
 	// Text is the description explaining what an event is about.
 	Text string `json:"text"`
 	// User is the user ID creating this description.
-	User objectid.String `json:"user"`
+	User objectid.ID `json:"user"`
 }
 
 var (

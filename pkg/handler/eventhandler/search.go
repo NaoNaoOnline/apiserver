@@ -31,10 +31,10 @@ func (h *Handler) Search(ctx context.Context, req *event.SearchI) (*event.Search
 	// Search events by ID.
 	//
 
-	var evn []objectid.String
+	var evn []objectid.ID
 	for _, x := range req.Object {
 		if x.Intern.Evnt != "" {
-			evn = append(evn, objectid.String(x.Intern.Evnt))
+			evn = append(evn, objectid.ID(x.Intern.Evnt))
 		}
 	}
 
@@ -51,7 +51,7 @@ func (h *Handler) Search(ctx context.Context, req *event.SearchI) (*event.Search
 	// Search events by label.
 	//
 
-	var lab [][]objectid.String
+	var lab [][]objectid.ID
 	for _, x := range req.Object {
 		if x.Public.Cate != "" || x.Public.Host != "" {
 			lab = append(lab, append(inpLab(x.Public.Cate), inpLab(x.Public.Host)...))
@@ -113,10 +113,10 @@ func (h *Handler) Search(ctx context.Context, req *event.SearchI) (*event.Search
 	// Search events by user.
 	//
 
-	var use []objectid.String
+	var use []objectid.ID
 	for _, x := range req.Object {
 		if x.Intern.User != "" {
-			use = append(use, objectid.String(x.Intern.User))
+			use = append(use, objectid.ID(x.Intern.User))
 		}
 	}
 

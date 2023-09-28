@@ -18,7 +18,7 @@ type Object struct {
 	// created.
 	Subj []string `json:"subj"`
 	// User is the internal ID of the user being created.
-	User objectid.String `json:"user"`
+	User objectid.ID `json:"user"`
 }
 
 func (o *Object) Verify() error {

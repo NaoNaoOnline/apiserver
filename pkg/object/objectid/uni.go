@@ -1,7 +1,7 @@
 package objectid
 
 // Uni returns a list of unique items.
-func Uni[T string | String](lis []T) []T {
+func Uni[T string | ID](lis []T) []T {
 	see := map[T]struct{}{}
 
 	var uni []T

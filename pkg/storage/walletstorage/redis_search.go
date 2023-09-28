@@ -10,7 +10,7 @@ import (
 	"github.com/xh3b4sd/tracer"
 )
 
-func (r *Redis) SearchKind(use objectid.String, kin []string) ([]*Object, error) {
+func (r *Redis) SearchKind(use objectid.ID, kin []string) ([]*Object, error) {
 	var err error
 
 	var out []*Object
@@ -48,7 +48,7 @@ func (r *Redis) SearchKind(use objectid.String, kin []string) ([]*Object, error)
 	return out, nil
 }
 
-func (r *Redis) SearchWllt(use objectid.String, wal []objectid.String) ([]*Object, error) {
+func (r *Redis) SearchWllt(use objectid.ID, wal []objectid.ID) ([]*Object, error) {
 	var err error
 
 	var jsn []string

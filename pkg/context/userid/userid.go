@@ -10,11 +10,11 @@ type t string
 
 var k t = "userid"
 
-func NewContext(ctx context.Context, v objectid.String) context.Context {
+func NewContext(ctx context.Context, v objectid.ID) context.Context {
 	return context.WithValue(ctx, k, v)
 }
 
-func FromContext(ctx context.Context) objectid.String {
-	v, _ := ctx.Value(k).(objectid.String)
+func FromContext(ctx context.Context) objectid.ID {
+	v, _ := ctx.Value(k).(objectid.ID)
 	return v
 }

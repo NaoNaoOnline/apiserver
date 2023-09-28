@@ -72,19 +72,19 @@ func Test_ObjectID_Dup_string(t *testing.T) {
 	}
 }
 
-func Test_ObjectID_Dup_String(t *testing.T) {
+func Test_ObjectID_Dup_ID(t *testing.T) {
 	testCases := []struct {
-		lis []String
+		lis []ID
 		dup bool
 	}{
 		// Case 000
 		{
-			lis: []String{},
+			lis: []ID{},
 			dup: false,
 		},
 		// Case 001
 		{
-			lis: []String{
+			lis: []ID{
 				"55",
 				"44",
 			},
@@ -92,7 +92,7 @@ func Test_ObjectID_Dup_String(t *testing.T) {
 		},
 		// Case 002
 		{
-			lis: []String{
+			lis: []ID{
 				"33",
 				"44",
 				"33",
@@ -102,7 +102,7 @@ func Test_ObjectID_Dup_String(t *testing.T) {
 		},
 		// Case 003
 		{
-			lis: []String{
+			lis: []ID{
 				"33",
 				"44",
 				"88",
@@ -117,7 +117,7 @@ func Test_ObjectID_Dup_String(t *testing.T) {
 		},
 		// Case 004
 		{
-			lis: []String{
+			lis: []ID{
 				"33",
 				"44",
 				"88",

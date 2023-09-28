@@ -48,15 +48,15 @@ func Test_ObjectID_Fmt_string(t *testing.T) {
 	}
 }
 
-func Test_ObjectID_Fmt_String(t *testing.T) {
+func Test_ObjectID_Fmt_ID(t *testing.T) {
 	testCases := []struct {
-		ids []String
+		ids []ID
 		str string
 		key []string
 	}{
 		// Case 000
 		{
-			ids: []String{
+			ids: []ID{
 				"foo",
 				"bar",
 			},
@@ -68,7 +68,7 @@ func Test_ObjectID_Fmt_String(t *testing.T) {
 		},
 		// Case 001
 		{
-			ids: []String{
+			ids: []ID{
 				"foo",
 				"bar",
 			},

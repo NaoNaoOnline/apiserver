@@ -26,12 +26,12 @@ type Interface interface {
 	//     @inp[0] the description IDs any vote object might be associated with
 	//     @out[0] the list of all vote objects associated with the given description IDs
 	//
-	SearchDesc([]objectid.String) ([]*Object, error)
+	SearchDesc([]objectid.ID) ([]*Object, error)
 
 	// SearchVote returns the vote objects matching the given vote IDs.
 	//
 	//     @inp[0] the vote IDs to search for
 	//     @out[0] the list of vote objects matching the given vote IDs
 	//
-	SearchVote([]objectid.String) ([]*Object, error)
+	SearchVote([]objectid.ID) ([]*Object, error)
 }

@@ -51,11 +51,11 @@ func labKin(kin string) string {
 	panic(fmt.Sprintf("kin must be bltn, cate or host, got %s", kin))
 }
 
-func labObj(oid objectid.String) string {
+func labObj(oid objectid.ID) string {
 	return fmt.Sprintf(keyfmt.LabelObject, oid)
 }
 
-func labUse(use objectid.String) string {
+func labUse(use objectid.ID) string {
 	return fmt.Sprintf(keyfmt.LabelUser, use)
 }
 

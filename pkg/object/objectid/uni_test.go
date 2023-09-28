@@ -74,43 +74,43 @@ func Test_ObjectID_Uni_string(t *testing.T) {
 	}
 }
 
-func Test_ObjectID_Uni_String(t *testing.T) {
+func Test_ObjectID_Uni_ID(t *testing.T) {
 	testCases := []struct {
-		lis []String
-		uni []String
+		lis []ID
+		uni []ID
 	}{
 		// Case 000
 		{
-			lis: []String{},
+			lis: []ID{},
 			uni: nil,
 		},
 		// Case 001
 		{
-			lis: []String{
+			lis: []ID{
 				"55",
 				"44",
 			},
-			uni: []String{
+			uni: []ID{
 				"55",
 				"44",
 			},
 		},
 		// Case 002
 		{
-			lis: []String{
+			lis: []ID{
 				"33",
 				"44",
 				"33",
 				"33",
 			},
-			uni: []String{
+			uni: []ID{
 				"33",
 				"44",
 			},
 		},
 		// Case 003
 		{
-			lis: []String{
+			lis: []ID{
 				"33",
 				"44",
 				"88",
@@ -121,7 +121,7 @@ func Test_ObjectID_Uni_String(t *testing.T) {
 				"55",
 				"88",
 			},
-			uni: []String{
+			uni: []ID{
 				"33",
 				"44",
 				"88",

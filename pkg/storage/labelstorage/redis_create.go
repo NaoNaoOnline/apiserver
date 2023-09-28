@@ -32,9 +32,14 @@ func (r *Redis) Create(inp []*Object) ([]*Object, error) {
 			}
 		}
 
+		var now time.Time
 		{
-			inp[i].Crtd = time.Now().UTC()
-			inp[i].Labl = objectid.New(inp[i].Crtd)
+			now = time.Now().UTC()
+		}
+
+		{
+			inp[i].Crtd = now
+			inp[i].Labl = objectid.Random(objectid.Time(now))
 			inp[i].Name = keyfmt.Name(inp[i].Name)
 		}
 

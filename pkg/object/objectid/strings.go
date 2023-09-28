@@ -1,10 +1,10 @@
 package objectid
 
-func Strings(str []string) []String {
-	var ids []String
+func Strings(str []string) []ID {
+	var ids []ID
 
 	for _, x := range str {
-		ids = append(ids, String(x))
+		ids = append(ids, ID(x))
 	}
 
 	return ids

@@ -18,9 +18,9 @@ func (h *Handler) Delete(ctx context.Context, req *vote.DeleteI) (*vote.DeleteO,
 		return nil, tracer.Mask(userIDEmptyError)
 	}
 
-	var vot []objectid.String
+	var vot []objectid.ID
 	for _, x := range req.Object {
-		vot = append(vot, objectid.String(x.Intern.Vote))
+		vot = append(vot, objectid.ID(x.Intern.Vote))
 	}
 
 	var obj []*votestorage.Object

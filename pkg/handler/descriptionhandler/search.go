@@ -11,9 +11,9 @@ import (
 )
 
 func (h *Handler) Search(ctx context.Context, req *description.SearchI) (*description.SearchO, error) {
-	var evn []objectid.String
+	var evn []objectid.ID
 	for _, x := range req.Object {
-		evn = append(evn, objectid.String(x.Public.Evnt))
+		evn = append(evn, objectid.ID(x.Public.Evnt))
 	}
 
 	var out []*descriptionstorage.Object

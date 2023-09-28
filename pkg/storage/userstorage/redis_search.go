@@ -60,7 +60,7 @@ func (r *Redis) SearchSubj(sub string) (*Object, error) {
 
 	var jsn []string
 	{
-		jsn, err = r.red.Simple().Search().Multi(useObj(objectid.String(use[0])))
+		jsn, err = r.red.Simple().Search().Multi(useObj(objectid.ID(use[0])))
 		if simple.IsNotFound(err) {
 			return nil, tracer.Maskf(userNotFoundError, use[0])
 		} else if err != nil {
@@ -79,7 +79,7 @@ func (r *Redis) SearchSubj(sub string) (*Object, error) {
 	return &out, nil
 }
 
-func (r *Redis) SearchUser(use []objectid.String) ([]*Object, error) {
+func (r *Redis) SearchUser(use []objectid.ID) ([]*Object, error) {
 	var err error
 
 	var jsn []string
