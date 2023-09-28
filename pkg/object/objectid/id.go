@@ -14,10 +14,6 @@ func Random(num int64) ID {
 	return ID(fmt.Sprintf("%d%06d", num, rand.Intn(999999)))
 }
 
-func Static(num int64) ID {
-	return ID(fmt.Sprintf("%d%06d", num, 0))
-}
-
 func System() ID {
 	return "0"
 }
