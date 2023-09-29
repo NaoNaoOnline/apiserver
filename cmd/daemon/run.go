@@ -33,6 +33,7 @@ import (
 	"github.com/twitchtv/twirp"
 	"github.com/xh3b4sd/logger"
 	"github.com/xh3b4sd/redigo"
+	"github.com/xh3b4sd/rescue/engine"
 	"github.com/xh3b4sd/tracer"
 )
 
@@ -50,12 +51,7 @@ func (r *run) runE(cmd *cobra.Command, args []string) error {
 
 	var log logger.Interface
 	{
-		c := logger.Config{}
-
-		log, err = logger.New(c)
-		if err != nil {
-			return tracer.Mask(err)
-		}
+		log = logger.Default()
 	}
 
 	var lis net.Listener
@@ -71,6 +67,15 @@ func (r *run) runE(cmd *cobra.Command, args []string) error {
 		red = redigo.Default()
 	}
 
+	var res engine.Interface
+	{
+		res = engine.New(engine.Config{
+			Logger: log,
+			Queue:  "api.naonao.io", // rescue.io:api.naonao.io
+			Redigo: red,
+		})
+	}
+
 	// --------------------------------------------------------------------- //
 
 	var des descriptionstorage.Interface
@@ -81,7 +86,7 @@ func (r *run) runE(cmd *cobra.Command, args []string) error {
 	var vot votestorage.Interface
 	var wal walletstorage.Interface
 	{
-		des = descriptionstorage.NewRedis(descriptionstorage.RedisConfig{Log: log, Red: red})
+		des = descriptionstorage.NewRedis(descriptionstorage.RedisConfig{Log: log, Red: red, Res: res})
 		eve = eventstorage.NewRedis(eventstorage.RedisConfig{Log: log, Red: red})
 		lab = labelstorage.NewRedis(labelstorage.RedisConfig{Log: log, Red: red})
 		rct = reactionstorage.NewRedis(reactionstorage.RedisConfig{Log: log, Red: red})
@@ -121,7 +126,7 @@ func (r *run) runE(cmd *cobra.Command, args []string) error {
 				labelhandler.NewHandler(labelhandler.HandlerConfig{Lab: lab, Log: log}),
 				reactionhandler.NewHandler(reactionhandler.HandlerConfig{Log: log, Rct: rct}),
 				userhandler.NewHandler(userhandler.HandlerConfig{Log: log, Use: use}),
-				votehandler.NewHandler(votehandler.HandlerConfig{Log: log, Vot: vot}),
+				votehandler.NewHandler(votehandler.HandlerConfig{Eve: eve, Log: log, Vot: vot}),
 				wallethandler.NewHandler(wallethandler.HandlerConfig{Log: log, Wal: wal}),
 			},
 			Int: []twirp.Interceptor{

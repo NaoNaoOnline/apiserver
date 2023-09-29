@@ -13,6 +13,24 @@ type Interface interface {
 	//
 	Create([]*Object) ([]*Object, error)
 
+	// DeleteDesc purges the given description objects. Note that DeleteDesc does
+	// not purge associated data structures.
+	//
+	//     @inp[0] the description objects to delete
+	//     @out[0] the list of operation states related to the purged description objects
+	//
+	DeleteDesc([]*Object) ([]objectstate.String, error)
+
+	// DeleteWrkr initializes the asynchronous deletion process for the given
+	// description objects and all of its associated data structures by setting
+	// Object.Dltd and creating the respective worker tasks that will be processed
+	// in the background.
+	//
+	//     @inp[0] the description objects to delete
+	//     @out[0] the list of operation states related to the purged description objects
+	//
+	DeleteWrkr([]*Object) ([]objectstate.String, error)
+
 	// SearchDesc returns the description objects matching the given description
 	// IDs.
 	//

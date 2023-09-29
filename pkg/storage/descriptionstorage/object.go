@@ -11,6 +11,8 @@ import (
 type Object struct {
 	// Crtd is the time at which the description got created.
 	Crtd time.Time `json:"crtd"`
+	// Dltd is the time at which the description got deleted.
+	Dltd time.Time `json:"dltd,omitempty"`
 	// Desc is the ID of the description being created.
 	Desc objectid.ID `json:"desc"`
 	// Evnt is the event ID this description is mapped to.

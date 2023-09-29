@@ -10,6 +10,8 @@ import (
 type Object struct {
 	// Crtd is the time at which the user got created.
 	Crtd time.Time `json:"crtd"`
+	// Dltd is the time at which the user got deleted.
+	Dltd time.Time `json:"dltd,omitempty"`
 	// Imag is the URL pointing to the user's profile picture.
 	Imag string `json:"imag"`
 	// Name is the user name.

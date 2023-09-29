@@ -7,6 +7,7 @@ import (
 	"github.com/NaoNaoOnline/apiserver/pkg/context/userid"
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectid"
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectstate"
+	"github.com/NaoNaoOnline/apiserver/pkg/storage/eventstorage"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/votestorage"
 	"github.com/xh3b4sd/tracer"
 )
@@ -34,6 +35,21 @@ func (h *Handler) Delete(ctx context.Context, req *vote.DeleteI) (*vote.DeleteO,
 	for _, x := range obj {
 		if userid.FromContext(ctx) != x.User {
 			return nil, tracer.Mask(userNotOwnerError)
+		}
+
+		var eve []*eventstorage.Object
+		{
+			eve, err = h.eve.SearchEvnt([]objectid.ID{x.Evnt})
+			if err != nil {
+				return nil, tracer.Mask(err)
+			}
+		}
+
+		// Ensure votes cannot be removed from events that have already happened.
+		{
+			if eve[0].Happnd() {
+				return nil, tracer.Mask(eventAlreadyHappenedError)
+			}
 		}
 	}
 

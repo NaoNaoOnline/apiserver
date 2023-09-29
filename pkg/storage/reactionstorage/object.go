@@ -10,6 +10,8 @@ import (
 type Object struct {
 	// Crtd is the time at which the reaction got created.
 	Crtd time.Time `json:"crtd"`
+	// Dltd is the time at which the reaction got deleted.
+	Dltd time.Time `json:"dltd,omitempty"`
 	// Html is the HTML of this reaction icon, e.g. some svg code.
 	Html string `json:"html"`
 	// Kind is the reaction type.
