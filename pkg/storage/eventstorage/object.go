@@ -15,6 +15,8 @@ type Object struct {
 	Cate []objectid.ID `json:"cate"`
 	// Crtd is the time at which the event got created.
 	Crtd time.Time `json:"crtd"`
+	// Dltd is the time at which the event got deleted.
+	Dltd time.Time `json:"dltd,omitempty"`
 	// Dura is the estimated duration of the event.
 	Dura time.Duration `json:"dura"`
 	// Evnt is the ID of the event being created.

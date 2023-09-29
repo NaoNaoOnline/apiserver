@@ -11,6 +11,8 @@ import (
 type Object struct {
 	// Crtd is the time at which the label got created.
 	Crtd time.Time `json:"crtd"`
+	// Dltd is the time at which the label got deleted.
+	Dltd time.Time `json:"dltd,omitempty"`
 	// Desc is the label's description.
 	Desc string `json:"desc"`
 	// Disc is the label's Discord link.

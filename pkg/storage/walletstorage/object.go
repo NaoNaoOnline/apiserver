@@ -18,6 +18,8 @@ type Object struct {
 	Addr objectfield.String `json:"addr"`
 	// Crtd is the time at which the wallet got created.
 	Crtd time.Time `json:"crtd"`
+	// Dltd is the time at which the wallet got deleted.
+	Dltd time.Time `json:"dltd,omitempty"`
 	// Kind is the wallet type.
 	//
 	//     eth for ethereum wallets

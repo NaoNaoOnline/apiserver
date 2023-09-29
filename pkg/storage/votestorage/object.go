@@ -10,6 +10,8 @@ import (
 type Object struct {
 	// Crtd is the time at which the vote got created.
 	Crtd time.Time `json:"crtd"`
+	// Dltd is the time at which the vote got deleted.
+	Dltd time.Time `json:"dltd,omitempty"`
 	// Desc is the ID of the description the user voted on.
 	Desc objectid.ID `json:"desc"`
 	// Evnt is the ID of the event the user voted on.

@@ -32,6 +32,11 @@ func (h *Handler) Search(ctx context.Context, req *description.SearchI) (*descri
 	}
 
 	for _, x := range out {
+		// Descriptions marked to be deleted cannot be searched anymore.
+		if !x.Dltd.IsZero() {
+			continue
+		}
+
 		res.Object = append(res.Object, &description.SearchO_Object{
 			Intern: &description.SearchO_Object_Intern{
 				Crtd: strconv.Itoa(int(x.Crtd.Unix())),
