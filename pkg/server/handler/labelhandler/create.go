@@ -6,7 +6,7 @@ import (
 	"strconv"
 
 	"github.com/NaoNaoOnline/apigocode/pkg/label"
-	"github.com/NaoNaoOnline/apiserver/pkg/context/userid"
+	"github.com/NaoNaoOnline/apiserver/pkg/server/context/userid"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/labelstorage"
 	"github.com/xh3b4sd/tracer"
 )

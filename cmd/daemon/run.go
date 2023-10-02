@@ -8,19 +8,19 @@ import (
 	"time"
 
 	"github.com/NaoNaoOnline/apiserver/pkg/envvar"
-	"github.com/NaoNaoOnline/apiserver/pkg/handler"
-	"github.com/NaoNaoOnline/apiserver/pkg/handler/descriptionhandler"
-	"github.com/NaoNaoOnline/apiserver/pkg/handler/eventhandler"
-	"github.com/NaoNaoOnline/apiserver/pkg/handler/labelhandler"
-	"github.com/NaoNaoOnline/apiserver/pkg/handler/reactionhandler"
-	"github.com/NaoNaoOnline/apiserver/pkg/handler/userhandler"
-	"github.com/NaoNaoOnline/apiserver/pkg/handler/votehandler"
-	"github.com/NaoNaoOnline/apiserver/pkg/handler/wallethandler"
-	"github.com/NaoNaoOnline/apiserver/pkg/interceptor/failedinterceptor"
-	"github.com/NaoNaoOnline/apiserver/pkg/middleware/authmiddleware"
-	"github.com/NaoNaoOnline/apiserver/pkg/middleware/corsmiddleware"
-	"github.com/NaoNaoOnline/apiserver/pkg/middleware/usermiddleware"
 	"github.com/NaoNaoOnline/apiserver/pkg/server"
+	serverhandler "github.com/NaoNaoOnline/apiserver/pkg/server/handler"
+	"github.com/NaoNaoOnline/apiserver/pkg/server/handler/descriptionhandler"
+	"github.com/NaoNaoOnline/apiserver/pkg/server/handler/eventhandler"
+	"github.com/NaoNaoOnline/apiserver/pkg/server/handler/labelhandler"
+	"github.com/NaoNaoOnline/apiserver/pkg/server/handler/reactionhandler"
+	"github.com/NaoNaoOnline/apiserver/pkg/server/handler/userhandler"
+	"github.com/NaoNaoOnline/apiserver/pkg/server/handler/votehandler"
+	"github.com/NaoNaoOnline/apiserver/pkg/server/handler/wallethandler"
+	"github.com/NaoNaoOnline/apiserver/pkg/server/interceptor/failedinterceptor"
+	"github.com/NaoNaoOnline/apiserver/pkg/server/middleware/authmiddleware"
+	"github.com/NaoNaoOnline/apiserver/pkg/server/middleware/corsmiddleware"
+	"github.com/NaoNaoOnline/apiserver/pkg/server/middleware/usermiddleware"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/descriptionstorage"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/eventstorage"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/labelstorage"
@@ -28,6 +28,9 @@ import (
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/userstorage"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/votestorage"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/walletstorage"
+	"github.com/NaoNaoOnline/apiserver/pkg/worker"
+	workerhandler "github.com/NaoNaoOnline/apiserver/pkg/worker/handler"
+	workerdescriptionhandler "github.com/NaoNaoOnline/apiserver/pkg/worker/handler/descriptionhandler"
 	"github.com/gorilla/mux"
 	"github.com/spf13/cobra"
 	"github.com/twitchtv/twirp"
@@ -120,7 +123,7 @@ func (r *run) runE(cmd *cobra.Command, args []string) error {
 	var srv *server.Server
 	{
 		srv = server.New(server.Config{
-			Han: []handler.Interface{
+			Han: []serverhandler.Interface{
 				descriptionhandler.NewHandler(descriptionhandler.HandlerConfig{Des: des, Log: log}),
 				eventhandler.NewHandler(eventhandler.HandlerConfig{Eve: eve, Log: log}),
 				labelhandler.NewHandler(labelhandler.HandlerConfig{Lab: lab, Log: log}),
@@ -143,7 +146,24 @@ func (r *run) runE(cmd *cobra.Command, args []string) error {
 	}
 
 	{
-		go srv.Serve()
+		go srv.Daemon()
+	}
+
+	// --------------------------------------------------------------------- //
+
+	var wrk *worker.Worker
+	{
+		wrk = worker.New(worker.Config{
+			Han: []workerhandler.Interface{
+				workerdescriptionhandler.NewHandler(workerdescriptionhandler.HandlerConfig{Des: des, Log: log, Vot: vot}),
+			},
+			Log: log,
+			Res: res,
+		})
+	}
+
+	{
+		go wrk.Daemon()
 	}
 
 	// --------------------------------------------------------------------- //

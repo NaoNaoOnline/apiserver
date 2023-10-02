@@ -19,7 +19,8 @@ Running the apiserver locally.
 ```
 
 ```
-{ "time":"2023-08-27 12:40:15", "leve":"info", "mess":"rpc server running at 127.0.0.1:7777", "call":"/Users/xh3b4sd/project/NaoNaoOnline/apiserver/pkg/server/server.go:66" }
+{ "time":"2023-10-02 21:08:10", "leve":"info", "mess":"worker searching for tasks", "addr":"127.0.0.1:6379", "call":"/Users/xh3b4sd/project/NaoNaoOnline/apiserver/pkg/worker/worker.go:50" }
+{ "time":"2023-10-02 21:08:10", "leve":"info", "mess":"server listening for calls", "addr":"127.0.0.1:7777", "call":"/Users/xh3b4sd/project/NaoNaoOnline/apiserver/pkg/server/server.go:69" }
 ```
 
 

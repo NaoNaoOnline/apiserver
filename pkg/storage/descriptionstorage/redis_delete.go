@@ -59,16 +59,12 @@ func (r *Redis) DeleteWrkr(inp []*Object) ([]objectstate.String, error) {
 		var tas *task.Task
 		{
 			tas = &task.Task{
-				Obj: task.TaskObj{
-					Metadata: map[string]string{
-						objectlabel.DescAction: objectlabel.ActionDelete,
-						objectlabel.DescObject: inp[i].Desc.String(),
-					},
+				Meta: &task.Meta{
+					objectlabel.DescAction: objectlabel.ActionDelete,
+					objectlabel.DescObject: inp[i].Desc.String(),
 				},
 			}
 		}
-
-		// TODO the task has to be consumed and processed
 
 		// Submit the task to the worker queue.
 		{
