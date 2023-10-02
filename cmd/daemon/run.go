@@ -158,7 +158,6 @@ func (r *run) runE(cmd *cobra.Command, args []string) error {
 				workerdescriptionhandler.NewHandler(workerdescriptionhandler.HandlerConfig{Des: des, Log: log, Vot: vot}),
 			},
 			Log: log,
-			Red: red,
 			Res: res,
 		})
 	}

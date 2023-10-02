@@ -7,7 +7,6 @@ import (
 
 	"github.com/NaoNaoOnline/apiserver/pkg/worker/handler"
 	"github.com/xh3b4sd/logger"
-	"github.com/xh3b4sd/redigo"
 	"github.com/xh3b4sd/rescue/engine"
 	"github.com/xh3b4sd/rescue/task"
 	"github.com/xh3b4sd/tracer"
@@ -18,8 +17,6 @@ type Config struct {
 	// logic.
 	Han []handler.Interface
 	Log logger.Interface
-	// Red is the redigo client used to interact with Redis.
-	Red redigo.Interface
 	// Res is the rescue engine used to participate in the distributed task queue.
 	Res engine.Interface
 }
@@ -27,7 +24,6 @@ type Config struct {
 type Worker struct {
 	han []handler.Interface
 	log logger.Interface
-	red redigo.Interface
 	res engine.Interface
 }
 
@@ -38,9 +34,6 @@ func New(c Config) *Worker {
 	if c.Log == nil {
 		tracer.Panic(tracer.Mask(fmt.Errorf("%T.Log must not be empty", c)))
 	}
-	if c.Red == nil {
-		tracer.Panic(tracer.Mask(fmt.Errorf("%T.Red must not be empty", c)))
-	}
 	if c.Res == nil {
 		tracer.Panic(tracer.Mask(fmt.Errorf("%T.Res must not be empty", c)))
 	}
@@ -48,7 +41,6 @@ func New(c Config) *Worker {
 	return &Worker{
 		han: c.Han,
 		log: c.Log,
-		red: c.Red,
 		res: c.Res,
 	}
 }
@@ -59,7 +51,7 @@ func (w *Worker) Daemon() {
 			context.Background(),
 			"level", "info",
 			"message", "worker searching for tasks",
-			"addr", w.red.Listen(),
+			"addr", w.res.Listen(),
 		)
 	}
 
