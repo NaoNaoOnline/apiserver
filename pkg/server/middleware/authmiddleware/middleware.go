@@ -7,7 +7,7 @@ import (
 	"net/url"
 	"time"
 
-	"github.com/NaoNaoOnline/apiserver/pkg/context/subjectclaim"
+	"github.com/NaoNaoOnline/apiserver/pkg/server/context/subjectclaim"
 	jwtmiddleware "github.com/auth0/go-jwt-middleware/v2"
 	"github.com/auth0/go-jwt-middleware/v2/jwks"
 	"github.com/auth0/go-jwt-middleware/v2/validator"

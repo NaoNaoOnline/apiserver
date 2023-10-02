@@ -6,8 +6,8 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/NaoNaoOnline/apiserver/pkg/context/subjectclaim"
-	"github.com/NaoNaoOnline/apiserver/pkg/context/userid"
+	"github.com/NaoNaoOnline/apiserver/pkg/server/context/subjectclaim"
+	"github.com/NaoNaoOnline/apiserver/pkg/server/context/userid"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/userstorage"
 	"github.com/xh3b4sd/logger"
 	"github.com/xh3b4sd/tracer"

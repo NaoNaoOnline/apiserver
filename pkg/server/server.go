@@ -6,7 +6,7 @@ import (
 	"net"
 	"net/http"
 
-	"github.com/NaoNaoOnline/apiserver/pkg/handler"
+	"github.com/NaoNaoOnline/apiserver/pkg/server/handler"
 	"github.com/gorilla/mux"
 	"github.com/twitchtv/twirp"
 	"github.com/xh3b4sd/logger"
@@ -14,8 +14,8 @@ import (
 )
 
 type Config struct {
-	// Han are the RPC specific handlers implementing the actual business logic
-	// abstracted away from any protocol specific transport layer.
+	// Han are the server specific handlers implementing the actual business
+	// logic.
 	Han []handler.Interface
 	// Int are the Twirp specific interceptors wrapping the endpoint handlers.
 	Int []twirp.Interceptor
@@ -34,6 +34,9 @@ type Server struct {
 }
 
 func New(c Config) *Server {
+	if len(c.Han) == 0 {
+		tracer.Panic(tracer.Mask(fmt.Errorf("%T.Han must not be empty", c)))
+	}
 	if c.Lis == nil {
 		tracer.Panic(tracer.Mask(fmt.Errorf("%T.Lis must not be empty", c)))
 	}
@@ -61,12 +64,13 @@ func New(c Config) *Server {
 	}
 }
 
-func (s *Server) Serve() {
+func (s *Server) Daemon() {
 	{
 		s.log.Log(
 			context.Background(),
 			"level", "info",
-			"message", fmt.Sprintf("rpc server running at %s", s.lis.Addr().String()),
+			"message", "server listening for calls",
+			"addr", s.lis.Addr().String(),
 		)
 	}
 
