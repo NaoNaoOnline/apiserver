@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/NaoNaoOnline/apiserver/pkg/worker/budget"
 	"github.com/NaoNaoOnline/apiserver/pkg/worker/handler"
 	"github.com/xh3b4sd/logger"
 	"github.com/xh3b4sd/rescue/engine"
@@ -57,60 +58,15 @@ func (w *Worker) Daemon() {
 
 	go func() {
 		for {
-			{
-				time.Sleep(5 * time.Second)
-			}
-
-			{
-				err := w.res.Expire()
-				if err != nil {
-					w.lerror(tracer.Mask(err))
-				}
-			}
+			w.expire()
+			time.Sleep(5 * time.Second)
 		}
 	}()
 
 	go func() {
 		for {
-			{
-				time.Sleep(5 * time.Second)
-			}
-
-			var err error
-
-			var tas *task.Task
-			{
-				tas, err = w.res.Search()
-				if engine.IsTaskNotFound(err) {
-					continue
-				} else if err != nil {
-					w.lerror(tracer.Mask(err))
-				}
-			}
-
-			var cou int
-
-			for _, h := range w.han {
-				if !h.Filter(tas) {
-					continue
-				}
-
-				{
-					err := h.Ensure(tas)
-					if err != nil {
-						w.lerror(tracer.Mask(err))
-					} else {
-						cou++
-					}
-				}
-			}
-
-			if cou == len(w.han) {
-				err := w.res.Delete(tas)
-				if err != nil {
-					w.lerror(tracer.Mask(err))
-				}
-			}
+			w.search()
+			time.Sleep(5 * time.Second)
 		}
 	}()
 
@@ -118,6 +74,14 @@ func (w *Worker) Daemon() {
 		select {}
 	}
 }
+
+func (w *Worker) expire() {
+	err := w.res.Expire()
+	if err != nil {
+		w.lerror(tracer.Mask(err))
+	}
+}
+
 func (w *Worker) lerror(err error) {
 	w.log.Log(
 		context.Background(),
@@ -125,4 +89,68 @@ func (w *Worker) lerror(err error) {
 		"message", err.Error(),
 		"stack", tracer.Stack(err),
 	)
+}
+
+func (w *Worker) search() {
+	var err error
+
+	var tas *task.Task
+	{
+		tas, err = w.res.Search()
+		if engine.IsTaskNotFound(err) {
+			return
+		} else if err != nil {
+			w.lerror(tracer.Mask(err))
+		}
+	}
+
+	var bud *budget.Budget
+	{
+		bud = budget.New()
+	}
+
+	// We track the current and desired amount of handlers for the current task in
+	// order to decide whether to delete the task after all handlers got invoked.
+	// The desired amount of handlers that can process the current task are those
+	// that return true when calling Handler.Filter. The desired amount of workers
+	// are then those that do not return an error when calling Handler.Ensure.
+	var cur int
+	var des int
+
+	for _, h := range w.han {
+		if !h.Filter(tas) {
+			continue
+		}
+
+		{
+			des++
+		}
+
+		{
+			err := h.Ensure(tas, bud)
+			if err != nil {
+				w.lerror(tracer.Mask(err))
+			} else {
+				// We have to account for the worker budget when processing a task.
+				// Calling Handler.Ensure may use up the entire budget and it may break
+				// through the budget or it may not. Breaking through the budget means
+				// that there is still work left to do. And so not breaking the worker
+				// budget tells us here that Handler.Ensure successfully resolved the
+				// task from its own point of view, allowing us to count with it towards
+				// the desired amount of handlers we that we track.
+				if !bud.Break() {
+					cur++
+				}
+			}
+		}
+	}
+
+	// If the current and desired amount of handlers match, we can delete the
+	// task, assuming that it got properly resolved.
+	if cur != 0 && des != 0 && cur == des {
+		err := w.res.Delete(tas)
+		if err != nil {
+			w.lerror(tracer.Mask(err))
+		}
+	}
 }

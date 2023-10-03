@@ -5,30 +5,26 @@ import (
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectlabel"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/descriptionstorage"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/votestorage"
+	"github.com/NaoNaoOnline/apiserver/pkg/worker/budget"
 	"github.com/xh3b4sd/rescue/task"
 	"github.com/xh3b4sd/tracer"
 )
 
-func (h *Handler) Ensure(tas *task.Task) error {
+func (h *Handler) Ensure(tas *task.Task, bud *budget.Budget) error {
 	var des objectid.ID
 	{
 		des = objectid.ID(tas.Meta.Get(objectlabel.DescObject))
 	}
 
-	var lim *objectid.Limiter
 	{
-		lim = objectid.NewLimiter()
-	}
-
-	{
-		err := h.deleteVote(des, lim)
+		err := h.deleteVote(des, bud)
 		if err != nil {
 			return tracer.Mask(err)
 		}
 	}
 
 	{
-		err := h.deleteDesc(des, lim)
+		err := h.deleteDesc(des, bud)
 		if err != nil {
 			return tracer.Mask(err)
 		}
@@ -37,7 +33,7 @@ func (h *Handler) Ensure(tas *task.Task) error {
 	return nil
 }
 
-func (h *Handler) deleteDesc(inp objectid.ID, lim *objectid.Limiter) error {
+func (h *Handler) deleteDesc(inp objectid.ID, bud *budget.Budget) error {
 	var err error
 
 	var des []*descriptionstorage.Object
@@ -49,7 +45,7 @@ func (h *Handler) deleteDesc(inp objectid.ID, lim *objectid.Limiter) error {
 	}
 
 	{
-		_, err := h.des.DeleteDesc(des[:lim.Limit(len(des))])
+		_, err := h.des.DeleteDesc(des[:bud.Claim(len(des))])
 		if err != nil {
 			return tracer.Mask(err)
 		}
@@ -58,7 +54,7 @@ func (h *Handler) deleteDesc(inp objectid.ID, lim *objectid.Limiter) error {
 	return nil
 }
 
-func (h *Handler) deleteVote(inp objectid.ID, lim *objectid.Limiter) error {
+func (h *Handler) deleteVote(inp objectid.ID, bud *budget.Budget) error {
 	var err error
 
 	var vot []*votestorage.Object
@@ -70,7 +66,7 @@ func (h *Handler) deleteVote(inp objectid.ID, lim *objectid.Limiter) error {
 	}
 
 	{
-		_, err := h.vot.Delete(vot[:lim.Limit(len(vot))])
+		_, err := h.vot.Delete(vot[:bud.Claim(len(vot))])
 		if err != nil {
 			return tracer.Mask(err)
 		}

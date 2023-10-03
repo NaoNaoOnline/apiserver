@@ -6,21 +6,17 @@ import (
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/descriptionstorage"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/eventstorage"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/votestorage"
+	"github.com/NaoNaoOnline/apiserver/pkg/worker/budget"
 	"github.com/xh3b4sd/rescue/task"
 	"github.com/xh3b4sd/tracer"
 )
 
-func (h *Handler) Ensure(tas *task.Task) error {
+func (h *Handler) Ensure(tas *task.Task, bud *budget.Budget) error {
 	var err error
 
 	var eve objectid.ID
 	{
 		eve = objectid.ID(tas.Meta.Get(objectlabel.EvntObject))
-	}
-
-	var lim *objectid.Limiter
-	{
-		lim = objectid.NewLimiter()
 	}
 
 	var des []*descriptionstorage.Object
@@ -33,14 +29,14 @@ func (h *Handler) Ensure(tas *task.Task) error {
 
 	for _, x := range des {
 		{
-			err := h.deleteVote(x.Desc, lim)
+			err := h.deleteVote(x.Desc, bud)
 			if err != nil {
 				return tracer.Mask(err)
 			}
 		}
 
 		{
-			err := h.deleteDesc(x.Desc, lim)
+			err := h.deleteDesc(x.Desc, bud)
 			if err != nil {
 				return tracer.Mask(err)
 			}
@@ -48,7 +44,7 @@ func (h *Handler) Ensure(tas *task.Task) error {
 	}
 
 	{
-		err := h.deleteEvnt(eve, lim)
+		err := h.deleteEvnt(eve, bud)
 		if err != nil {
 			return tracer.Mask(err)
 		}
@@ -57,7 +53,7 @@ func (h *Handler) Ensure(tas *task.Task) error {
 	return nil
 }
 
-func (h *Handler) deleteDesc(inp objectid.ID, lim *objectid.Limiter) error {
+func (h *Handler) deleteDesc(inp objectid.ID, bud *budget.Budget) error {
 	var err error
 
 	var des []*descriptionstorage.Object
@@ -69,7 +65,7 @@ func (h *Handler) deleteDesc(inp objectid.ID, lim *objectid.Limiter) error {
 	}
 
 	{
-		_, err := h.des.DeleteDesc(des[:lim.Limit(len(des))])
+		_, err := h.des.DeleteDesc(des[:bud.Claim(len(des))])
 		if err != nil {
 			return tracer.Mask(err)
 		}
@@ -78,7 +74,7 @@ func (h *Handler) deleteDesc(inp objectid.ID, lim *objectid.Limiter) error {
 	return nil
 }
 
-func (h *Handler) deleteEvnt(inp objectid.ID, lim *objectid.Limiter) error {
+func (h *Handler) deleteEvnt(inp objectid.ID, bud *budget.Budget) error {
 	var err error
 
 	var eve []*eventstorage.Object
@@ -90,7 +86,7 @@ func (h *Handler) deleteEvnt(inp objectid.ID, lim *objectid.Limiter) error {
 	}
 
 	{
-		_, err := h.eve.DeleteEvnt(eve[:lim.Limit(len(eve))])
+		_, err := h.eve.DeleteEvnt(eve[:bud.Claim(len(eve))])
 		if err != nil {
 			return tracer.Mask(err)
 		}
@@ -99,7 +95,7 @@ func (h *Handler) deleteEvnt(inp objectid.ID, lim *objectid.Limiter) error {
 	return nil
 }
 
-func (h *Handler) deleteVote(inp objectid.ID, lim *objectid.Limiter) error {
+func (h *Handler) deleteVote(inp objectid.ID, bud *budget.Budget) error {
 	var err error
 
 	var vot []*votestorage.Object
@@ -111,7 +107,7 @@ func (h *Handler) deleteVote(inp objectid.ID, lim *objectid.Limiter) error {
 	}
 
 	{
-		_, err := h.vot.Delete(vot[:lim.Limit(len(vot))])
+		_, err := h.vot.Delete(vot[:bud.Claim(len(vot))])
 		if err != nil {
 			return tracer.Mask(err)
 		}
