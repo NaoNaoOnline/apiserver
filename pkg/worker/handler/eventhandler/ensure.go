@@ -15,7 +15,7 @@ func (h *Handler) Ensure(tas *task.Task) error {
 
 	var eve objectid.ID
 	{
-		eve = objectid.ID(tas.Meta.Get(objectlabel.DescObject))
+		eve = objectid.ID(tas.Meta.Get(objectlabel.EvntObject))
 	}
 
 	var lim *objectid.Limiter
