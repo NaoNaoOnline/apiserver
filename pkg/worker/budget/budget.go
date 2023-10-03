@@ -1,9 +1,8 @@
 package budget
 
 const (
-	// Default is the default budget per Budget instance. Every Budget
-	// instance does not pass through more object IDs than its configured limit
-	// allows.
+	// Default is the default budget per Budget instance. Every Budget instance
+	// does not pass through more object IDs than its configured limit allows.
 	Default = 100
 )
 
