@@ -26,26 +26,27 @@ func (h *Handler) Update(ctx context.Context, req *description.UpdateI) (*descri
 		pat = append(pat, inpPat(x.Update))
 	}
 
-	var obj []*descriptionstorage.Object
+	var inp []*descriptionstorage.Object
 	{
-		obj, err = h.des.SearchDesc(des)
+		inp, err = h.des.SearchDesc(des)
 		if err != nil {
 			return nil, tracer.Mask(err)
 		}
 	}
 
-	for _, x := range obj {
+	for _, x := range inp {
 		if userid.FromContext(ctx) != x.User {
 			return nil, tracer.Mask(userNotOwnerError)
 		}
+		// Ensure descriptions cannot be updated after 5 minutes of their creation.
 		if x.Crtd.Add(5 * time.Minute).Before(time.Now().UTC()) {
-			return nil, tracer.Mask(updatePeriodPastError)
+			return nil, tracer.Mask(descriptionUpdatePeriodError)
 		}
 	}
 
 	var out []objectstate.String
 	{
-		out, err = h.des.Update(obj, pat)
+		out, err = h.des.Update(inp, pat)
 		if err != nil {
 			return nil, tracer.Mask(err)
 		}
