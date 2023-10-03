@@ -33,6 +33,15 @@ func IsWalletMessEmpty(err error) bool {
 	return errors.Is(err, walletMessEmptyError)
 }
 
+var walletMessFormatError = &tracer.Error{
+	Kind: "walletMessFormatError",
+	Desc: `The request expects the wallet message to be in the format "signing ownership of [    addr    ] at [  unix  ]". The wallet message was not found to be in that format. Therefore the request failed.`,
+}
+
+func IsWalletMessFormat(err error) bool {
+	return errors.Is(err, walletMessFormatError)
+}
+
 var walletPubkEmptyError = &tracer.Error{
 	Kind: "walletPubkEmptyError",
 	Desc: "The request expects the wallet public key not to be empty. The wallet public key was found to be empty. Therefore the request failed.",
@@ -85,6 +94,15 @@ var walletSignLengthError = &tracer.Error{
 
 func IsWalletSignLength(err error) bool {
 	return errors.Is(err, walletSignLengthError)
+}
+
+var walletSignTooOldError = &tracer.Error{
+	Kind: "walletSignTooOldError",
+	Desc: "The request expects the wallet signature to sign a message that is not older than 5 minutes. The wallet signature was found to sign a message that is older than 5 minutes. Therefore the request failed.",
+}
+
+func IsWalletSignTooOld(err error) bool {
+	return errors.Is(err, walletSignTooOldError)
 }
 
 var walletSignatureInvalidError = &tracer.Error{
