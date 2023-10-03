@@ -13,10 +13,25 @@ func Test_Storage_walletstorage_Object_Messtim(t *testing.T) {
 	}{
 		// Case 000
 		{
+			mes: "",
+			tim: "0001-01-01 00:00:00 +0000 UTC",
+		},
+		// Case 001
+		{
+			mes: "foo",
+			tim: "0001-01-01 00:00:00 +0000 UTC",
+		},
+		// Case 002
+		{
+			mes: "signing ownership of 0x7483••••ba5B at foo",
+			tim: "0001-01-01 00:00:00 +0000 UTC",
+		},
+		// Case 003
+		{
 			mes: "signing ownership of 0x7483••••ba5B at 1695326302",
 			tim: "2023-09-21 19:58:22 +0000 UTC",
 		},
-		// Case 001
+		// Case 004
 		{
 			mes: "signing ownership of 0x7483••••ba5B at 1560489846",
 			tim: "2019-06-14 05:24:06 +0000 UTC",
