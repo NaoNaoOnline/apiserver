@@ -23,8 +23,22 @@ func (r *Redis) Update(inp []*Object) ([]*Object, []objectstate.String, error) {
 			}
 		}
 
+		var now time.Time
 		{
-			inp[i].Addr.Time = time.Now().UTC()
+			now = time.Now().UTC()
+		}
+
+		// We want to ensure that the given signature got generated recently. That
+		// way we can prevent somebody from reusing an old signature that may not
+		// even belong to the caller. For Object.Verify not to be overloaded with
+		// current time dynamics, we test for signature recency in a separate step
+		// here. Note this test must also be done in Redis.Create.
+		if !inp[i].Mestim().Add(5 * time.Minute).After(now) {
+			return nil, nil, tracer.Mask(walletSignTooOldError)
+		}
+
+		{
+			inp[i].Addr.Time = now
 		}
 
 		// Once we know the wallet's signature is valid, we update the normalized

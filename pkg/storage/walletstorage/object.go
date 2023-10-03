@@ -2,6 +2,7 @@ package walletstorage
 
 import (
 	"regexp"
+	"strconv"
 	"time"
 
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectfield"
@@ -56,6 +57,29 @@ func (o *Object) Digest() []byte {
 	return accounts.TextHash([]byte(o.Mess))
 }
 
+func (o *Object) Mestim() time.Time {
+	var err error
+
+	var sub []string
+	{
+		sub = unixexpr.FindStringSubmatch(o.Mess)
+	}
+
+	if len(sub) != 1 {
+		return time.Time{}
+	}
+
+	var uni int64
+	{
+		uni, err = strconv.ParseInt(sub[0], 10, 64)
+		if err != nil {
+			panic(err)
+		}
+	}
+
+	return time.Unix(uni, 0).UTC()
+}
+
 func (o *Object) Pubkey() []byte {
 	pub, err := hexutil.Decode(o.Pubk)
 	if err != nil {
@@ -76,6 +100,8 @@ func (o *Object) Signtr() []byte {
 
 var (
 	hexaexpr = regexp.MustCompile(`^0x[0-9a-fA-F]+$`)
+	messexpr = regexp.MustCompile(`^signing ownership of 0x[0-9a-fA-F]{4}••••[0-9a-fA-F]{4} at [0-9]{10,}$`)
+	unixexpr = regexp.MustCompile(`[0-9]{10,}$`)
 )
 
 func (o *Object) Verify() error {
@@ -88,6 +114,9 @@ func (o *Object) Verify() error {
 	{
 		if o.Mess == "" {
 			return tracer.Mask(walletMessEmptyError)
+		}
+		if !messexpr.MatchString(o.Mess) {
+			return tracer.Mask(walletMessFormatError)
 		}
 	}
 

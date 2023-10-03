@@ -29,6 +29,15 @@ func (r *Redis) CreateXtrn(inp []*Object) ([]*Object, error) {
 			now = time.Now().UTC()
 		}
 
+		// We want to ensure that the given signature got generated recently. That
+		// way we can prevent somebody from reusing an old signature that may not
+		// even belong to the caller. For Object.Verify not to be overloaded with
+		// current time dynamics, we test for signature recency in a separate step
+		// here. Note this test must also be done in Redis.Update.
+		if !inp[i].Mestim().Add(5 * time.Minute).After(now) {
+			return nil, tracer.Mask(walletSignTooOldError)
+		}
+
 		{
 			inp[i].Addr = objectfield.String{
 				Data: inp[i].Comadd().Hex(),
