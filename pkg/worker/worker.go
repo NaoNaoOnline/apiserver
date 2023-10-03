@@ -64,7 +64,7 @@ func (w *Worker) Daemon() {
 			{
 				err := w.res.Expire()
 				if err != nil {
-					w.lerror(err)
+					w.lerror(tracer.Mask(err))
 				}
 			}
 		}
@@ -84,7 +84,7 @@ func (w *Worker) Daemon() {
 				if engine.IsTaskNotFound(err) {
 					continue
 				} else if err != nil {
-					w.lerror(err)
+					w.lerror(tracer.Mask(err))
 				}
 			}
 
@@ -98,7 +98,7 @@ func (w *Worker) Daemon() {
 				{
 					err := h.Ensure(tas)
 					if err != nil {
-						w.lerror(err)
+						w.lerror(tracer.Mask(err))
 					} else {
 						cou++
 					}
@@ -108,7 +108,7 @@ func (w *Worker) Daemon() {
 			if cou == len(w.han) {
 				err := w.res.Delete(tas)
 				if err != nil {
-					w.lerror(err)
+					w.lerror(tracer.Mask(err))
 				}
 			}
 		}

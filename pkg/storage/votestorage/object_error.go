@@ -15,6 +15,15 @@ func IsDescriptionIDEmpty(err error) bool {
 	return errors.Is(err, descriptionIDEmptyError)
 }
 
+var eventIDEmptyError = &tracer.Error{
+	Kind: "eventIDEmptyError",
+	Desc: "The request expects the event ID not to be empty. The event ID was found to be empty. Therefore the request failed.",
+}
+
+func IsEventIDEmpty(err error) bool {
+	return errors.Is(err, eventIDEmptyError)
+}
+
 var reactionIDEmptyError = &tracer.Error{
 	Kind: "reactionIDEmptyError",
 	Desc: "The request expects the reaction ID not to be empty. The reaction ID was found to be empty. Therefore the request failed.",

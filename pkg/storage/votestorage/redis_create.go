@@ -4,8 +4,6 @@ import (
 	"time"
 
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectid"
-	"github.com/NaoNaoOnline/apiserver/pkg/storage/descriptionstorage"
-	"github.com/NaoNaoOnline/apiserver/pkg/storage/eventstorage"
 	"github.com/xh3b4sd/tracer"
 )
 
@@ -22,31 +20,6 @@ func (r *Redis) Create(inp []*Object) ([]*Object, error) {
 			err := inp[i].Verify()
 			if err != nil {
 				return nil, tracer.Mask(err)
-			}
-		}
-
-		var des *descriptionstorage.Object
-		{
-			des, err = r.searchDesc(inp[i].Desc)
-			if err != nil {
-				return nil, tracer.Mask(err)
-			}
-		}
-
-		var eve *eventstorage.Object
-		{
-			eve, err = r.searchEvnt(des.Evnt)
-			if err != nil {
-				return nil, tracer.Mask(err)
-			}
-		}
-
-		// Ensure votes cannot be added to events that have already happened.
-		{
-			if eve.Happnd() {
-				// TODO this check should probably happen in the handler since we moved
-				// the same check for deletion there.
-				return nil, tracer.Mask(eventAlreadyHappenedError)
 			}
 		}
 
@@ -69,7 +42,6 @@ func (r *Redis) Create(inp []*Object) ([]*Object, error) {
 
 		{
 			inp[i].Crtd = now
-			inp[i].Evnt = eve.Evnt
 			inp[i].Vote = objectid.Random(objectid.Time(now))
 		}
 

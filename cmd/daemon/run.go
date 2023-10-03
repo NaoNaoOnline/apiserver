@@ -129,7 +129,7 @@ func (r *run) runE(cmd *cobra.Command, args []string) error {
 				labelhandler.NewHandler(labelhandler.HandlerConfig{Lab: lab, Log: log}),
 				reactionhandler.NewHandler(reactionhandler.HandlerConfig{Log: log, Rct: rct}),
 				userhandler.NewHandler(userhandler.HandlerConfig{Log: log, Use: use}),
-				votehandler.NewHandler(votehandler.HandlerConfig{Eve: eve, Log: log, Vot: vot}),
+				votehandler.NewHandler(votehandler.HandlerConfig{Des: des, Eve: eve, Log: log, Vot: vot}),
 				wallethandler.NewHandler(wallethandler.HandlerConfig{Log: log, Wal: wal}),
 			},
 			Int: []twirp.Interceptor{

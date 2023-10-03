@@ -14,8 +14,8 @@ require (
 	github.com/spf13/cobra v1.7.0
 	github.com/twitchtv/twirp v8.1.3+incompatible
 	github.com/xh3b4sd/logger v0.7.3
-	github.com/xh3b4sd/redigo v0.34.7
-	github.com/xh3b4sd/rescue v0.15.0
+	github.com/xh3b4sd/redigo v0.34.8
+	github.com/xh3b4sd/rescue v0.15.1
 	github.com/xh3b4sd/tracer v0.10.1
 )
 
@@ -34,6 +34,7 @@ require (
 	github.com/go-stack/stack v1.8.1 // indirect
 	github.com/golang/protobuf v1.5.3 // indirect
 	github.com/gomodule/redigo v1.8.9 // indirect
+	github.com/google/uuid v1.3.1 // indirect
 	github.com/hashicorp/errwrap v1.1.0 // indirect
 	github.com/hashicorp/go-multierror v1.1.1 // indirect
 	github.com/holiman/uint256 v1.2.3 // indirect

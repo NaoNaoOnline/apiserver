@@ -5,8 +5,6 @@ import (
 
 	"github.com/NaoNaoOnline/apiserver/pkg/keyfmt"
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectid"
-	"github.com/NaoNaoOnline/apiserver/pkg/storage/descriptionstorage"
-	"github.com/NaoNaoOnline/apiserver/pkg/storage/eventstorage"
 	"github.com/xh3b4sd/redigo/pkg/simple"
 	"github.com/xh3b4sd/tracer"
 )
@@ -76,60 +74,4 @@ func (r *Redis) SearchVote(inp []objectid.ID) ([]*Object, error) {
 	}
 
 	return out, nil
-}
-
-func (r *Redis) searchDesc(des objectid.ID) (*descriptionstorage.Object, error) {
-	var err error
-
-	var jsn []string
-	{
-		jsn, err = r.red.Simple().Search().Multi(desObj(des))
-		if simple.IsNotFound(err) {
-			return nil, tracer.Maskf(descriptionObjectNotFoundError, des.String())
-		} else if err != nil {
-			return nil, tracer.Mask(err)
-		}
-	}
-
-	var obj *descriptionstorage.Object
-	{
-		obj = &descriptionstorage.Object{}
-	}
-
-	{
-		err = json.Unmarshal([]byte(jsn[0]), obj)
-		if err != nil {
-			return nil, tracer.Mask(err)
-		}
-	}
-
-	return obj, nil
-}
-
-func (r *Redis) searchEvnt(eve objectid.ID) (*eventstorage.Object, error) {
-	var err error
-
-	var jsn []string
-	{
-		jsn, err = r.red.Simple().Search().Multi(eveObj(eve))
-		if simple.IsNotFound(err) {
-			return nil, tracer.Maskf(eventObjectNotFoundError, eve.String())
-		} else if err != nil {
-			return nil, tracer.Mask(err)
-		}
-	}
-
-	var obj *eventstorage.Object
-	{
-		obj = &eventstorage.Object{}
-	}
-
-	{
-		err = json.Unmarshal([]byte(jsn[0]), obj)
-		if err != nil {
-			return nil, tracer.Mask(err)
-		}
-	}
-
-	return obj, nil
 }

@@ -29,6 +29,10 @@ func (o *Object) Verify() error {
 		return tracer.Mask(descriptionIDEmptyError)
 	}
 
+	if o.Evnt == "" {
+		return tracer.Mask(eventIDEmptyError)
+	}
+
 	if o.Rctn == "" {
 		return tracer.Mask(reactionIDEmptyError)
 	}
