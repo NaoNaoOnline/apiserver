@@ -35,14 +35,6 @@ func NewRedis(c RedisConfig) *Redis {
 	}
 }
 
-func desObj(oid objectid.ID) string {
-	return fmt.Sprintf(keyfmt.DescriptionObject, oid)
-}
-
-func eveObj(oid objectid.ID) string {
-	return fmt.Sprintf(keyfmt.EventObject, oid)
-}
-
 func rctObj(oid objectid.ID) string {
 	return fmt.Sprintf(keyfmt.ReactionObject, oid)
 }
