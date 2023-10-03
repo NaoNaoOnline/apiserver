@@ -1,4 +1,4 @@
-package objectid
+package budget
 
 import (
 	"fmt"
@@ -6,111 +6,147 @@ import (
 	"testing"
 )
 
-func Test_ObjectID_Limiter(t *testing.T) {
+func Test_Worker_Budget(t *testing.T) {
 	testCases := []struct {
 		lis [][]string
-		lim [][]string
+		cla [][]string
+		bre bool
 	}{
 		// Case 000
 		{
 			lis: [][]string{},
-			lim: nil,
+			cla: nil,
+			bre: false,
 		},
 		// Case 001
 		{
 			lis: [][]string{
 				{"1", "2", "3"},
 			},
-			lim: [][]string{
+			cla: [][]string{
 				{"1", "2", "3"},
 			},
+			bre: false,
 		},
 		// Case 002
 		{
 			lis: [][]string{
 				{"1", "2", "3", "4", "5"},
 			},
-			lim: [][]string{
+			cla: [][]string{
 				{"1", "2", "3", "4", "5"},
 			},
+			bre: false,
 		},
 		// Case 003
 		{
 			lis: [][]string{
 				{"1", "2", "3", "4", "5", "6", "7"},
 			},
-			lim: [][]string{
+			cla: [][]string{
 				{"1", "2", "3", "4", "5"},
 			},
+			bre: true,
 		},
 		// Case 004
 		{
 			lis: [][]string{
-				{"1", "2", "3"},
-				{"1", "2", "3"},
-			},
-			lim: [][]string{
-				{"1", "2", "3"},
 				{"1", "2"},
+				{"1", "2", "3"},
 			},
+			cla: [][]string{
+				{"1", "2"},
+				{"1", "2", "3"},
+			},
+			bre: false,
 		},
 		// Case 005
 		{
 			lis: [][]string{
-				{"1", "2"},
-				{"1", "2", "3", "4", "5", "6"},
-			},
-			lim: [][]string{
-				{"1", "2"},
+				{"1", "2", "3"},
 				{"1", "2", "3"},
 			},
+			cla: [][]string{
+				{"1", "2", "3"},
+				{"1", "2"},
+			},
+			bre: true,
 		},
 		// Case 006
 		{
 			lis: [][]string{
-				{"1", "2", "3", "4", "5", "6"},
 				{"1", "2"},
+				{"1", "2", "3", "4", "5", "6"},
 			},
-			lim: [][]string{
-				{"1", "2", "3", "4", "5"},
-				{},
+			cla: [][]string{
+				{"1", "2"},
+				{"1", "2", "3"},
 			},
+			bre: true,
 		},
 		// Case 007
 		{
 			lis: [][]string{
-				{"1"},
-				{"1", "2", "3"},
+				{"1", "2", "3", "4", "5", "6"},
 				{"1", "2"},
 			},
-			lim: [][]string{
-				{"1"},
-				{"1", "2", "3"},
-				{"1"},
+			cla: [][]string{
+				{"1", "2", "3", "4", "5"},
+				{},
 			},
+			bre: true,
 		},
 		// Case 008
 		{
 			lis: [][]string{
 				{"1"},
 				{"1", "2", "3"},
-				{"1", "2"},
-				{"1", "2", "3", "4", "5"},
 				{"1"},
-				{"1", "2"},
 			},
-			lim: [][]string{
+			cla: [][]string{
 				{"1"},
 				{"1", "2", "3"},
 				{"1"},
-				{},
-				{},
-				{},
 			},
+			bre: false,
 		},
 		// Case 009
 		{
 			lis: [][]string{
+				{"1"},
+				{"1", "2", "3"},
+				{"1", "2"},
+			},
+			cla: [][]string{
+				{"1"},
+				{"1", "2", "3"},
+				{"1"},
+			},
+			bre: true,
+		},
+		// Case 010
+		{
+			lis: [][]string{
+				{"1"},
+				{"1", "2", "3"},
+				{"1", "2"},
+				{"1", "2", "3", "4", "5"},
+				{"1"},
+				{"1", "2"},
+			},
+			cla: [][]string{
+				{"1"},
+				{"1", "2", "3"},
+				{"1"},
+				{},
+				{},
+				{},
+			},
+			bre: true,
+		},
+		// Case 011
+		{
+			lis: [][]string{
 				{"1", "2"},
 				{"1", "2", "3", "4", "5"},
 				{"1"},
@@ -118,7 +154,7 @@ func Test_ObjectID_Limiter(t *testing.T) {
 				{"1"},
 				{"1", "2"},
 			},
-			lim: [][]string{
+			cla: [][]string{
 				{"1", "2"},
 				{"1", "2", "3"},
 				{},
@@ -126,8 +162,29 @@ func Test_ObjectID_Limiter(t *testing.T) {
 				{},
 				{},
 			},
+			bre: true,
 		},
-		// Case 010
+		// Case 012
+		{
+			lis: [][]string{
+				{"1", "2"},
+				{"1", "2", "3"},
+				{"1", "2", "3", "4", "5"},
+				{"1"},
+				{"1"},
+				{"1", "2"},
+			},
+			cla: [][]string{
+				{"1", "2"},
+				{"1", "2", "3"},
+				{},
+				{},
+				{},
+				{},
+			},
+			bre: true,
+		},
+		// Case 013
 		{
 			lis: [][]string{
 				{"1", "2", "3", "4", "5"},
@@ -137,7 +194,7 @@ func Test_ObjectID_Limiter(t *testing.T) {
 				{"1"},
 				{"1", "2"},
 			},
-			lim: [][]string{
+			cla: [][]string{
 				{"1", "2", "3", "4", "5"},
 				{},
 				{},
@@ -145,23 +202,33 @@ func Test_ObjectID_Limiter(t *testing.T) {
 				{},
 				{},
 			},
+			bre: true,
 		},
 	}
 
 	for i, tc := range testCases {
 		t.Run(fmt.Sprintf("%03d", i), func(t *testing.T) {
-			var l *Limiter
+			var bud *Budget
 			{
-				l = NewLimiter(5)
+				bud = New(5)
 			}
 
-			var lim [][]string
+			var cla [][]string
 			for _, x := range tc.lis {
-				lim = append(lim, x[:l.Limit(len(x))])
+				cla = append(cla, x[:bud.Claim(len(x))])
 			}
 
-			if !reflect.DeepEqual(lim, tc.lim) {
-				t.Fatalf("expected %#v got %#v", tc.lim, lim)
+			if !reflect.DeepEqual(cla, tc.cla) {
+				t.Fatalf("expected %#v got %#v", tc.cla, cla)
+			}
+
+			var bre bool
+			{
+				bre = bud.Break()
+			}
+
+			if bre != tc.bre {
+				t.Fatalf("expected %#v got %#v", tc.bre, bre)
 			}
 		})
 	}
