@@ -2,6 +2,7 @@ package eventstorage
 
 import (
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectid"
+	"github.com/NaoNaoOnline/apiserver/pkg/object/objectstate"
 )
 
 type Interface interface {
@@ -11,6 +12,24 @@ type Interface interface {
 	//     @out[0] the list of event objects persisted internally
 	//
 	Create([]*Object) ([]*Object, error)
+
+	// DeleteEvnt purges the given event objects. Note that DeleteEvnt does not
+	// purge associated data structures.
+	//
+	//     @inp[0] the event objects to delete
+	//     @out[0] the list of operation states related to the purged event objects
+	//
+	DeleteEvnt([]*Object) ([]objectstate.String, error)
+
+	// DeleteWrkr initializes the asynchronous deletion process for the given
+	// event objects and all of its associated data structures by setting
+	// Object.Dltd and creating the respective worker tasks that will be processed
+	// in the background.
+	//
+	//     @inp[0] the event objects to delete
+	//     @out[0] the list of operation states related to the purged event objects
+	//
+	DeleteWrkr([]*Object) ([]objectstate.String, error)
 
 	// SearchEvnt returns the event objects matching the given event IDs.
 	//

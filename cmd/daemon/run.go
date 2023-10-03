@@ -31,6 +31,7 @@ import (
 	"github.com/NaoNaoOnline/apiserver/pkg/worker"
 	workerhandler "github.com/NaoNaoOnline/apiserver/pkg/worker/handler"
 	workerdescriptionhandler "github.com/NaoNaoOnline/apiserver/pkg/worker/handler/descriptionhandler"
+	workereventhandler "github.com/NaoNaoOnline/apiserver/pkg/worker/handler/eventhandler"
 	"github.com/gorilla/mux"
 	"github.com/spf13/cobra"
 	"github.com/twitchtv/twirp"
@@ -90,7 +91,7 @@ func (r *run) runE(cmd *cobra.Command, args []string) error {
 	var wal walletstorage.Interface
 	{
 		des = descriptionstorage.NewRedis(descriptionstorage.RedisConfig{Log: log, Red: red, Res: res})
-		eve = eventstorage.NewRedis(eventstorage.RedisConfig{Log: log, Red: red})
+		eve = eventstorage.NewRedis(eventstorage.RedisConfig{Log: log, Red: red, Res: res})
 		lab = labelstorage.NewRedis(labelstorage.RedisConfig{Log: log, Red: red})
 		rct = reactionstorage.NewRedis(reactionstorage.RedisConfig{Log: log, Red: red})
 		use = userstorage.NewRedis(userstorage.RedisConfig{Log: log, Red: red})
@@ -156,6 +157,7 @@ func (r *run) runE(cmd *cobra.Command, args []string) error {
 		wrk = worker.New(worker.Config{
 			Han: []workerhandler.Interface{
 				workerdescriptionhandler.NewHandler(workerdescriptionhandler.HandlerConfig{Des: des, Log: log, Vot: vot}),
+				workereventhandler.NewHandler(workereventhandler.HandlerConfig{Eve: eve, Des: des, Log: log, Vot: vot}),
 			},
 			Log: log,
 			Res: res,

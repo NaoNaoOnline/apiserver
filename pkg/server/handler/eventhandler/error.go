@@ -32,3 +32,12 @@ var userIDEmptyError = &tracer.Error{
 func IsUserIDEmpty(err error) bool {
 	return errors.Is(err, userIDEmptyError)
 }
+
+var userNotOwnerError = &tracer.Error{
+	Kind: "userNotOwnerError",
+	Desc: "The request expects the calling user to be the owner of the requested resource. The calling user was not found to be the owner of the requested resource. Therefore the request failed.",
+}
+
+func IsUserNotOwner(err error) bool {
+	return errors.Is(err, userNotOwnerError)
+}
