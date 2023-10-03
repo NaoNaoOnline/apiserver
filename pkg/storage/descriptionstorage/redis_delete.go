@@ -74,7 +74,7 @@ func (r *Redis) DeleteWrkr(inp []*Object) ([]objectstate.String, error) {
 			}
 		}
 
-		// Mark the descrption object as deleted.
+		// Mark the description object as deleted.
 		{
 			inp[i].Dltd = time.Now().UTC()
 		}

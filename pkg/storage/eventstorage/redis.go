@@ -8,17 +8,20 @@ import (
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectid"
 	"github.com/xh3b4sd/logger"
 	"github.com/xh3b4sd/redigo"
+	"github.com/xh3b4sd/rescue/engine"
 	"github.com/xh3b4sd/tracer"
 )
 
 type RedisConfig struct {
 	Log logger.Interface
 	Red redigo.Interface
+	Res engine.Interface
 }
 
 type Redis struct {
 	log logger.Interface
 	red redigo.Interface
+	res engine.Interface
 }
 
 func NewRedis(c RedisConfig) *Redis {
@@ -28,10 +31,14 @@ func NewRedis(c RedisConfig) *Redis {
 	if c.Red == nil {
 		tracer.Panic(tracer.Mask(fmt.Errorf("%T.Red must not be empty", c)))
 	}
+	if c.Res == nil {
+		tracer.Panic(tracer.Mask(fmt.Errorf("%T.Res must not be empty", c)))
+	}
 
 	return &Redis{
 		log: c.Log,
 		red: c.Red,
+		res: c.Res,
 	}
 }
 
