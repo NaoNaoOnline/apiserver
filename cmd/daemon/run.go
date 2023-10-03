@@ -125,7 +125,7 @@ func (r *run) runE(cmd *cobra.Command, args []string) error {
 	{
 		srv = server.New(server.Config{
 			Han: []serverhandler.Interface{
-				descriptionhandler.NewHandler(descriptionhandler.HandlerConfig{Des: des, Log: log}),
+				descriptionhandler.NewHandler(descriptionhandler.HandlerConfig{Eve: eve, Des: des, Log: log}),
 				eventhandler.NewHandler(eventhandler.HandlerConfig{Eve: eve, Log: log}),
 				labelhandler.NewHandler(labelhandler.HandlerConfig{Lab: lab, Log: log}),
 				reactionhandler.NewHandler(reactionhandler.HandlerConfig{Log: log, Rct: rct}),

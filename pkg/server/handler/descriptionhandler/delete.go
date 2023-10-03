@@ -2,12 +2,14 @@ package descriptionhandler
 
 import (
 	"context"
+	"time"
 
 	"github.com/NaoNaoOnline/apigocode/pkg/description"
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectid"
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectstate"
 	"github.com/NaoNaoOnline/apiserver/pkg/server/context/userid"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/descriptionstorage"
+	"github.com/NaoNaoOnline/apiserver/pkg/storage/eventstorage"
 	"github.com/xh3b4sd/tracer"
 )
 
@@ -23,23 +25,50 @@ func (h *Handler) Delete(ctx context.Context, req *description.DeleteI) (*descri
 		des = append(des, objectid.ID(x.Intern.Desc))
 	}
 
-	var obj []*descriptionstorage.Object
+	var inp []*descriptionstorage.Object
 	{
-		obj, err = h.des.SearchDesc(des)
+		inp, err = h.des.SearchDesc(des)
 		if err != nil {
 			return nil, tracer.Mask(err)
 		}
 	}
 
-	for _, x := range obj {
+	for _, x := range inp {
 		if userid.FromContext(ctx) != x.User {
 			return nil, tracer.Mask(userNotOwnerError)
 		}
 	}
 
+	for _, x := range inp {
+		// Ensure descriptions cannot be deleted after 5 minutes of their creation.
+		if x.Crtd.Add(5 * time.Minute).Before(time.Now().UTC()) {
+			return nil, tracer.Mask(descriptionDeletePeriodError)
+		}
+
+		var eve []*eventstorage.Object
+		{
+			eve, err = h.eve.SearchEvnt([]objectid.ID{x.Evnt})
+			if err != nil {
+				return nil, tracer.Mask(err)
+			}
+		}
+
+		// Ensure descriptions cannot be removed from events that have already been
+		// deleted.
+		if !eve[0].Dltd.IsZero() {
+			return nil, tracer.Mask(eventDeletedError)
+		}
+
+		// Ensure descriptions cannot be removed from events that have already
+		// happened.
+		if eve[0].Happnd() {
+			return nil, tracer.Mask(eventAlreadyHappenedError)
+		}
+	}
+
 	var out []objectstate.String
 	{
-		out, err = h.des.DeleteWrkr(obj)
+		out, err = h.des.DeleteWrkr(inp)
 		if err != nil {
 			return nil, tracer.Mask(err)
 		}
