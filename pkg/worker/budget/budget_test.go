@@ -208,14 +208,14 @@ func Test_Worker_Budget(t *testing.T) {
 
 	for i, tc := range testCases {
 		t.Run(fmt.Sprintf("%03d", i), func(t *testing.T) {
-			var l *Budget
+			var bud *Budget
 			{
-				l = New(5)
+				bud = New(5)
 			}
 
 			var cla [][]string
 			for _, x := range tc.lis {
-				cla = append(cla, x[:l.Claim(len(x))])
+				cla = append(cla, x[:bud.Claim(len(x))])
 			}
 
 			if !reflect.DeepEqual(cla, tc.cla) {
@@ -224,7 +224,7 @@ func Test_Worker_Budget(t *testing.T) {
 
 			var bre bool
 			{
-				bre = l.Break()
+				bre = bud.Break()
 			}
 
 			if bre != tc.bre {

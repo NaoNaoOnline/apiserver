@@ -19,21 +19,21 @@ func New(bud ...int) *Budget {
 	return &Budget{bud: Default}
 }
 
-func (l *Budget) Break() bool {
-	return l.bud < 0
+func (b *Budget) Break() bool {
+	return b.bud < 0
 }
 
-func (l *Budget) Claim(num int) int {
-	if l.bud <= 0 {
-		l.bud = -1
+func (b *Budget) Claim(num int) int {
+	if b.bud <= 0 {
+		b.bud = -1
 		return 0
 	}
 
-	if num > l.bud {
-		num = l.bud
-		l.bud = -1
+	if num > b.bud {
+		num = b.bud
+		b.bud = -1
 	} else {
-		l.bud -= num
+		b.bud -= num
 	}
 
 	return num
