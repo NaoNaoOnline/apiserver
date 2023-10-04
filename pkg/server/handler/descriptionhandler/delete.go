@@ -45,6 +45,19 @@ func (h *Handler) Delete(ctx context.Context, req *description.DeleteI) (*descri
 			return nil, tracer.Mask(descriptionDeletePeriodError)
 		}
 
+		var des []*descriptionstorage.Object
+		{
+			des, err = h.des.SearchEvnt([]objectid.ID{x.Evnt})
+			if err != nil {
+				return nil, tracer.Mask(err)
+			}
+		}
+
+		// Ensure the only description of an event cannot be deleted.
+		if len(des) == 1 {
+			return nil, tracer.Mask(descriptionRequirementError)
+		}
+
 		var eve []*eventstorage.Object
 		{
 			eve, err = h.eve.SearchEvnt([]objectid.ID{x.Evnt})

@@ -24,6 +24,15 @@ func IsUpdatePeriodPast(err error) bool {
 	return errors.Is(err, descriptionUpdatePeriodError)
 }
 
+var descriptionRequirementError = &tracer.Error{
+	Kind: "descriptionRequirementError",
+	Desc: "The request expects the only description object of an event not to be deleted. The only description object of an event was tried to be deleted. Therefore the request failed.",
+}
+
+func IsDescriptionRequirement(err error) bool {
+	return errors.Is(err, descriptionRequirementError)
+}
+
 var eventAlreadyHappenedError = &tracer.Error{
 	Kind: "eventAlreadyHappenedError",
 	Desc: "The request expects vote objects to be created or deleted until the associated event has already happened. The associated event was found to have already happened. Therefore the request failed.",
