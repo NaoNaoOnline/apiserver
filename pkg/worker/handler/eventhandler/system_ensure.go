@@ -1,7 +1,6 @@
 package eventhandler
 
 import (
-	"github.com/NaoNaoOnline/apiserver/pkg/object/objectlabel"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/eventstorage"
 	"github.com/NaoNaoOnline/apiserver/pkg/worker/budget"
 	"github.com/xh3b4sd/rescue/task"
@@ -19,23 +18,10 @@ func (h *SystemHandler) Ensure(tas *task.Task, bud *budget.Budget) error {
 		}
 	}
 
-	for _, x := range eve[:bud.Claim(len(eve))] {
-		var tas *task.Task
-		{
-			tas = &task.Task{
-				Meta: &task.Meta{
-					objectlabel.EvntAction: objectlabel.ActionDelete,
-					objectlabel.EvntObject: x.Evnt.String(),
-					objectlabel.EvntOrigin: objectlabel.OriginCustom,
-				},
-			}
-		}
-
-		{
-			err = h.res.Create(tas)
-			if err != nil {
-				return tracer.Mask(err)
-			}
+	{
+		_, err = h.eve.DeleteWrkr(eve[:bud.Claim(len(eve))])
+		if err != nil {
+			return tracer.Mask(err)
 		}
 	}
 

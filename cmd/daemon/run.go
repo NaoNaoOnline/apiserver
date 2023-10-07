@@ -159,7 +159,7 @@ func (r *run) runE(cmd *cobra.Command, args []string) error {
 			Han: []workerhandler.Interface{
 				workerdescriptionhandler.NewCustomHandler(workerdescriptionhandler.CustomHandlerConfig{Des: des, Log: log, Vot: vot}),
 				workereventhandler.NewCustomHandler(workereventhandler.CustomHandlerConfig{Eve: eve, Des: des, Log: log, Vot: vot}),
-				workereventhandler.NewSystemHandler(workereventhandler.SystemHandlerConfig{Eve: eve, Log: log, Res: res}),
+				workereventhandler.NewSystemHandler(workereventhandler.SystemHandlerConfig{Eve: eve, Log: log}),
 			},
 			Log: log,
 			Res: res,
