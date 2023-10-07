@@ -11,7 +11,7 @@ import (
 	"github.com/xh3b4sd/tracer"
 )
 
-func (h *Handler) Ensure(tas *task.Task, bud *budget.Budget) error {
+func (h *CustomHandler) Ensure(tas *task.Task, bud *budget.Budget) error {
 	var err error
 
 	var eve objectid.ID
@@ -53,7 +53,7 @@ func (h *Handler) Ensure(tas *task.Task, bud *budget.Budget) error {
 	return nil
 }
 
-func (h *Handler) deleteDesc(inp objectid.ID, bud *budget.Budget) error {
+func (h *CustomHandler) deleteDesc(inp objectid.ID, bud *budget.Budget) error {
 	var err error
 
 	var des []*descriptionstorage.Object
@@ -74,7 +74,7 @@ func (h *Handler) deleteDesc(inp objectid.ID, bud *budget.Budget) error {
 	return nil
 }
 
-func (h *Handler) deleteEvnt(inp objectid.ID, bud *budget.Budget) error {
+func (h *CustomHandler) deleteEvnt(inp objectid.ID, bud *budget.Budget) error {
 	var err error
 
 	var eve []*eventstorage.Object
@@ -95,7 +95,7 @@ func (h *Handler) deleteEvnt(inp objectid.ID, bud *budget.Budget) error {
 	return nil
 }
 
-func (h *Handler) deleteVote(inp objectid.ID, bud *budget.Budget) error {
+func (h *CustomHandler) deleteVote(inp objectid.ID, bud *budget.Budget) error {
 	var err error
 
 	var vot []*votestorage.Object

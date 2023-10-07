@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/NaoNaoOnline/apiserver/pkg/object/objectlabel"
 	"github.com/NaoNaoOnline/apiserver/pkg/worker/budget"
 	"github.com/NaoNaoOnline/apiserver/pkg/worker/handler"
 	"github.com/xh3b4sd/logger"
@@ -56,6 +57,10 @@ func (w *Worker) Daemon() {
 		)
 	}
 
+	{
+		w.create()
+	}
+
 	go func() {
 		for {
 			w.expire()
@@ -70,8 +75,48 @@ func (w *Worker) Daemon() {
 		}
 	}()
 
+	go func() {
+		for {
+			w.ticker()
+			time.Sleep(5 * time.Second)
+		}
+	}()
+
 	{
 		select {}
+	}
+}
+
+func (w *Worker) create() {
+	var err error
+
+	var tas *task.Task
+	{
+		tas = &task.Task{
+			Cron: &task.Cron{
+				task.Aevery: "5 minutes",
+			},
+			Meta: &task.Meta{
+				objectlabel.EvntAction: objectlabel.ActionDelete,
+				objectlabel.EvntObject: "*",
+				objectlabel.EvntOrigin: objectlabel.OriginSystem,
+			},
+		}
+	}
+
+	var exi bool
+	{
+		exi, err = w.res.Exists(tas)
+		if err != nil {
+			w.lerror(tracer.Mask(err))
+		}
+	}
+
+	if !exi {
+		err := w.res.Create(tas)
+		if err != nil {
+			w.lerror(tracer.Mask(err))
+		}
 	}
 }
 
@@ -152,5 +197,12 @@ func (w *Worker) search() {
 		if err != nil {
 			w.lerror(tracer.Mask(err))
 		}
+	}
+}
+
+func (w *Worker) ticker() {
+	err := w.res.Ticker()
+	if err != nil {
+		w.lerror(tracer.Mask(err))
 	}
 }

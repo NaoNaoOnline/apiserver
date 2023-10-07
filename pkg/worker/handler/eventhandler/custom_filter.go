@@ -5,11 +5,10 @@ import (
 	"github.com/xh3b4sd/rescue/task"
 )
 
-func (h *Handler) Filter(tas *task.Task) bool {
-	met := map[string]string{
+func (h *CustomHandler) Filter(tas *task.Task) bool {
+	return tas.Meta.Has(map[string]string{
 		objectlabel.EvntAction: objectlabel.ActionDelete,
 		objectlabel.EvntObject: "*",
-	}
-
-	return tas.Meta.Has(met)
+		objectlabel.EvntOrigin: objectlabel.OriginCustom,
+	})
 }

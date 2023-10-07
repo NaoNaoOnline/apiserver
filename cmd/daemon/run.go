@@ -75,8 +75,9 @@ func (r *run) runE(cmd *cobra.Command, args []string) error {
 	{
 		res = engine.New(engine.Config{
 			Logger: log,
-			Queue:  "api.naonao.io", // rescue.io:api.naonao.io
+			Queue:  "api.naonao.io", // rescue.io/api.naonao.io
 			Redigo: red,
+			Sepkey: "/",
 		})
 	}
 
@@ -156,8 +157,9 @@ func (r *run) runE(cmd *cobra.Command, args []string) error {
 	{
 		wrk = worker.New(worker.Config{
 			Han: []workerhandler.Interface{
-				workerdescriptionhandler.NewHandler(workerdescriptionhandler.HandlerConfig{Des: des, Log: log, Vot: vot}),
-				workereventhandler.NewHandler(workereventhandler.HandlerConfig{Eve: eve, Des: des, Log: log, Vot: vot}),
+				workerdescriptionhandler.NewCustomHandler(workerdescriptionhandler.CustomHandlerConfig{Des: des, Log: log, Vot: vot}),
+				workereventhandler.NewCustomHandler(workereventhandler.CustomHandlerConfig{Eve: eve, Des: des, Log: log, Vot: vot}),
+				workereventhandler.NewSystemHandler(workereventhandler.SystemHandlerConfig{Eve: eve, Log: log}),
 			},
 			Log: log,
 			Res: res,

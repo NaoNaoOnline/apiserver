@@ -37,9 +37,7 @@ func (h *Handler) Delete(ctx context.Context, req *description.DeleteI) (*descri
 		if userid.FromContext(ctx) != x.User {
 			return nil, tracer.Mask(userNotOwnerError)
 		}
-	}
 
-	for _, x := range inp {
 		// Ensure descriptions cannot be deleted after 5 minutes of their creation.
 		if x.Crtd.Add(5 * time.Minute).Before(time.Now().UTC()) {
 			return nil, tracer.Mask(descriptionDeletePeriodError)

@@ -38,6 +38,12 @@ type Interface interface {
 	//
 	SearchEvnt([]objectid.ID) ([]*Object, error)
 
+	// SearchHpnd returns the event objects that happened over a week ago.
+	//
+	//     @out[0] the list of event objects that happened over a week ago
+	//
+	SearchHpnd() ([]*Object, error)
+
 	// SearchLabl returns the event objects grouped under all the given labels.
 	//
 	//     @inp[0] the category and/or host labels to include in the search query, if any
