@@ -76,6 +76,7 @@ func (r *Redis) DeleteWrkr(inp []*Object) ([]objectstate.String, error) {
 				Meta: &task.Meta{
 					objectlabel.EvntAction: objectlabel.ActionDelete,
 					objectlabel.EvntObject: inp[i].Evnt.String(),
+					objectlabel.EvntOrigin: objectlabel.OriginCustom,
 				},
 			}
 		}
