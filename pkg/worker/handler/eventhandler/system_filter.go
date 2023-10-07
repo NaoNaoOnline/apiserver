@@ -6,11 +6,9 @@ import (
 )
 
 func (h *SystemHandler) Filter(tas *task.Task) bool {
-	met := map[string]string{
+	return tas.Meta.Has(map[string]string{
 		objectlabel.EvntAction: objectlabel.ActionDelete,
 		objectlabel.EvntObject: "*",
 		objectlabel.EvntOrigin: objectlabel.OriginSystem,
-	}
-
-	return tas.Meta.Has(met)
+	})
 }

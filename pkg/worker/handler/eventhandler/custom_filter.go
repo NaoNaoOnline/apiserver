@@ -6,11 +6,9 @@ import (
 )
 
 func (h *CustomHandler) Filter(tas *task.Task) bool {
-	met := map[string]string{
+	return tas.Meta.Has(map[string]string{
 		objectlabel.EvntAction: objectlabel.ActionDelete,
 		objectlabel.EvntObject: "*",
 		objectlabel.EvntOrigin: objectlabel.OriginCustom,
-	}
-
-	return tas.Meta.Has(met)
+	})
 }
