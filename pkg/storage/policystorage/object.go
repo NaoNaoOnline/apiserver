@@ -11,18 +11,24 @@ import (
 type Object struct {
 	// Acce is the SMA record level, permission or role.
 	Acce int64 `json:"acce"`
-	// Blck is the block height at which this record got created.
+	// Blck is the block height at which this record got created. If the same SMA
+	// record exists on multiple chains, the list of blocks is tracked in record
+	// creation order.
 	Blck []int64 `json:"blck"`
-	// ChID is is the chain ID, the unique identifier representing the blockchain
-	// network on which this record is located.
+	// ChID is the chain ID, the unique identifier representing the blockchain
+	// network on which this record is located. If the same SMA record exists on
+	// multiple chains, the list of chain IDs is tracked in record creation order.
 	ChID []int64 `json:"chid"`
 	// Crtd is the unix timestamp in seconds at which the record got cached
 	// internally.
 	Crtd time.Time `json:"crtd"`
 	// From is the record creator, the sender of the transaction that submitted
-	// this record.
+	// this record. If the same SMA record exists on multiple chains, the list of
+	// creators is tracked in record creation order.
 	From []string `json:"from"`
-	// Hash is the onchain transaction hash that submitted this record.
+	// Hash is the onchain transaction hash that submitted this record. If the
+	// same SMA record exists on multiple chains, the list of transaction hashes
+	// is tracked in record creation order.
 	Hash []string `json:"hash"`
 	// Kind is the record type.
 	//
@@ -42,7 +48,8 @@ type Object struct {
 	// externally. Note that policy records are external data objects that get
 	// created somewhere else, in this case onchain, and thus must bring a
 	// creation timestamp with them. So the created timestamp here originates from
-	// some blockchain network.
+	// some blockchain network. If the same SMA record exists on multiple chains,
+	// the list of creation time is tracked in record creation order.
 	Time []time.Time `json:"time"`
 }
 
