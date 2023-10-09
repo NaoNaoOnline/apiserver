@@ -3,8 +3,7 @@ package policystorage
 import "github.com/NaoNaoOnline/apiserver/pkg/object/objectstate"
 
 type Interface interface {
-	// Create persists new policy objects, if none exists already with the given
-	// record.
+	// Create persists new policy objects.
 	//
 	//     @inp[0] the policy objects providing policy specific information
 	//     @out[0] the policy objects mapped to their internal policy IDs
