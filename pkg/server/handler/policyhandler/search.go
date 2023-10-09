@@ -45,7 +45,7 @@ func (h *Handler) Search(ctx context.Context, req *policy.SearchI) (*policy.Sear
 	}
 
 	//
-	// Search policys by aggregation only.
+	// Search policies by aggregation only.
 	//
 
 	var agg bool
