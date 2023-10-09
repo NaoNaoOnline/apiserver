@@ -10,7 +10,7 @@ func (r *Redis) DeletePlcy(inp []*Object) ([]objectstate.String, error) {
 
 	var out []objectstate.String
 	for i := range inp {
-		// Delete the the kind specific mappings for kind specific search queries.
+		// Delete the kind specific mappings for kind specific search queries.
 		{
 			err = r.red.Sorted().Delete().Score(polKin(inp[i].Kind), inp[i].Plcy.Float())
 			if err != nil {
