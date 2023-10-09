@@ -78,11 +78,7 @@ func (h *Handler) Search(ctx context.Context, req *policy.SearchI) (*policy.Sear
 	if pxy {
 		var kin []string
 		for _, x := range req.Object {
-			if x.Public.Kind == "" {
-				continue
-			}
-
-			{
+			if x.Public.Kind != "" {
 				kin = append(kin, strings.Split(x.Public.Kind, ",")...)
 			}
 		}
