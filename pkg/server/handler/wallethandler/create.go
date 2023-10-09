@@ -44,7 +44,7 @@ func (h *Handler) Create(ctx context.Context, req *wallet.CreateI) (*wallet.Crea
 	for _, x := range out {
 		res.Object = append(res.Object, &wallet.CreateO_Object{
 			Intern: &wallet.CreateO_Object_Intern{
-				Crtd: strconv.Itoa(int(x.Crtd.Unix())),
+				Crtd: strconv.FormatInt(x.Crtd.Unix(), 10),
 				Wllt: x.Wllt.String(),
 			},
 		})

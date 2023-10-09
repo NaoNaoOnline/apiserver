@@ -65,7 +65,7 @@ func (h *Handler) Create(ctx context.Context, req *description.CreateI) (*descri
 	for _, x := range out {
 		res.Object = append(res.Object, &description.CreateO_Object{
 			Intern: &description.CreateO_Object_Intern{
-				Crtd: strconv.Itoa(int(x.Crtd.Unix())),
+				Crtd: strconv.FormatInt(x.Crtd.Unix(), 10),
 				Desc: x.Desc.String(),
 			},
 		})

@@ -13,6 +13,7 @@ import (
 	"github.com/NaoNaoOnline/apiserver/pkg/server/handler/descriptionhandler"
 	"github.com/NaoNaoOnline/apiserver/pkg/server/handler/eventhandler"
 	"github.com/NaoNaoOnline/apiserver/pkg/server/handler/labelhandler"
+	"github.com/NaoNaoOnline/apiserver/pkg/server/handler/policyhandler"
 	"github.com/NaoNaoOnline/apiserver/pkg/server/handler/reactionhandler"
 	"github.com/NaoNaoOnline/apiserver/pkg/server/handler/userhandler"
 	"github.com/NaoNaoOnline/apiserver/pkg/server/handler/votehandler"
@@ -24,6 +25,7 @@ import (
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/descriptionstorage"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/eventstorage"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/labelstorage"
+	"github.com/NaoNaoOnline/apiserver/pkg/storage/policystorage"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/reactionstorage"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/userstorage"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/votestorage"
@@ -86,6 +88,7 @@ func (r *run) runE(cmd *cobra.Command, args []string) error {
 	var des descriptionstorage.Interface
 	var eve eventstorage.Interface
 	var lab labelstorage.Interface
+	var pol policystorage.Interface
 	var rct reactionstorage.Interface
 	var use userstorage.Interface
 	var vot votestorage.Interface
@@ -94,11 +97,16 @@ func (r *run) runE(cmd *cobra.Command, args []string) error {
 		des = descriptionstorage.NewRedis(descriptionstorage.RedisConfig{Log: log, Red: red, Res: res})
 		eve = eventstorage.NewRedis(eventstorage.RedisConfig{Log: log, Red: red, Res: res})
 		lab = labelstorage.NewRedis(labelstorage.RedisConfig{Log: log, Red: red})
+		pol = policystorage.NewRedis(policystorage.RedisConfig{Log: log, Red: red})
 		rct = reactionstorage.NewRedis(reactionstorage.RedisConfig{Log: log, Red: red})
 		use = userstorage.NewRedis(userstorage.RedisConfig{Log: log, Red: red})
 		vot = votestorage.NewRedis(votestorage.RedisConfig{Log: log, Red: red})
 		wal = walletstorage.NewRedis(walletstorage.RedisConfig{Log: log, Red: red})
 	}
+
+	// TODO add scheduled worker task template to search for policy records
+	// TODO create scheduled task for updating records on demand via update endpoint
+	// TODO update apischema again
 
 	// --------------------------------------------------------------------- //
 
@@ -129,6 +137,7 @@ func (r *run) runE(cmd *cobra.Command, args []string) error {
 				descriptionhandler.NewHandler(descriptionhandler.HandlerConfig{Eve: eve, Des: des, Log: log}),
 				eventhandler.NewHandler(eventhandler.HandlerConfig{Eve: eve, Log: log}),
 				labelhandler.NewHandler(labelhandler.HandlerConfig{Lab: lab, Log: log}),
+				policyhandler.NewHandler(policyhandler.HandlerConfig{Log: log, Pol: pol}),
 				reactionhandler.NewHandler(reactionhandler.HandlerConfig{Log: log, Rct: rct}),
 				userhandler.NewHandler(userhandler.HandlerConfig{Log: log, Use: use}),
 				votehandler.NewHandler(votehandler.HandlerConfig{Des: des, Eve: eve, Log: log, Vot: vot}),

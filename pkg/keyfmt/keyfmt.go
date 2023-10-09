@@ -105,6 +105,47 @@ const (
 	//
 	LabelUser = "lab/use/%s"
 
+	// PolicyCreateMember is used to store all the IDs of CreateMember policies.
+	//
+	//     kind CreateMember          policy IDs
+	//                          ->
+	//     pol/kin/mem/cre            1234,5678
+	//
+	PolicyCreateMember = "pol/kin/mem/cre"
+
+	// PolicyCreateSystem is used to store all the IDs of CreateSystem policies.
+	//
+	//     kind CreateSystem          policy IDs
+	//                          ->
+	//     pol/kin/sys/cre            1234,5678
+	//
+	PolicyCreateSystem = "pol/kin/sys/cre"
+
+	// PolicyDeleteMember is used to store all the IDs of DeleteMember policies.
+	//
+	//     kind DeleteMember          policy IDs
+	//                          ->
+	//     pol/kin/mem/del            1234,5678
+	//
+	PolicyDeleteMember = "pol/kin/mem/del"
+
+	// PolicyDeleteSystem is used to store all the IDs of DeleteSystem policies.
+	//
+	//     kind DeleteSystem          policy IDs
+	//                          ->
+	//     pol/kin/sys/del            1234,5678
+	//
+	PolicyDeleteSystem = "pol/kin/sys/del"
+
+	// PolicyObject is used to store our internal representation of a policy
+	// object.
+	//
+	//     policy ID              policy object
+	//                     ->
+	//     pol/obj/1234          {"key": "val"}
+	//
+	PolicyObject = "pol/obj/%s"
+
 	// ReactionCustom is used to store all the IDs of reactions individually
 	// created by users.
 	//

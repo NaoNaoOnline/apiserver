@@ -141,7 +141,7 @@ func (h *Handler) Search(ctx context.Context, req *event.SearchI) (*event.Search
 	for _, x := range out {
 		res.Object = append(res.Object, &event.SearchO_Object{
 			Intern: &event.SearchO_Object_Intern{
-				Crtd: strconv.Itoa(int(x.Crtd.Unix())),
+				Crtd: strconv.FormatInt(x.Crtd.Unix(), 10),
 				Evnt: x.Evnt.String(),
 				User: x.User.String(),
 			},

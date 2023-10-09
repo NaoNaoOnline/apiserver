@@ -86,7 +86,7 @@ func (h *Handler) Create(ctx context.Context, req *vote.CreateI) (*vote.CreateO,
 	for _, x := range out {
 		res.Object = append(res.Object, &vote.CreateO_Object{
 			Intern: &vote.CreateO_Object_Intern{
-				Crtd: strconv.Itoa(int(x.Crtd.Unix())),
+				Crtd: strconv.FormatInt(x.Crtd.Unix(), 10),
 				Vote: x.Vote.String(),
 			},
 		})

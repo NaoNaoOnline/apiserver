@@ -39,7 +39,7 @@ func (h *Handler) Search(ctx context.Context, req *description.SearchI) (*descri
 
 		res.Object = append(res.Object, &description.SearchO_Object{
 			Intern: &description.SearchO_Object_Intern{
-				Crtd: strconv.Itoa(int(x.Crtd.Unix())),
+				Crtd: strconv.FormatInt(x.Crtd.Unix(), 10),
 				Desc: x.Desc.String(),
 				User: x.User.String(),
 			},
