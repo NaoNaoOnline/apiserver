@@ -45,7 +45,7 @@ func (h *Handler) Create(ctx context.Context, req *event.CreateI) (*event.Create
 	for _, x := range out {
 		res.Object = append(res.Object, &event.CreateO_Object{
 			Intern: &event.CreateO_Object_Intern{
-				Crtd: strconv.Itoa(int(x.Crtd.Unix())),
+				Crtd: strconv.FormatInt(x.Crtd.Unix(), 10),
 				Evnt: x.Evnt.String(),
 			},
 		})

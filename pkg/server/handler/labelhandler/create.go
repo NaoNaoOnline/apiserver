@@ -60,7 +60,7 @@ func (h *Handler) Create(ctx context.Context, req *label.CreateI) (*label.Create
 	for _, x := range out {
 		res.Object = append(res.Object, &label.CreateO_Object{
 			Intern: &label.CreateO_Object_Intern{
-				Crtd: strconv.Itoa(int(x.Crtd.Unix())),
+				Crtd: strconv.FormatInt(x.Crtd.Unix(), 10),
 				Labl: x.Labl.String(),
 			},
 		})

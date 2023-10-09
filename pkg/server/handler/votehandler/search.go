@@ -34,7 +34,7 @@ func (h *Handler) Search(ctx context.Context, req *vote.SearchI) (*vote.SearchO,
 	for _, x := range out {
 		res.Object = append(res.Object, &vote.SearchO_Object{
 			Intern: &vote.SearchO_Object_Intern{
-				Crtd: strconv.Itoa(int(x.Crtd.Unix())),
+				Crtd: strconv.FormatInt(x.Crtd.Unix(), 10),
 				User: x.User.String(),
 				Vote: x.Vote.String(),
 			},

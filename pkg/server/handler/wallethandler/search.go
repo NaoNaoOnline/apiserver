@@ -80,7 +80,7 @@ func (h *Handler) Search(ctx context.Context, req *wallet.SearchI) (*wallet.Sear
 				Addr: &wallet.SearchO_Object_Intern_Addr{
 					Time: strconv.Itoa(int(x.Addr.Time.Unix())),
 				},
-				Crtd: strconv.Itoa(int(x.Crtd.Unix())),
+				Crtd: strconv.FormatInt(x.Crtd.Unix(), 10),
 				User: x.User.String(),
 				Wllt: x.Wllt.String(),
 			},
