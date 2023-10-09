@@ -65,7 +65,7 @@ func (h *Handler) Search(ctx context.Context, req *policy.SearchI) (*policy.Sear
 	}
 
 	//
-	// Search policys by label.
+	// Search policies by kind.
 	//
 
 	var pxy bool
