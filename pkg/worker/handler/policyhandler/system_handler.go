@@ -10,6 +10,7 @@ import (
 	"github.com/xh3b4sd/tracer"
 )
 
+// TODO configure handler as if we had to cover multiple chains
 type SystemHandlerConfig struct {
 	Eth *ethclient.Client
 	Log logger.Interface
