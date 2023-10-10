@@ -89,35 +89,86 @@ func (r *Redis) SearchKind(inp []string) ([]*Object, error) {
 	return out, nil
 }
 
-// TODO write unit tests for duplicated records from multiple chains ( create / delete )
 func searchAggr(inp []*Object) ([]*Object, []*Object) {
 	var cre []*Object
 	var del []*Object
 
-	for _, x := range inp {
-		if x.Kind == "CreateMember" || x.Kind == "CreateSystem" {
-			cre = append(cre, x)
+	// We want to remove the create records that have equivalent delete records.
+	// Therefore we prepare our data structures and create separate lists for
+	// both.
+	for _, o := range inp {
+		if o.Kind == "CreateMember" || o.Kind == "CreateSystem" {
+			cre = append(cre, o)
 		}
-		if x.Kind == "DeleteMember" || x.Kind == "DeleteSystem" {
-			del = append(del, x)
+		if o.Kind == "DeleteMember" || o.Kind == "DeleteSystem" {
+			del = append(del, o)
 		}
 	}
 
+	// Our aggregation considers policy contract deployments on multiple chains.
+	// Any create record on any chain that is not negated by its equivalent delete
+	// record on that same chain remains valid for the platform. That means we
+	// have to keep track of the chain IDs that records carry with them, since we
+	// will use them as indicator for negation. For instance, consider a create
+	// record with the chain IDs [1 2 3] and an equivalent delete record with the
+	// chain IDs [1 3]. The create record in that example remains valid since its
+	// policy record on chain ID 2 remains intact.
+	chn := map[*Object][]int64{}
+
 	var agg []*Object
 	for _, x := range cre {
-		var exi bool
+		var neg bool
 
 		for _, y := range del {
-			if x.Eqlrec(y) {
-				exi = true
+			// Delete record y is only allowed to negate create record x if their SMA
+			// fields are equal. So if their SMA fields do not match, we ignore y and
+			// move on to the next delete record.
+			if !x.Eqlrec(y) {
+				continue
+			}
+
+			// Since the SMA fields of x and y match we should be able to find a
+			// common chain ID. The common chain ID is added to the mapping so that we
+			// can further compare whether all create records on all chains got
+			// negated already.
+			{
+				c, e := eqlChn(x, y)
+				if e {
+					chn[x] = append(chn[x], c)
+				}
+			}
+
+			// If all create records on all chains got negated, then we can remove the
+			// create record from our aggregation.
+			if len(chn[x]) == len(x.ChID) {
+				neg = true
 				break
 			}
 		}
 
-		if !exi {
+		// Any create record that got negated is not added to our aggregation list.
+		if !neg {
 			agg = append(agg, x)
 		}
 	}
 
 	return agg, del
+}
+
+// eqlChn tries to find a common chain ID. When eqlChn is used, then chain IDs
+// may or may not be shared between policy records. Therefore the second return
+// value bool is returned in order to indicate that a chain ID in fact matched
+// between the given objects. The returned chain ID value should not be
+// considered without ensuring that the returned bool is true, since the return
+// value 0 may be misleading on its own in any given case.
+func eqlChn(a *Object, b *Object) (int64, bool) {
+	for _, x := range a.ChID {
+		for _, y := range b.ChID {
+			if x == y {
+				return x, true
+			}
+		}
+	}
+
+	return 0, false
 }
