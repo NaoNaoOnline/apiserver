@@ -31,7 +31,7 @@ func (h *Handler) Update(ctx context.Context, req *policy.UpdateI) (*policy.Upda
 	}
 
 	if !exi {
-		return nil, tracer.Mask(updateSyncInvalidError)
+		return nil, tracer.Mask(policyMemberError)
 	}
 
 	var tas *task.Task
