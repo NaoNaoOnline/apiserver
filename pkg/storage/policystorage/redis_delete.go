@@ -10,6 +10,22 @@ func (r *Redis) DeletePlcy(inp []*Object) ([]objectstate.String, error) {
 
 	var out []objectstate.String
 	for i := range inp {
+		// Delete the system specific mappings for system specific search queries.
+		{
+			err = r.red.Sorted().Delete().Score(polSys(inp[i].Kind, inp[i].Syst, inp[i].Memb), inp[i].Plcy.Float())
+			if err != nil {
+				return nil, tracer.Mask(err)
+			}
+		}
+
+		// Delete the member specific mappings for member specific search queries.
+		{
+			err = r.red.Sorted().Delete().Score(polMem(inp[i].Kind, inp[i].Memb), inp[i].Plcy.Float())
+			if err != nil {
+				return nil, tracer.Mask(err)
+			}
+		}
+
 		// Delete the kind specific mappings for kind specific search queries.
 		{
 			err = r.red.Sorted().Delete().Score(polKin(inp[i].Kind), inp[i].Plcy.Float())

@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/NaoNaoOnline/apiserver/pkg/object/objectlabel"
 	"github.com/NaoNaoOnline/apiserver/pkg/worker/budget"
 	"github.com/NaoNaoOnline/apiserver/pkg/worker/handler"
 	"github.com/xh3b4sd/logger"
@@ -90,32 +89,33 @@ func (w *Worker) Daemon() {
 func (w *Worker) create() {
 	var err error
 
-	var tas *task.Task
-	{
-		tas = &task.Task{
-			Cron: &task.Cron{
-				task.Aevery: "5 minutes",
-			},
-			Meta: &task.Meta{
-				objectlabel.EvntAction: objectlabel.ActionDelete,
-				objectlabel.EvntObject: "*",
-				objectlabel.EvntOrigin: objectlabel.OriginSystem,
-			},
+	for _, x := range w.han {
+		var tas *task.Task
+		{
+			tas = x.Create()
 		}
-	}
 
-	var exi bool
-	{
-		exi, err = w.res.Exists(tas)
-		if err != nil {
-			w.lerror(tracer.Mask(err))
+		if tas == nil {
+			continue
 		}
-	}
 
-	if !exi {
-		err := w.res.Create(tas)
-		if err != nil {
-			w.lerror(tracer.Mask(err))
+		var exi bool
+		{
+			exi, err = w.res.Exists(tas)
+			if err != nil {
+				w.lerror(tracer.Mask(err))
+			}
+		}
+
+		if exi {
+			continue
+		}
+
+		{
+			err := w.res.Create(tas)
+			if err != nil {
+				w.lerror(tracer.Mask(err))
+			}
 		}
 	}
 }

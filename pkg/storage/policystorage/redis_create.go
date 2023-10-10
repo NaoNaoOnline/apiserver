@@ -1,6 +1,7 @@
 package policystorage
 
 import (
+	"strconv"
 	"time"
 
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectid"
@@ -39,11 +40,31 @@ func (r *Redis) Create(inp []*Object) ([]*Object, error) {
 			}
 		}
 
-		// Now we create the record kind mappings for record kind search queries.
-		// With that we can search for records of a given kind. That is, records of
-		// a particular smart contract event.
+		// Create the record kind mappings for record kind search queries. With that
+		// we can search for records of a given kind. That is, records of a
+		// particular smart contract event.
 		{
 			err = r.red.Sorted().Create().Score(polKin(inp[i].Kind), inp[i].Plcy.String(), inp[i].Plcy.Float())
+			if err != nil {
+				return nil, tracer.Mask(err)
+			}
+		}
+
+		// Create the policy member mappings for policy member search queries. With
+		// that we can answer the question whether a given member is part of any
+		// policy.
+		{
+			err = r.red.Sorted().Create().Score(polMem(inp[i].Kind, inp[i].Memb), inp[i].Plcy.String(), inp[i].Plcy.Float())
+			if err != nil {
+				return nil, tracer.Mask(err)
+			}
+		}
+
+		// Create policy system mappings for policy system search queries. With that
+		// we can search for members within a specific system and answer the
+		// question whether they have a particular access level in that system.
+		{
+			err = r.red.Sorted().Create().Score(polSys(inp[i].Kind, inp[i].Syst, inp[i].Memb), strconv.FormatInt(inp[i].Acce, 10), inp[i].Plcy.Float())
 			if err != nil {
 				return nil, tracer.Mask(err)
 			}

@@ -23,7 +23,7 @@ func (r *Redis) SearchAggr() ([]*Object, []*Object, error) {
 	var agg []*Object
 	var del []*Object
 	{
-		agg, del = r.searchAggr(obj)
+		agg, del = searchAggr(obj)
 	}
 
 	return agg, del, nil
@@ -89,7 +89,8 @@ func (r *Redis) SearchKind(inp []string) ([]*Object, error) {
 	return out, nil
 }
 
-func (r *Redis) searchAggr(inp []*Object) ([]*Object, []*Object) {
+// TODO write unit tests for duplicated records from multiple chains ( create / delete )
+func searchAggr(inp []*Object) ([]*Object, []*Object) {
 	var cre []*Object
 	var del []*Object
 

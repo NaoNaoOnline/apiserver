@@ -2,6 +2,7 @@ package objectstate
 
 const (
 	Deleted String = "deleted"
+	Started String = "started"
 	Updated String = "updated"
 )
 

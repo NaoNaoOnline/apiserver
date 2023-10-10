@@ -1,6 +1,9 @@
 package policystorage
 
-import "github.com/NaoNaoOnline/apiserver/pkg/object/objectstate"
+import (
+	"github.com/NaoNaoOnline/apiserver/pkg/object/objectid"
+	"github.com/NaoNaoOnline/apiserver/pkg/object/objectstate"
+)
 
 type Interface interface {
 	// Create persists new policy objects.
@@ -16,6 +19,31 @@ type Interface interface {
 	//     @out[0] the list of operation states related to the purged policy objects
 	//
 	DeletePlcy([]*Object) ([]objectstate.String, error)
+
+	// ExistsSyst verifies whether the given user is part of the given system.
+	//
+	//     @inp[0] the SMA system
+	//     @inp[1] the user ID to verify
+	//     @out[0] the bool expressing whether the given user is part of the given system
+	//
+	ExistsSyst(int64, objectid.ID) (bool, error)
+
+	// ExistsMemb verifies whether the given user is a policy member
+	//
+	//     @inp[0] the user ID to verify
+	//     @out[0] the bool expressing whether the given user is a policy member
+	//
+	ExistsMemb(objectid.ID) (bool, error)
+
+	// ExistsAcce verifies whether the given user has the given access within the
+	// given system.
+	//
+	//     @inp[0] the SMA system
+	//     @inp[1] the user ID to verify
+	//     @inp[2] the SMA access
+	//     @out[0] the bool expressing whether the given user has the given access within the given system
+	//
+	ExistsAcce(int64, objectid.ID, int64) (bool, error)
 
 	// SearchAggr returns the latest aggregated version of cached policy records
 	// indexed from all onchain smart contracts configured. That is, the list of
