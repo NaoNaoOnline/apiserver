@@ -7,6 +7,7 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/NaoNaoOnline/apiserver/pkg/contract/policycontract"
 	"github.com/NaoNaoOnline/apiserver/pkg/envvar"
 	"github.com/NaoNaoOnline/apiserver/pkg/server"
 	serverhandler "github.com/NaoNaoOnline/apiserver/pkg/server/handler"
@@ -34,6 +35,9 @@ import (
 	workerhandler "github.com/NaoNaoOnline/apiserver/pkg/worker/handler"
 	workerdescriptionhandler "github.com/NaoNaoOnline/apiserver/pkg/worker/handler/descriptionhandler"
 	workereventhandler "github.com/NaoNaoOnline/apiserver/pkg/worker/handler/eventhandler"
+	workerpolicyhandler "github.com/NaoNaoOnline/apiserver/pkg/worker/handler/policyhandler"
+	"github.com/ethereum/go-ethereum/common"
+	"github.com/ethereum/go-ethereum/ethclient"
 	"github.com/gorilla/mux"
 	"github.com/spf13/cobra"
 	"github.com/twitchtv/twirp"
@@ -53,6 +57,14 @@ func (r *run) runE(cmd *cobra.Command, args []string) error {
 	var env envvar.Env
 	{
 		env = envvar.Load()
+	}
+
+	var eth *ethclient.Client
+	{
+		eth, err = ethclient.Dial(env.ChainRpc)
+		if err != nil {
+			panic(err)
+		}
 	}
 
 	var log logger.Interface
@@ -83,30 +95,37 @@ func (r *run) runE(cmd *cobra.Command, args []string) error {
 		})
 	}
 
+	var pcn *policycontract.Policy
+	{
+		pcn, err = policycontract.NewPolicy(common.HexToAddress(env.PolicyContract), eth)
+		if err != nil {
+			panic(err)
+		}
+	}
+
 	// --------------------------------------------------------------------- //
 
-	var des descriptionstorage.Interface
-	var eve eventstorage.Interface
 	var lab labelstorage.Interface
-	var pol policystorage.Interface
 	var rct reactionstorage.Interface
 	var use userstorage.Interface
 	var vot votestorage.Interface
 	var wal walletstorage.Interface
 	{
-		des = descriptionstorage.NewRedis(descriptionstorage.RedisConfig{Log: log, Red: red, Res: res})
-		eve = eventstorage.NewRedis(eventstorage.RedisConfig{Log: log, Red: red, Res: res})
 		lab = labelstorage.NewRedis(labelstorage.RedisConfig{Log: log, Red: red})
-		pol = policystorage.NewRedis(policystorage.RedisConfig{Log: log, Red: red})
 		rct = reactionstorage.NewRedis(reactionstorage.RedisConfig{Log: log, Red: red})
 		use = userstorage.NewRedis(userstorage.RedisConfig{Log: log, Red: red})
 		vot = votestorage.NewRedis(votestorage.RedisConfig{Log: log, Red: red})
 		wal = walletstorage.NewRedis(walletstorage.RedisConfig{Log: log, Red: red})
 	}
 
-	// TODO add scheduled worker task template to search for policy records
-	// TODO create scheduled task for updating records on demand via update endpoint
-	// TODO update apischema again
+	var des descriptionstorage.Interface
+	var eve eventstorage.Interface
+	var pol policystorage.Interface
+	{
+		des = descriptionstorage.NewRedis(descriptionstorage.RedisConfig{Log: log, Red: red, Res: res})
+		eve = eventstorage.NewRedis(eventstorage.RedisConfig{Log: log, Red: red, Res: res})
+		pol = policystorage.NewRedis(policystorage.RedisConfig{Log: log, Red: red, Wal: wal})
+	}
 
 	// --------------------------------------------------------------------- //
 
@@ -137,7 +156,7 @@ func (r *run) runE(cmd *cobra.Command, args []string) error {
 				descriptionhandler.NewHandler(descriptionhandler.HandlerConfig{Eve: eve, Des: des, Log: log}),
 				eventhandler.NewHandler(eventhandler.HandlerConfig{Eve: eve, Log: log}),
 				labelhandler.NewHandler(labelhandler.HandlerConfig{Lab: lab, Log: log}),
-				policyhandler.NewHandler(policyhandler.HandlerConfig{Log: log, Pol: pol}),
+				policyhandler.NewHandler(policyhandler.HandlerConfig{Log: log, Pol: pol, Res: res}),
 				reactionhandler.NewHandler(reactionhandler.HandlerConfig{Log: log, Rct: rct}),
 				userhandler.NewHandler(userhandler.HandlerConfig{Log: log, Use: use}),
 				votehandler.NewHandler(votehandler.HandlerConfig{Des: des, Eve: eve, Log: log, Vot: vot}),
@@ -169,6 +188,7 @@ func (r *run) runE(cmd *cobra.Command, args []string) error {
 				workerdescriptionhandler.NewCustomHandler(workerdescriptionhandler.CustomHandlerConfig{Des: des, Log: log, Vot: vot}),
 				workereventhandler.NewCustomHandler(workereventhandler.CustomHandlerConfig{Eve: eve, Des: des, Log: log, Vot: vot}),
 				workereventhandler.NewSystemHandler(workereventhandler.SystemHandlerConfig{Eve: eve, Log: log}),
+				workerpolicyhandler.NewSystemHandler(workerpolicyhandler.SystemHandlerConfig{Eth: eth, Log: log, Pcn: pcn, Pol: pol}),
 			},
 			Log: log,
 			Res: res,

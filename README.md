@@ -47,4 +47,13 @@ curl -s --request "POST" --header "Content-Type: application/json" --data '{}' h
 
 
 
+Generating smart contract bindings using [abigen].
+
+```
+abigen --abi pkg/contract/policycontract/Policy.ABI.json --pkg policycontract --type Policy --out pkg/contract/policycontract/policy_contract.go
+```
+
+
+
+[abigen]: https://geth.ethereum.org/docs/tools/abigen
 [Twirp]: https://github.com/twitchtv/twirp

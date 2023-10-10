@@ -137,6 +137,14 @@ const (
 	//
 	PolicyDeleteSystem = "pol/kin/sys/del"
 
+	// PolicyMember is used to store all the IDs of policies for a member.
+	//
+	//     kind / member                  policy IDs
+	//                              ->
+	//     pol/kin/foo/mem/2345           1234,5678
+	//
+	PolicyMember = "pol/kin/%s/mem/%s"
+
 	// PolicyObject is used to store our internal representation of a policy
 	// object.
 	//
@@ -145,6 +153,15 @@ const (
 	//     pol/obj/1234          {"key": "val"}
 	//
 	PolicyObject = "pol/obj/%s"
+
+	// PolicySystem is used to store all the IDs of policies for a member within a
+	// specific system.
+	//
+	//     kind / system / member                  policy IDs
+	//                                       ->
+	//     pol/kin/foo/sys/2345/mem/3456           1234,5678
+	//
+	PolicySystem = "pol/kin/%s/sys/%d/mem/%s"
 
 	// ReactionCustom is used to store all the IDs of reactions individually
 	// created by users.

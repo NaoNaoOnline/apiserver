@@ -2,11 +2,18 @@ package objectlabel
 
 const (
 	ActionDelete string = "delete"
+	ActionUpdate string = "update"
 )
 
 const (
 	OriginCustom string = "custom"
 	OriginSystem string = "system"
+)
+
+const (
+	DescAction string = "description.naonao.io/action"
+	DescObject string = "description.naonao.io/object"
+	DescOrigin string = "description.naonao.io/origin"
 )
 
 const (
@@ -16,7 +23,8 @@ const (
 )
 
 const (
-	DescAction string = "description.naonao.io/action"
-	DescObject string = "description.naonao.io/object"
-	DescOrigin string = "description.naonao.io/origin"
+	PlcyAction string = "policy.naonao.io/action"
+	PlcyLatest string = "policy.naonao.io/latest"
+	PlcyObject string = "policy.naonao.io/object"
+	PlcyOrigin string = "policy.naonao.io/origin"
 )
