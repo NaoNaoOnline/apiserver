@@ -36,7 +36,7 @@ func (r *Redis) SearchKind(use objectid.ID, kin []string) ([]*Object, error) {
 		}
 
 		{
-			lis, err := r.SearchWllt(use, objectid.Strings(val))
+			lis, err := r.SearchWllt(use, objectid.IDs(val))
 			if err != nil {
 				return nil, tracer.Mask(err)
 			}

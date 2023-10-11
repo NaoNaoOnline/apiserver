@@ -59,11 +59,25 @@ func (r *Redis) SearchKind(inp []string) ([]*Object, error) {
 		return nil, nil
 	}
 
+	var out []*Object
+	{
+		out, err = r.SearchPlcy(objectid.IDs(val))
+		if err != nil {
+			return nil, tracer.Mask(err)
+		}
+	}
+
+	return out, nil
+}
+
+func (r *Redis) SearchPlcy(inp []objectid.ID) ([]*Object, error) {
+	var err error
+
 	var jsn []string
 	{
-		jsn, err = r.red.Simple().Search().Multi(objectid.Fmt(val, keyfmt.PolicyObject)...)
+		jsn, err = r.red.Simple().Search().Multi(objectid.Fmt(inp, keyfmt.PolicyObject)...)
 		if simple.IsNotFound(err) {
-			return nil, tracer.Maskf(policyObjectNotFoundError, "%v", val)
+			return nil, tracer.Maskf(policyObjectNotFoundError, "%v", inp)
 		} else if err != nil {
 			return nil, tracer.Mask(err)
 		}

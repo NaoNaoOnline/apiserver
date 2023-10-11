@@ -1,7 +1,7 @@
-package objectid
+package generic
 
-// Uni returns a list of unique items.
-func Uni[T string | ID](lis []T) []T {
+// Uni returns the unique items of the given list.
+func Uni[T string | int64](lis []T) []T {
 	see := map[T]struct{}{}
 
 	var uni []T

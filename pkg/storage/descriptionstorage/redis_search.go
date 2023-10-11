@@ -68,7 +68,7 @@ func (r *Redis) SearchEvnt(evn []objectid.ID) ([]*Object, error) {
 		}
 
 		{
-			lis, err := r.SearchDesc(objectid.Strings(val))
+			lis, err := r.SearchDesc(objectid.IDs(val))
 			if err != nil {
 				return nil, tracer.Mask(err)
 			}

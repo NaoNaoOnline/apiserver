@@ -4,10 +4,10 @@ import (
 	"net"
 	"os"
 	"os/signal"
+	"strings"
 	"syscall"
 	"time"
 
-	"github.com/NaoNaoOnline/apiserver/pkg/contract/policycontract"
 	"github.com/NaoNaoOnline/apiserver/pkg/envvar"
 	"github.com/NaoNaoOnline/apiserver/pkg/server"
 	serverhandler "github.com/NaoNaoOnline/apiserver/pkg/server/handler"
@@ -36,8 +36,6 @@ import (
 	workerdescriptionhandler "github.com/NaoNaoOnline/apiserver/pkg/worker/handler/descriptionhandler"
 	workereventhandler "github.com/NaoNaoOnline/apiserver/pkg/worker/handler/eventhandler"
 	workerpolicyhandler "github.com/NaoNaoOnline/apiserver/pkg/worker/handler/policyhandler"
-	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethereum/go-ethereum/ethclient"
 	"github.com/gorilla/mux"
 	"github.com/spf13/cobra"
 	"github.com/twitchtv/twirp"
@@ -57,14 +55,6 @@ func (r *run) runE(cmd *cobra.Command, args []string) error {
 	var env envvar.Env
 	{
 		env = envvar.Load()
-	}
-
-	var eth *ethclient.Client
-	{
-		eth, err = ethclient.Dial(env.ChainRpc)
-		if err != nil {
-			panic(err)
-		}
 	}
 
 	var log logger.Interface
@@ -93,14 +83,6 @@ func (r *run) runE(cmd *cobra.Command, args []string) error {
 			Redigo: red,
 			Sepkey: "/",
 		})
-	}
-
-	var pcn *policycontract.Policy
-	{
-		pcn, err = policycontract.NewPolicy(common.HexToAddress(env.PolicyContract), eth)
-		if err != nil {
-			panic(err)
-		}
 	}
 
 	// --------------------------------------------------------------------- //
@@ -181,15 +163,27 @@ func (r *run) runE(cmd *cobra.Command, args []string) error {
 
 	// --------------------------------------------------------------------- //
 
+	var pwh []workerhandler.Interface
+	for _, x := range strings.Split(env.ChainRpc, ",") {
+		pwh = append(pwh, workerpolicyhandler.NewSystemHandler(workerpolicyhandler.SystemHandlerConfig{
+			Cnt: env.PolicyContract,
+			Log: log,
+			Pol: pol,
+			Rpc: x,
+		}))
+	}
+
 	var wrk *worker.Worker
 	{
 		wrk = worker.New(worker.Config{
-			Han: []workerhandler.Interface{
-				workerdescriptionhandler.NewCustomHandler(workerdescriptionhandler.CustomHandlerConfig{Des: des, Log: log, Vot: vot}),
-				workereventhandler.NewCustomHandler(workereventhandler.CustomHandlerConfig{Eve: eve, Des: des, Log: log, Vot: vot}),
-				workereventhandler.NewSystemHandler(workereventhandler.SystemHandlerConfig{Eve: eve, Log: log}),
-				workerpolicyhandler.NewSystemHandler(workerpolicyhandler.SystemHandlerConfig{Eth: eth, Log: log, Pcn: pcn, Pol: pol}),
-			},
+			Han: append(
+				[]workerhandler.Interface{
+					workerdescriptionhandler.NewCustomHandler(workerdescriptionhandler.CustomHandlerConfig{Des: des, Log: log, Vot: vot}),
+					workereventhandler.NewCustomHandler(workereventhandler.CustomHandlerConfig{Eve: eve, Des: des, Log: log, Vot: vot}),
+					workereventhandler.NewSystemHandler(workereventhandler.SystemHandlerConfig{Eve: eve, Log: log}),
+				},
+				pwh...,
+			),
 			Log: log,
 			Res: res,
 		})

@@ -16,7 +16,7 @@ func (h *Handler) Search(ctx context.Context, req *policy.SearchI) (*policy.Sear
 	//
 
 	for _, x := range req.Object {
-		if x.Public.Kind != "" && (x.Symbol.Ltst == "default" || x.Symbol.Ltst == "aggregated") {
+		if x.Public != nil && x.Public.Kind != "" && (x.Symbol.Ltst == "default" || x.Symbol.Ltst == "aggregated") {
 			return nil, tracer.Mask(searchKindConflictError)
 		}
 	}

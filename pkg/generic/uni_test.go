@@ -1,4 +1,4 @@
-package objectid
+package generic
 
 import (
 	"fmt"
@@ -6,7 +6,7 @@ import (
 	"testing"
 )
 
-func Test_ObjectID_Uni_string(t *testing.T) {
+func Test_Generic_Uni_string(t *testing.T) {
 	testCases := []struct {
 		lis []string
 		uni []string
@@ -74,60 +74,60 @@ func Test_ObjectID_Uni_string(t *testing.T) {
 	}
 }
 
-func Test_ObjectID_Uni_ID(t *testing.T) {
+func Test_Generic_Uni_int64(t *testing.T) {
 	testCases := []struct {
-		lis []ID
-		uni []ID
+		lis []int64
+		uni []int64
 	}{
 		// Case 000
 		{
-			lis: []ID{},
+			lis: []int64{},
 			uni: nil,
 		},
 		// Case 001
 		{
-			lis: []ID{
-				"55",
-				"44",
+			lis: []int64{
+				55,
+				44,
 			},
-			uni: []ID{
-				"55",
-				"44",
+			uni: []int64{
+				55,
+				44,
 			},
 		},
 		// Case 002
 		{
-			lis: []ID{
-				"33",
-				"44",
-				"33",
-				"33",
+			lis: []int64{
+				33,
+				44,
+				33,
+				33,
 			},
-			uni: []ID{
-				"33",
-				"44",
+			uni: []int64{
+				33,
+				44,
 			},
 		},
 		// Case 003
 		{
-			lis: []ID{
-				"33",
-				"44",
-				"88",
-				"22",
-				"33",
-				"55",
-				"66",
-				"55",
-				"88",
+			lis: []int64{
+				33,
+				44,
+				88,
+				22,
+				33,
+				55,
+				66,
+				55,
+				88,
 			},
-			uni: []ID{
-				"33",
-				"44",
-				"88",
-				"22",
-				"55",
-				"66",
+			uni: []int64{
+				33,
+				44,
+				88,
+				22,
+				55,
+				66,
 			},
 		},
 	}

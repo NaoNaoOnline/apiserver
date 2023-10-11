@@ -5,7 +5,7 @@ import (
 	"strconv"
 
 	"github.com/NaoNaoOnline/apigocode/pkg/reaction"
-	"github.com/NaoNaoOnline/apiserver/pkg/object/objectid"
+	"github.com/NaoNaoOnline/apiserver/pkg/generic"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/reactionstorage"
 	"github.com/xh3b4sd/tracer"
 )
@@ -20,7 +20,7 @@ func (h *Handler) Search(ctx context.Context, req *reaction.SearchI) (*reaction.
 
 	var out []*reactionstorage.Object
 	{
-		out, err = h.rct.SearchKind(objectid.Uni(kin))
+		out, err = h.rct.SearchKind(generic.Uni(kin))
 		if err != nil {
 			return nil, tracer.Mask(err)
 		}

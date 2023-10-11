@@ -1,11 +1,11 @@
 package objectid
 
-func Strings(str []string) []ID {
-	var ids []ID
+func Strings(ids []ID) []string {
+	var lis []string
 
-	for _, x := range str {
-		ids = append(ids, ID(x))
+	for _, x := range ids {
+		lis = append(lis, x.String())
 	}
 
-	return ids
+	return lis
 }

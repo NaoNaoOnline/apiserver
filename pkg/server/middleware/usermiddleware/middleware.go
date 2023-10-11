@@ -85,13 +85,27 @@ func (m *Middleware) Handler(h http.Handler) http.Handler {
 }
 
 func (m *Middleware) werror(ctx context.Context, wri http.ResponseWriter, err error) {
-	m.log.Log(
-		ctx,
-		"level", "error",
-		"code", strconv.Itoa(http.StatusInternalServerError),
-		"message", err.Error(),
-		"stack", tracer.Stack(err),
-	)
+	e, o := err.(*tracer.Error)
+	if o {
+		m.log.Log(
+			ctx,
+			"level", "error",
+			"message", e.Error(),
+			"code", strconv.Itoa(http.StatusInternalServerError),
+			"description", e.Desc,
+			"docs", e.Docs,
+			"kind", e.Kind,
+			"stack", tracer.Stack(e),
+		)
+	} else {
+		m.log.Log(
+			ctx,
+			"level", "error",
+			"code", strconv.Itoa(http.StatusInternalServerError),
+			"message", err.Error(),
+			"stack", tracer.Stack(err),
+		)
+	}
 
 	{
 		wri.WriteHeader(http.StatusInternalServerError)

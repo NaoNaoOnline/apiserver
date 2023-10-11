@@ -274,8 +274,8 @@ github.com/xh3b4sd/budget/v3 v3.3.0 h1:/mg11kyDuYHI4LOT8hctLsVnK6ZeGN+/Rw5wzZ/Zh
 github.com/xh3b4sd/budget/v3 v3.3.0/go.mod h1:epHdjvXVpg5PE63RcBirhgY8D/vVa5dbXkDjQ/ycT40=
 github.com/xh3b4sd/logger v0.7.3 h1:iqzUqU3sd8cn5RZda/0GWGdJRA9j9qCBDYZBda7ti70=
 github.com/xh3b4sd/logger v0.7.3/go.mod h1:fIvpHlYAJFR/xbWtyuVlnZKyWhGI78C2RUbWDEBhT4k=
-github.com/xh3b4sd/redigo v0.35.1 h1:BWEyzsq+OEpgPinTuLeKlHn6epWM16hDyPLeTjAFlKA=
-github.com/xh3b4sd/redigo v0.35.1/go.mod h1:FezZ2igUyrLcJvR6RLvD/YpGL1GCbVY6bGQfJ6S4pYk=
+github.com/xh3b4sd/redigo v0.35.2 h1:Pt3kfT8e6y/FHk74y9BK5Y9rXZ8wSp+xLKdR/8KDnLE=
+github.com/xh3b4sd/redigo v0.35.2/go.mod h1:FezZ2igUyrLcJvR6RLvD/YpGL1GCbVY6bGQfJ6S4pYk=
 github.com/xh3b4sd/rescue v0.16.2 h1:SNrveRzj+Wv6BkZLGMnTn8rnZrChqj+SjtZWMren9tI=
 github.com/xh3b4sd/rescue v0.16.2/go.mod h1:FXPNeW9m3yeBvwk1nREZMn35LVs1etDBi1OSuRsp3aQ=
 github.com/xh3b4sd/tracer v0.10.1 h1:wuzVeQtqYsy51Nkb7P/XavZ8rQYptxxmlM1ivFJ8dXE=

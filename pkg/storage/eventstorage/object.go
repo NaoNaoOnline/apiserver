@@ -6,6 +6,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/NaoNaoOnline/apiserver/pkg/generic"
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectid"
 	"github.com/xh3b4sd/tracer"
 )
@@ -86,7 +87,7 @@ func (o *Object) Pltfrm() string {
 
 func (o *Object) Verify() error {
 	{
-		if objectid.Dup(append(o.Cate, o.Host...)) {
+		if generic.Dup(objectid.Strings(append(o.Cate, o.Host...))) {
 			return tracer.Mask(eventLabelDuplicateError)
 		}
 	}
