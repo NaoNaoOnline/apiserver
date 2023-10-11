@@ -11,16 +11,6 @@ import (
 )
 
 func (h *Handler) Search(ctx context.Context, req *policy.SearchI) (*policy.SearchO, error) {
-	//
-	// Validate the RPC integrity.
-	//
-
-	for _, x := range req.Object {
-		if x.Public != nil && x.Public.Kind != "" && (x.Symbol.Ltst == "default" || x.Symbol.Ltst == "aggregated") {
-			return nil, tracer.Mask(searchKindConflictError)
-		}
-	}
-
 	var out []*policystorage.Object
 
 	//
