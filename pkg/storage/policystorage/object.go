@@ -4,6 +4,7 @@ import (
 	"regexp"
 	"time"
 
+	"github.com/NaoNaoOnline/apiserver/pkg/generic"
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectid"
 	"github.com/xh3b4sd/tracer"
 )
@@ -63,25 +64,23 @@ func (o *Object) Eqlrec(x *Object) bool {
 
 func (o *Object) Verify() error {
 	{
-		if o.Kind != "CreateMember" && o.Kind != "CreateSystem" && o.Kind != "DeleteMember" && o.Kind != "DeleteSystem" {
-			return tracer.Maskf(policyKindInvalidError, o.Kind)
-		}
-	}
-
-	{
 		if o.Acce < 0 {
 			return tracer.Mask(policyAcceNegativeError)
 		}
 	}
 
 	{
-		if len(o.Time) == 0 {
-			return tracer.Mask(policyTimeEmptyError)
+		if len(o.ChID) == 0 {
+			return tracer.Mask(policyChIDEmptyError)
 		}
-		for _, x := range o.Time {
-			if x.IsZero() {
-				return tracer.Mask(policyTimeEmptyError)
-			}
+		if generic.Dup(o.ChID) {
+			return tracer.Mask(policyChIDDuplicateError)
+		}
+	}
+
+	{
+		if o.Kind != "CreateMember" && o.Kind != "CreateSystem" && o.Kind != "DeleteMember" && o.Kind != "DeleteSystem" {
+			return tracer.Maskf(policyKindInvalidError, o.Kind)
 		}
 	}
 
@@ -100,6 +99,17 @@ func (o *Object) Verify() error {
 	{
 		if o.Syst < 0 {
 			return tracer.Mask(policySystNegativeError)
+		}
+	}
+
+	{
+		if len(o.Time) == 0 {
+			return tracer.Mask(policyTimeEmptyError)
+		}
+		for _, x := range o.Time {
+			if x.IsZero() {
+				return tracer.Mask(policyTimeEmptyError)
+			}
 		}
 	}
 

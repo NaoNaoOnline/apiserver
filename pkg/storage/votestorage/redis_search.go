@@ -31,7 +31,7 @@ func (r *Redis) SearchDesc(inp []objectid.ID) ([]*Object, error) {
 		}
 
 		{
-			lis, err := r.SearchVote(objectid.Strings(val))
+			lis, err := r.SearchVote(objectid.IDs(val))
 			if err != nil {
 				return nil, tracer.Mask(err)
 			}

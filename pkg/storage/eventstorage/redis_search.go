@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"time"
 
+	"github.com/NaoNaoOnline/apiserver/pkg/generic"
 	"github.com/NaoNaoOnline/apiserver/pkg/keyfmt"
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectid"
 	"github.com/xh3b4sd/redigo/pkg/simple"
@@ -94,7 +95,7 @@ func (r *Redis) SearchLabl(lab []objectid.ID) ([]*Object, error) {
 
 	var out []*Object
 	{
-		out, err = r.SearchEvnt(objectid.Strings(val))
+		out, err = r.SearchEvnt(objectid.IDs(val))
 		if err != nil {
 			return nil, tracer.Mask(err)
 		}
@@ -133,25 +134,34 @@ func (r *Redis) SearchRctn(use objectid.ID) ([]*Object, error) {
 	var err error
 
 	// The user votes are indexed in a way were vote IDs are values and event IDs
-	// are scores. Below we lookup all scores, resulting in a list of event IDs
-	// that potentially contains duplicates.
-	var sco []string
+	// are scores. Below we search for all values and their respective scores
+	// using the 4th parameter true. Note that the event IDs will potentially be
+	// duplicated across the list.
+	var lis []string
 	{
-		sco, err = r.red.Sorted().Search().Order(votUse(use), 0, -1, true)
+		lis, err = r.red.Sorted().Search().Order(votUse(use), 0, -1, true)
 		if err != nil {
 			return nil, tracer.Mask(err)
 		}
 	}
 
-	// There might not be any values, and so we do not proceed, but instead
-	// return nothing.
-	if len(sco) == 0 {
+	// There might not be any items, and so we do not proceed, but instead return
+	// nothing.
+	if len(lis) == 0 {
 		return nil, nil
+	}
+
+	// Here we select the event IDs from the list gathered above. Every other
+	// string in that list represents an element score since we searched by order
+	// using true.
+	var sco []string
+	for i := 1; i < len(lis); i += 2 {
+		sco = append(sco, lis[i])
 	}
 
 	var jsn []string
 	{
-		jsn, err = r.red.Simple().Search().Multi(objectid.Fmt(objectid.Uni(sco), keyfmt.EventObject)...)
+		jsn, err = r.red.Simple().Search().Multi(objectid.Fmt(generic.Uni(sco), keyfmt.EventObject)...)
 		if simple.IsNotFound(err) {
 			// It may happen that events get deleted, that users have reacted to. The
 			// event deletion process is not atomic and so it might happen that some
@@ -203,7 +213,7 @@ func (r *Redis) SearchUser(use []objectid.ID) ([]*Object, error) {
 		}
 
 		{
-			lis, err := r.SearchEvnt(objectid.Strings(val))
+			lis, err := r.SearchEvnt(objectid.IDs(val))
 			if err != nil {
 				return nil, tracer.Mask(err)
 			}
@@ -236,7 +246,7 @@ func (r *Redis) searchTime(min time.Time, max time.Time) ([]*Object, error) {
 
 	var out []*Object
 	{
-		out, err = r.SearchEvnt(objectid.Strings(val))
+		out, err = r.SearchEvnt(objectid.IDs(val))
 		if err != nil {
 			return nil, tracer.Mask(err)
 		}

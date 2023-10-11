@@ -70,7 +70,7 @@ func (h *SystemHandler) createPlcy(raw types.Log, kin string, sys *big.Int, mem 
 
 	var tnx *types.Transaction
 	{
-		tnx, _, err = h.eth.TransactionByHash(ctx, raw.BlockHash)
+		tnx, _, err = h.eth.TransactionByHash(ctx, raw.TxHash)
 		if err != nil {
 			return tracer.Mask(err)
 		}
@@ -89,13 +89,13 @@ func (h *SystemHandler) createPlcy(raw types.Log, kin string, sys *big.Int, mem 
 		obj = &policystorage.Object{
 			Acce: int64(acc.Uint64()),
 			Blck: []int64{int64(raw.BlockNumber)},
-			ChID: []int64{int64(tnx.ChainId().Uint64())},
+			ChID: []int64{h.cid},
 			From: []string{frm.Hex()},
 			Hash: []string{raw.BlockHash.Hex()},
 			Kind: kin,
 			Memb: mem.Hex(),
 			Syst: int64(sys.Uint64()),
-			Time: []time.Time{time.Unix(int64(hdr.Time), 0)},
+			Time: []time.Time{time.Unix(int64(hdr.Time), 0).UTC()},
 		}
 	}
 
@@ -156,8 +156,17 @@ func (h *SystemHandler) updateCrMe(tas *task.Task, bud *budget.Budget) (int64, e
 			}
 		}
 
+		var blk int64
 		{
-			lcm = int64(ite.Event.Raw.BlockNumber)
+			blk = int64(ite.Event.Raw.BlockNumber)
+		}
+
+		if blk >= lcm && lcm > 0 {
+			break
+		}
+
+		{
+			lcm = blk
 		}
 
 		{
@@ -225,8 +234,17 @@ func (h *SystemHandler) updateCrSy(tas *task.Task, bud *budget.Budget) (int64, e
 			}
 		}
 
+		var blk int64
 		{
-			lcs = int64(ite.Event.Raw.BlockNumber)
+			blk = int64(ite.Event.Raw.BlockNumber)
+		}
+
+		if blk >= lcs && lcs > 0 {
+			break
+		}
+
+		{
+			lcs = blk
 		}
 
 		{
@@ -294,8 +312,17 @@ func (h *SystemHandler) updateDeMe(tas *task.Task, bud *budget.Budget) (int64, e
 			}
 		}
 
+		var blk int64
 		{
-			ldm = int64(ite.Event.Raw.BlockNumber)
+			blk = int64(ite.Event.Raw.BlockNumber)
+		}
+
+		if blk >= ldm && ldm > 0 {
+			break
+		}
+
+		{
+			ldm = blk
 		}
 
 		{
@@ -363,8 +390,17 @@ func (h *SystemHandler) updateDeSy(tas *task.Task, bud *budget.Budget) (int64, e
 			}
 		}
 
+		var blk int64
 		{
-			lds = int64(ite.Event.Raw.BlockNumber)
+			blk = int64(ite.Event.Raw.BlockNumber)
+		}
+
+		if blk >= lds && lds > 0 {
+			break
+		}
+
+		{
+			lds = blk
 		}
 
 		{

@@ -5,7 +5,7 @@ import (
 	"strconv"
 
 	"github.com/NaoNaoOnline/apigocode/pkg/label"
-	"github.com/NaoNaoOnline/apiserver/pkg/object/objectid"
+	"github.com/NaoNaoOnline/apiserver/pkg/generic"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/labelstorage"
 	"github.com/xh3b4sd/tracer"
 )
@@ -20,7 +20,7 @@ func (h *Handler) Search(ctx context.Context, req *label.SearchI) (*label.Search
 
 	var out []*labelstorage.Object
 	{
-		out, err = h.lab.SearchKind(objectid.Uni(kin))
+		out, err = h.lab.SearchKind(generic.Uni(kin))
 		if err != nil {
 			return nil, tracer.Mask(err)
 		}

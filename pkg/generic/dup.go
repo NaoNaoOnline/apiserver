@@ -1,7 +1,7 @@
-package objectid
+package generic
 
-// Dup returns whether the given list contains duplicates.
-func Dup[T string | ID](lis []T) bool {
+// Dup returns whether the given list contains duplicated items.
+func Dup[T string | int64](lis []T) bool {
 	see := map[T]struct{}{}
 
 	for _, x := range lis {

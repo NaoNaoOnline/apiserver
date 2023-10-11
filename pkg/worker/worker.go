@@ -128,12 +128,25 @@ func (w *Worker) expire() {
 }
 
 func (w *Worker) lerror(err error) {
-	w.log.Log(
-		context.Background(),
-		"level", "error",
-		"message", err.Error(),
-		"stack", tracer.Stack(err),
-	)
+	e, o := err.(*tracer.Error)
+	if o {
+		w.log.Log(
+			context.Background(),
+			"level", "error",
+			"message", e.Error(),
+			"description", e.Desc,
+			"docs", e.Docs,
+			"kind", e.Kind,
+			"stack", tracer.Stack(e),
+		)
+	} else {
+		w.log.Log(
+			context.Background(),
+			"level", "error",
+			"message", err.Error(),
+			"stack", tracer.Stack(err),
+		)
+	}
 }
 
 func (w *Worker) search() {

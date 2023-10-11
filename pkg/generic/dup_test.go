@@ -1,11 +1,11 @@
-package objectid
+package generic
 
 import (
 	"fmt"
 	"testing"
 )
 
-func Test_ObjectID_Dup_string(t *testing.T) {
+func Test_Generic_Dup_string(t *testing.T) {
 	testCases := []struct {
 		lis []string
 		dup bool
@@ -72,58 +72,58 @@ func Test_ObjectID_Dup_string(t *testing.T) {
 	}
 }
 
-func Test_ObjectID_Dup_ID(t *testing.T) {
+func Test_Generic_Dup_int64(t *testing.T) {
 	testCases := []struct {
-		lis []ID
+		lis []int64
 		dup bool
 	}{
 		// Case 000
 		{
-			lis: []ID{},
+			lis: []int64{},
 			dup: false,
 		},
 		// Case 001
 		{
-			lis: []ID{
-				"55",
-				"44",
+			lis: []int64{
+				55,
+				44,
 			},
 			dup: false,
 		},
 		// Case 002
 		{
-			lis: []ID{
-				"33",
-				"44",
-				"33",
-				"33",
+			lis: []int64{
+				33,
+				44,
+				33,
+				33,
 			},
 			dup: true,
 		},
 		// Case 003
 		{
-			lis: []ID{
-				"33",
-				"44",
-				"88",
-				"22",
-				"33",
-				"55",
-				"66",
-				"55",
-				"88",
+			lis: []int64{
+				33,
+				44,
+				88,
+				22,
+				33,
+				55,
+				66,
+				55,
+				88,
 			},
 			dup: true,
 		},
 		// Case 004
 		{
-			lis: []ID{
-				"33",
-				"44",
-				"88",
-				"22",
-				"55",
-				"66",
+			lis: []int64{
+				33,
+				44,
+				88,
+				22,
+				55,
+				66,
 			},
 			dup: false,
 		},

@@ -25,6 +25,7 @@ const (
 const (
 	PlcyAction string = "policy.naonao.io/action"
 	PlcyLatest string = "policy.naonao.io/latest"
+	PlcyNetwrk string = "policy.naonao.io/netwrk"
 	PlcyObject string = "policy.naonao.io/object"
 	PlcyOrigin string = "policy.naonao.io/origin"
 )

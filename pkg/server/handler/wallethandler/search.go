@@ -5,6 +5,7 @@ import (
 	"strconv"
 
 	"github.com/NaoNaoOnline/apigocode/pkg/wallet"
+	"github.com/NaoNaoOnline/apiserver/pkg/generic"
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectid"
 	"github.com/NaoNaoOnline/apiserver/pkg/server/context/userid"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/walletstorage"
@@ -41,7 +42,7 @@ func (h *Handler) Search(ctx context.Context, req *wallet.SearchI) (*wallet.Sear
 	}
 
 	if len(kin) != 0 {
-		lis, err := h.wal.SearchKind(userid.FromContext(ctx), objectid.Uni(kin))
+		lis, err := h.wal.SearchKind(userid.FromContext(ctx), generic.Uni(kin))
 		if err != nil {
 			return nil, tracer.Mask(err)
 		}

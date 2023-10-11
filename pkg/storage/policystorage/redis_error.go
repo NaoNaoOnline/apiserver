@@ -11,6 +11,6 @@ var policyObjectNotFoundError = &tracer.Error{
 	Desc: "The request expects a policy object to exist. The policy object was not found to exist. Therefore the request failed.",
 }
 
-func IsLabelObjectNotFound(err error) bool {
+func IsPolicyObjectNotFound(err error) bool {
 	return errors.Is(err, policyObjectNotFoundError)
 }

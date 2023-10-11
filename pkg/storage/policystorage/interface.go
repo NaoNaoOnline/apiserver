@@ -62,4 +62,11 @@ type Interface interface {
 	//     @out[0] the list of policy objects matching the given policy kinds
 	//
 	SearchKind([]string) ([]*Object, error)
+
+	// SearchPlcy returns the policy objects matching the given policy IDs.
+	//
+	//     @inp[0] the policy IDs to search for
+	//     @out[0] the list of policy objects matching the given policy IDs
+	//
+	SearchPlcy([]objectid.ID) ([]*Object, error)
 }

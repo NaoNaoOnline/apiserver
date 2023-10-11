@@ -32,7 +32,7 @@ func (r *Redis) SearchName(nam []string) ([]*Object, error) {
 
 	var out []*Object
 	{
-		out, err = r.SearchUser(objectid.Strings(val))
+		out, err = r.SearchUser(objectid.IDs(val))
 		if err != nil {
 			return nil, tracer.Mask(err)
 		}

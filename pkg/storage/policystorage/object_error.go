@@ -15,13 +15,22 @@ func IsPolicyAcceNegative(err error) bool {
 	return errors.Is(err, policyAcceNegativeError)
 }
 
-var policyTimeEmptyError = &tracer.Error{
-	Kind: "policyTimeEmptyError",
-	Desc: "The request expects the external policy creation timestamp not to be empty. The external policy creation timestamp was found to be empty. Therefore the request failed.",
+var policyChIDDuplicateError = &tracer.Error{
+	Kind: "policyChIDDuplicateError",
+	Desc: "The request expects the policy chain ID not to be duplicated. The policy chain ID was found to be duplicated. Therefore the request failed.",
 }
 
-func IsPolicyTimeEmpty(err error) bool {
-	return errors.Is(err, policyTimeEmptyError)
+func IsPolicyChIDDuplicate(err error) bool {
+	return errors.Is(err, policyChIDDuplicateError)
+}
+
+var policyChIDEmptyError = &tracer.Error{
+	Kind: "policyChIDEmptyError",
+	Desc: "The request expects the policy chain ID not to be empty. The policy chain ID was found to be empty. Therefore the request failed.",
+}
+
+func IsPolicyChIDEmpty(err error) bool {
+	return errors.Is(err, policyChIDEmptyError)
 }
 
 var policyKindInvalidError = &tracer.Error{
@@ -67,4 +76,13 @@ var policySystNegativeError = &tracer.Error{
 
 func IsPolicySystNegative(err error) bool {
 	return errors.Is(err, policySystNegativeError)
+}
+
+var policyTimeEmptyError = &tracer.Error{
+	Kind: "policyTimeEmptyError",
+	Desc: "The request expects the external policy creation timestamp not to be empty. The external policy creation timestamp was found to be empty. Therefore the request failed.",
+}
+
+func IsPolicyTimeEmpty(err error) bool {
+	return errors.Is(err, policyTimeEmptyError)
 }
