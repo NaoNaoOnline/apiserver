@@ -13,13 +13,15 @@ type wrapper struct {
 }
 
 func (w *wrapper) Create(ctx context.Context, req *policy.CreateI) (*policy.CreateO, error) {
-	if len(req.Object) == 0 {
-		return nil, tracer.Mask(queryObjectEmptyError)
-	}
-
-	for _, x := range req.Object {
-		if x == nil {
+	{
+		if len(req.Object) == 0 {
 			return nil, tracer.Mask(queryObjectEmptyError)
+		}
+
+		for _, x := range req.Object {
+			if x == nil {
+				return nil, tracer.Mask(queryObjectEmptyError)
+			}
 		}
 	}
 
@@ -27,13 +29,15 @@ func (w *wrapper) Create(ctx context.Context, req *policy.CreateI) (*policy.Crea
 }
 
 func (w *wrapper) Delete(ctx context.Context, req *policy.DeleteI) (*policy.DeleteO, error) {
-	if len(req.Object) == 0 {
-		return nil, tracer.Mask(queryObjectEmptyError)
-	}
-
-	for _, x := range req.Object {
-		if x == nil {
+	{
+		if len(req.Object) == 0 {
 			return nil, tracer.Mask(queryObjectEmptyError)
+		}
+
+		for _, x := range req.Object {
+			if x == nil {
+				return nil, tracer.Mask(queryObjectEmptyError)
+			}
 		}
 	}
 
