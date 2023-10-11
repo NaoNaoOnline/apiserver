@@ -1,11 +1,11 @@
 package objectid
 
 func IDs(str []string) []ID {
-	var ids []ID
+	var lis []ID
 
 	for _, x := range str {
-		ids = append(ids, ID(x))
+		lis = append(lis, ID(x))
 	}
 
-	return ids
+	return lis
 }
