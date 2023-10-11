@@ -30,7 +30,7 @@ func Test_Server_Handler_Policy_Search_Fuzz(t *testing.T) {
 		}
 
 		{
-			han.Search(context.Background(), inp)
+			_, _ = han.Search(context.Background(), inp)
 		}
 	}
 }

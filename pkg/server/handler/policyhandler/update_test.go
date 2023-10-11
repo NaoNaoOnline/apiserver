@@ -30,7 +30,7 @@ func Test_Server_Handler_Policy_Update_Fuzz(t *testing.T) {
 		}
 
 		{
-			han.Update(context.Background(), inp)
+			_, _ = han.Update(context.Background(), inp)
 		}
 	}
 }

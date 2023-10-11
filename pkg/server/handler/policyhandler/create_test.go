@@ -30,7 +30,7 @@ func Test_Server_Handler_Policy_Create_Fuzz(t *testing.T) {
 		}
 
 		{
-			han.Create(context.Background(), inp)
+			_, _ = han.Create(context.Background(), inp)
 		}
 	}
 }

@@ -30,7 +30,7 @@ func Test_Server_Handler_Policy_Delete_Fuzz(t *testing.T) {
 		}
 
 		{
-			han.Delete(context.Background(), inp)
+			_, _ = han.Delete(context.Background(), inp)
 		}
 	}
 }
