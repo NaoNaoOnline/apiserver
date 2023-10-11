@@ -41,6 +41,7 @@ import (
 	"github.com/twitchtv/twirp"
 	"github.com/xh3b4sd/logger"
 	"github.com/xh3b4sd/redigo"
+	"github.com/xh3b4sd/rescue"
 	"github.com/xh3b4sd/rescue/engine"
 	"github.com/xh3b4sd/tracer"
 )
@@ -75,7 +76,7 @@ func (r *run) runE(cmd *cobra.Command, args []string) error {
 		red = redigo.Default()
 	}
 
-	var res engine.Interface
+	var res rescue.Interface
 	{
 		res = engine.New(engine.Config{
 			Logger: log,

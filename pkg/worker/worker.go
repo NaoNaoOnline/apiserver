@@ -8,6 +8,7 @@ import (
 	"github.com/NaoNaoOnline/apiserver/pkg/worker/budget"
 	"github.com/NaoNaoOnline/apiserver/pkg/worker/handler"
 	"github.com/xh3b4sd/logger"
+	"github.com/xh3b4sd/rescue"
 	"github.com/xh3b4sd/rescue/engine"
 	"github.com/xh3b4sd/rescue/task"
 	"github.com/xh3b4sd/tracer"
@@ -19,13 +20,13 @@ type Config struct {
 	Han []handler.Interface
 	Log logger.Interface
 	// Res is the rescue engine used to participate in the distributed task queue.
-	Res engine.Interface
+	Res rescue.Interface
 }
 
 type Worker struct {
 	han []handler.Interface
 	log logger.Interface
-	res engine.Interface
+	res rescue.Interface
 }
 
 func New(c Config) *Worker {

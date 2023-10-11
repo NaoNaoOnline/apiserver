@@ -7,20 +7,20 @@ import (
 	"github.com/NaoNaoOnline/apigocode/pkg/policy"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/policystorage"
 	"github.com/xh3b4sd/logger"
-	"github.com/xh3b4sd/rescue/engine"
+	"github.com/xh3b4sd/rescue"
 	"github.com/xh3b4sd/tracer"
 )
 
 type HandlerConfig struct {
 	Log logger.Interface
 	Pol policystorage.Interface
-	Res engine.Interface
+	Res rescue.Interface
 }
 
 type Handler struct {
 	log logger.Interface
 	pol policystorage.Interface
-	res engine.Interface
+	res rescue.Interface
 }
 
 func NewHandler(c HandlerConfig) *Handler {

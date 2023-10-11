@@ -9,20 +9,20 @@ import (
 	jsonpatch "github.com/evanphx/json-patch/v5"
 	"github.com/xh3b4sd/logger"
 	"github.com/xh3b4sd/redigo"
-	"github.com/xh3b4sd/rescue/engine"
+	"github.com/xh3b4sd/rescue"
 	"github.com/xh3b4sd/tracer"
 )
 
 type RedisConfig struct {
 	Log logger.Interface
 	Red redigo.Interface
-	Res engine.Interface
+	Res rescue.Interface
 }
 
 type Redis struct {
 	log logger.Interface
 	red redigo.Interface
-	res engine.Interface
+	res rescue.Interface
 }
 
 func NewRedis(c RedisConfig) *Redis {

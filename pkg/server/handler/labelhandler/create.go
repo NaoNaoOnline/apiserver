@@ -2,7 +2,6 @@ package labelhandler
 
 import (
 	"context"
-	"fmt"
 	"strconv"
 
 	"github.com/NaoNaoOnline/apigocode/pkg/label"
@@ -28,7 +27,7 @@ func (h *Handler) Create(ctx context.Context, req *label.CreateI) (*label.Create
 	// itself is the only authority to manage those labels internally.
 	for _, x := range req.Object {
 		if x.Public.Kind != "cate" && x.Public.Kind != "host" {
-			return nil, tracer.Mask(fmt.Errorf("request object must either contain cate or host"))
+			return nil, tracer.Mask(createKindInvalidError)
 		}
 	}
 

@@ -14,14 +14,6 @@ import (
 func (h *Handler) Update(ctx context.Context, req *policy.UpdateI) (*policy.UpdateO, error) {
 	var err error
 
-	if userid.FromContext(ctx) == "" {
-		return nil, tracer.Mask(userIDEmptyError)
-	}
-
-	if len(req.Object) != 1 && req.Object[0].Symbol.Sync != "default" {
-		return nil, tracer.Mask(updateSyncInvalidError)
-	}
-
 	var exi bool
 	{
 		exi, err = h.pol.ExistsMemb(userid.FromContext(ctx))
@@ -51,6 +43,10 @@ func (h *Handler) Update(ctx context.Context, req *policy.UpdateI) (*policy.Upda
 			return nil, tracer.Mask(err)
 		}
 	}
+
+	//
+	// Construct RPC response.
+	//
 
 	var res *policy.UpdateO
 	{
