@@ -44,7 +44,7 @@ func IsSearchLtstEmpty(err error) bool {
 
 var updateSyncInvalidError = &tracer.Error{
 	Kind: "updateSyncInvalidError",
-	Desc: `The request expects a single query context with symbol.sync set to "default". The request was not found to have a single query context with symbol.sync set to "default". Therefore the request failed.`,
+	Desc: `The request expects symbol.sync to be set to "default". symbol.sync was not found to be set to "default". Therefore the request failed.`,
 }
 
 func IsSearchSyncInvalid(err error) bool {

@@ -14,7 +14,58 @@ import (
 func (h *Handler) Search(ctx context.Context, req *user.SearchI) (*user.SearchO, error) {
 	var out []*userstorage.Object
 
-	if len(req.Object) == 0 {
+	//
+	// Search users by ID.
+	//
+
+	var use []objectid.ID
+	for _, x := range req.Object {
+		if x.Intern != nil && x.Intern.User != "" {
+			use = append(use, objectid.ID(x.Intern.User))
+		}
+	}
+
+	if len(use) != 0 {
+		lis, err := h.use.SearchUser(use)
+		if err != nil {
+			return nil, tracer.Mask(err)
+		}
+
+		out = append(out, lis...)
+	}
+
+	//
+	// Search users by name.
+	//
+
+	var nam []string
+	for _, x := range req.Object {
+		if x.Public != nil && x.Public.Name != "" {
+			nam = append(nam, x.Public.Name)
+		}
+	}
+
+	if len(nam) != 0 {
+		lis, err := h.use.SearchName(nam)
+		if err != nil {
+			return nil, tracer.Mask(err)
+		}
+
+		out = append(out, lis...)
+	}
+
+	//
+	// Search users by subject claim.
+	//
+
+	var slf bool
+	for _, x := range req.Object {
+		if x.Symbol != nil && x.Symbol.User == "self" {
+			slf = true
+		}
+	}
+
+	if slf {
 		var sub string
 		{
 			sub = subjectclaim.FromContext(ctx)
@@ -27,59 +78,6 @@ func (h *Handler) Search(ctx context.Context, req *user.SearchI) (*user.SearchO,
 			}
 
 			out = append(out, obj)
-		}
-	} else {
-		//
-		// Validate the RPC integrity.
-		//
-
-		for _, x := range req.Object {
-			if x.Intern.User != "" && (x.Public.Name != "") {
-				return nil, tracer.Mask(searchUserConflictError)
-			}
-			if x.Public.Name != "" && (x.Intern.User != "") {
-				return nil, tracer.Mask(searchNameConflictError)
-			}
-		}
-
-		//
-		// Search users by name.
-		//
-
-		var nam []string
-		for _, x := range req.Object {
-			if x.Public.Name != "" {
-				nam = append(nam, x.Public.Name)
-			}
-		}
-
-		if len(nam) != 0 {
-			lis, err := h.use.SearchName(nam)
-			if err != nil {
-				return nil, tracer.Mask(err)
-			}
-
-			out = append(out, lis...)
-		}
-
-		//
-		// Search users by ID.
-		//
-
-		var use []objectid.ID
-		for _, x := range req.Object {
-			if x.Intern.User != "" {
-				use = append(use, objectid.ID(x.Intern.User))
-			}
-		}
-
-		if len(use) != 0 {
-			lis, err := h.use.SearchUser(use)
-			if err != nil {
-				return nil, tracer.Mask(err)
-			}
-
-			out = append(out, lis...)
 		}
 	}
 
