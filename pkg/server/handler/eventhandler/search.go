@@ -12,19 +12,6 @@ import (
 )
 
 func (h *Handler) Search(ctx context.Context, req *event.SearchI) (*event.SearchO, error) {
-	//
-	// Validate the RPC integrity.
-	//
-
-	for _, x := range req.Object {
-		if x.Intern.Evnt != "" && (x.Intern.User != "" || x.Public.Cate != "" || x.Public.Host != "") {
-			return nil, tracer.Mask(searchEvntConflictError)
-		}
-		if x.Intern.User != "" && (x.Intern.Evnt != "" || x.Public.Cate != "" || x.Public.Host != "") {
-			return nil, tracer.Mask(searchUserConflictError)
-		}
-	}
-
 	var out []*eventstorage.Object
 
 	//
@@ -33,7 +20,7 @@ func (h *Handler) Search(ctx context.Context, req *event.SearchI) (*event.Search
 
 	var evn []objectid.ID
 	for _, x := range req.Object {
-		if x.Intern.Evnt != "" {
+		if x.Intern != nil && x.Intern.Evnt != "" {
 			evn = append(evn, objectid.ID(x.Intern.Evnt))
 		}
 	}
@@ -48,13 +35,36 @@ func (h *Handler) Search(ctx context.Context, req *event.SearchI) (*event.Search
 	}
 
 	//
+	// Search events by user.
+	//
+
+	var use []objectid.ID
+	for _, x := range req.Object {
+		if x.Intern != nil && x.Intern.User != "" {
+			use = append(use, objectid.ID(x.Intern.User))
+		}
+	}
+
+	if len(use) != 0 {
+		lis, err := h.eve.SearchUser(use)
+		if err != nil {
+			return nil, tracer.Mask(err)
+		}
+
+		out = append(out, lis...)
+	}
+
+	//
 	// Search events by label.
 	//
 
 	var lab [][]objectid.ID
 	for _, x := range req.Object {
-		if x.Public.Cate != "" || x.Public.Host != "" {
-			lab = append(lab, append(inpLab(x.Public.Cate), inpLab(x.Public.Host)...))
+		if x.Public != nil && x.Public.Cate != "" {
+			lab = append(lab, inpLab(x.Public.Cate))
+		}
+		if x.Public != nil && x.Public.Host != "" {
+			lab = append(lab, inpLab(x.Public.Host))
 		}
 	}
 
@@ -74,7 +84,7 @@ func (h *Handler) Search(ctx context.Context, req *event.SearchI) (*event.Search
 	if userid.FromContext(ctx) != "" {
 		var rct bool
 		for _, x := range req.Object {
-			if x.Symbol.Rctn == "default" {
+			if x.Symbol != nil && x.Symbol.Rctn == "default" {
 				rct = true
 			}
 		}
@@ -95,33 +105,13 @@ func (h *Handler) Search(ctx context.Context, req *event.SearchI) (*event.Search
 
 	var lts bool
 	for _, x := range req.Object {
-		if x.Symbol.Ltst == "default" {
+		if x.Symbol != nil && x.Symbol.Ltst == "default" {
 			lts = true
 		}
 	}
 
 	if lts {
 		lis, err := h.eve.SearchLtst()
-		if err != nil {
-			return nil, tracer.Mask(err)
-		}
-
-		out = append(out, lis...)
-	}
-
-	//
-	// Search events by user.
-	//
-
-	var use []objectid.ID
-	for _, x := range req.Object {
-		if x.Intern.User != "" {
-			use = append(use, objectid.ID(x.Intern.User))
-		}
-	}
-
-	if len(use) != 0 {
-		lis, err := h.eve.SearchUser(use)
 		if err != nil {
 			return nil, tracer.Mask(err)
 		}
