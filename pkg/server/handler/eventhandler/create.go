@@ -6,7 +6,6 @@ import (
 
 	"github.com/NaoNaoOnline/apigocode/pkg/event"
 	"github.com/NaoNaoOnline/apiserver/pkg/server/context/userid"
-	"github.com/NaoNaoOnline/apiserver/pkg/server/handler"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/eventstorage"
 	"github.com/xh3b4sd/tracer"
 )
@@ -14,20 +13,18 @@ import (
 func (h *Handler) Create(ctx context.Context, req *event.CreateI) (*event.CreateO, error) {
 	var err error
 
-	if userid.FromContext(ctx) == "" {
-		return nil, tracer.Mask(handler.UserIDEmptyError)
-	}
-
 	var inp []*eventstorage.Object
 	for _, x := range req.Object {
-		inp = append(inp, &eventstorage.Object{
-			Cate: inpLab(x.Public.Cate),
-			Dura: inpDur(x.Public.Dura),
-			Host: inpLab(x.Public.Host),
-			Link: x.Public.Link,
-			Time: inpTim(x.Public.Time),
-			User: userid.FromContext(ctx),
-		})
+		if x.Public != nil {
+			inp = append(inp, &eventstorage.Object{
+				Cate: inpLab(x.Public.Cate),
+				Dura: inpDur(x.Public.Dura),
+				Host: inpLab(x.Public.Host),
+				Link: x.Public.Link,
+				Time: inpTim(x.Public.Time),
+				User: userid.FromContext(ctx),
+			})
+		}
 	}
 
 	var out []*eventstorage.Object

@@ -6,20 +6,56 @@ import (
 	"github.com/xh3b4sd/tracer"
 )
 
-var searchEvntConflictError = &tracer.Error{
-	Kind: "searchEvntConflictError",
-	Desc: "The request expects intern.evnt to be the only field provided within the given query object. Fields other than intern.evnt were found to be set within the given query object. Therefore the request failed.",
+var searchInternConflictError = &tracer.Error{
+	Kind: "searchInternConflictError",
+	Desc: "The request expects the query object to contain one of [intern.evnt intern.user]. The query object was not found to contain one of [intern.evnt intern.user]. Therefore the request failed.",
 }
 
-func IsSearchEvntConflict(err error) bool {
-	return errors.Is(err, searchEvntConflictError)
+func IsSearchInternConflict(err error) bool {
+	return errors.Is(err, searchInternConflictError)
 }
 
-var searchUserConflictError = &tracer.Error{
-	Kind: "searchUserConflictError",
-	Desc: "The request expects intern.user to be the only field provided within the given query object. Fields other than intern.user were found to be set within the given query object. Therefore the request failed.",
+var searchInternEmptyError = &tracer.Error{
+	Kind: "searchInternEmptyError",
+	Desc: "The request expects the query object to contain one of [intern.evnt intern.user]. The query object was not found to contain one of [intern.evnt intern.user]. Therefore the request failed.",
 }
 
-func IsSearchUserConflict(err error) bool {
-	return errors.Is(err, searchUserConflictError)
+func IsSearchInternEmpty(err error) bool {
+	return errors.Is(err, searchInternEmptyError)
+}
+
+var queryObjectConflictError = &tracer.Error{
+	Kind: "queryObjectConflictError",
+	Desc: "The request expects the query object to contain one of [intern public symbol]. The query object was not found to contain one of [intern public symbol]. Therefore the request failed.",
+}
+
+func IsQueryObjectConflictError(err error) bool {
+	return errors.Is(err, queryObjectConflictError)
+}
+
+var searchPublicEmptyError = &tracer.Error{
+	Kind: "searchPublicEmptyError",
+	Desc: "The request expects the query object to contain one of [public.cate public.host]. The query object was not found to contain one of [public.cate public.host]. Therefore the request failed.",
+}
+
+func IsSearchPublicEmpty(err error) bool {
+	return errors.Is(err, searchPublicEmptyError)
+}
+
+var searchSymbolConflictError = &tracer.Error{
+	Kind: "searchSymbolConflictError",
+	Desc: "The request expects the query object to contain one of [symbol.ltst symbol.rctn]. The query object was not found to contain one of [symbol.ltst symbol.rctn]. Therefore the request failed.",
+}
+
+func IsSearchSymbolConflict(err error) bool {
+	return errors.Is(err, searchSymbolConflictError)
+}
+
+var searchSymbolEmptyError = &tracer.Error{
+	Kind: "searchSymbolEmptyError",
+	Desc: "The request expects the query object to contain one of [symbol.ltst symbol.rctn]. The query object was not found to contain one of [symbol.ltst symbol.rctn]. Therefore the request failed.",
+}
+
+func IsSearchSymbolEmpty(err error) bool {
+	return errors.Is(err, searchSymbolEmptyError)
 }

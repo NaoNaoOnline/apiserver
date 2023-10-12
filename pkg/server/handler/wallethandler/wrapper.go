@@ -100,20 +100,20 @@ func (w *wrapper) Search(ctx context.Context, req *wallet.SearchI) (*wallet.Sear
 		}
 
 		for _, x := range req.Object {
-			if x.Intern != nil && (x.Public != nil) {
-				return nil, tracer.Mask(searchInternConflictError)
-			}
-			if x.Public != nil && (x.Intern != nil) {
-				return nil, tracer.Mask(searchPublicConflictError)
-			}
-		}
-
-		for _, x := range req.Object {
 			if x.Intern != nil && x.Intern.Wllt == "" {
 				return nil, tracer.Mask(searchInternEmptyError)
 			}
 			if x.Public != nil && x.Public.Kind == "" {
 				return nil, tracer.Mask(searchPublicEmptyError)
+			}
+		}
+
+		for _, x := range req.Object {
+			if x.Intern != nil && (x.Public != nil) {
+				return nil, tracer.Mask(searchInternConflictError)
+			}
+			if x.Public != nil && (x.Intern != nil) {
+				return nil, tracer.Mask(searchPublicConflictError)
 			}
 		}
 	}

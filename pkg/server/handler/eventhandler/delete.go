@@ -15,13 +15,11 @@ import (
 func (h *Handler) Delete(ctx context.Context, req *event.DeleteI) (*event.DeleteO, error) {
 	var err error
 
-	if userid.FromContext(ctx) == "" {
-		return nil, tracer.Mask(handler.UserIDEmptyError)
-	}
-
 	var eve []objectid.ID
 	for _, x := range req.Object {
-		eve = append(eve, objectid.ID(x.Intern.Evnt))
+		if x.Intern != nil && x.Intern.Evnt != "" {
+			eve = append(eve, objectid.ID(x.Intern.Evnt))
+		}
 	}
 
 	var obj []*eventstorage.Object
