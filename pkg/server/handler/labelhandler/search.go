@@ -15,7 +15,9 @@ func (h *Handler) Search(ctx context.Context, req *label.SearchI) (*label.Search
 
 	var kin []string
 	for _, x := range req.Object {
-		kin = append(kin, x.Public.Kind)
+		if x.Public != nil && x.Public.Kind != "" {
+			kin = append(kin, x.Public.Kind)
+		}
 	}
 
 	var out []*labelstorage.Object
