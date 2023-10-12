@@ -6,6 +6,6 @@ import (
 )
 
 func (h *Handler) Attach(rtr *mux.Router, opt ...interface{}) {
-	han := reaction.NewAPIServer(h, opt...)
+	han := reaction.NewAPIServer(&wrapper{han: h}, opt...)
 	rtr.PathPrefix(han.PathPrefix()).Handler(han)
 }
