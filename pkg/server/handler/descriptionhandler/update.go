@@ -16,15 +16,13 @@ import (
 func (h *Handler) Update(ctx context.Context, req *description.UpdateI) (*description.UpdateO, error) {
 	var err error
 
-	if userid.FromContext(ctx) == "" {
-		return nil, tracer.Mask(handler.UserIDEmptyError)
-	}
-
 	var des []objectid.ID
 	var pat [][]*descriptionstorage.Patch
 	for _, x := range req.Object {
-		des = append(des, objectid.ID(x.Intern.Desc))
-		pat = append(pat, inpPat(x.Update))
+		if x.Intern != nil && x.Update != nil && x.Intern.Desc != "" {
+			des = append(des, objectid.ID(x.Intern.Desc))
+			pat = append(pat, inpPat(x.Update))
+		}
 	}
 
 	var inp []*descriptionstorage.Object

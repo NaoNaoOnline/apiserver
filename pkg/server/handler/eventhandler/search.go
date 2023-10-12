@@ -129,6 +129,11 @@ func (h *Handler) Search(ctx context.Context, req *event.SearchI) (*event.Search
 	}
 
 	for _, x := range out {
+		// Events marked to be deleted cannot be searched anymore.
+		if !x.Dltd.IsZero() {
+			continue
+		}
+
 		res.Object = append(res.Object, &event.SearchO_Object{
 			Intern: &event.SearchO_Object_Intern{
 				Crtd: strconv.FormatInt(x.Crtd.Unix(), 10),

@@ -17,13 +17,11 @@ import (
 func (h *Handler) Delete(ctx context.Context, req *description.DeleteI) (*description.DeleteO, error) {
 	var err error
 
-	if userid.FromContext(ctx) == "" {
-		return nil, tracer.Mask(handler.UserIDEmptyError)
-	}
-
 	var des []objectid.ID
 	for _, x := range req.Object {
-		des = append(des, objectid.ID(x.Intern.Desc))
+		if x.Intern != nil && x.Intern.Desc != "" {
+			des = append(des, objectid.ID(x.Intern.Desc))
+		}
 	}
 
 	var inp []*descriptionstorage.Object

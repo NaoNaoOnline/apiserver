@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectstate"
+	jsonpatch "github.com/evanphx/json-patch/v5"
 	"github.com/xh3b4sd/tracer"
 )
 
@@ -21,10 +22,18 @@ func (r *Redis) Update(obj []*Object, pat [][]*Patch) ([]objectstate.String, err
 			}
 		}
 
+		var dec jsonpatch.Patch
+		{
+			dec, err = jsonpatch.DecodePatch(musByt(pat[i]))
+			if err != nil {
+				return nil, tracer.Mask(err)
+			}
+		}
+
 		// Now apply the valid JSON-Patches to the internal description object.
 		var byt []byte
 		{
-			byt, err = musPat(pat[i]).Apply([]byte(musStr(obj[i])))
+			byt, err = dec.Apply([]byte(musStr(obj[i])))
 			if err != nil {
 				return nil, tracer.Mask(err)
 			}

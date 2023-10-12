@@ -50,3 +50,12 @@ var eventDeletedError = &tracer.Error{
 func IsEventDeleted(err error) bool {
 	return errors.Is(err, eventDeletedError)
 }
+
+var updateEmptyError = &tracer.Error{
+	Kind: "updateEmptyError",
+	Desc: "The request expects the query object to contain all of [intern update]. The query object was not found to contain one of [intern.evnt intern.user]. Therefore the request failed.",
+}
+
+func IsUpdateEmpty(err error) bool {
+	return errors.Is(err, updateEmptyError)
+}

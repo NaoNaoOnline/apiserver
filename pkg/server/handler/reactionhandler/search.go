@@ -38,6 +38,11 @@ func (h *Handler) Search(ctx context.Context, req *reaction.SearchI) (*reaction.
 	}
 
 	for _, x := range out {
+		// Reactions marked to be deleted cannot be searched anymore.
+		if !x.Dltd.IsZero() {
+			continue
+		}
+
 		res.Object = append(res.Object, &reaction.SearchO_Object{
 			Intern: &reaction.SearchO_Object_Intern{
 				Crtd: strconv.FormatInt(x.Crtd.Unix(), 10),

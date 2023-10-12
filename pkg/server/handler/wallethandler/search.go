@@ -65,6 +65,11 @@ func (h *Handler) Search(ctx context.Context, req *wallet.SearchI) (*wallet.Sear
 	}
 
 	for _, x := range out {
+		// Wallets marked to be deleted cannot be searched anymore.
+		if !x.Dltd.IsZero() {
+			continue
+		}
+
 		res.Object = append(res.Object, &wallet.SearchO_Object{
 			Intern: &wallet.SearchO_Object_Intern{
 				Addr: &wallet.SearchO_Object_Intern_Addr{
