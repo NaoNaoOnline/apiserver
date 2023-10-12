@@ -8,6 +8,7 @@ import (
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectid"
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectstate"
 	"github.com/NaoNaoOnline/apiserver/pkg/server/context/userid"
+	"github.com/NaoNaoOnline/apiserver/pkg/server/handler"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/descriptionstorage"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/eventstorage"
 	"github.com/xh3b4sd/tracer"
@@ -17,7 +18,7 @@ func (h *Handler) Delete(ctx context.Context, req *description.DeleteI) (*descri
 	var err error
 
 	if userid.FromContext(ctx) == "" {
-		return nil, tracer.Mask(userIDEmptyError)
+		return nil, tracer.Mask(handler.UserIDEmptyError)
 	}
 
 	var des []objectid.ID
@@ -35,7 +36,7 @@ func (h *Handler) Delete(ctx context.Context, req *description.DeleteI) (*descri
 
 	for _, x := range inp {
 		if userid.FromContext(ctx) != x.User {
-			return nil, tracer.Mask(userNotOwnerError)
+			return nil, tracer.Mask(handler.UserNotOwnerError)
 		}
 
 		// Ensure descriptions cannot be deleted after 5 minutes of their creation.
@@ -84,6 +85,10 @@ func (h *Handler) Delete(ctx context.Context, req *description.DeleteI) (*descri
 			return nil, tracer.Mask(err)
 		}
 	}
+
+	//
+	// Construct RPC response.
+	//
 
 	var res *description.DeleteO
 	{

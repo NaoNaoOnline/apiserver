@@ -7,6 +7,7 @@ import (
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectid"
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectstate"
 	"github.com/NaoNaoOnline/apiserver/pkg/server/context/userid"
+	"github.com/NaoNaoOnline/apiserver/pkg/server/handler"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/walletstorage"
 	"github.com/xh3b4sd/tracer"
 )
@@ -15,7 +16,7 @@ func (h *Handler) Delete(ctx context.Context, req *wallet.DeleteI) (*wallet.Dele
 	var err error
 
 	if userid.FromContext(ctx) == "" {
-		return nil, tracer.Mask(userIDEmptyError)
+		return nil, tracer.Mask(handler.UserIDEmptyError)
 	}
 
 	var wal []objectid.ID
@@ -33,7 +34,7 @@ func (h *Handler) Delete(ctx context.Context, req *wallet.DeleteI) (*wallet.Dele
 
 	for _, x := range obj {
 		if userid.FromContext(ctx) != x.User {
-			return nil, tracer.Mask(userNotOwnerError)
+			return nil, tracer.Mask(handler.UserNotOwnerError)
 		}
 	}
 
@@ -44,6 +45,10 @@ func (h *Handler) Delete(ctx context.Context, req *wallet.DeleteI) (*wallet.Dele
 			return nil, tracer.Mask(err)
 		}
 	}
+
+	//
+	// Construct RPC response.
+	//
 
 	var res *wallet.DeleteO
 	{

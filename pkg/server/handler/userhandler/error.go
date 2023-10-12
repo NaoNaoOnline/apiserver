@@ -6,15 +6,6 @@ import (
 	"github.com/xh3b4sd/tracer"
 )
 
-var queryObjectEmptyError = &tracer.Error{
-	Kind: "queryObjectEmptyError",
-	Desc: "The request expects the query object not to be empty. The query object was found to be empty. Therefore the request failed.",
-}
-
-func IsQueryObjectEmpty(err error) bool {
-	return errors.Is(err, queryObjectEmptyError)
-}
-
 var searchInternEmptyError = &tracer.Error{
 	Kind: "searchInternEmptyError",
 	Desc: "The request expects intern.user not to be empty. intern.user was found to be empty. Therefore the request failed.",

@@ -6,6 +6,7 @@ import (
 
 	"github.com/NaoNaoOnline/apigocode/pkg/label"
 	"github.com/NaoNaoOnline/apiserver/pkg/server/context/userid"
+	"github.com/NaoNaoOnline/apiserver/pkg/server/handler"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/labelstorage"
 	"github.com/xh3b4sd/tracer"
 )
@@ -18,7 +19,7 @@ func (h *Handler) Create(ctx context.Context, req *label.CreateI) (*label.Create
 	//
 
 	if userid.FromContext(ctx) == "" {
-		return nil, tracer.Mask(userIDEmptyError)
+		return nil, tracer.Mask(handler.UserIDEmptyError)
 	}
 
 	// It is super important to validate the label kind for labels that can be
@@ -50,6 +51,10 @@ func (h *Handler) Create(ctx context.Context, req *label.CreateI) (*label.Create
 			return nil, tracer.Mask(err)
 		}
 	}
+
+	//
+	// Construct RPC response.
+	//
 
 	var res *label.CreateO
 	{

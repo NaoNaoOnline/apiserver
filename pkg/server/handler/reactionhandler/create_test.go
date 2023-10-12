@@ -1,7 +1,6 @@
 package reactionhandler
 
 import (
-	"context"
 	"testing"
 
 	"github.com/NaoNaoOnline/apigocode/pkg/reaction"
@@ -30,7 +29,7 @@ func Test_Server_Handler_Reaction_Create_Fuzz(t *testing.T) {
 		}
 
 		{
-			_, _ = han.Create(context.Background(), inp)
+			_, _ = han.Create(tesCtx(), inp)
 		}
 	}
 }

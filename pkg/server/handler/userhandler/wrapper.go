@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/NaoNaoOnline/apigocode/pkg/user"
+	"github.com/NaoNaoOnline/apiserver/pkg/server/handler"
 	"github.com/xh3b4sd/tracer"
 )
 
@@ -14,12 +15,12 @@ type wrapper struct {
 func (w *wrapper) Create(ctx context.Context, req *user.CreateI) (*user.CreateO, error) {
 	{
 		if len(req.Object) == 0 {
-			return nil, tracer.Mask(queryObjectEmptyError)
+			return nil, tracer.Mask(handler.QueryObjectEmptyError)
 		}
 
 		for _, x := range req.Object {
 			if x == nil {
-				return nil, tracer.Mask(queryObjectEmptyError)
+				return nil, tracer.Mask(handler.QueryObjectEmptyError)
 			}
 		}
 	}
@@ -27,7 +28,7 @@ func (w *wrapper) Create(ctx context.Context, req *user.CreateI) (*user.CreateO,
 	{
 		for _, x := range req.Object {
 			if x.Public == nil {
-				return nil, tracer.Mask(queryObjectEmptyError)
+				return nil, tracer.Mask(handler.QueryObjectEmptyError)
 			}
 		}
 	}
@@ -38,12 +39,12 @@ func (w *wrapper) Create(ctx context.Context, req *user.CreateI) (*user.CreateO,
 func (w *wrapper) Delete(ctx context.Context, req *user.DeleteI) (*user.DeleteO, error) {
 	{
 		if len(req.Object) == 0 {
-			return nil, tracer.Mask(queryObjectEmptyError)
+			return nil, tracer.Mask(handler.QueryObjectEmptyError)
 		}
 
 		for _, x := range req.Object {
 			if x == nil {
-				return nil, tracer.Mask(queryObjectEmptyError)
+				return nil, tracer.Mask(handler.QueryObjectEmptyError)
 			}
 		}
 	}
@@ -54,12 +55,12 @@ func (w *wrapper) Delete(ctx context.Context, req *user.DeleteI) (*user.DeleteO,
 func (w *wrapper) Search(ctx context.Context, req *user.SearchI) (*user.SearchO, error) {
 	{
 		if len(req.Object) == 0 {
-			return nil, tracer.Mask(queryObjectEmptyError)
+			return nil, tracer.Mask(handler.QueryObjectEmptyError)
 		}
 
 		for _, x := range req.Object {
 			if x == nil {
-				return nil, tracer.Mask(queryObjectEmptyError)
+				return nil, tracer.Mask(handler.QueryObjectEmptyError)
 			}
 		}
 	}
@@ -67,7 +68,7 @@ func (w *wrapper) Search(ctx context.Context, req *user.SearchI) (*user.SearchO,
 	{
 		for _, x := range req.Object {
 			if x.Intern == nil && x.Public == nil && x.Symbol == nil {
-				return nil, tracer.Mask(queryObjectEmptyError)
+				return nil, tracer.Mask(handler.QueryObjectEmptyError)
 			}
 		}
 
@@ -93,12 +94,12 @@ func (w *wrapper) Search(ctx context.Context, req *user.SearchI) (*user.SearchO,
 func (w *wrapper) Update(ctx context.Context, req *user.UpdateI) (*user.UpdateO, error) {
 	{
 		if len(req.Object) == 0 {
-			return nil, tracer.Mask(queryObjectEmptyError)
+			return nil, tracer.Mask(handler.QueryObjectEmptyError)
 		}
 
 		for _, x := range req.Object {
 			if x == nil {
-				return nil, tracer.Mask(queryObjectEmptyError)
+				return nil, tracer.Mask(handler.QueryObjectEmptyError)
 			}
 		}
 	}

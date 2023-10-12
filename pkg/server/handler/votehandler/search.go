@@ -15,7 +15,9 @@ func (h *Handler) Search(ctx context.Context, req *vote.SearchI) (*vote.SearchO,
 
 	var des []objectid.ID
 	for _, x := range req.Object {
-		des = append(des, objectid.ID(x.Public.Desc))
+		if x.Public.Desc != "" {
+			des = append(des, objectid.ID(x.Public.Desc))
+		}
 	}
 
 	var out []*votestorage.Object
@@ -25,6 +27,10 @@ func (h *Handler) Search(ctx context.Context, req *vote.SearchI) (*vote.SearchO,
 			return nil, tracer.Mask(err)
 		}
 	}
+
+	//
+	// Construct RPC response.
+	//
 
 	var res *vote.SearchO
 	{

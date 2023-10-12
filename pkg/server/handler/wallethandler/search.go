@@ -8,6 +8,7 @@ import (
 	"github.com/NaoNaoOnline/apiserver/pkg/generic"
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectid"
 	"github.com/NaoNaoOnline/apiserver/pkg/server/context/userid"
+	"github.com/NaoNaoOnline/apiserver/pkg/server/handler"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/walletstorage"
 	"github.com/xh3b4sd/tracer"
 )
@@ -18,7 +19,7 @@ func (h *Handler) Search(ctx context.Context, req *wallet.SearchI) (*wallet.Sear
 	//
 
 	if userid.FromContext(ctx) == "" {
-		return nil, tracer.Mask(userIDEmptyError)
+		return nil, tracer.Mask(handler.UserIDEmptyError)
 	}
 
 	for _, x := range req.Object {
@@ -69,6 +70,10 @@ func (h *Handler) Search(ctx context.Context, req *wallet.SearchI) (*wallet.Sear
 
 		out = append(out, lis...)
 	}
+
+	//
+	// Construct RPC response.
+	//
 
 	var res *wallet.SearchO
 	{

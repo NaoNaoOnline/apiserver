@@ -7,6 +7,7 @@ import (
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectid"
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectstate"
 	"github.com/NaoNaoOnline/apiserver/pkg/server/context/userid"
+	"github.com/NaoNaoOnline/apiserver/pkg/server/handler"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/descriptionstorage"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/eventstorage"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/votestorage"
@@ -15,10 +16,6 @@ import (
 
 func (h *Handler) Delete(ctx context.Context, req *vote.DeleteI) (*vote.DeleteO, error) {
 	var err error
-
-	if userid.FromContext(ctx) == "" {
-		return nil, tracer.Mask(userIDEmptyError)
-	}
 
 	var vot []objectid.ID
 	for _, x := range req.Object {
@@ -35,7 +32,7 @@ func (h *Handler) Delete(ctx context.Context, req *vote.DeleteI) (*vote.DeleteO,
 
 	for _, x := range inp {
 		if userid.FromContext(ctx) != x.User {
-			return nil, tracer.Mask(userNotOwnerError)
+			return nil, tracer.Mask(handler.UserNotOwnerError)
 		}
 
 		var des []*descriptionstorage.Object
@@ -79,6 +76,10 @@ func (h *Handler) Delete(ctx context.Context, req *vote.DeleteI) (*vote.DeleteO,
 			return nil, tracer.Mask(err)
 		}
 	}
+
+	//
+	// Construct RPC response.
+	//
 
 	var res *vote.DeleteO
 	{

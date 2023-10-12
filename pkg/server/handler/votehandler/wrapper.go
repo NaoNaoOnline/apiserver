@@ -1,18 +1,19 @@
-package reactionhandler
+package votehandler
 
 import (
 	"context"
 
-	"github.com/NaoNaoOnline/apigocode/pkg/reaction"
+	"github.com/NaoNaoOnline/apigocode/pkg/vote"
+	"github.com/NaoNaoOnline/apiserver/pkg/server/context/userid"
 	"github.com/NaoNaoOnline/apiserver/pkg/server/handler"
 	"github.com/xh3b4sd/tracer"
 )
 
 type wrapper struct {
-	han reaction.API
+	han vote.API
 }
 
-func (w *wrapper) Create(ctx context.Context, req *reaction.CreateI) (*reaction.CreateO, error) {
+func (w *wrapper) Create(ctx context.Context, req *vote.CreateI) (*vote.CreateO, error) {
 	{
 		if len(req.Object) == 0 {
 			return nil, tracer.Mask(handler.QueryObjectEmptyError)
@@ -22,13 +23,27 @@ func (w *wrapper) Create(ctx context.Context, req *reaction.CreateI) (*reaction.
 			if x == nil {
 				return nil, tracer.Mask(handler.QueryObjectEmptyError)
 			}
+		}
+	}
+
+	{
+		for _, x := range req.Object {
+			if x.Public == nil {
+				return nil, tracer.Mask(handler.QueryObjectEmptyError)
+			}
+		}
+	}
+
+	{
+		if userid.FromContext(ctx) == "" {
+			return nil, tracer.Mask(handler.UserIDEmptyError)
 		}
 	}
 
 	return w.han.Create(ctx, req)
 }
 
-func (w *wrapper) Delete(ctx context.Context, req *reaction.DeleteI) (*reaction.DeleteO, error) {
+func (w *wrapper) Delete(ctx context.Context, req *vote.DeleteI) (*vote.DeleteO, error) {
 	{
 		if len(req.Object) == 0 {
 			return nil, tracer.Mask(handler.QueryObjectEmptyError)
@@ -38,13 +53,27 @@ func (w *wrapper) Delete(ctx context.Context, req *reaction.DeleteI) (*reaction.
 			if x == nil {
 				return nil, tracer.Mask(handler.QueryObjectEmptyError)
 			}
+		}
+	}
+
+	{
+		for _, x := range req.Object {
+			if x.Intern == nil || x.Intern.Vote == "" {
+				return nil, tracer.Mask(handler.QueryObjectEmptyError)
+			}
+		}
+	}
+
+	{
+		if userid.FromContext(ctx) == "" {
+			return nil, tracer.Mask(handler.UserIDEmptyError)
 		}
 	}
 
 	return w.han.Delete(ctx, req)
 }
 
-func (w *wrapper) Search(ctx context.Context, req *reaction.SearchI) (*reaction.SearchO, error) {
+func (w *wrapper) Search(ctx context.Context, req *vote.SearchI) (*vote.SearchO, error) {
 	{
 		if len(req.Object) == 0 {
 			return nil, tracer.Mask(handler.QueryObjectEmptyError)
@@ -59,8 +88,8 @@ func (w *wrapper) Search(ctx context.Context, req *reaction.SearchI) (*reaction.
 
 	{
 		for _, x := range req.Object {
-			if x.Public == nil || x.Public.Kind == "" {
-				return nil, tracer.Mask(searchKindEmptyError)
+			if x.Public == nil || x.Public.Desc == "" {
+				return nil, tracer.Mask(handler.QueryObjectEmptyError)
 			}
 		}
 	}
@@ -68,7 +97,7 @@ func (w *wrapper) Search(ctx context.Context, req *reaction.SearchI) (*reaction.
 	return w.han.Search(ctx, req)
 }
 
-func (w *wrapper) Update(ctx context.Context, req *reaction.UpdateI) (*reaction.UpdateO, error) {
+func (w *wrapper) Update(ctx context.Context, req *vote.UpdateI) (*vote.UpdateO, error) {
 	{
 		if len(req.Object) == 0 {
 			return nil, tracer.Mask(handler.QueryObjectEmptyError)

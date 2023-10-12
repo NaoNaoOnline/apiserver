@@ -14,12 +14,3 @@ var createKindInvalidError = &tracer.Error{
 func IsCreateKindInvalid(err error) bool {
 	return errors.Is(err, createKindInvalidError)
 }
-
-var userIDEmptyError = &tracer.Error{
-	Kind: "userIDEmptyError",
-	Desc: "The request expects a valid OAuth access token mapping to an internal user ID. No user ID was found. Therefore the request failed.",
-}
-
-func IsUserIDEmpty(err error) bool {
-	return errors.Is(err, userIDEmptyError)
-}

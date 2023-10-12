@@ -1,14 +1,14 @@
-package policyhandler
+package votehandler
 
 import (
 	"testing"
 
-	"github.com/NaoNaoOnline/apigocode/pkg/policy"
+	"github.com/NaoNaoOnline/apigocode/pkg/vote"
 	fuzz "github.com/google/gofuzz"
 )
 
-func Test_Server_Handler_Policy_Create_Fuzz(t *testing.T) {
-	var han policy.API
+func Test_Server_Handler_Vote_Create_Fuzz(t *testing.T) {
+	var han vote.API
 	{
 		han = tesHan()
 	}
@@ -19,9 +19,9 @@ func Test_Server_Handler_Policy_Create_Fuzz(t *testing.T) {
 	}
 
 	for i := 0; i < 1000; i++ {
-		var inp *policy.CreateI
+		var inp *vote.CreateI
 		{
-			inp = &policy.CreateI{}
+			inp = &vote.CreateI{}
 		}
 
 		{
