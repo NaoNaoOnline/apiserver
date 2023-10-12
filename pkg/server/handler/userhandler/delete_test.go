@@ -8,7 +8,7 @@ import (
 	fuzz "github.com/google/gofuzz"
 )
 
-func Test_Server_Handler_Policy_Delete_Fuzz(t *testing.T) {
+func Test_Server_Handler_User_Delete_Fuzz(t *testing.T) {
 	var han user.API
 	{
 		han = tesHan()
