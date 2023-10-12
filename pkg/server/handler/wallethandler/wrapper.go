@@ -1,19 +1,19 @@
-package votehandler
+package wallethandler
 
 import (
 	"context"
 
-	"github.com/NaoNaoOnline/apigocode/pkg/vote"
+	"github.com/NaoNaoOnline/apigocode/pkg/wallet"
 	"github.com/NaoNaoOnline/apiserver/pkg/server/context/userid"
 	"github.com/NaoNaoOnline/apiserver/pkg/server/handler"
 	"github.com/xh3b4sd/tracer"
 )
 
 type wrapper struct {
-	han vote.API
+	han wallet.API
 }
 
-func (w *wrapper) Create(ctx context.Context, req *vote.CreateI) (*vote.CreateO, error) {
+func (w *wrapper) Create(ctx context.Context, req *wallet.CreateI) (*wallet.CreateO, error) {
 	{
 		if len(req.Object) == 0 {
 			return nil, tracer.Mask(handler.QueryObjectEmptyError)
@@ -43,7 +43,7 @@ func (w *wrapper) Create(ctx context.Context, req *vote.CreateI) (*vote.CreateO,
 	return w.han.Create(ctx, req)
 }
 
-func (w *wrapper) Delete(ctx context.Context, req *vote.DeleteI) (*vote.DeleteO, error) {
+func (w *wrapper) Delete(ctx context.Context, req *wallet.DeleteI) (*wallet.DeleteO, error) {
 	{
 		if len(req.Object) == 0 {
 			return nil, tracer.Mask(handler.QueryObjectEmptyError)
@@ -58,7 +58,13 @@ func (w *wrapper) Delete(ctx context.Context, req *vote.DeleteI) (*vote.DeleteO,
 
 	{
 		for _, x := range req.Object {
-			if x.Intern == nil || x.Intern.Vote == "" {
+			if x.Intern == nil {
+				return nil, tracer.Mask(handler.QueryObjectEmptyError)
+			}
+		}
+
+		for _, x := range req.Object {
+			if x.Intern != nil && x.Intern.Wllt == "" {
 				return nil, tracer.Mask(handler.QueryObjectEmptyError)
 			}
 		}
@@ -73,7 +79,7 @@ func (w *wrapper) Delete(ctx context.Context, req *vote.DeleteI) (*vote.DeleteO,
 	return w.han.Delete(ctx, req)
 }
 
-func (w *wrapper) Search(ctx context.Context, req *vote.SearchI) (*vote.SearchO, error) {
+func (w *wrapper) Search(ctx context.Context, req *wallet.SearchI) (*wallet.SearchO, error) {
 	{
 		if len(req.Object) == 0 {
 			return nil, tracer.Mask(handler.QueryObjectEmptyError)
@@ -88,22 +94,40 @@ func (w *wrapper) Search(ctx context.Context, req *vote.SearchI) (*vote.SearchO,
 
 	{
 		for _, x := range req.Object {
-			if x.Public == nil {
+			if x.Intern == nil && x.Public == nil {
 				return nil, tracer.Mask(handler.QueryObjectEmptyError)
 			}
 		}
 
 		for _, x := range req.Object {
-			if x.Public != nil && x.Public.Desc == "" {
-				return nil, tracer.Mask(votePublicEmptyError)
+			if x.Intern != nil && (x.Public != nil) {
+				return nil, tracer.Mask(searchInternConflictError)
 			}
+			if x.Public != nil && (x.Intern != nil) {
+				return nil, tracer.Mask(searchPublicConflictError)
+			}
+		}
+
+		for _, x := range req.Object {
+			if x.Intern != nil && x.Intern.Wllt == "" {
+				return nil, tracer.Mask(searchInternEmptyError)
+			}
+			if x.Public != nil && x.Public.Kind == "" {
+				return nil, tracer.Mask(searchPublicEmptyError)
+			}
+		}
+	}
+
+	{
+		if userid.FromContext(ctx) == "" {
+			return nil, tracer.Mask(handler.UserIDEmptyError)
 		}
 	}
 
 	return w.han.Search(ctx, req)
 }
 
-func (w *wrapper) Update(ctx context.Context, req *vote.UpdateI) (*vote.UpdateO, error) {
+func (w *wrapper) Update(ctx context.Context, req *wallet.UpdateI) (*wallet.UpdateO, error) {
 	{
 		if len(req.Object) == 0 {
 			return nil, tracer.Mask(handler.QueryObjectEmptyError)
@@ -113,6 +137,26 @@ func (w *wrapper) Update(ctx context.Context, req *vote.UpdateI) (*vote.UpdateO,
 			if x == nil {
 				return nil, tracer.Mask(handler.QueryObjectEmptyError)
 			}
+		}
+	}
+
+	{
+		for _, x := range req.Object {
+			if x.Intern == nil && x.Public == nil {
+				return nil, tracer.Mask(handler.QueryObjectEmptyError)
+			}
+		}
+
+		for _, x := range req.Object {
+			if x.Intern != nil && x.Intern.Wllt == "" {
+				return nil, tracer.Mask(updateInternEmptyError)
+			}
+		}
+	}
+
+	{
+		if userid.FromContext(ctx) == "" {
+			return nil, tracer.Mask(handler.UserIDEmptyError)
 		}
 	}
 

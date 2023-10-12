@@ -19,7 +19,7 @@ func (h *Handler) Search(ctx context.Context, req *policy.SearchI) (*policy.Sear
 
 	var def bool
 	for _, x := range req.Object {
-		if x.Symbol.Ltst == "default" {
+		if x.Symbol != nil && x.Symbol.Ltst == "default" {
 			def = true
 		}
 	}
@@ -40,7 +40,7 @@ func (h *Handler) Search(ctx context.Context, req *policy.SearchI) (*policy.Sear
 
 	var agg bool
 	for _, x := range req.Object {
-		if x.Symbol.Ltst == "aggregated" {
+		if x.Symbol != nil && x.Symbol.Ltst == "aggregated" {
 			agg = true
 		}
 	}
@@ -60,7 +60,7 @@ func (h *Handler) Search(ctx context.Context, req *policy.SearchI) (*policy.Sear
 
 	var pxy bool
 	for _, x := range req.Object {
-		if x.Symbol.Ltst == "proxy" {
+		if x.Symbol != nil && x.Symbol.Ltst == "proxy" {
 			pxy = true
 		}
 	}
@@ -68,7 +68,7 @@ func (h *Handler) Search(ctx context.Context, req *policy.SearchI) (*policy.Sear
 	if pxy {
 		var kin []string
 		for _, x := range req.Object {
-			if x.Public.Kind != "" {
+			if x.Public != nil && x.Public.Kind != "" {
 				kin = append(kin, strings.Split(x.Public.Kind, ",")...)
 			}
 		}
