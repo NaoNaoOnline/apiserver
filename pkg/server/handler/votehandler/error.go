@@ -32,3 +32,12 @@ var eventDeletedError = &tracer.Error{
 func IsEventDeleted(err error) bool {
 	return errors.Is(err, eventDeletedError)
 }
+
+var votePublicEmptyError = &tracer.Error{
+	Kind: "votePublicEmptyError",
+	Desc: "The request expects public.desc not to be empty. public.desc was found to be empty. Therefore the request failed.",
+}
+
+func IsVotePublicEmpty(err error) bool {
+	return errors.Is(err, votePublicEmptyError)
+}

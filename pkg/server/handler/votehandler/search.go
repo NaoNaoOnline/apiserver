@@ -15,7 +15,7 @@ func (h *Handler) Search(ctx context.Context, req *vote.SearchI) (*vote.SearchO,
 
 	var des []objectid.ID
 	for _, x := range req.Object {
-		if x.Public.Desc != "" {
+		if x.Public != nil && x.Public.Desc != "" {
 			des = append(des, objectid.ID(x.Public.Desc))
 		}
 	}

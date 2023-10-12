@@ -73,6 +73,18 @@ func (w *wrapper) Search(ctx context.Context, req *user.SearchI) (*user.SearchO,
 		}
 
 		for _, x := range req.Object {
+			if x.Intern != nil && (x.Public != nil || x.Symbol != nil) {
+				return nil, tracer.Mask(searchInternConflictError)
+			}
+			if x.Public != nil && (x.Intern != nil || x.Symbol != nil) {
+				return nil, tracer.Mask(searchPublicConflictError)
+			}
+			if x.Symbol != nil && (x.Intern != nil || x.Public != nil) {
+				return nil, tracer.Mask(searchSymbolConflictError)
+			}
+		}
+
+		for _, x := range req.Object {
 			if x.Intern != nil && x.Intern.User == "" {
 				return nil, tracer.Mask(searchInternEmptyError)
 			}

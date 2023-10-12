@@ -15,13 +15,11 @@ import (
 func (h *Handler) Delete(ctx context.Context, req *wallet.DeleteI) (*wallet.DeleteO, error) {
 	var err error
 
-	if userid.FromContext(ctx) == "" {
-		return nil, tracer.Mask(handler.UserIDEmptyError)
-	}
-
 	var wal []objectid.ID
 	for _, x := range req.Object {
-		wal = append(wal, objectid.ID(x.Intern.Wllt))
+		if x.Intern.Wllt != "" {
+			wal = append(wal, objectid.ID(x.Intern.Wllt))
+		}
 	}
 
 	var obj []*walletstorage.Object

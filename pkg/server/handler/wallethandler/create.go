@@ -6,17 +6,12 @@ import (
 
 	"github.com/NaoNaoOnline/apigocode/pkg/wallet"
 	"github.com/NaoNaoOnline/apiserver/pkg/server/context/userid"
-	"github.com/NaoNaoOnline/apiserver/pkg/server/handler"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/walletstorage"
 	"github.com/xh3b4sd/tracer"
 )
 
 func (h *Handler) Create(ctx context.Context, req *wallet.CreateI) (*wallet.CreateO, error) {
 	var err error
-
-	if userid.FromContext(ctx) == "" {
-		return nil, tracer.Mask(handler.UserIDEmptyError)
-	}
 
 	var inp []*walletstorage.Object
 	for _, x := range req.Object {

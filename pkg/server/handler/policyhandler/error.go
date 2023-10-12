@@ -24,13 +24,22 @@ func IsSearchKindConflict(err error) bool {
 	return errors.Is(err, searchKindConflictError)
 }
 
-var searchLtstEmptyError = &tracer.Error{
-	Kind: "searchLtstEmptyError",
+var searchPublicEmptyError = &tracer.Error{
+	Kind: "searchPublicEmptyError",
+	Desc: "The request expects public.kind not to be empty. public.kind was found to be empty. Therefore the request failed.",
+}
+
+func IsSearchPublicEmpty(err error) bool {
+	return errors.Is(err, searchPublicEmptyError)
+}
+
+var searchSymbolEmptyError = &tracer.Error{
+	Kind: "searchSymbolEmptyError",
 	Desc: "The request expects symbol.ltst not to be empty. symbol.ltst was found to be empty. Therefore the request failed.",
 }
 
-func IsSearchLtstEmpty(err error) bool {
-	return errors.Is(err, searchLtstEmptyError)
+func IsSearchSymbolEmpty(err error) bool {
+	return errors.Is(err, searchSymbolEmptyError)
 }
 
 var updateSyncInvalidError = &tracer.Error{

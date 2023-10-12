@@ -8,29 +8,11 @@ import (
 	"github.com/NaoNaoOnline/apiserver/pkg/generic"
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectid"
 	"github.com/NaoNaoOnline/apiserver/pkg/server/context/userid"
-	"github.com/NaoNaoOnline/apiserver/pkg/server/handler"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/walletstorage"
 	"github.com/xh3b4sd/tracer"
 )
 
 func (h *Handler) Search(ctx context.Context, req *wallet.SearchI) (*wallet.SearchO, error) {
-	//
-	// Validate the RPC integrity.
-	//
-
-	if userid.FromContext(ctx) == "" {
-		return nil, tracer.Mask(handler.UserIDEmptyError)
-	}
-
-	for _, x := range req.Object {
-		if x.Intern.Wllt != "" && (x.Public.Kind != "") {
-			return nil, tracer.Mask(searchWlltConflictError)
-		}
-		if x.Public.Kind != "" && (x.Intern.Wllt != "") {
-			return nil, tracer.Mask(searchKindConflictError)
-		}
-	}
-
 	var out []*walletstorage.Object
 
 	//
@@ -39,7 +21,9 @@ func (h *Handler) Search(ctx context.Context, req *wallet.SearchI) (*wallet.Sear
 
 	var kin []string
 	for _, x := range req.Object {
-		kin = append(kin, x.Public.Kind)
+		if x.Public != nil && x.Public.Kind != "" {
+			kin = append(kin, x.Public.Kind)
+		}
 	}
 
 	if len(kin) != 0 {
@@ -57,7 +41,7 @@ func (h *Handler) Search(ctx context.Context, req *wallet.SearchI) (*wallet.Sear
 
 	var wal []objectid.ID
 	for _, x := range req.Object {
-		if x.Intern.Wllt != "" {
+		if x.Intern != nil && x.Intern.Wllt != "" {
 			wal = append(wal, objectid.ID(x.Intern.Wllt))
 		}
 	}
