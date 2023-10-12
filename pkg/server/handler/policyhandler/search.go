@@ -95,6 +95,11 @@ func (h *Handler) Search(ctx context.Context, req *policy.SearchI) (*policy.Sear
 	}
 
 	for _, x := range out {
+		// Policies marked to be deleted cannot be searched anymore.
+		if !x.Dltd.IsZero() {
+			continue
+		}
+
 		res.Object = append(res.Object, &policy.SearchO_Object{
 			Extern: outExt(x),
 			Intern: &policy.SearchO_Object_Intern{

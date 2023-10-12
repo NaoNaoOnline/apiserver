@@ -16,17 +16,15 @@ import (
 func (h *Handler) Create(ctx context.Context, req *description.CreateI) (*description.CreateO, error) {
 	var err error
 
-	if userid.FromContext(ctx) == "" {
-		return nil, tracer.Mask(handler.UserIDEmptyError)
-	}
-
 	var inp []*descriptionstorage.Object
 	for _, x := range req.Object {
-		inp = append(inp, &descriptionstorage.Object{
-			Evnt: objectid.ID(x.Public.Evnt),
-			Text: x.Public.Text,
-			User: userid.FromContext(ctx),
-		})
+		if x.Public != nil {
+			inp = append(inp, &descriptionstorage.Object{
+				Evnt: objectid.ID(x.Public.Evnt),
+				Text: x.Public.Text,
+				User: userid.FromContext(ctx),
+			})
+		}
 	}
 
 	for _, x := range inp {
@@ -36,6 +34,10 @@ func (h *Handler) Create(ctx context.Context, req *description.CreateI) (*descri
 			if err != nil {
 				return nil, tracer.Mask(err)
 			}
+		}
+
+		if len(eve) != 1 {
+			return nil, tracer.Mask(handler.ExecutionFailedError)
 		}
 
 		// Ensure descriptions cannot be added to events that have already been

@@ -38,6 +38,11 @@ func (h *Handler) Search(ctx context.Context, req *label.SearchI) (*label.Search
 	}
 
 	for _, x := range out {
+		// Labels marked to be deleted cannot be searched anymore.
+		if !x.Dltd.IsZero() {
+			continue
+		}
+
 		res.Object = append(res.Object, &label.SearchO_Object{
 			Intern: &label.SearchO_Object_Intern{
 				Crtd: strconv.FormatInt(x.Crtd.Unix(), 10),

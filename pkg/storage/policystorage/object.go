@@ -23,6 +23,8 @@ type Object struct {
 	// Crtd is the unix timestamp in seconds at which the record got cached
 	// internally.
 	Crtd time.Time `json:"crtd"`
+	// Dltd is the time at which the policy got deleted.
+	Dltd time.Time `json:"dltd,omitempty"`
 	// From is the record creator, the sender of the transaction that submitted
 	// this record. If the same SMA record exists on multiple chains, the list of
 	// creators is tracked in record creation order.
