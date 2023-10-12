@@ -17,7 +17,7 @@ func (h *Handler) Delete(ctx context.Context, req *wallet.DeleteI) (*wallet.Dele
 
 	var wal []objectid.ID
 	for _, x := range req.Object {
-		if x.Intern.Wllt != "" {
+		if x.Intern != nil && x.Intern.Wllt != "" {
 			wal = append(wal, objectid.ID(x.Intern.Wllt))
 		}
 	}

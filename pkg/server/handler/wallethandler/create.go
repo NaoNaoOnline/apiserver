@@ -15,13 +15,15 @@ func (h *Handler) Create(ctx context.Context, req *wallet.CreateI) (*wallet.Crea
 
 	var inp []*walletstorage.Object
 	for _, x := range req.Object {
-		inp = append(inp, &walletstorage.Object{
-			Kind: x.Public.Kind,
-			Mess: x.Public.Mess,
-			Pubk: x.Public.Pubk,
-			Sign: x.Public.Sign,
-			User: userid.FromContext(ctx),
-		})
+		if x.Public != nil {
+			inp = append(inp, &walletstorage.Object{
+				Kind: x.Public.Kind,
+				Mess: x.Public.Mess,
+				Pubk: x.Public.Pubk,
+				Sign: x.Public.Sign,
+				User: userid.FromContext(ctx),
+			})
+		}
 	}
 
 	var out []*walletstorage.Object
