@@ -58,7 +58,13 @@ func (w *wrapper) Delete(ctx context.Context, req *wallet.DeleteI) (*wallet.Dele
 
 	{
 		for _, x := range req.Object {
-			if x.Intern == nil || x.Intern.Wllt == "" {
+			if x.Intern == nil {
+				return nil, tracer.Mask(handler.QueryObjectEmptyError)
+			}
+		}
+
+		for _, x := range req.Object {
+			if x.Intern != nil && x.Intern.Wllt == "" {
 				return nil, tracer.Mask(handler.QueryObjectEmptyError)
 			}
 		}
