@@ -8,6 +8,7 @@ import (
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectid"
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectstate"
 	"github.com/NaoNaoOnline/apiserver/pkg/server/context/userid"
+	"github.com/NaoNaoOnline/apiserver/pkg/server/handler"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/walletstorage"
 	"github.com/xh3b4sd/tracer"
 )
@@ -16,7 +17,7 @@ func (h *Handler) Update(ctx context.Context, req *wallet.UpdateI) (*wallet.Upda
 	var err error
 
 	if userid.FromContext(ctx) == "" {
-		return nil, tracer.Mask(userIDEmptyError)
+		return nil, tracer.Mask(handler.UserIDEmptyError)
 	}
 
 	upd := map[objectid.ID]walletstorage.Object{}
@@ -43,7 +44,7 @@ func (h *Handler) Update(ctx context.Context, req *wallet.UpdateI) (*wallet.Upda
 
 	for i, x := range obj {
 		if userid.FromContext(ctx) != x.User {
-			return nil, tracer.Mask(userNotOwnerError)
+			return nil, tracer.Mask(handler.UserNotOwnerError)
 		}
 
 		{
@@ -61,6 +62,10 @@ func (h *Handler) Update(ctx context.Context, req *wallet.UpdateI) (*wallet.Upda
 			return nil, tracer.Mask(err)
 		}
 	}
+
+	//
+	// Construct RPC response.
+	//
 
 	var res *wallet.UpdateO
 	{

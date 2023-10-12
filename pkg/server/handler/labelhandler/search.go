@@ -26,6 +26,10 @@ func (h *Handler) Search(ctx context.Context, req *label.SearchI) (*label.Search
 		}
 	}
 
+	//
+	// Construct RPC response.
+	//
+
 	var res *label.SearchO
 	{
 		res = &label.SearchO{}

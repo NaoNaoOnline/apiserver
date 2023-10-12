@@ -1,14 +1,14 @@
-package userhandler
+package votehandler
 
 import (
 	"testing"
 
-	"github.com/NaoNaoOnline/apigocode/pkg/user"
+	"github.com/NaoNaoOnline/apigocode/pkg/vote"
 	fuzz "github.com/google/gofuzz"
 )
 
-func Test_Server_Handler_User_Update_Fuzz(t *testing.T) {
-	var han user.API
+func Test_Server_Handler_Vote_Update_Fuzz(t *testing.T) {
+	var han vote.API
 	{
 		han = tesHan()
 	}
@@ -19,9 +19,9 @@ func Test_Server_Handler_User_Update_Fuzz(t *testing.T) {
 	}
 
 	for i := 0; i < 1000; i++ {
-		var inp *user.UpdateI
+		var inp *vote.UpdateI
 		{
-			inp = &user.UpdateI{}
+			inp = &vote.UpdateI{}
 		}
 
 		{

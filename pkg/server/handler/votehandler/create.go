@@ -7,6 +7,7 @@ import (
 	"github.com/NaoNaoOnline/apigocode/pkg/vote"
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectid"
 	"github.com/NaoNaoOnline/apiserver/pkg/server/context/userid"
+	"github.com/NaoNaoOnline/apiserver/pkg/server/handler"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/descriptionstorage"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/eventstorage"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/votestorage"
@@ -15,10 +16,6 @@ import (
 
 func (h *Handler) Create(ctx context.Context, req *vote.CreateI) (*vote.CreateO, error) {
 	var err error
-
-	if userid.FromContext(ctx) == "" {
-		return nil, tracer.Mask(userIDEmptyError)
-	}
 
 	var inp []*votestorage.Object
 	for _, x := range req.Object {
@@ -36,6 +33,10 @@ func (h *Handler) Create(ctx context.Context, req *vote.CreateI) (*vote.CreateO,
 			if err != nil {
 				return nil, tracer.Mask(err)
 			}
+		}
+
+		if len(des) != 1 {
+			return nil, tracer.Mask(handler.ExecutionFailedError)
 		}
 
 		// Ensure votes cannot be added to descriptions that have already been
@@ -77,6 +78,10 @@ func (h *Handler) Create(ctx context.Context, req *vote.CreateI) (*vote.CreateO,
 			return nil, tracer.Mask(err)
 		}
 	}
+
+	//
+	// Construct RPC response.
+	//
 
 	var res *vote.CreateO
 	{

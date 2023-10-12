@@ -30,6 +30,10 @@ func (h *Handler) Create(ctx context.Context, req *user.CreateI) (*user.CreateO,
 		}
 	}
 
+	//
+	// Construct RPC response.
+	//
+
 	var res *user.CreateO
 	{
 		res = &user.CreateO{

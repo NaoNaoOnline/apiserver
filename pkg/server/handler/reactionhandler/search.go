@@ -15,7 +15,9 @@ func (h *Handler) Search(ctx context.Context, req *reaction.SearchI) (*reaction.
 
 	var kin []string
 	for _, x := range req.Object {
-		kin = append(kin, x.Public.Kind)
+		if x.Public.Kind != "" {
+			kin = append(kin, x.Public.Kind)
+		}
 	}
 
 	var out []*reactionstorage.Object
@@ -25,6 +27,10 @@ func (h *Handler) Search(ctx context.Context, req *reaction.SearchI) (*reaction.
 			return nil, tracer.Mask(err)
 		}
 	}
+
+	//
+	// Construct RPC response.
+	//
 
 	var res *reaction.SearchO
 	{

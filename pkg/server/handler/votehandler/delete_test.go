@@ -1,14 +1,14 @@
-package reactionhandler
+package votehandler
 
 import (
 	"testing"
 
-	"github.com/NaoNaoOnline/apigocode/pkg/reaction"
+	"github.com/NaoNaoOnline/apigocode/pkg/vote"
 	fuzz "github.com/google/gofuzz"
 )
 
-func Test_Server_Handler_Reaction_Delete_Fuzz(t *testing.T) {
-	var han reaction.API
+func Test_Server_Handler_Vote_Delete_Fuzz(t *testing.T) {
+	var han vote.API
 	{
 		han = tesHan()
 	}
@@ -19,9 +19,9 @@ func Test_Server_Handler_Reaction_Delete_Fuzz(t *testing.T) {
 	}
 
 	for i := 0; i < 1000; i++ {
-		var inp *reaction.DeleteI
+		var inp *vote.DeleteI
 		{
-			inp = &reaction.DeleteI{}
+			inp = &vote.DeleteI{}
 		}
 
 		{

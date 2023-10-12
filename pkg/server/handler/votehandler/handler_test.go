@@ -1,12 +1,14 @@
-package userhandler
+package votehandler
 
 import (
 	"context"
 
-	"github.com/NaoNaoOnline/apigocode/pkg/user"
+	"github.com/NaoNaoOnline/apigocode/pkg/vote"
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectid"
 	"github.com/NaoNaoOnline/apiserver/pkg/server/context/userid"
-	"github.com/NaoNaoOnline/apiserver/pkg/storage/userstorage"
+	"github.com/NaoNaoOnline/apiserver/pkg/storage/descriptionstorage"
+	"github.com/NaoNaoOnline/apiserver/pkg/storage/eventstorage"
+	"github.com/NaoNaoOnline/apiserver/pkg/storage/votestorage"
 	fuzz "github.com/google/gofuzz"
 	"github.com/xh3b4sd/logger"
 )
@@ -17,11 +19,13 @@ func tesCtx() context.Context {
 	return userid.NewContext(context.Background(), objectid.ID(str))
 }
 
-func tesHan() user.API {
+func tesHan() vote.API {
 	return &wrapper{
 		han: NewHandler(HandlerConfig{
+			Des: descriptionstorage.Fake(),
+			Eve: eventstorage.Fake(),
 			Log: logger.Fake(),
-			Use: userstorage.Fake(),
+			Vot: votestorage.Fake(),
 		}),
 	}
 }

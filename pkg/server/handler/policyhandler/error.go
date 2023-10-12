@@ -15,15 +15,6 @@ func IsPolicyMember(err error) bool {
 	return errors.Is(err, policyMemberError)
 }
 
-var queryObjectEmptyError = &tracer.Error{
-	Kind: "queryObjectEmptyError",
-	Desc: "The request expects the query object not to be empty. The query object was found to be empty. Therefore the request failed.",
-}
-
-func IsQueryObjectEmpty(err error) bool {
-	return errors.Is(err, queryObjectEmptyError)
-}
-
 var searchKindConflictError = &tracer.Error{
 	Kind: "searchKindConflictError",
 	Desc: "The request expects public.kind not to be provided if symbol.ltst is one of [default aggregated]. public.kind was found to be provided when symbol.ltst was one of [default aggregated]. Therefore the request failed.",
@@ -49,13 +40,4 @@ var updateSyncInvalidError = &tracer.Error{
 
 func IsSearchSyncInvalid(err error) bool {
 	return errors.Is(err, updateSyncInvalidError)
-}
-
-var userIDEmptyError = &tracer.Error{
-	Kind: "userIDEmptyError",
-	Desc: "The request expects a valid OAuth access token mapping to an internal user ID. No user ID was found. Therefore the request failed.",
-}
-
-func IsUserIDEmpty(err error) bool {
-	return errors.Is(err, userIDEmptyError)
 }

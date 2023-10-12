@@ -8,6 +8,7 @@ import (
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectid"
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectstate"
 	"github.com/NaoNaoOnline/apiserver/pkg/server/context/userid"
+	"github.com/NaoNaoOnline/apiserver/pkg/server/handler"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/descriptionstorage"
 	"github.com/xh3b4sd/tracer"
 )
@@ -16,7 +17,7 @@ func (h *Handler) Update(ctx context.Context, req *description.UpdateI) (*descri
 	var err error
 
 	if userid.FromContext(ctx) == "" {
-		return nil, tracer.Mask(userIDEmptyError)
+		return nil, tracer.Mask(handler.UserIDEmptyError)
 	}
 
 	var des []objectid.ID
@@ -36,7 +37,7 @@ func (h *Handler) Update(ctx context.Context, req *description.UpdateI) (*descri
 
 	for _, x := range inp {
 		if userid.FromContext(ctx) != x.User {
-			return nil, tracer.Mask(userNotOwnerError)
+			return nil, tracer.Mask(handler.UserNotOwnerError)
 		}
 		// Ensure descriptions cannot be updated after 5 minutes of their creation.
 		if x.Crtd.Add(5 * time.Minute).Before(time.Now().UTC()) {
@@ -51,6 +52,10 @@ func (h *Handler) Update(ctx context.Context, req *description.UpdateI) (*descri
 			return nil, tracer.Mask(err)
 		}
 	}
+
+	//
+	// Construct RPC response.
+	//
 
 	var res *description.UpdateO
 	{

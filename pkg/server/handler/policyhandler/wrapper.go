@@ -5,6 +5,7 @@ import (
 
 	"github.com/NaoNaoOnline/apigocode/pkg/policy"
 	"github.com/NaoNaoOnline/apiserver/pkg/server/context/userid"
+	"github.com/NaoNaoOnline/apiserver/pkg/server/handler"
 	"github.com/xh3b4sd/tracer"
 )
 
@@ -15,12 +16,12 @@ type wrapper struct {
 func (w *wrapper) Create(ctx context.Context, req *policy.CreateI) (*policy.CreateO, error) {
 	{
 		if len(req.Object) == 0 {
-			return nil, tracer.Mask(queryObjectEmptyError)
+			return nil, tracer.Mask(handler.QueryObjectEmptyError)
 		}
 
 		for _, x := range req.Object {
 			if x == nil {
-				return nil, tracer.Mask(queryObjectEmptyError)
+				return nil, tracer.Mask(handler.QueryObjectEmptyError)
 			}
 		}
 	}
@@ -31,12 +32,12 @@ func (w *wrapper) Create(ctx context.Context, req *policy.CreateI) (*policy.Crea
 func (w *wrapper) Delete(ctx context.Context, req *policy.DeleteI) (*policy.DeleteO, error) {
 	{
 		if len(req.Object) == 0 {
-			return nil, tracer.Mask(queryObjectEmptyError)
+			return nil, tracer.Mask(handler.QueryObjectEmptyError)
 		}
 
 		for _, x := range req.Object {
 			if x == nil {
-				return nil, tracer.Mask(queryObjectEmptyError)
+				return nil, tracer.Mask(handler.QueryObjectEmptyError)
 			}
 		}
 	}
@@ -47,12 +48,12 @@ func (w *wrapper) Delete(ctx context.Context, req *policy.DeleteI) (*policy.Dele
 func (w *wrapper) Search(ctx context.Context, req *policy.SearchI) (*policy.SearchO, error) {
 	{
 		if len(req.Object) == 0 {
-			return nil, tracer.Mask(queryObjectEmptyError)
+			return nil, tracer.Mask(handler.QueryObjectEmptyError)
 		}
 
 		for _, x := range req.Object {
 			if x == nil {
-				return nil, tracer.Mask(queryObjectEmptyError)
+				return nil, tracer.Mask(handler.QueryObjectEmptyError)
 			}
 		}
 	}
@@ -74,23 +75,31 @@ func (w *wrapper) Search(ctx context.Context, req *policy.SearchI) (*policy.Sear
 func (w *wrapper) Update(ctx context.Context, req *policy.UpdateI) (*policy.UpdateO, error) {
 	{
 		if len(req.Object) == 0 {
-			return nil, tracer.Mask(queryObjectEmptyError)
+			return nil, tracer.Mask(handler.QueryObjectEmptyError)
 		}
 
 		for _, x := range req.Object {
 			if x == nil {
-				return nil, tracer.Mask(queryObjectEmptyError)
+				return nil, tracer.Mask(handler.QueryObjectEmptyError)
+			}
+		}
+	}
+
+	{
+		if len(req.Object) != 1 {
+			return nil, tracer.Mask(updateSyncInvalidError)
+		}
+
+		for _, x := range req.Object {
+			if x.Symbol == nil || x.Symbol.Sync != "default" {
+				return nil, tracer.Mask(updateSyncInvalidError)
 			}
 		}
 	}
 
 	{
 		if userid.FromContext(ctx) == "" {
-			return nil, tracer.Mask(userIDEmptyError)
-		}
-
-		if len(req.Object) != 1 && req.Object[0].Symbol.Sync != "default" {
-			return nil, tracer.Mask(updateSyncInvalidError)
+			return nil, tracer.Mask(handler.UserIDEmptyError)
 		}
 	}
 

@@ -1,7 +1,6 @@
 package policyhandler
 
 import (
-	"context"
 	"testing"
 
 	"github.com/NaoNaoOnline/apigocode/pkg/policy"
@@ -30,7 +29,7 @@ func Test_Server_Handler_Policy_Search_Fuzz(t *testing.T) {
 		}
 
 		{
-			_, _ = han.Search(context.Background(), inp)
+			_, _ = han.Search(tesCtx(), inp)
 		}
 	}
 }
