@@ -8,7 +8,9 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/NaoNaoOnline/apiserver/pkg/cache/policycache"
 	"github.com/NaoNaoOnline/apiserver/pkg/envvar"
+	"github.com/NaoNaoOnline/apiserver/pkg/permission"
 	"github.com/NaoNaoOnline/apiserver/pkg/server"
 	serverhandler "github.com/NaoNaoOnline/apiserver/pkg/server/handler"
 	"github.com/NaoNaoOnline/apiserver/pkg/server/handler/descriptionhandler"
@@ -26,7 +28,6 @@ import (
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/descriptionstorage"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/eventstorage"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/labelstorage"
-	"github.com/NaoNaoOnline/apiserver/pkg/storage/policystorage"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/reactionstorage"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/userstorage"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/votestorage"
@@ -71,6 +72,13 @@ func (r *run) runE(cmd *cobra.Command, args []string) error {
 		}
 	}
 
+	var pol policycache.Interface
+	{
+		pol = policycache.NewMemory(policycache.MemoryConfig{
+			Log: log,
+		})
+	}
+
 	var red redigo.Interface
 	{
 		red = redigo.Default()
@@ -103,11 +111,20 @@ func (r *run) runE(cmd *cobra.Command, args []string) error {
 
 	var des descriptionstorage.Interface
 	var eve eventstorage.Interface
-	var pol policystorage.Interface
 	{
 		des = descriptionstorage.NewRedis(descriptionstorage.RedisConfig{Log: log, Red: red, Res: res})
 		eve = eventstorage.NewRedis(eventstorage.RedisConfig{Log: log, Red: red, Res: res})
-		pol = policystorage.NewRedis(policystorage.RedisConfig{Log: log, Red: red, Wal: wal})
+	}
+
+	// --------------------------------------------------------------------- //
+
+	var prm permission.Interface
+	{
+		prm = permission.New(permission.Config{
+			Log: log,
+			Pol: pol,
+			Wal: wal,
+		})
 	}
 
 	// --------------------------------------------------------------------- //
@@ -132,6 +149,28 @@ func (r *run) runE(cmd *cobra.Command, args []string) error {
 
 	// --------------------------------------------------------------------- //
 
+	var pbh []workerhandler.Interface
+	var cid []int64
+	for _, x := range strings.Split(env.ChainRpc, ",") {
+		var h workerhandler.Interface
+		var c int64
+		{
+			h, c = workerpolicyhandler.NewBufferHandler(workerpolicyhandler.BufferHandlerConfig{
+				Cnt: env.PolicyContract,
+				Log: log,
+				Pol: pol,
+				Rpc: x,
+			})
+		}
+
+		{
+			pbh = append(pbh, h)
+			cid = append(cid, c)
+		}
+	}
+
+	// --------------------------------------------------------------------- //
+
 	var srv *server.Server
 	{
 		srv = server.New(server.Config{
@@ -139,7 +178,7 @@ func (r *run) runE(cmd *cobra.Command, args []string) error {
 				descriptionhandler.NewHandler(descriptionhandler.HandlerConfig{Eve: eve, Des: des, Log: log}),
 				eventhandler.NewHandler(eventhandler.HandlerConfig{Eve: eve, Log: log}),
 				labelhandler.NewHandler(labelhandler.HandlerConfig{Lab: lab, Log: log}),
-				policyhandler.NewHandler(policyhandler.HandlerConfig{Log: log, Pol: pol, Res: res}),
+				policyhandler.NewHandler(policyhandler.HandlerConfig{Cid: cid, Log: log, Prm: prm, Res: res}),
 				reactionhandler.NewHandler(reactionhandler.HandlerConfig{Log: log, Rct: rct}),
 				userhandler.NewHandler(userhandler.HandlerConfig{Log: log, Use: use}),
 				votehandler.NewHandler(votehandler.HandlerConfig{Des: des, Eve: eve, Log: log, Vot: vot}),
@@ -164,16 +203,6 @@ func (r *run) runE(cmd *cobra.Command, args []string) error {
 
 	// --------------------------------------------------------------------- //
 
-	var pwh []workerhandler.Interface
-	for _, x := range strings.Split(env.ChainRpc, ",") {
-		pwh = append(pwh, workerpolicyhandler.NewSystemHandler(workerpolicyhandler.SystemHandlerConfig{
-			Cnt: env.PolicyContract,
-			Log: log,
-			Pol: pol,
-			Rpc: x,
-		}))
-	}
-
 	var wrk *worker.Worker
 	{
 		wrk = worker.New(worker.Config{
@@ -182,8 +211,9 @@ func (r *run) runE(cmd *cobra.Command, args []string) error {
 					workerdescriptionhandler.NewCustomHandler(workerdescriptionhandler.CustomHandlerConfig{Des: des, Log: log, Vot: vot}),
 					workereventhandler.NewCustomHandler(workereventhandler.CustomHandlerConfig{Eve: eve, Des: des, Log: log, Vot: vot}),
 					workereventhandler.NewSystemHandler(workereventhandler.SystemHandlerConfig{Eve: eve, Log: log}),
+					workerpolicyhandler.NewUpdateHandler(workerpolicyhandler.UpdateHandlerConfig{Cid: cid, Log: log, Pol: pol}),
 				},
-				pwh...,
+				pbh...,
 			),
 			Log: log,
 			Res: res,

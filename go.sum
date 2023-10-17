@@ -4,8 +4,8 @@ github.com/FZambia/sentinel v1.1.1 h1:0ovTimlR7Ldm+wR15GgO+8C2dt7kkn+tm3PQS+Qk3E
 github.com/FZambia/sentinel v1.1.1/go.mod h1:ytL1Am/RLlAoAXG6Kj5LNuw/TRRQrv2rt2FT26vP5gI=
 github.com/Microsoft/go-winio v0.6.1 h1:9/kr64B9VUZrLm5YYwbGtUJnMgqWVOdUAXu6Migciow=
 github.com/Microsoft/go-winio v0.6.1/go.mod h1:LRdKpFKfdobln8UmuiYcKPot9D2v6svN5+sAH+4kjUM=
-github.com/NaoNaoOnline/apigocode v0.6.5 h1:oME5TopLq5TYXGrdCvt+Lka6n+zCldh+C3s+kH9H80k=
-github.com/NaoNaoOnline/apigocode v0.6.5/go.mod h1:gEIhGtjAQm05l9JkDaMmIgM34rkgUCYn2Q3WmowWcE0=
+github.com/NaoNaoOnline/apigocode v0.6.6 h1:rAEv8pE0pzEzw0f6Xrw7qDnEHOoTbx1pxSzoIZP4Z3c=
+github.com/NaoNaoOnline/apigocode v0.6.6/go.mod h1:gEIhGtjAQm05l9JkDaMmIgM34rkgUCYn2Q3WmowWcE0=
 github.com/StackExchange/wmi v1.2.1 h1:VIkavFPXSjcnS+O8yTq7NI32k0R5Aj+v39y29VYDOSA=
 github.com/StackExchange/wmi v1.2.1/go.mod h1:rcmrprowKIVzvc+NUiLncP2uuArMWLCbu9SBzvHz7e8=
 github.com/VictoriaMetrics/fastcache v1.6.0 h1:C/3Oi3EiBCqufydp1neRZkqcwmEiuRT9c3fqvvgKm5o=
@@ -277,10 +277,10 @@ github.com/xh3b4sd/budget/v3 v3.3.0 h1:/mg11kyDuYHI4LOT8hctLsVnK6ZeGN+/Rw5wzZ/Zh
 github.com/xh3b4sd/budget/v3 v3.3.0/go.mod h1:epHdjvXVpg5PE63RcBirhgY8D/vVa5dbXkDjQ/ycT40=
 github.com/xh3b4sd/logger v0.7.3 h1:iqzUqU3sd8cn5RZda/0GWGdJRA9j9qCBDYZBda7ti70=
 github.com/xh3b4sd/logger v0.7.3/go.mod h1:fIvpHlYAJFR/xbWtyuVlnZKyWhGI78C2RUbWDEBhT4k=
-github.com/xh3b4sd/redigo v0.36.0 h1:xbhl5v+h9B+5HpqJ49YkuRzjEcoQk9KagUW2bjff+1E=
-github.com/xh3b4sd/redigo v0.36.0/go.mod h1:FezZ2igUyrLcJvR6RLvD/YpGL1GCbVY6bGQfJ6S4pYk=
-github.com/xh3b4sd/rescue v0.17.1 h1:riu/JinabI85xgvUtvB3wIde7BTitANUJO2MAkQ//2E=
-github.com/xh3b4sd/rescue v0.17.1/go.mod h1:x2eKgndsiSKITowdTvvCUWTze9TYtajMZFJW08sv9zs=
+github.com/xh3b4sd/redigo v0.36.1 h1:4hvqORaotp8IIf0PkpHAFeZBOekZlmJ4HjEj8f18Mbc=
+github.com/xh3b4sd/redigo v0.36.1/go.mod h1:FezZ2igUyrLcJvR6RLvD/YpGL1GCbVY6bGQfJ6S4pYk=
+github.com/xh3b4sd/rescue v0.17.6 h1:c6iBt1PM5XDGOFzVs1v4avq8Bn6E9aTSy/8W7HjWc2A=
+github.com/xh3b4sd/rescue v0.17.6/go.mod h1:Iu/ldCxQP9BVznoDvkvHOwqtmJbBuPNsUpZ10s/57yA=
 github.com/xh3b4sd/tracer v0.10.1 h1:wuzVeQtqYsy51Nkb7P/XavZ8rQYptxxmlM1ivFJ8dXE=
 github.com/xh3b4sd/tracer v0.10.1/go.mod h1:8nRbNXXhSSDmPfyoRRYgwQt/RpzAUH+zNsagP9InH8M=
 github.com/xrash/smetrics v0.0.0-20201216005158-039620a65673 h1:bAn7/zixMGCfxrRTfdpNzjtPYqr8smhKouy9mxVdGPU=

@@ -12,7 +12,7 @@ func (r *Redis) Delete(inp []*Object) ([]objectstate.String, error) {
 	for i := range inp {
 		// Delete the user specific mappings for user specific search queries.
 		{
-			err = r.red.Sorted().Delete().Index(walUse(inp[i].User), inp[i].Wllt.String())
+			err = r.red.Sorted().Delete().Score(walUse(inp[i].User), inp[i].Wllt.Float())
 			if err != nil {
 				return nil, tracer.Mask(err)
 			}
@@ -28,9 +28,13 @@ func (r *Redis) Delete(inp []*Object) ([]objectstate.String, error) {
 
 		// Since the deletion process starts with the normalized key-value pair in
 		// the handler, we delete it as the very last step, so the operation can
-		// eventually be retried.
+		// eventually be retried. Here we also delete the wallet address mappings in
+		// one go.
 		{
-			_, err = r.red.Simple().Delete().Multi(walObj(inp[i].User, inp[i].Wllt))
+			add := walAdd(inp[i].Addr.Data)
+			obj := walObj(inp[i].User, inp[i].Wllt)
+
+			_, err = r.red.Simple().Delete().Multi(add, obj)
 			if err != nil {
 				return nil, tracer.Mask(err)
 			}

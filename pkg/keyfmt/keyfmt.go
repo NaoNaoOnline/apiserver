@@ -105,64 +105,6 @@ const (
 	//
 	LabelUser = "lab/use/%s"
 
-	// PolicyCreateMember is used to store all the IDs of CreateMember policies.
-	//
-	//     kind CreateMember          policy IDs
-	//                          ->
-	//     pol/kin/mem/cre            1234,5678
-	//
-	PolicyCreateMember = "pol/kin/mem/cre"
-
-	// PolicyCreateSystem is used to store all the IDs of CreateSystem policies.
-	//
-	//     kind CreateSystem          policy IDs
-	//                          ->
-	//     pol/kin/sys/cre            1234,5678
-	//
-	PolicyCreateSystem = "pol/kin/sys/cre"
-
-	// PolicyDeleteMember is used to store all the IDs of DeleteMember policies.
-	//
-	//     kind DeleteMember          policy IDs
-	//                          ->
-	//     pol/kin/mem/del            1234,5678
-	//
-	PolicyDeleteMember = "pol/kin/mem/del"
-
-	// PolicyDeleteSystem is used to store all the IDs of DeleteSystem policies.
-	//
-	//     kind DeleteSystem          policy IDs
-	//                          ->
-	//     pol/kin/sys/del            1234,5678
-	//
-	PolicyDeleteSystem = "pol/kin/sys/del"
-
-	// PolicyMember is used to store all the IDs of policies for a member.
-	//
-	//     kind / member                  policy IDs
-	//                              ->
-	//     pol/kin/foo/mem/2345           1234,5678
-	//
-	PolicyMember = "pol/kin/%s/mem/%s"
-
-	// PolicyObject is used to store our internal representation of a policy
-	// object.
-	//
-	//     policy ID              policy object
-	//                     ->
-	//     pol/obj/1234          {"key": "val"}
-	//
-	PolicyObject = "pol/obj/%s"
-
-	// PolicySystem is used to store all the IDs of policies for a member within a
-	// specific system.
-	//
-	//     kind / system / member                  policy IDs
-	//                                       ->
-	//     pol/kin/foo/sys/2345/mem/3456           1234,5678
-	//
-	PolicySystem = "pol/kin/%s/sys/%d/mem/%s"
-
 	// ReactionCustom is used to store all the IDs of reactions individually
 	// created by users.
 	//
@@ -253,6 +195,15 @@ const (
 	//     vot/use/5678          1234,5678
 	//
 	VoteUser = "vot/use/%s"
+
+	// WalletAddress is used to store wallet mappings between wallet address and
+	// internal user representations.
+	//
+	//     wallet address          user ID
+	//                       ->
+	//     wal/add/5678            1234
+	//
+	WalletAddress = "wal/add/%s"
 
 	// VoteUserEvent is used to store all the IDs of votes mapped to a specific
 	// user/event combination.

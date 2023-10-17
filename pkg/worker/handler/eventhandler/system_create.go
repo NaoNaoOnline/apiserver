@@ -8,7 +8,7 @@ import (
 func (h *SystemHandler) Create() *task.Task {
 	return &task.Task{
 		Cron: &task.Cron{
-			task.Aevery: "5 minutes",
+			task.Aevery: "hour",
 		},
 		Meta: &task.Meta{
 			objectlabel.EvntAction: objectlabel.ActionDelete,
