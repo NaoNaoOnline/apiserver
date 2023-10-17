@@ -7,7 +7,7 @@ import (
 	"github.com/xh3b4sd/rescue/task"
 )
 
-// Create returns a system task template for triggering a task that merged and
+// Create returns a system task template for triggering a task that merges and
 // updates all policy records buffered within the memory implementation of the
 // policy cache. The workflow here intends to wait for all buffer tasks emitted
 // by the BufferHandler to complete, and then to emit the update task that
