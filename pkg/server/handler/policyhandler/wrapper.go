@@ -60,23 +60,20 @@ func (w *wrapper) Search(ctx context.Context, req *policy.SearchI) (*policy.Sear
 
 	{
 		for _, x := range req.Object {
-			if x.Public == nil && x.Symbol == nil {
+			if x.Symbol == nil {
 				return nil, tracer.Mask(handler.QueryObjectEmptyError)
 			}
 		}
 
 		for _, x := range req.Object {
-			if x.Public != nil && x.Public.Kind == "" {
-				return nil, tracer.Mask(searchPublicEmptyError)
-			}
 			if x.Symbol != nil && x.Symbol.Ltst == "" {
 				return nil, tracer.Mask(searchSymbolEmptyError)
 			}
 		}
 
 		for _, x := range req.Object {
-			if x.Public != nil && x.Symbol != nil && x.Public.Kind != "" && (x.Symbol.Ltst == "default" || x.Symbol.Ltst == "aggregated") {
-				return nil, tracer.Mask(searchKindConflictError)
+			if x.Symbol != nil && x.Symbol.Ltst != "default" {
+				return nil, tracer.Mask(searchLtstInvalidError)
 			}
 		}
 	}

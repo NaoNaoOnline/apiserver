@@ -35,6 +35,10 @@ func NewRedis(c RedisConfig) *Redis {
 	}
 }
 
+func walAdd(add string) string {
+	return fmt.Sprintf(keyfmt.WalletAddress, add)
+}
+
 func walKin(use objectid.ID, kin string) string {
 	if kin == "eth" {
 		return fmt.Sprintf(keyfmt.WalletEthereum, use)

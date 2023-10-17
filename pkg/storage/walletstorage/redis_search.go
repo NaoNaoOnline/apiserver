@@ -10,6 +10,22 @@ import (
 	"github.com/xh3b4sd/tracer"
 )
 
+func (r *Redis) SearchAddr(add []string) ([]objectid.ID, error) {
+	var err error
+
+	var val []string
+	{
+		val, err = r.red.Simple().Search().Multi(objectid.Fmt(add, keyfmt.WalletAddress)...)
+		if simple.IsNotFound(err) {
+			return nil, tracer.Maskf(walletObjectNotFoundError, "%v", add)
+		} else if err != nil {
+			return nil, tracer.Mask(err)
+		}
+	}
+
+	return objectid.IDs(val), nil
+}
+
 func (r *Redis) SearchKind(use objectid.ID, kin []string) ([]*Object, error) {
 	var err error
 

@@ -5,8 +5,8 @@ import (
 
 	"github.com/NaoNaoOnline/apigocode/pkg/policy"
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectid"
+	"github.com/NaoNaoOnline/apiserver/pkg/permission"
 	"github.com/NaoNaoOnline/apiserver/pkg/server/context/userid"
-	"github.com/NaoNaoOnline/apiserver/pkg/storage/policystorage"
 	fuzz "github.com/google/gofuzz"
 	"github.com/xh3b4sd/logger"
 	"github.com/xh3b4sd/rescue"
@@ -21,8 +21,9 @@ func tesCtx() context.Context {
 func tesHan() policy.API {
 	return &wrapper{
 		han: NewHandler(HandlerConfig{
+			Cid: []int64{1},
 			Log: logger.Fake(),
-			Pol: policystorage.Fake(),
+			Prm: permission.Fake(),
 			Res: rescue.Fake(),
 		}),
 	}

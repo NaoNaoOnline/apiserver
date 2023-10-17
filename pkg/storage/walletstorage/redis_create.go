@@ -3,7 +3,6 @@ package walletstorage
 import (
 	"time"
 
-	"github.com/NaoNaoOnline/apiserver/pkg/keyfmt"
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectfield"
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectid"
 	"github.com/xh3b4sd/tracer"
@@ -68,6 +67,14 @@ func (r *Redis) CreateXtrn(inp []*Object) ([]*Object, error) {
 			}
 		}
 
+		// Create the wallet address mappings for wallet address search queries.
+		{
+			err = r.red.Simple().Create().Element(walAdd(inp[i].Addr.Data), inp[i].User.String())
+			if err != nil {
+				return nil, tracer.Mask(err)
+			}
+		}
+
 		// Now we create the wallet kind mappings for wallet kind search queries.
 		// With that we can search for wallets of a given kind.
 		{
@@ -78,11 +85,9 @@ func (r *Redis) CreateXtrn(inp []*Object) ([]*Object, error) {
 		}
 
 		// Create the user specific mappings for user specific search queries. With
-		// that we can show the user all wallets they created. Note that we index
-		// the user's wallets by their wallet addresses. With that we can search for
-		// a user wallet only knowing their wallet address.
+		// that we can show the user all wallets they created.
 		{
-			err = r.red.Sorted().Create().Index(walUse(inp[i].User), inp[i].Wllt.String(), inp[i].Wllt.Float(), keyfmt.Indx(inp[i].Addr.Data))
+			err = r.red.Sorted().Create().Score(walUse(inp[i].User), inp[i].Wllt.String(), inp[i].Wllt.Float())
 			if err != nil {
 				return nil, tracer.Mask(err)
 			}

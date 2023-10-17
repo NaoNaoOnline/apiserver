@@ -4,30 +4,30 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/NaoNaoOnline/apiserver/pkg/cache/policycache"
 	"github.com/NaoNaoOnline/apiserver/pkg/contract/policycontract"
-	"github.com/NaoNaoOnline/apiserver/pkg/storage/policystorage"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/ethclient"
 	"github.com/xh3b4sd/logger"
 	"github.com/xh3b4sd/tracer"
 )
 
-type SystemHandlerConfig struct {
+type BufferHandlerConfig struct {
 	Cnt string
 	Log logger.Interface
-	Pol policystorage.Interface
+	Pol policycache.Interface
 	Rpc string
 }
 
-type SystemHandler struct {
+type BufferHandler struct {
 	cid int64
 	eth *ethclient.Client
 	log logger.Interface
 	pcn *policycontract.Policy
-	pol policystorage.Interface
+	pol policycache.Interface
 }
 
-func NewSystemHandler(c SystemHandlerConfig) *SystemHandler {
+func NewBufferHandler(c BufferHandlerConfig) (*BufferHandler, int64) {
 	if c.Cnt == "" {
 		tracer.Panic(tracer.Mask(fmt.Errorf("%T.Cnt must not be empty", c)))
 	}
@@ -69,11 +69,16 @@ func NewSystemHandler(c SystemHandlerConfig) *SystemHandler {
 		cid = int64(big.Uint64())
 	}
 
-	return &SystemHandler{
-		cid: cid,
-		eth: eth,
-		log: c.Log,
-		pcn: pcn,
-		pol: c.Pol,
+	var han *BufferHandler
+	{
+		han = &BufferHandler{
+			cid: cid,
+			eth: eth,
+			log: c.Log,
+			pcn: pcn,
+			pol: c.Pol,
+		}
 	}
+
+	return han, cid
 }

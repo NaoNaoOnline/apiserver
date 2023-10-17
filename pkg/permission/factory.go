@@ -1,15 +1,15 @@
-package policystorage
+package permission
 
 import (
+	"github.com/NaoNaoOnline/apiserver/pkg/cache/policycache"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/walletstorage"
 	"github.com/xh3b4sd/logger"
-	"github.com/xh3b4sd/redigo"
 )
 
 func Fake() Interface {
-	return NewRedis(RedisConfig{
+	return New(Config{
 		Log: logger.Fake(),
-		Red: redigo.Fake(),
+		Pol: policycache.Fake(),
 		Wal: walletstorage.Fake(),
 	})
 }

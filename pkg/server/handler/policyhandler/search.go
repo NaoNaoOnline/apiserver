@@ -3,15 +3,14 @@ package policyhandler
 import (
 	"context"
 	"strconv"
-	"strings"
 
 	"github.com/NaoNaoOnline/apigocode/pkg/policy"
-	"github.com/NaoNaoOnline/apiserver/pkg/storage/policystorage"
+	"github.com/NaoNaoOnline/apiserver/pkg/cache/policycache"
 	"github.com/xh3b4sd/tracer"
 )
 
 func (h *Handler) Search(ctx context.Context, req *policy.SearchI) (*policy.SearchO, error) {
-	var out []*policystorage.Object
+	var out []*policycache.Record
 
 	//
 	// Search policies by aggregation and delete events.
@@ -25,59 +24,7 @@ func (h *Handler) Search(ctx context.Context, req *policy.SearchI) (*policy.Sear
 	}
 
 	if def {
-		agg, del, err := h.pol.SearchAggr()
-		if err != nil {
-			return nil, tracer.Mask(err)
-		}
-
-		out = append(out, agg...)
-		out = append(out, del...)
-	}
-
-	//
-	// Search policies by aggregation only.
-	//
-
-	var agg bool
-	for _, x := range req.Object {
-		if x.Symbol != nil && x.Symbol.Ltst == "aggregated" {
-			agg = true
-		}
-	}
-
-	if agg {
-		agg, _, err := h.pol.SearchAggr()
-		if err != nil {
-			return nil, tracer.Mask(err)
-		}
-
-		out = append(out, agg...)
-	}
-
-	//
-	// Search policies by kind.
-	//
-
-	var pxy bool
-	for _, x := range req.Object {
-		if x.Symbol != nil && x.Symbol.Ltst == "proxy" {
-			pxy = true
-		}
-	}
-
-	if pxy {
-		var kin []string
-		for _, x := range req.Object {
-			if x.Public != nil && x.Public.Kind != "" {
-				kin = append(kin, strings.Split(x.Public.Kind, ",")...)
-			}
-		}
-
-		if len(kin) == 0 {
-			kin = []string{"CreateMember", "CreateSystem", "DeleteMember", "DeleteSystem"}
-		}
-
-		lis, err := h.pol.SearchKind(kin)
+		lis, err := h.prm.SearchRcrd()
 		if err != nil {
 			return nil, tracer.Mask(err)
 		}
@@ -95,20 +42,13 @@ func (h *Handler) Search(ctx context.Context, req *policy.SearchI) (*policy.Sear
 	}
 
 	for _, x := range out {
-		// Policies marked to be deleted cannot be searched anymore.
-		if !x.Dltd.IsZero() {
-			continue
-		}
-
 		res.Object = append(res.Object, &policy.SearchO_Object{
 			Extern: outExt(x),
 			Intern: &policy.SearchO_Object_Intern{
-				Crtd: strconv.FormatInt(x.Crtd.Unix(), 10),
-				Plcy: x.Plcy.String(),
+				User: x.User.String(),
 			},
 			Public: &policy.SearchO_Object_Public{
 				Acce: strconv.FormatInt(x.Acce, 10),
-				Kind: x.Kind,
 				Memb: x.Memb,
 				Syst: strconv.FormatInt(x.Syst, 10),
 			},

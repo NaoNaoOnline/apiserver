@@ -2,11 +2,14 @@ package policyhandler
 
 import (
 	"context"
+	"fmt"
+	"strconv"
 
 	"github.com/NaoNaoOnline/apigocode/pkg/policy"
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectlabel"
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectstate"
 	"github.com/NaoNaoOnline/apiserver/pkg/server/context/userid"
+	"github.com/NaoNaoOnline/apiserver/pkg/server/handler"
 	"github.com/xh3b4sd/rescue/task"
 	"github.com/xh3b4sd/tracer"
 )
@@ -16,31 +19,36 @@ func (h *Handler) Update(ctx context.Context, req *policy.UpdateI) (*policy.Upda
 
 	var exi bool
 	{
-		exi, err = h.pol.ExistsMemb(userid.FromContext(ctx))
+		exi, err = h.prm.ExistsMemb(userid.FromContext(ctx))
 		if err != nil {
 			return nil, tracer.Mask(err)
 		}
 	}
 
 	if !exi {
-		return nil, tracer.Mask(policyMemberError)
+		return nil, tracer.Mask(handler.PolicyMemberError)
 	}
 
-	var tas *task.Task
-	{
-		tas = &task.Task{
-			Meta: &task.Meta{
-				objectlabel.PlcyAction: objectlabel.ActionUpdate,
-				objectlabel.PlcyObject: "*",
-				objectlabel.PlcyOrigin: objectlabel.OriginCustom,
-			},
+	for _, x := range h.cid {
+		var tas *task.Task
+		{
+			tas = &task.Task{
+				Meta: &task.Meta{
+					objectlabel.PlcyAction: objectlabel.ActionBuffer,
+					objectlabel.PlcyNetwrk: strconv.FormatInt(x, 10),
+					objectlabel.PlcyOrigin: objectlabel.OriginCustom,
+				},
+				Gate: &task.Gate{
+					fmt.Sprintf(objectlabel.PlcyUnique, x): task.Trigger,
+				},
+			}
 		}
-	}
 
-	{
-		err := h.res.Create(tas)
-		if err != nil {
-			return nil, tracer.Mask(err)
+		{
+			err := h.res.Create(tas)
+			if err != nil {
+				return nil, tracer.Mask(err)
+			}
 		}
 	}
 
