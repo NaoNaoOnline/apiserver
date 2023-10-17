@@ -2,7 +2,10 @@ package policycache
 
 import (
 	"errors"
+	"reflect"
 	"testing"
+
+	"github.com/google/go-cmp/cmp"
 )
 
 const (
@@ -121,19 +124,27 @@ func Test_Cache_Policy_Memory_Lifecycle(t *testing.T) {
 		}
 	}
 
+	var lis []*Record
 	{
-		rec := pol.SearchRcrd()
-		if len(rec) != 1 {
-			t.Fatal("expected", 1, "got", len(rec))
+		lis = pol.SearchRcrd()
+	}
+
+	{
+		if len(lis) != 1 {
+			t.Fatal("expected", 1, "got", len(lis))
 		}
-		if rec[0].Syst != 0 {
-			t.Fatal("expected", 0, "got", rec[0].Syst)
+	}
+
+	{
+		var exp []*Record
+		{
+			exp = []*Record{
+				tesRec(0, addOne, 0, []int64{1}),
+			}
 		}
-		if rec[0].Memb != addOne {
-			t.Fatal("expected", addOne, "got", rec[0].Memb)
-		}
-		if rec[0].Acce != 0 {
-			t.Fatal("expected", 0, "got", rec[0].Acce)
+
+		if !reflect.DeepEqual(lis, exp) {
+			t.Fatalf("\n\n%s\n", cmp.Diff(exp, lis))
 		}
 	}
 }

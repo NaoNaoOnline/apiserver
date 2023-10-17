@@ -15,8 +15,10 @@ func (m *Memory) ExistsAcce(sys int64, mem string, acc int64) bool {
 }
 
 func (m *Memory) ExistsMemb(mem string) bool {
-	m.mut.Lock()
-	defer m.mut.Unlock()
+	{
+		m.mut.Lock()
+		defer m.mut.Unlock()
+	}
 
 	var exi bool
 	{
