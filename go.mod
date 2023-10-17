@@ -7,6 +7,7 @@ require (
 	github.com/auth0/go-jwt-middleware/v2 v2.1.0
 	github.com/ethereum/go-ethereum v1.13.1
 	github.com/evanphx/json-patch/v5 v5.7.0
+	github.com/google/go-cmp v0.6.0
 	github.com/google/gofuzz v1.2.0
 	github.com/gorilla/mux v1.8.0
 	github.com/joho/godotenv v1.5.1

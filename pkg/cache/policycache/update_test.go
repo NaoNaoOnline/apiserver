@@ -3,6 +3,8 @@ package policycache
 import (
 	"reflect"
 	"testing"
+
+	"github.com/google/go-cmp/cmp"
 )
 
 func Test_Cache_Policy_Memory_Update_Multi(t *testing.T) {
@@ -188,49 +190,77 @@ func Test_Cache_Policy_Memory_Update_Single(t *testing.T) {
 		}
 	}
 
+	var lis []*Record
 	{
-		rec := pol.SearchRcrd()
-		if len(rec) != 3 {
-			t.Fatal("expected", 3, "got", len(rec))
+		lis = pol.SearchRcrd()
+	}
+
+	{
+		if len(lis) != 3 {
+			t.Fatal("expected", 3, "got", len(lis))
+		}
+	}
+
+	{
+		var rec *Record
+		{
+			rec = lis[0]
 		}
 
-		if rec[0].Syst != 0 {
-			t.Fatal("expected", 0, "got", rec[0].Syst)
-		}
-		if rec[0].Memb != addOne {
-			t.Fatal("expected", addOne, "got", rec[0].Memb)
-		}
-		if rec[0].Acce != 0 {
-			t.Fatal("expected", 0, "got", rec[0].Acce)
-		}
-		if !reflect.DeepEqual(rec[0].ChID, []int64{1}) {
-			t.Fatal("expected", []int64{1}, "got", rec[0].ChID)
+		var exp *Record
+		{
+			exp = &Record{
+				Acce: 0,
+				ChID: []int64{1},
+				Memb: addOne,
+				Syst: 0,
+			}
 		}
 
-		if rec[1].Syst != 2 {
-			t.Fatal("expected", 2, "got", rec[1].Syst)
+		if !reflect.DeepEqual(rec, exp) {
+			t.Fatalf("\n\n%s\n", cmp.Diff(exp, rec))
 		}
-		if rec[1].Memb != addOne {
-			t.Fatal("expected", addOne, "got", rec[1].Memb)
-		}
-		if rec[1].Acce != 0 {
-			t.Fatal("expected", 0, "got", rec[1].Acce)
-		}
-		if !reflect.DeepEqual(rec[1].ChID, []int64{1}) {
-			t.Fatal("expected", []int64{1}, "got", rec[1].ChID)
+	}
+
+	{
+		var rec *Record
+		{
+			rec = lis[1]
 		}
 
-		if rec[2].Syst != 2 {
-			t.Fatal("expected", 2, "got", rec[2].Syst)
+		var exp *Record
+		{
+			exp = &Record{
+				Acce: 0,
+				ChID: []int64{1},
+				Memb: addOne,
+				Syst: 2,
+			}
 		}
-		if rec[2].Memb != addTwo {
-			t.Fatal("expected", addTwo, "got", rec[2].Memb)
+
+		if !reflect.DeepEqual(rec, exp) {
+			t.Fatalf("\n\n%s\n", cmp.Diff(exp, rec))
 		}
-		if rec[2].Acce != 1 {
-			t.Fatal("expected", 1, "got", rec[2].Acce)
+	}
+
+	{
+		var rec *Record
+		{
+			rec = lis[2]
 		}
-		if !reflect.DeepEqual(rec[2].ChID, []int64{1}) {
-			t.Fatal("expected", []int64{1}, "got", rec[2].ChID)
+
+		var exp *Record
+		{
+			exp = &Record{
+				Acce: 1,
+				ChID: []int64{1},
+				Memb: addTwo,
+				Syst: 2,
+			}
+		}
+
+		if !reflect.DeepEqual(rec, exp) {
+			t.Fatalf("\n\n%s\n", cmp.Diff(exp, rec))
 		}
 	}
 }

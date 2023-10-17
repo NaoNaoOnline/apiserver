@@ -149,7 +149,7 @@ func (r *run) runE(cmd *cobra.Command, args []string) error {
 
 	// --------------------------------------------------------------------- //
 
-	var pwh []workerhandler.Interface
+	var pbh []workerhandler.Interface
 	var cid []int64
 	for _, x := range strings.Split(env.ChainRpc, ",") {
 		var h workerhandler.Interface
@@ -164,7 +164,7 @@ func (r *run) runE(cmd *cobra.Command, args []string) error {
 		}
 
 		{
-			pwh = append(pwh, h)
+			pbh = append(pbh, h)
 			cid = append(cid, c)
 		}
 	}
@@ -213,7 +213,7 @@ func (r *run) runE(cmd *cobra.Command, args []string) error {
 					workereventhandler.NewSystemHandler(workereventhandler.SystemHandlerConfig{Eve: eve, Log: log}),
 					workerpolicyhandler.NewUpdateHandler(workerpolicyhandler.UpdateHandlerConfig{Cid: cid, Log: log, Pol: pol}),
 				},
-				pwh...,
+				pbh...,
 			),
 			Log: log,
 			Res: res,
