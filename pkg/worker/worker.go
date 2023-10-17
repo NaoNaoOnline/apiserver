@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/NaoNaoOnline/apiserver/pkg/object/objectlabel"
 	"github.com/NaoNaoOnline/apiserver/pkg/worker/budget"
 	"github.com/NaoNaoOnline/apiserver/pkg/worker/handler"
 	"github.com/xh3b4sd/logger"
@@ -90,6 +91,7 @@ func (w *Worker) Daemon() {
 func (w *Worker) create() {
 	var err error
 
+	// Ensure any task template the respective handlers require.
 	for _, x := range w.han {
 		var tas *task.Task
 		{
@@ -119,12 +121,62 @@ func (w *Worker) create() {
 			}
 		}
 	}
+
+	// Emit any task the system requires during the program's startup sequence.
+	for _, x := range w.han {
+		var tas *task.Task
+		{
+			tas = x.Create()
+		}
+
+		if tas == nil {
+			continue
+		}
+
+		var cre bool
+		for _, y := range w.filter() {
+			if tas.Meta.Has(y) {
+				cre = true
+			}
+		}
+
+		if !cre {
+			continue
+		}
+
+		// If we want to initially create a task during the program's startup
+		// sequence, then we need to ensure that any Task.Cron definition is
+		// removed, since we want to emit the task in its scheduled task form right
+		// now, instead of creating a task template.
+		{
+			tas.Cron = nil
+		}
+
+		{
+			err := w.res.Create(tas)
+			if err != nil {
+				w.lerror(tracer.Mask(err))
+			}
+		}
+	}
 }
 
 func (w *Worker) expire() {
 	err := w.res.Expire()
 	if err != nil {
 		w.lerror(tracer.Mask(err))
+	}
+}
+
+func (w *Worker) filter() []map[string]string {
+	return []map[string]string{
+		// We want to emit every task for every chain to buffer policy records
+		// during the program's startup sequence in order to ensure the internal
+		// caching of policy records.
+		{
+			objectlabel.PlcyAction: objectlabel.ActionBuffer,
+			objectlabel.PlcyOrigin: objectlabel.OriginSystem,
+		},
 	}
 }
 
