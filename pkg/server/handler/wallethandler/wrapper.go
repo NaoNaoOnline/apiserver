@@ -10,7 +10,7 @@ import (
 )
 
 type wrapper struct {
-	han wallet.API
+	han *Handler
 }
 
 func (w *wrapper) Create(ctx context.Context, req *wallet.CreateI) (*wallet.CreateO, error) {

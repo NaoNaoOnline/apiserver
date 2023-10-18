@@ -9,7 +9,7 @@ import (
 )
 
 type wrapper struct {
-	han reaction.API
+	han *Handler
 }
 
 func (w *wrapper) Create(ctx context.Context, req *reaction.CreateI) (*reaction.CreateO, error) {

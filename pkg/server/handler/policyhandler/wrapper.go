@@ -10,7 +10,7 @@ import (
 )
 
 type wrapper struct {
-	han policy.API
+	han *Handler
 }
 
 func (w *wrapper) Create(ctx context.Context, req *policy.CreateI) (*policy.CreateO, error) {
@@ -78,6 +78,45 @@ func (w *wrapper) Search(ctx context.Context, req *policy.SearchI) (*policy.Sear
 		}
 	}
 
+	{
+		if userid.FromContext(ctx) == "" {
+			return nil, tracer.Mask(handler.UserIDEmptyError)
+		}
+	}
+
+	var err error
+
+	var exi bool
+	{
+		exi, err = w.han.prm.ExistsMemb(userid.FromContext(ctx))
+		if err != nil {
+			return nil, tracer.Mask(err)
+		}
+	}
+
+	// We want the search result to be empty if the caller is not a policy member.
+	// We do not want the call to fail because the overview of policy records is
+	// integrated into the policy section on the settings page in the webclient.
+	// Every user looking at their settings page will make a request to get the
+	// list of available policies. It is ok to not get any result for the majority
+	// of users. That is why we do not fail, but instead return an empty list,
+	// together with an explanation for the empty response.
+	if !exi {
+		var res *policy.SearchO
+		{
+			res = &policy.SearchO{
+				Reason: []*policy.SearchO_Reason{
+					{
+						Desc: handler.PolicyMemberError.Desc,
+						Kind: handler.PolicyMemberError.Kind,
+					},
+				},
+			}
+		}
+
+		return res, nil
+	}
+
 	return w.han.Search(ctx, req)
 }
 
@@ -110,6 +149,20 @@ func (w *wrapper) Update(ctx context.Context, req *policy.UpdateI) (*policy.Upda
 		if userid.FromContext(ctx) == "" {
 			return nil, tracer.Mask(handler.UserIDEmptyError)
 		}
+	}
+
+	var err error
+
+	var exi bool
+	{
+		exi, err = w.han.prm.ExistsMemb(userid.FromContext(ctx))
+		if err != nil {
+			return nil, tracer.Mask(err)
+		}
+	}
+
+	if !exi {
+		return nil, tracer.Mask(handler.PolicyMemberError)
 	}
 
 	return w.han.Update(ctx, req)

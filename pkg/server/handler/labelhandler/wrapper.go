@@ -10,7 +10,7 @@ import (
 )
 
 type wrapper struct {
-	han label.API
+	han *Handler
 }
 
 func (w *wrapper) Create(ctx context.Context, req *label.CreateI) (*label.CreateO, error) {

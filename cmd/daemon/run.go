@@ -129,6 +129,9 @@ func (r *run) runE(cmd *cobra.Command, args []string) error {
 
 	// --------------------------------------------------------------------- //
 
+	// TODO the bootstrapping of resources should be worker tasks like we already
+	// handle policy records
+
 	{
 		_, err := lab.Create(lab.SearchBltn())
 		if labelstorage.IsLabelObjectAlreadyExists(err) {

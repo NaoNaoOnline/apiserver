@@ -13,7 +13,7 @@ func (h *Handler) Search(ctx context.Context, req *policy.SearchI) (*policy.Sear
 	var out []*policycache.Record
 
 	//
-	// Search policies by aggregation and delete events.
+	// Search policies by aggregation.
 	//
 
 	var def bool

@@ -10,7 +10,7 @@ import (
 )
 
 type wrapper struct {
-	han event.API
+	han *Handler
 }
 
 func (w *wrapper) Create(ctx context.Context, req *event.CreateI) (*event.CreateO, error) {

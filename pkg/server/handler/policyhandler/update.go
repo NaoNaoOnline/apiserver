@@ -8,26 +8,14 @@ import (
 	"github.com/NaoNaoOnline/apigocode/pkg/policy"
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectlabel"
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectstate"
-	"github.com/NaoNaoOnline/apiserver/pkg/server/context/userid"
-	"github.com/NaoNaoOnline/apiserver/pkg/server/handler"
 	"github.com/xh3b4sd/rescue/task"
 	"github.com/xh3b4sd/tracer"
 )
 
 func (h *Handler) Update(ctx context.Context, req *policy.UpdateI) (*policy.UpdateO, error) {
-	var err error
-
-	var exi bool
-	{
-		exi, err = h.prm.ExistsMemb(userid.FromContext(ctx))
-		if err != nil {
-			return nil, tracer.Mask(err)
-		}
-	}
-
-	if !exi {
-		return nil, tracer.Mask(handler.PolicyMemberError)
-	}
+	//
+	// Emit buffer tasks.
+	//
 
 	for _, x := range h.cid {
 		var tas *task.Task

@@ -10,7 +10,7 @@ import (
 )
 
 type wrapper struct {
-	han vote.API
+	han *Handler
 }
 
 func (w *wrapper) Create(ctx context.Context, req *vote.CreateI) (*vote.CreateO, error) {
