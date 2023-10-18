@@ -10,7 +10,7 @@ import (
 )
 
 type wrapper struct {
-	han policy.API
+	han *Handler
 }
 
 func (w *wrapper) Create(ctx context.Context, req *policy.CreateI) (*policy.CreateO, error) {
@@ -78,6 +78,38 @@ func (w *wrapper) Search(ctx context.Context, req *policy.SearchI) (*policy.Sear
 		}
 	}
 
+	{
+		if userid.FromContext(ctx) == "" {
+			return nil, tracer.Mask(handler.UserIDEmptyError)
+		}
+	}
+
+	var err error
+
+	var exi bool
+	{
+		exi, err = w.han.prm.ExistsMemb(userid.FromContext(ctx))
+		if err != nil {
+			return nil, tracer.Mask(err)
+		}
+	}
+
+	if !exi {
+		var res *policy.SearchO
+		{
+			res = &policy.SearchO{
+				Reason: []*policy.SearchO_Reason{
+					{
+						Desc: handler.PolicyMemberError.Desc,
+						Kind: handler.PolicyMemberError.Kind,
+					},
+				},
+			}
+		}
+
+		return res, nil
+	}
+
 	return w.han.Search(ctx, req)
 }
 
@@ -110,6 +142,20 @@ func (w *wrapper) Update(ctx context.Context, req *policy.UpdateI) (*policy.Upda
 		if userid.FromContext(ctx) == "" {
 			return nil, tracer.Mask(handler.UserIDEmptyError)
 		}
+	}
+
+	var err error
+
+	var exi bool
+	{
+		exi, err = w.han.prm.ExistsMemb(userid.FromContext(ctx))
+		if err != nil {
+			return nil, tracer.Mask(err)
+		}
+	}
+
+	if !exi {
+		return nil, tracer.Mask(handler.PolicyMemberError)
 	}
 
 	return w.han.Update(ctx, req)

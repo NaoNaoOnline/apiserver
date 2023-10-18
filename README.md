@@ -7,7 +7,7 @@ Golang based [Twirp] apiserver. Requires at least `go1.21.1`.
 Running redis stack locally.
 
 ```
-docker run --name redis-stack -p 6379:6379 -p 8001:8001 redis/redis-stack:latest
+docker run --rm --name redis-stack-apiserver -p 6379:6379 -p 8001:8001 redis/redis-stack:latest
 ```
 
 

@@ -215,6 +215,13 @@ func (w *Worker) search() {
 		}
 	}
 
+	// It may happen that a worker loses the underlying connection to the Redis
+	// server, for whatever reason. In such a case the task received from above is
+	// nil and we simply return here in order to prevent runtime panics.
+	if tas == nil {
+		return
+	}
+
 	var bud *budget.Budget
 	{
 		bud = budget.New()
