@@ -3,23 +3,29 @@ package policycache
 import (
 	"slices"
 
+	"github.com/NaoNaoOnline/apiserver/pkg/storage/policystorage"
 	"github.com/xh3b4sd/tracer"
 )
 
-func (m *Memory) Update() error {
+func (m *Memory) UpdateRcrd(inp []*policystorage.Object) error {
 	{
 		m.mut.Lock()
 		defer m.mut.Unlock()
 	}
 
-	if len(m.buf) == 0 {
+	if len(inp) == 0 {
 		return tracer.Mask(policyBufferEmptyError)
 	}
 
 	{
-		m.cac = []*Record{}
+		m.cac = []*policystorage.Object{}
 		m.mem = map[string]struct{}{}
-		m.rec = map[int64]map[string]*Record{}
+		m.rec = map[int64]map[string]*policystorage.Object{}
+	}
+
+	buf := map[int64][]*policystorage.Object{}
+	for _, x := range inp {
+		buf[x.ChID[0]] = append(buf[x.ChID[0]], x)
 	}
 
 	// For a reliable and stable merge result we need to process the buffered
@@ -27,7 +33,7 @@ func (m *Memory) Update() error {
 	// sort them, and then process the buffered policy records based on their
 	// sorted order below.
 	var cid []int64
-	for k := range m.buf {
+	for k := range buf {
 		cid = append(cid, k)
 	}
 
@@ -36,8 +42,8 @@ func (m *Memory) Update() error {
 	}
 
 	for _, x := range cid {
-		for _, y := range m.buf[x] {
-			var exi *Record
+		for _, y := range buf[x] {
+			var exi *policystorage.Object
 			{
 				exi = m.searchRcrd(y.Syst, y.Memb)
 			}
@@ -56,14 +62,10 @@ func (m *Memory) Update() error {
 		}
 	}
 
-	{
-		m.buf = map[int64][]*Record{}
-	}
-
 	return nil
 }
 
-func (m *Memory) update(exi *Record, inp *Record) error {
+func (m *Memory) update(exi *policystorage.Object, inp *policystorage.Object) error {
 	// Add the new chain specific information to the existing policy object.
 	{
 		exi.ChID = append(exi.ChID, inp.ChID...)

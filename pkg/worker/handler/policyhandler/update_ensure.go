@@ -8,7 +8,14 @@ import (
 
 func (h *UpdateHandler) Ensure(tas *task.Task, bud *budget.Budget) error {
 	{
-		err := h.pol.Update()
+		err := h.prm.UpdateActv()
+		if err != nil {
+			return tracer.Mask(err)
+		}
+	}
+
+	{
+		err := h.emi.Buffer()
 		if err != nil {
 			return tracer.Mask(err)
 		}

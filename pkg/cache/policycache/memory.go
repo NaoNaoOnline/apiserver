@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"sync"
 
+	"github.com/NaoNaoOnline/apiserver/pkg/storage/policystorage"
 	"github.com/xh3b4sd/logger"
 	"github.com/xh3b4sd/tracer"
 )
@@ -13,12 +14,11 @@ type MemoryConfig struct {
 }
 
 type Memory struct {
-	buf map[int64][]*Record
-	cac []*Record
+	cac []*policystorage.Object
 	log logger.Interface
 	mem map[string]struct{}
 	mut sync.Mutex
-	rec map[int64]map[string]*Record
+	rec map[int64]map[string]*policystorage.Object
 }
 
 func NewMemory(c MemoryConfig) *Memory {
@@ -27,11 +27,10 @@ func NewMemory(c MemoryConfig) *Memory {
 	}
 
 	return &Memory{
-		buf: map[int64][]*Record{},
-		cac: []*Record{},
+		cac: []*policystorage.Object{},
 		log: c.Log,
 		mem: map[string]struct{}{},
 		mut: sync.Mutex{},
-		rec: map[int64]map[string]*Record{},
+		rec: map[int64]map[string]*policystorage.Object{},
 	}
 }

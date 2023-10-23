@@ -5,6 +5,7 @@ import (
 	"reflect"
 	"testing"
 
+	"github.com/NaoNaoOnline/apiserver/pkg/storage/policystorage"
 	"github.com/google/go-cmp/cmp"
 )
 
@@ -60,20 +61,9 @@ func Test_Cache_Policy_Memory_Lifecycle(t *testing.T) {
 	}
 
 	{
-		err := pol.Update()
+		err := pol.UpdateRcrd(nil)
 		if !errors.Is(err, policyBufferEmptyError) {
 			t.Fatal("expected", policyBufferEmptyError, "got", err)
-		}
-	}
-
-	{
-		rec := []*Record{
-			tesRec(0, addOne, 0, []int64{1}),
-		}
-
-		err := pol.Buffer(rec)
-		if err != nil {
-			t.Fatal(err)
 		}
 	}
 
@@ -84,8 +74,15 @@ func Test_Cache_Policy_Memory_Lifecycle(t *testing.T) {
 		}
 	}
 
+	var buf []*policystorage.Object
 	{
-		err := pol.Update()
+		buf = []*policystorage.Object{
+			tesRec(0, addOne, 0, []int64{1}),
+		}
+	}
+
+	{
+		err := pol.UpdateRcrd(buf)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -124,7 +121,7 @@ func Test_Cache_Policy_Memory_Lifecycle(t *testing.T) {
 		}
 	}
 
-	var lis []*Record
+	var lis []*policystorage.Object
 	{
 		lis = pol.SearchRcrd()
 	}
@@ -136,9 +133,9 @@ func Test_Cache_Policy_Memory_Lifecycle(t *testing.T) {
 	}
 
 	{
-		var exp []*Record
+		var exp []*policystorage.Object
 		{
-			exp = []*Record{
+			exp = []*policystorage.Object{
 				tesRec(0, addOne, 0, []int64{1}),
 			}
 		}
@@ -149,6 +146,6 @@ func Test_Cache_Policy_Memory_Lifecycle(t *testing.T) {
 	}
 }
 
-func tesRec(sys int64, mem string, acc int64, cid []int64) *Record {
-	return &Record{Acce: acc, ChID: cid, Memb: mem, Syst: sys}
+func tesRec(sys int64, mem string, acc int64, cid []int64) *policystorage.Object {
+	return &policystorage.Object{Acce: acc, ChID: cid, Memb: mem, Syst: sys}
 }

@@ -1,4 +1,4 @@
-package policycache
+package policystorage
 
 import (
 	"regexp"
@@ -8,7 +8,7 @@ import (
 	"github.com/xh3b4sd/tracer"
 )
 
-type Record struct {
+type Object struct {
 	// Acce is the SMA record level, permission or role.
 	Acce int64 `json:"acce"`
 	// ChID is the chain ID, the unique identifier representing the blockchain
@@ -32,7 +32,7 @@ var (
 	hexaexpr = regexp.MustCompile(`^0x[0-9a-fA-F]+$`)
 )
 
-func (r *Record) Verify() error {
+func (r *Object) Verify() error {
 	{
 		if r == nil {
 			return tracer.Mask(policyRecordEmptyError)

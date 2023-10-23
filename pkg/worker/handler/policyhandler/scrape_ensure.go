@@ -6,9 +6,9 @@ import (
 	"github.com/xh3b4sd/tracer"
 )
 
-func (h *BufferHandler) Ensure(tas *task.Task, bud *budget.Budget) error {
+func (h *ScrapeHandler) Ensure(tas *task.Task, bud *budget.Budget) error {
 	{
-		_, err := h.prm.BufferActv()
+		err := h.prm.ScrapeRcrd(tas, bud)
 		if err != nil {
 			return tracer.Mask(err)
 		}

@@ -1,15 +1,8 @@
 package policycache
 
-type Interface interface {
-	// Buffer stores the given chain specific policy records for the next merge
-	// update without affecting the currently active permissions. The buffered
-	// policy records provided here will only take affect after a call to
-	// Memory.Update.
-	//
-	//     @inp[0] the list of chain specific policy records to store for the next merge update
-	//
-	Buffer([]*Record) error
+import "github.com/NaoNaoOnline/apiserver/pkg/storage/policystorage"
 
+type Interface interface {
 	// ExistsAcce verifies whether the given member has the given access within
 	// the given system.
 	//
@@ -41,9 +34,12 @@ type Interface interface {
 	//
 	//     @out[0] the list of aggregated policy records currently cached internally
 	//
-	SearchRcrd() []*Record
+	SearchRcrd() []*policystorage.Object
 
-	// Update merges all the buffered policy records in order to create a unified
-	// set of active permissions.
-	Update() error
+	// UpdateRcrd merges all the buffered policy records provided, in order to
+	// create a unified set of active permissions.
+	//
+	//     @inp[0] the list of buffered policy records to merge and activate
+	//
+	UpdateRcrd([]*policystorage.Object) error
 }
