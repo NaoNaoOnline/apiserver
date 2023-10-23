@@ -1,14 +1,17 @@
 package daemon
 
 import (
+	"fmt"
 	"net"
 	"os"
 	"os/signal"
+	"strconv"
 	"strings"
 	"syscall"
 	"time"
 
 	"github.com/NaoNaoOnline/apiserver/pkg/cache/policycache"
+	"github.com/NaoNaoOnline/apiserver/pkg/emitter/policyemitter"
 	"github.com/NaoNaoOnline/apiserver/pkg/envvar"
 	"github.com/NaoNaoOnline/apiserver/pkg/permission"
 	"github.com/NaoNaoOnline/apiserver/pkg/server"
@@ -28,6 +31,7 @@ import (
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/descriptionstorage"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/eventstorage"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/labelstorage"
+	"github.com/NaoNaoOnline/apiserver/pkg/storage/policystorage"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/reactionstorage"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/userstorage"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/votestorage"
@@ -59,6 +63,37 @@ func (r *run) runE(cmd *cobra.Command, args []string) error {
 		env = envvar.Load()
 	}
 
+	// --------------------------------------------------------------------- //
+
+	var cid []int64
+	{
+		cid = append(cid, splNum(env.ChainCid)...)
+	}
+
+	var cnt []string
+	{
+		cnt = append(cnt, splStr(env.ChainPol)...)
+	}
+
+	var rpc []string
+	{
+		rpc = append(rpc, splStr(env.ChainRpc)...)
+	}
+
+	if len(cid) != len(cnt) {
+		tracer.Panic(tracer.Mask(fmt.Errorf("amount of configured chain ids and contract addresses must be equal, got %d and %d", len(cid), len(cnt))))
+	}
+
+	if len(cid) != len(rpc) {
+		tracer.Panic(tracer.Mask(fmt.Errorf("amount of configured chain ids and rpc endpoints must be equal, got %d and %d", len(cid), len(rpc))))
+	}
+
+	if len(cnt) != len(rpc) {
+		tracer.Panic(tracer.Mask(fmt.Errorf("amount of configured contract addresses and rpc endpoints must be equal, got %d and %d", len(cnt), len(rpc))))
+	}
+
+	// --------------------------------------------------------------------- //
+
 	var log logger.Interface
 	{
 		log = logger.Default()
@@ -70,13 +105,6 @@ func (r *run) runE(cmd *cobra.Command, args []string) error {
 		if err != nil {
 			return tracer.Mask(err)
 		}
-	}
-
-	var pol policycache.Interface
-	{
-		pol = policycache.NewMemory(policycache.MemoryConfig{
-			Log: log,
-		})
 	}
 
 	var red redigo.Interface
@@ -97,12 +125,14 @@ func (r *run) runE(cmd *cobra.Command, args []string) error {
 	// --------------------------------------------------------------------- //
 
 	var lab labelstorage.Interface
+	var pol policystorage.Interface
 	var rct reactionstorage.Interface
 	var use userstorage.Interface
 	var vot votestorage.Interface
 	var wal walletstorage.Interface
 	{
 		lab = labelstorage.NewRedis(labelstorage.RedisConfig{Log: log, Red: red})
+		pol = policystorage.NewRedis(policystorage.RedisConfig{Log: log, Red: red})
 		rct = reactionstorage.NewRedis(reactionstorage.RedisConfig{Log: log, Red: red})
 		use = userstorage.NewRedis(userstorage.RedisConfig{Log: log, Red: red})
 		vot = votestorage.NewRedis(votestorage.RedisConfig{Log: log, Red: red})
@@ -117,20 +147,6 @@ func (r *run) runE(cmd *cobra.Command, args []string) error {
 	}
 
 	// --------------------------------------------------------------------- //
-
-	var prm permission.Interface
-	{
-		prm = permission.New(permission.Config{
-			Log: log,
-			Pol: pol,
-			Wal: wal,
-		})
-	}
-
-	// --------------------------------------------------------------------- //
-
-	// TODO the bootstrapping of resources should be worker tasks like we already
-	// handle policy records
 
 	{
 		_, err := lab.Create(lab.SearchBltn())
@@ -152,23 +168,39 @@ func (r *run) runE(cmd *cobra.Command, args []string) error {
 
 	// --------------------------------------------------------------------- //
 
-	var pbh []workerhandler.Interface
-	var cid []int64
-	for _, x := range strings.Split(env.ChainRpc, ",") {
-		var h workerhandler.Interface
-		var c int64
-		{
-			h, c = workerpolicyhandler.NewBufferHandler(workerpolicyhandler.BufferHandlerConfig{
-				Cnt: env.PolicyContract,
-				Log: log,
-				Pol: pol,
-				Rpc: x,
-			})
-		}
+	var cac policycache.Interface
+	{
+		cac = policycache.NewMemory(policycache.MemoryConfig{
+			Log: log,
+		})
+	}
 
-		{
-			pbh = append(pbh, h)
-			cid = append(cid, c)
+	var emi policyemitter.Interface
+	{
+		emi = policyemitter.NewEmitter(policyemitter.EmitterConfig{
+			Cid: cid,
+			Cnt: cnt,
+			Log: log,
+			Res: res,
+			Rpc: rpc,
+		})
+	}
+
+	var prm permission.Interface
+	{
+		prm = permission.New(permission.Config{
+			Cac: cac,
+			Emi: emi,
+			Log: log,
+			Pol: pol,
+			Wal: wal,
+		})
+	}
+
+	{
+		err = prm.EnsureActv()
+		if err != nil {
+			return tracer.Mask(err)
 		}
 	}
 
@@ -181,7 +213,7 @@ func (r *run) runE(cmd *cobra.Command, args []string) error {
 				descriptionhandler.NewHandler(descriptionhandler.HandlerConfig{Eve: eve, Des: des, Log: log}),
 				eventhandler.NewHandler(eventhandler.HandlerConfig{Eve: eve, Log: log}),
 				labelhandler.NewHandler(labelhandler.HandlerConfig{Lab: lab, Log: log}),
-				policyhandler.NewHandler(policyhandler.HandlerConfig{Cid: cid, Log: log, Prm: prm, Res: res}),
+				policyhandler.NewHandler(policyhandler.HandlerConfig{Emi: emi, Log: log, Prm: prm}),
 				reactionhandler.NewHandler(reactionhandler.HandlerConfig{Log: log, Rct: rct}),
 				userhandler.NewHandler(userhandler.HandlerConfig{Log: log, Use: use}),
 				votehandler.NewHandler(votehandler.HandlerConfig{Des: des, Eve: eve, Log: log, Vot: vot}),
@@ -206,6 +238,19 @@ func (r *run) runE(cmd *cobra.Command, args []string) error {
 
 	// --------------------------------------------------------------------- //
 
+	var psh []workerhandler.Interface
+	for i := range rpc {
+		psh = append(psh, workerpolicyhandler.NewScrapeHandler(workerpolicyhandler.ScrapeHandlerConfig{
+			Cid: cid[i],
+			Cnt: cnt[i],
+			Log: log,
+			Prm: prm,
+			Rpc: rpc[i],
+		}))
+	}
+
+	// --------------------------------------------------------------------- //
+
 	var wrk *worker.Worker
 	{
 		wrk = worker.New(worker.Config{
@@ -214,9 +259,10 @@ func (r *run) runE(cmd *cobra.Command, args []string) error {
 					workerdescriptionhandler.NewCustomHandler(workerdescriptionhandler.CustomHandlerConfig{Des: des, Log: log, Vot: vot}),
 					workereventhandler.NewCustomHandler(workereventhandler.CustomHandlerConfig{Eve: eve, Des: des, Log: log, Vot: vot}),
 					workereventhandler.NewSystemHandler(workereventhandler.SystemHandlerConfig{Eve: eve, Log: log}),
-					workerpolicyhandler.NewUpdateHandler(workerpolicyhandler.UpdateHandlerConfig{Cid: cid, Log: log, Pol: pol}),
+					workerpolicyhandler.NewBufferHandler(workerpolicyhandler.BufferHandlerConfig{Log: log, Prm: prm}),
+					workerpolicyhandler.NewUpdateHandler(workerpolicyhandler.UpdateHandlerConfig{Cid: cid, Emi: emi, Log: log, Prm: prm}),
 				},
-				pbh...,
+				psh...,
 			),
 			Log: log,
 			Res: res,
@@ -251,4 +297,27 @@ func (r *run) runE(cmd *cobra.Command, args []string) error {
 	}
 
 	return nil
+}
+
+func splNum(str string) []int64 {
+	var lis []int64
+
+	for _, x := range strings.Split(str, ",") {
+		lis = append(lis, musNum(x))
+	}
+
+	return lis
+}
+
+func splStr(str string) []string {
+	return strings.Split(str, ",")
+}
+
+func musNum(str string) int64 {
+	num, err := strconv.ParseInt(str, 10, 64)
+	if err != nil {
+		tracer.Panic(tracer.Mask(err))
+	}
+
+	return num
 }

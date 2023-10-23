@@ -3,32 +3,33 @@ package policyhandler
 import (
 	"fmt"
 
-	"github.com/NaoNaoOnline/apiserver/pkg/emitter/policyemitter"
 	"github.com/NaoNaoOnline/apiserver/pkg/permission"
 	"github.com/xh3b4sd/logger"
 	"github.com/xh3b4sd/tracer"
 )
 
-type UpdateHandlerConfig struct {
-	Cid []int64
-	Emi policyemitter.Interface
+type ScrapeHandlerConfig struct {
+	Cid int64
+	Cnt string
 	Log logger.Interface
 	Prm permission.Interface
+	Rpc string
 }
 
-type UpdateHandler struct {
-	cid []int64
-	emi policyemitter.Interface
+type ScrapeHandler struct {
+	cid int64
+	cnt string
 	log logger.Interface
 	prm permission.Interface
+	rpc string
 }
 
-func NewUpdateHandler(c UpdateHandlerConfig) *UpdateHandler {
-	if len(c.Cid) == 0 {
+func NewScrapeHandler(c ScrapeHandlerConfig) *ScrapeHandler {
+	if c.Cid == 0 {
 		tracer.Panic(tracer.Mask(fmt.Errorf("%T.Cid must not be empty", c)))
 	}
-	if c.Emi == nil {
-		tracer.Panic(tracer.Mask(fmt.Errorf("%T.Emi must not be empty", c)))
+	if c.Cnt == "" {
+		tracer.Panic(tracer.Mask(fmt.Errorf("%T.Cnt must not be empty", c)))
 	}
 	if c.Log == nil {
 		tracer.Panic(tracer.Mask(fmt.Errorf("%T.Log must not be empty", c)))
@@ -36,14 +37,18 @@ func NewUpdateHandler(c UpdateHandlerConfig) *UpdateHandler {
 	if c.Prm == nil {
 		tracer.Panic(tracer.Mask(fmt.Errorf("%T.Prm must not be empty", c)))
 	}
+	if c.Rpc == "" {
+		tracer.Panic(tracer.Mask(fmt.Errorf("%T.Rpc must not be empty", c)))
+	}
 
-	var han *UpdateHandler
+	var han *ScrapeHandler
 	{
-		han = &UpdateHandler{
+		han = &ScrapeHandler{
 			cid: c.Cid,
-			emi: c.Emi,
+			cnt: c.Cnt,
 			log: c.Log,
 			prm: c.Prm,
+			rpc: c.Rpc,
 		}
 	}
 

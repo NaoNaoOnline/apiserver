@@ -105,6 +105,26 @@ const (
 	//
 	LabelUser = "lab/use/%s"
 
+	// PolicyBuffer is used to store all chain specific policy records
+	// intermittendly in a sorted set. The values here are policy records. The
+	// scores here are chain IDs.
+	//
+	//     policy buffer          policy records
+	//                      ->
+	//     pol/buf                {"key": "val"}
+	//
+	PolicyBuffer = "pol/buf"
+
+	// PolicyActive is used to store all active permission states in a simple
+	// key-value pair. The value here is a list of currently active permission
+	// states, read policy records.
+	//
+	//     active permissions          policy records
+	//                           ->
+	//     pol/act                     [{"key": "val"}]
+	//
+	PolicyActive = "pol/act"
+
 	// ReactionCustom is used to store all the IDs of reactions individually
 	// created by users.
 	//

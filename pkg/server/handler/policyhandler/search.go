@@ -5,12 +5,12 @@ import (
 	"strconv"
 
 	"github.com/NaoNaoOnline/apigocode/pkg/policy"
-	"github.com/NaoNaoOnline/apiserver/pkg/cache/policycache"
+	"github.com/NaoNaoOnline/apiserver/pkg/storage/policystorage"
 	"github.com/xh3b4sd/tracer"
 )
 
 func (h *Handler) Search(ctx context.Context, req *policy.SearchI) (*policy.SearchO, error) {
-	var out []*policycache.Record
+	var out []*policystorage.Object
 
 	//
 	// Search policies by aggregation.
@@ -24,7 +24,7 @@ func (h *Handler) Search(ctx context.Context, req *policy.SearchI) (*policy.Sear
 	}
 
 	if def {
-		lis, err := h.prm.SearchRcrd()
+		lis, err := h.prm.SearchActv()
 		if err != nil {
 			return nil, tracer.Mask(err)
 		}

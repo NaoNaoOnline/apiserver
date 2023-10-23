@@ -17,7 +17,7 @@ func (p *Permission) ExistsAcce(sys int64, use objectid.ID, acc int64) (bool, er
 	}
 
 	for _, x := range mem {
-		if p.pol.ExistsAcce(sys, x, acc) {
+		if p.cac.ExistsAcce(sys, x, acc) {
 			return true, nil
 		}
 	}
@@ -37,7 +37,7 @@ func (p *Permission) ExistsMemb(use objectid.ID) (bool, error) {
 	}
 
 	for _, x := range mem {
-		if p.pol.ExistsMemb(x) {
+		if p.cac.ExistsMemb(x) {
 			return true, nil
 		}
 	}
@@ -57,7 +57,7 @@ func (p *Permission) ExistsSyst(sys int64, use objectid.ID) (bool, error) {
 	}
 
 	for _, x := range mem {
-		if p.pol.ExistsSyst(sys, x) {
+		if p.cac.ExistsSyst(sys, x) {
 			return true, nil
 		}
 	}

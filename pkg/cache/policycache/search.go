@@ -1,12 +1,14 @@
 package policycache
 
-func (m *Memory) SearchRcrd() []*Record {
+import "github.com/NaoNaoOnline/apiserver/pkg/storage/policystorage"
+
+func (m *Memory) SearchRcrd() []*policystorage.Object {
 	m.mut.Lock()
 	defer m.mut.Unlock()
 	return m.cac
 }
 
-func (m *Memory) searchRcrd(sys int64, mem string) *Record {
+func (m *Memory) searchRcrd(sys int64, mem string) *policystorage.Object {
 	{
 		_, exi := m.rec[sys]
 		if !exi {
@@ -14,7 +16,7 @@ func (m *Memory) searchRcrd(sys int64, mem string) *Record {
 		}
 	}
 
-	var rec *Record
+	var rec *policystorage.Object
 	{
 		rec = m.rec[sys][mem]
 	}
