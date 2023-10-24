@@ -14,7 +14,7 @@ func (e *Emitter) Buffer() error {
 				objectlabel.PlcyAction: objectlabel.ActionBuffer,
 				objectlabel.PlcyOrigin: objectlabel.OriginSystem,
 			},
-			Host: &task.Host{
+			Node: &task.Node{
 				task.Method: task.MthdAll,
 			},
 		}
