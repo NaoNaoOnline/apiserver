@@ -11,36 +11,20 @@ import (
 	"time"
 
 	"github.com/NaoNaoOnline/apiserver/pkg/cache/policycache"
-	"github.com/NaoNaoOnline/apiserver/pkg/emitter/policyemitter"
+	"github.com/NaoNaoOnline/apiserver/pkg/emitter"
 	"github.com/NaoNaoOnline/apiserver/pkg/envvar"
 	"github.com/NaoNaoOnline/apiserver/pkg/permission"
 	"github.com/NaoNaoOnline/apiserver/pkg/server"
-	serverhandler "github.com/NaoNaoOnline/apiserver/pkg/server/handler"
-	"github.com/NaoNaoOnline/apiserver/pkg/server/handler/descriptionhandler"
-	"github.com/NaoNaoOnline/apiserver/pkg/server/handler/eventhandler"
-	"github.com/NaoNaoOnline/apiserver/pkg/server/handler/labelhandler"
-	"github.com/NaoNaoOnline/apiserver/pkg/server/handler/policyhandler"
-	"github.com/NaoNaoOnline/apiserver/pkg/server/handler/reactionhandler"
-	"github.com/NaoNaoOnline/apiserver/pkg/server/handler/userhandler"
-	"github.com/NaoNaoOnline/apiserver/pkg/server/handler/votehandler"
-	"github.com/NaoNaoOnline/apiserver/pkg/server/handler/wallethandler"
 	"github.com/NaoNaoOnline/apiserver/pkg/server/interceptor/failedinterceptor"
 	"github.com/NaoNaoOnline/apiserver/pkg/server/middleware/authmiddleware"
 	"github.com/NaoNaoOnline/apiserver/pkg/server/middleware/corsmiddleware"
 	"github.com/NaoNaoOnline/apiserver/pkg/server/middleware/usermiddleware"
-	"github.com/NaoNaoOnline/apiserver/pkg/storage/descriptionstorage"
-	"github.com/NaoNaoOnline/apiserver/pkg/storage/eventstorage"
+	"github.com/NaoNaoOnline/apiserver/pkg/server/serverhandler"
+	"github.com/NaoNaoOnline/apiserver/pkg/storage"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/labelstorage"
-	"github.com/NaoNaoOnline/apiserver/pkg/storage/policystorage"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/reactionstorage"
-	"github.com/NaoNaoOnline/apiserver/pkg/storage/userstorage"
-	"github.com/NaoNaoOnline/apiserver/pkg/storage/votestorage"
-	"github.com/NaoNaoOnline/apiserver/pkg/storage/walletstorage"
 	"github.com/NaoNaoOnline/apiserver/pkg/worker"
-	workerhandler "github.com/NaoNaoOnline/apiserver/pkg/worker/handler"
-	workerdescriptionhandler "github.com/NaoNaoOnline/apiserver/pkg/worker/handler/descriptionhandler"
-	workereventhandler "github.com/NaoNaoOnline/apiserver/pkg/worker/handler/eventhandler"
-	workerpolicyhandler "github.com/NaoNaoOnline/apiserver/pkg/worker/handler/policyhandler"
+	"github.com/NaoNaoOnline/apiserver/pkg/worker/workerhandler"
 	"github.com/gorilla/mux"
 	"github.com/spf13/cobra"
 	"github.com/twitchtv/twirp"
@@ -124,32 +108,32 @@ func (r *run) runE(cmd *cobra.Command, args []string) error {
 
 	// --------------------------------------------------------------------- //
 
-	var lab labelstorage.Interface
-	var pol policystorage.Interface
-	var rct reactionstorage.Interface
-	var use userstorage.Interface
-	var vot votestorage.Interface
-	var wal walletstorage.Interface
+	var emi *emitter.Emitter
 	{
-		lab = labelstorage.NewRedis(labelstorage.RedisConfig{Log: log, Red: red})
-		pol = policystorage.NewRedis(policystorage.RedisConfig{Log: log, Red: red})
-		rct = reactionstorage.NewRedis(reactionstorage.RedisConfig{Log: log, Red: red})
-		use = userstorage.NewRedis(userstorage.RedisConfig{Log: log, Red: red})
-		vot = votestorage.NewRedis(votestorage.RedisConfig{Log: log, Red: red})
-		wal = walletstorage.NewRedis(walletstorage.RedisConfig{Log: log, Red: red})
+		emi = emitter.New(emitter.Config{
+			Cid: cid,
+			Cnt: cnt,
+			Log: log,
+			Res: res,
+			Rpc: rpc,
+		})
 	}
 
-	var des descriptionstorage.Interface
-	var eve eventstorage.Interface
+	// --------------------------------------------------------------------- //
+
+	var sto *storage.Storage
 	{
-		des = descriptionstorage.NewRedis(descriptionstorage.RedisConfig{Log: log, Red: red, Res: res})
-		eve = eventstorage.NewRedis(eventstorage.RedisConfig{Log: log, Red: red, Res: res})
+		sto = storage.New(storage.Config{
+			Emi: emi,
+			Log: log,
+			Red: red,
+		})
 	}
 
 	// --------------------------------------------------------------------- //
 
 	{
-		_, err := lab.Create(lab.SearchBltn())
+		_, err := sto.Labl().Create(sto.Labl().SearchBltn())
 		if labelstorage.IsLabelObjectAlreadyExists(err) {
 			// fall through
 		} else if err != nil {
@@ -158,7 +142,7 @@ func (r *run) runE(cmd *cobra.Command, args []string) error {
 	}
 
 	{
-		_, err := rct.Create(rct.SearchBltn())
+		_, err := sto.Rctn().Create(sto.Rctn().SearchBltn())
 		if reactionstorage.IsReactionObjectAlreadyExists(err) {
 			// fall through
 		} else if err != nil {
@@ -175,25 +159,14 @@ func (r *run) runE(cmd *cobra.Command, args []string) error {
 		})
 	}
 
-	var emi policyemitter.Interface
-	{
-		emi = policyemitter.NewEmitter(policyemitter.EmitterConfig{
-			Cid: cid,
-			Cnt: cnt,
-			Log: log,
-			Res: res,
-			Rpc: rpc,
-		})
-	}
-
 	var prm permission.Interface
 	{
 		prm = permission.New(permission.Config{
 			Cac: cac,
-			Emi: emi,
+			Emi: emi.Plcy(),
 			Log: log,
-			Pol: pol,
-			Wal: wal,
+			Pol: sto.Plcy(),
+			Wal: sto.Wllt(),
 		})
 	}
 
@@ -206,19 +179,22 @@ func (r *run) runE(cmd *cobra.Command, args []string) error {
 
 	// --------------------------------------------------------------------- //
 
+	var shn *serverhandler.Handler
+	{
+		shn = serverhandler.New(serverhandler.Config{
+			Emi: emi,
+			Log: log,
+			Prm: prm,
+			Sto: sto,
+		})
+	}
+
+	// --------------------------------------------------------------------- //
+
 	var srv *server.Server
 	{
 		srv = server.New(server.Config{
-			Han: []serverhandler.Interface{
-				descriptionhandler.NewHandler(descriptionhandler.HandlerConfig{Eve: eve, Des: des, Log: log}),
-				eventhandler.NewHandler(eventhandler.HandlerConfig{Eve: eve, Log: log}),
-				labelhandler.NewHandler(labelhandler.HandlerConfig{Lab: lab, Log: log}),
-				policyhandler.NewHandler(policyhandler.HandlerConfig{Emi: emi, Log: log, Prm: prm}),
-				reactionhandler.NewHandler(reactionhandler.HandlerConfig{Log: log, Rct: rct}),
-				userhandler.NewHandler(userhandler.HandlerConfig{Log: log, Use: use}),
-				votehandler.NewHandler(votehandler.HandlerConfig{Des: des, Eve: eve, Log: log, Vot: vot}),
-				wallethandler.NewHandler(wallethandler.HandlerConfig{Log: log, Wal: wal}),
-			},
+			Han: shn.Hand(),
 			Int: []twirp.Interceptor{
 				failedinterceptor.NewInterceptor(failedinterceptor.InterceptorConfig{Log: log}).Interceptor,
 			},
@@ -227,7 +203,7 @@ func (r *run) runE(cmd *cobra.Command, args []string) error {
 			Mid: []mux.MiddlewareFunc{
 				corsmiddleware.NewMiddleware(corsmiddleware.MiddlewareConfig{Log: log}).Handler,
 				authmiddleware.NewMiddleware(authmiddleware.MiddlewareConfig{Aud: env.OauthAud, Iss: env.OauthIss, Log: log}).Handler,
-				usermiddleware.NewMiddleware(usermiddleware.MiddlewareConfig{Log: log, Use: use}).Handler,
+				usermiddleware.NewMiddleware(usermiddleware.MiddlewareConfig{Log: log, Use: sto.User()}).Handler,
 			},
 		})
 	}
@@ -238,15 +214,17 @@ func (r *run) runE(cmd *cobra.Command, args []string) error {
 
 	// --------------------------------------------------------------------- //
 
-	var psh []workerhandler.Interface
-	for i := range rpc {
-		psh = append(psh, workerpolicyhandler.NewScrapeHandler(workerpolicyhandler.ScrapeHandlerConfig{
-			Cid: cid[i],
-			Cnt: cnt[i],
+	var whn *workerhandler.Handler
+	{
+		whn = workerhandler.New(workerhandler.Config{
+			Cid: cid,
+			Cnt: cnt,
+			Emi: emi,
 			Log: log,
 			Prm: prm,
-			Rpc: rpc[i],
-		}))
+			Rpc: rpc,
+			Sto: sto,
+		})
 	}
 
 	// --------------------------------------------------------------------- //
@@ -254,16 +232,7 @@ func (r *run) runE(cmd *cobra.Command, args []string) error {
 	var wrk *worker.Worker
 	{
 		wrk = worker.New(worker.Config{
-			Han: append(
-				[]workerhandler.Interface{
-					workerdescriptionhandler.NewCustomHandler(workerdescriptionhandler.CustomHandlerConfig{Des: des, Log: log, Vot: vot}),
-					workereventhandler.NewCustomHandler(workereventhandler.CustomHandlerConfig{Eve: eve, Des: des, Log: log, Vot: vot}),
-					workereventhandler.NewSystemHandler(workereventhandler.SystemHandlerConfig{Eve: eve, Log: log}),
-					workerpolicyhandler.NewBufferHandler(workerpolicyhandler.BufferHandlerConfig{Log: log, Prm: prm}),
-					workerpolicyhandler.NewUpdateHandler(workerpolicyhandler.UpdateHandlerConfig{Cid: cid, Emi: emi, Log: log, Prm: prm}),
-				},
-				psh...,
-			),
+			Han: whn.Hand(),
 			Log: log,
 			Res: res,
 		})

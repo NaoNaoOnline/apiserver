@@ -6,7 +6,7 @@ import (
 	"net"
 	"net/http"
 
-	"github.com/NaoNaoOnline/apiserver/pkg/server/handler"
+	"github.com/NaoNaoOnline/apiserver/pkg/server/serverhandler"
 	"github.com/gorilla/mux"
 	"github.com/twitchtv/twirp"
 	"github.com/xh3b4sd/logger"
@@ -16,7 +16,7 @@ import (
 type Config struct {
 	// Han are the server specific handlers implementing the actual business
 	// logic.
-	Han []handler.Interface
+	Han []serverhandler.Interface
 	// Int are the Twirp specific interceptors wrapping the endpoint handlers.
 	Int []twirp.Interceptor
 	// Lis is the main HTTP listener bound to some configured host and port.
