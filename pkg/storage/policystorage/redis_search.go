@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 
 	"github.com/NaoNaoOnline/apiserver/pkg/keyfmt"
-	"github.com/NaoNaoOnline/apiserver/pkg/storage"
+	"github.com/NaoNaoOnline/apiserver/pkg/runtime"
 	"github.com/xh3b4sd/tracer"
 )
 
@@ -20,7 +20,7 @@ func (r *Redis) SearchActv() ([]*Object, error) {
 	}
 
 	if len(val) != 1 {
-		return nil, tracer.Mask(storage.ExecutionFailedError)
+		return nil, tracer.Mask(runtime.ExecutionFailedError)
 	}
 
 	var out []*Object

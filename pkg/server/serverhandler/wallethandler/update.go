@@ -1,0 +1,86 @@
+package wallethandler
+
+import (
+	"context"
+	"strconv"
+
+	"github.com/NaoNaoOnline/apigocode/pkg/wallet"
+	"github.com/NaoNaoOnline/apiserver/pkg/object/objectid"
+	"github.com/NaoNaoOnline/apiserver/pkg/object/objectstate"
+	"github.com/NaoNaoOnline/apiserver/pkg/runtime"
+	"github.com/NaoNaoOnline/apiserver/pkg/server/context/userid"
+	"github.com/NaoNaoOnline/apiserver/pkg/storage/walletstorage"
+	"github.com/xh3b4sd/tracer"
+)
+
+func (h *Handler) Update(ctx context.Context, req *wallet.UpdateI) (*wallet.UpdateO, error) {
+	var err error
+
+	upd := map[objectid.ID]walletstorage.Object{}
+	var wal []objectid.ID
+	for _, x := range req.Object {
+		if x.Intern != nil && x.Public != nil && x.Intern.Wllt != "" {
+			upd[objectid.ID(x.Intern.Wllt)] = walletstorage.Object{
+				Mess: x.Public.Mess,
+				Pubk: x.Public.Pubk,
+				Sign: x.Public.Sign,
+			}
+
+			{
+				wal = append(wal, objectid.ID(x.Intern.Wllt))
+			}
+		}
+	}
+
+	var obj []*walletstorage.Object
+	{
+		obj, err = h.wal.SearchWllt(userid.FromContext(ctx), wal)
+		if err != nil {
+			return nil, tracer.Mask(err)
+		}
+	}
+
+	for i, x := range obj {
+		if userid.FromContext(ctx) != x.User {
+			return nil, tracer.Mask(runtime.UserNotOwnerError)
+		}
+
+		{
+			obj[i].Mess = upd[x.Wllt].Mess
+			obj[i].Pubk = upd[x.Wllt].Pubk
+			obj[i].Sign = upd[x.Wllt].Sign
+		}
+	}
+
+	var out []*walletstorage.Object
+	var sta []objectstate.String
+	{
+		out, sta, err = h.wal.Update(obj)
+		if err != nil {
+			return nil, tracer.Mask(err)
+		}
+	}
+
+	//
+	// Construct RPC response.
+	//
+
+	var res *wallet.UpdateO
+	{
+		res = &wallet.UpdateO{}
+	}
+
+	for i := range out {
+		res.Object = append(res.Object, &wallet.UpdateO_Object{
+			Intern: &wallet.UpdateO_Object_Intern{
+				Addr: &wallet.UpdateO_Object_Intern_Addr{
+					Time: strconv.Itoa(int(out[i].Addr.Time.Unix())),
+				},
+				Stts: sta[i].String(),
+			},
+			Public: &wallet.UpdateO_Object_Public{},
+		})
+	}
+
+	return res, nil
+}

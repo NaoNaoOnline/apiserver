@@ -4,9 +4,7 @@ import (
 	"time"
 
 	"github.com/NaoNaoOnline/apiserver/pkg/keyfmt"
-	"github.com/NaoNaoOnline/apiserver/pkg/object/objectlabel"
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectstate"
-	"github.com/xh3b4sd/rescue/task"
 	"github.com/xh3b4sd/tracer"
 )
 
@@ -70,20 +68,8 @@ func (r *Redis) DeleteWrkr(inp []*Object) ([]objectstate.String, error) {
 		// Before deleting a nested structure, we need to create a worker task for
 		// ensuring the deletion of the event object and all of its associated data
 		// structures.
-		var tas *task.Task
 		{
-			tas = &task.Task{
-				Meta: &task.Meta{
-					objectlabel.EvntAction: objectlabel.ActionDelete,
-					objectlabel.EvntObject: inp[i].Evnt.String(),
-					objectlabel.EvntOrigin: objectlabel.OriginCustom,
-				},
-			}
-		}
-
-		// Submit the task to the worker queue.
-		{
-			err = r.res.Create(tas)
+			err = r.emi.Delete(inp[i].Evnt)
 			if err != nil {
 				return nil, tracer.Mask(err)
 			}

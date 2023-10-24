@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"github.com/NaoNaoOnline/apiserver/pkg/worker/budget"
-	"github.com/NaoNaoOnline/apiserver/pkg/worker/handler"
+	"github.com/NaoNaoOnline/apiserver/pkg/worker/workerhandler"
 	"github.com/xh3b4sd/logger"
 	"github.com/xh3b4sd/rescue"
 	"github.com/xh3b4sd/rescue/engine"
@@ -17,14 +17,14 @@ import (
 type Config struct {
 	// Han are the worker specific handlers implementing the actual business
 	// logic.
-	Han []handler.Interface
+	Han []workerhandler.Interface
 	Log logger.Interface
 	// Res is the rescue engine used to participate in the distributed task queue.
 	Res rescue.Interface
 }
 
 type Worker struct {
-	han []handler.Interface
+	han []workerhandler.Interface
 	log logger.Interface
 	res rescue.Interface
 }
