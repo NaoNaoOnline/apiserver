@@ -65,11 +65,11 @@ func Test_Cache_Policy_Memory_Update_Multi(t *testing.T) {
 		{
 			exp = []*policystorage.Object{
 				tesRec(0, addOne, 0, []int64{1, 2}),
-				tesRec(2, addOne, 0, []int64{1, 2, 3}),
-				tesRec(2, addTwo, 1, []int64{1, 3}),
 				tesRec(0, addTwo, 1, []int64{2}),
 				tesRec(1, addOne, 0, []int64{3}),
 				tesRec(1, addTwo, 1, []int64{3}),
+				tesRec(2, addOne, 0, []int64{1, 2, 3}),
+				tesRec(2, addTwo, 1, []int64{1, 3}),
 			}
 		}
 
@@ -96,8 +96,8 @@ func Test_Cache_Policy_Memory_Update_Single(t *testing.T) {
 	{
 		buf = []*policystorage.Object{
 			// Buffer for chain ID 1.
-			tesRec(0, addOne, 0, []int64{1}),
 			tesRec(2, addOne, 0, []int64{1}),
+			tesRec(0, addOne, 0, []int64{1}),
 			tesRec(2, addTwo, 1, []int64{1}),
 		}
 	}

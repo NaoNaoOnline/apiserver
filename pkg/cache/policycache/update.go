@@ -2,6 +2,7 @@ package policycache
 
 import (
 	"slices"
+	"sort"
 
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/policystorage"
 	"github.com/xh3b4sd/tracer"
@@ -61,6 +62,16 @@ func (m *Memory) UpdateRcrd(inp []*policystorage.Object) error {
 			}
 		}
 	}
+
+	// Sort aggregated policies by access with secondary priority.
+	sort.SliceStable(m.cac, func(i, j int) bool {
+		return m.cac[i].Acce < m.cac[j].Acce
+	})
+
+	// Sort aggregated policies by system with first priority.
+	sort.SliceStable(m.cac, func(i, j int) bool {
+		return m.cac[i].Syst < m.cac[j].Syst
+	})
 
 	return nil
 }
