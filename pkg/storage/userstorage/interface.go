@@ -14,6 +14,13 @@ type Interface interface {
 	//
 	Create(*Object) (*Object, error)
 
+	// SearchFake returns all user objects. This is used to create fake test data
+	// during development. DO NOT USE IN PRODUCTION.
+	//
+	//     @out[0] the list of all user objects in redis
+	//
+	SearchFake() ([]*Object, error)
+
 	// SearchName returns the user objects matching the given user names.
 	//
 	//     @inp[0] the user names to search for
