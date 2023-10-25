@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"github.com/NaoNaoOnline/apiserver/cmd/daemon"
+	"github.com/NaoNaoOnline/apiserver/cmd/fakeit"
 	"github.com/NaoNaoOnline/apiserver/cmd/version"
 	"github.com/spf13/cobra"
 	"github.com/xh3b4sd/tracer"
@@ -23,6 +24,16 @@ func New() (*cobra.Command, error) {
 		c := daemon.Config{}
 
 		cmdDae, err = daemon.New(c)
+		if err != nil {
+			return nil, tracer.Mask(err)
+		}
+	}
+
+	var cmdFak *cobra.Command
+	{
+		c := fakeit.Config{}
+
+		cmdFak, err = fakeit.New(c)
 		if err != nil {
 			return nil, tracer.Mask(err)
 		}
@@ -65,6 +76,7 @@ func New() (*cobra.Command, error) {
 
 	{
 		c.AddCommand(cmdDae)
+		c.AddCommand(cmdFak)
 		c.AddCommand(cmdVer)
 	}
 

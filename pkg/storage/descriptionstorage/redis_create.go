@@ -2,6 +2,7 @@ package descriptionstorage
 
 import (
 	"encoding/json"
+	"strings"
 	"time"
 
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectid"
@@ -62,6 +63,7 @@ func (r *Redis) Create(inp []*Object) ([]*Object, error) {
 		{
 			inp[i].Crtd = now
 			inp[i].Desc = objectid.Random(objectid.Time(now))
+			inp[i].Text = strings.TrimSpace(inp[i].Text)
 		}
 
 		// Once we know the associated event exists, we create the normalized

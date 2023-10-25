@@ -2,12 +2,56 @@ package userstorage
 
 import (
 	"encoding/json"
+	"fmt"
+	"strings"
 
 	"github.com/NaoNaoOnline/apiserver/pkg/keyfmt"
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectid"
 	"github.com/xh3b4sd/redigo/pkg/simple"
 	"github.com/xh3b4sd/tracer"
 )
+
+func (r *Redis) SearchFake() ([]*Object, error) {
+	var err error
+
+	var pat string
+	{
+		pat = fmt.Sprintf(keyfmt.UserName, "*")
+	}
+
+	var res chan string
+	{
+		res = make(chan string, 1)
+	}
+
+	var nam []string
+	go func() {
+		for s := range res {
+			spl := strings.Split(s, "/")
+			nam = append(nam, spl[len(spl)-1])
+		}
+	}()
+
+	// For our testing purposes we want to read all user names available. For that
+	// purpose we do not need to provide a done channel, because we do not want to
+	// cancel the walk through all data early. We want all users.
+	{
+		err = r.red.Walker().Simple(pat, nil, res)
+		if err != nil {
+			return nil, tracer.Mask(err)
+		}
+	}
+
+	var out []*Object
+	{
+		out, err = r.SearchName(nam)
+		if err != nil {
+			return nil, tracer.Mask(err)
+		}
+	}
+
+	return out, nil
+}
 
 func (r *Redis) SearchName(nam []string) ([]*Object, error) {
 	var err error
