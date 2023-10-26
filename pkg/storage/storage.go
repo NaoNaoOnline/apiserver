@@ -7,8 +7,10 @@ import (
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/descriptionstorage"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/eventstorage"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/labelstorage"
+	"github.com/NaoNaoOnline/apiserver/pkg/storage/liststorage"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/policystorage"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/reactionstorage"
+	"github.com/NaoNaoOnline/apiserver/pkg/storage/rulestorage"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/userstorage"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/votestorage"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/walletstorage"
@@ -27,8 +29,10 @@ type Storage struct {
 	des descriptionstorage.Interface
 	eve eventstorage.Interface
 	lab labelstorage.Interface
+	lis liststorage.Interface
 	pol policystorage.Interface
 	rea reactionstorage.Interface
+	rul rulestorage.Interface
 	use userstorage.Interface
 	vot votestorage.Interface
 	wal walletstorage.Interface
@@ -51,8 +55,10 @@ func New(c Config) *Storage {
 			des: descriptionstorage.NewRedis(descriptionstorage.RedisConfig{Emi: c.Emi.Desc(), Log: c.Log, Red: c.Red}),
 			eve: eventstorage.NewRedis(eventstorage.RedisConfig{Emi: c.Emi.Evnt(), Log: c.Log, Red: c.Red}),
 			lab: labelstorage.NewRedis(labelstorage.RedisConfig{Log: c.Log, Red: c.Red}),
+			lis: liststorage.NewRedis(liststorage.RedisConfig{Log: c.Log, Red: c.Red}),
 			pol: policystorage.NewRedis(policystorage.RedisConfig{Log: c.Log, Red: c.Red}),
 			rea: reactionstorage.NewRedis(reactionstorage.RedisConfig{Log: c.Log, Red: c.Red}),
+			rul: rulestorage.NewRedis(rulestorage.RedisConfig{Log: c.Log, Red: c.Red}),
 			use: userstorage.NewRedis(userstorage.RedisConfig{Log: c.Log, Red: c.Red}),
 			vot: votestorage.NewRedis(votestorage.RedisConfig{Log: c.Log, Red: c.Red}),
 			wal: walletstorage.NewRedis(walletstorage.RedisConfig{Log: c.Log, Red: c.Red}),
@@ -74,12 +80,20 @@ func (s *Storage) Labl() labelstorage.Interface {
 	return s.lab
 }
 
+func (s *Storage) List() liststorage.Interface {
+	return s.lis
+}
+
 func (s *Storage) Plcy() policystorage.Interface {
 	return s.pol
 }
 
 func (s *Storage) Rctn() reactionstorage.Interface {
 	return s.rea
+}
+
+func (s *Storage) Rule() rulestorage.Interface {
+	return s.rul
 }
 
 func (s *Storage) User() userstorage.Interface {
