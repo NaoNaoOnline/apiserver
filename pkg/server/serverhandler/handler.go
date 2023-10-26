@@ -57,8 +57,8 @@ func New(c Config) *Handler {
 	var h *Handler
 	{
 		h = &Handler{
-			des: descriptionhandler.NewHandler(descriptionhandler.HandlerConfig{Eve: c.Sto.Evnt(), Des: c.Sto.Desc(), Log: c.Log}),
-			eve: eventhandler.NewHandler(eventhandler.HandlerConfig{Eve: c.Sto.Evnt(), Log: c.Log}),
+			des: descriptionhandler.NewHandler(descriptionhandler.HandlerConfig{Eve: c.Sto.Evnt(), Des: c.Sto.Desc(), Log: c.Log, Prm: c.Prm}),
+			eve: eventhandler.NewHandler(eventhandler.HandlerConfig{Eve: c.Sto.Evnt(), Log: c.Log, Prm: c.Prm}),
 			lab: labelhandler.NewHandler(labelhandler.HandlerConfig{Lab: c.Sto.Labl(), Log: c.Log}),
 			lis: listhandler.NewHandler(listhandler.HandlerConfig{Lis: c.Sto.List(), Log: c.Log}),
 			pol: policyhandler.NewHandler(policyhandler.HandlerConfig{Emi: c.Emi.Plcy(), Log: c.Log, Prm: c.Prm}),
