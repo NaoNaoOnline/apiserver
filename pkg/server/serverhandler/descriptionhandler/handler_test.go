@@ -5,6 +5,7 @@ import (
 
 	"github.com/NaoNaoOnline/apigocode/pkg/description"
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectid"
+	"github.com/NaoNaoOnline/apiserver/pkg/permission"
 	"github.com/NaoNaoOnline/apiserver/pkg/server/context/userid"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/descriptionstorage"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/eventstorage"
@@ -24,6 +25,7 @@ func tesHan() description.API {
 			Des: descriptionstorage.Fake(),
 			Eve: eventstorage.Fake(),
 			Log: logger.Fake(),
+			Prm: permission.Fake(),
 		}),
 	}
 }

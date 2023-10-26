@@ -5,6 +5,7 @@ import (
 
 	"github.com/NaoNaoOnline/apigocode/pkg/event"
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectid"
+	"github.com/NaoNaoOnline/apiserver/pkg/permission"
 	"github.com/NaoNaoOnline/apiserver/pkg/server/context/userid"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/eventstorage"
 	fuzz "github.com/google/gofuzz"
@@ -22,6 +23,7 @@ func tesHan() event.API {
 		han: NewHandler(HandlerConfig{
 			Eve: eventstorage.Fake(),
 			Log: logger.Fake(),
+			Prm: permission.Fake(),
 		}),
 	}
 }
