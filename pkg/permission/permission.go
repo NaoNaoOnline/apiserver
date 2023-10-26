@@ -11,6 +11,15 @@ import (
 	"github.com/xh3b4sd/tracer"
 )
 
+const (
+	SystemEvnt int64 = 1
+	SystemDesc int64 = 2
+)
+
+const (
+	AccessDelete int64 = 1
+)
+
 type Config struct {
 	Cac policycache.Interface
 	Emi policyemitter.Interface

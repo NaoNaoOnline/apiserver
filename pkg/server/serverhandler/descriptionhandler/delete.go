@@ -7,6 +7,7 @@ import (
 	"github.com/NaoNaoOnline/apigocode/pkg/description"
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectid"
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectstate"
+	"github.com/NaoNaoOnline/apiserver/pkg/permission"
 	"github.com/NaoNaoOnline/apiserver/pkg/runtime"
 	"github.com/NaoNaoOnline/apiserver/pkg/server/context/userid"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/descriptionstorage"
@@ -33,7 +34,24 @@ func (h *Handler) Delete(ctx context.Context, req *description.DeleteI) (*descri
 	}
 
 	for _, x := range inp {
-		if userid.FromContext(ctx) != x.User {
+		var use objectid.ID
+		{
+			use = userid.FromContext(ctx)
+		}
+
+		var mod bool
+		{
+			mod, err = h.prm.ExistsAcce(permission.SystemDesc, use, permission.AccessDelete)
+			if err != nil {
+				return nil, tracer.Mask(err)
+			}
+		}
+
+		if mod {
+			continue
+		}
+
+		if use != x.User {
 			return nil, tracer.Mask(runtime.UserNotOwnerError)
 		}
 
