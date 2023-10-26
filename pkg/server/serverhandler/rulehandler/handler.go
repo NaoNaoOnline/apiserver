@@ -19,11 +19,11 @@ type Handler struct {
 }
 
 func NewHandler(c HandlerConfig) *Handler {
-	if c.Rul == nil {
-		tracer.Panic(tracer.Mask(fmt.Errorf("%T.Rul must not be empty", c)))
-	}
 	if c.Log == nil {
 		tracer.Panic(tracer.Mask(fmt.Errorf("%T.Log must not be empty", c)))
+	}
+	if c.Rul == nil {
+		tracer.Panic(tracer.Mask(fmt.Errorf("%T.Rul must not be empty", c)))
 	}
 
 	return &Handler{
