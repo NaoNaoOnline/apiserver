@@ -12,8 +12,8 @@ import (
 )
 
 const (
-	SystemEvnt int64 = 0
-	SystemDesc int64 = 1
+	SystemEvnt int64 = 1
+	SystemDesc int64 = 2
 )
 
 const (
