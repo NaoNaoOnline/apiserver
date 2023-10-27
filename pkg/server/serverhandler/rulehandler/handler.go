@@ -46,12 +46,12 @@ func inpIDs(str string) []objectid.ID {
 	return lis
 }
 
-func outIDs(ids []objectid.ID) string {
-	var str []string
+// func outIDs(ids []objectid.ID) string {
+// 	var str []string
 
-	for _, x := range ids {
-		str = append(str, string(x))
-	}
+// 	for _, x := range ids {
+// 		str = append(str, string(x))
+// 	}
 
-	return strings.Join(str, ",")
-}
+// 	return strings.Join(str, ",")
+// }
