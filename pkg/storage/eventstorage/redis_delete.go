@@ -69,7 +69,7 @@ func (r *Redis) DeleteWrkr(inp []*Object) ([]objectstate.String, error) {
 		// ensuring the deletion of the event object and all of its associated data
 		// structures.
 		{
-			err = r.emi.Delete(inp[i].Evnt)
+			err = r.emi.DeleteEvnt(inp[i].Evnt)
 			if err != nil {
 				return nil, tracer.Mask(err)
 			}

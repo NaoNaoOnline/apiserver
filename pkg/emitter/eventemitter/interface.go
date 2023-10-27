@@ -3,5 +3,5 @@ package eventemitter
 import "github.com/NaoNaoOnline/apiserver/pkg/object/objectid"
 
 type Interface interface {
-	Delete(objectid.ID) error
+	DeleteEvnt(objectid.ID) error
 }

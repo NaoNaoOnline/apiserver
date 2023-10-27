@@ -7,7 +7,7 @@ import (
 	"github.com/xh3b4sd/tracer"
 )
 
-func (e *Emitter) Delete(des objectid.ID) error {
+func (e *Emitter) DeleteDesc(des objectid.ID) error {
 	var tas *task.Task
 	{
 		tas = &task.Task{

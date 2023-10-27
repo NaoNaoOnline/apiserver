@@ -47,7 +47,7 @@ func (r *Redis) DeleteWrkr(inp []*Object) ([]objectstate.String, error) {
 		// ensuring the deletion of the list object and all of its associated data
 		// structures.
 		{
-			err = r.emi.Delete(inp[i].List)
+			err = r.emi.DeleteList(inp[i].List)
 			if err != nil {
 				return nil, tracer.Mask(err)
 			}

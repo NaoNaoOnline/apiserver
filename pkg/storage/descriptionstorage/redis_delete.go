@@ -55,7 +55,7 @@ func (r *Redis) DeleteWrkr(inp []*Object) ([]objectstate.String, error) {
 		// ensuring the deletion of the description object and all of its associated
 		// data structures.
 		{
-			err = r.emi.Delete(inp[i].Desc)
+			err = r.emi.DeleteDesc(inp[i].Desc)
 			if err != nil {
 				return nil, tracer.Mask(err)
 			}

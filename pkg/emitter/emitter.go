@@ -23,7 +23,7 @@ type Config struct {
 type Emitter struct {
 	des descriptionemitter.Interface
 	eve eventemitter.Interface
-	lis descriptionemitter.Interface
+	lis listemitter.Interface
 	pol policyemitter.Interface
 }
 
