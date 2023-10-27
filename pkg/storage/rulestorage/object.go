@@ -17,7 +17,7 @@ type Object struct {
 	// Incl is the rule's object ID to add to the associated list, if any.
 	Incl []objectid.ID `json:"incl"`
 	// Kind is the rule's object type defining the resource for included and
-	// excluded object IDs. kind set to "host" includes and excludes the
+	// excluded object IDs. Kind set to "host" includes and excludes the
 	// respective host label IDs when computing the associated list.
 	//
 	//     cate for adding or removing events matching the given category IDs
