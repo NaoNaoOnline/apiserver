@@ -40,7 +40,7 @@ func (o *Object) KeyFmt() string {
 		return keyfmt.EventLabel
 	}
 
-	if o.Kind == "cate" || o.Kind == "host" {
+	if o.Kind == "user" {
 		return keyfmt.EventUser
 	}
 
