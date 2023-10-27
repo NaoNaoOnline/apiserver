@@ -68,6 +68,26 @@ func (w *wrapper) Delete(ctx context.Context, req *rule.DeleteI) (*rule.DeleteO,
 		}
 	}
 
+	{
+		for _, x := range req.Object {
+			if x.Intern == nil {
+				return nil, tracer.Mask(runtime.QueryObjectEmptyError)
+			}
+		}
+
+		for _, x := range req.Object {
+			if x.Intern != nil && x.Intern.Rule == "" {
+				return nil, tracer.Mask(runtime.QueryObjectEmptyError)
+			}
+		}
+	}
+
+	{
+		if userid.FromContext(ctx) == "" {
+			return nil, tracer.Mask(runtime.UserIDEmptyError)
+		}
+	}
+
 	return w.han.Delete(ctx, req)
 }
 
