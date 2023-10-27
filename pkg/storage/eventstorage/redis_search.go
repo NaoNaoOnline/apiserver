@@ -200,11 +200,11 @@ func (r *Redis) SearchRule(rul []*rulestorage.Object) ([]*Object, error) {
 		sli = rulestorage.Slicer(rul)
 	}
 
-	// key will result in a list of all event IDs to be included in the given
+	// val will result in a list of all event IDs to be included in the given
 	// list.
-	var key []string
+	var val []string
 	{
-		key, err = r.red.Sorted().Search().Union(sli.Inc()...)
+		val, err = r.red.Sorted().Search().Union(sli.Inc()...)
 		if simple.IsNotFound(err) {
 			return nil, tracer.Maskf(eventObjectNotFoundError, "%v", sli.Inc())
 		} else if err != nil {
@@ -214,13 +214,13 @@ func (r *Redis) SearchRule(rul []*rulestorage.Object) ([]*Object, error) {
 
 	// There might not be any keys, and so we do not proceed, but instead return
 	// nothing.
-	if len(key) == 0 {
+	if len(val) == 0 {
 		return nil, nil
 	}
 
 	var out Slicer
 	{
-		out, err = r.SearchEvnt(objectid.IDs(key))
+		out, err = r.SearchEvnt(objectid.IDs(val))
 		if err != nil {
 			return nil, tracer.Mask(err)
 		}
