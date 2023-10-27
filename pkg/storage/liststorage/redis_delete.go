@@ -1,4 +1,4 @@
-package descriptionstorage
+package liststorage
 
 import (
 	"time"
@@ -7,22 +7,14 @@ import (
 	"github.com/xh3b4sd/tracer"
 )
 
-func (r *Redis) DeleteDesc(inp []*Object) ([]objectstate.String, error) {
+func (r *Redis) DeleteList(inp []*Object) ([]objectstate.String, error) {
 	var err error
 
 	var out []objectstate.String
 	for i := range inp {
 		// Delete the the user specific mappings for user specific search queries.
 		{
-			err = r.red.Sorted().Delete().Score(desUse(inp[i].User), inp[i].Desc.Float())
-			if err != nil {
-				return nil, tracer.Mask(err)
-			}
-		}
-
-		// Delete the the event specific mappings for event specific search queries.
-		{
-			err = r.red.Sorted().Delete().Score(desEve(inp[i].Evnt), inp[i].Desc.Float())
+			err = r.red.Sorted().Delete().Score(lisUse(inp[i].User), inp[i].List.Float())
 			if err != nil {
 				return nil, tracer.Mask(err)
 			}
@@ -32,7 +24,7 @@ func (r *Redis) DeleteDesc(inp []*Object) ([]objectstate.String, error) {
 		// the handler, we delete it as the very last step, so the operation can
 		// eventually be retried.
 		{
-			_, err = r.red.Simple().Delete().Multi(desObj(inp[i].Desc))
+			_, err = r.red.Simple().Delete().Multi(lisObj(inp[i].List))
 			if err != nil {
 				return nil, tracer.Mask(err)
 			}
@@ -52,23 +44,23 @@ func (r *Redis) DeleteWrkr(inp []*Object) ([]objectstate.String, error) {
 	var out []objectstate.String
 	for i := range inp {
 		// Before deleting a nested structure, we need to create a worker task for
-		// ensuring the deletion of the description object and all of its associated
-		// data structures.
+		// ensuring the deletion of the list object and all of its associated data
+		// structures.
 		{
-			err = r.emi.DeleteDesc(inp[i].Desc)
+			err = r.emi.DeleteList(inp[i].List)
 			if err != nil {
 				return nil, tracer.Mask(err)
 			}
 		}
 
-		// Mark the description object as deleted.
+		// Mark the list object as deleted.
 		{
 			inp[i].Dltd = time.Now().UTC()
 		}
 
-		// Update the description object with the deletion timestamp.
+		// Update the list object with the deletion timestamp.
 		{
-			err = r.red.Simple().Create().Element(desObj(inp[i].Desc), musStr(inp[i]))
+			err = r.red.Simple().Create().Element(lisObj(inp[i].List), musStr(inp[i]))
 			if err != nil {
 				return nil, tracer.Mask(err)
 			}

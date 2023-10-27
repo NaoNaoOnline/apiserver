@@ -78,25 +78,28 @@ func (h *Handler) Search(ctx context.Context, req *event.SearchI) (*event.Search
 	}
 
 	//
-	// Search events by reactions.
+	// Search events by list.
 	//
 
-	if userid.FromContext(ctx) != "" {
-		var rct bool
-		for _, x := range req.Object {
-			if x.Symbol != nil && x.Symbol.Rctn == "default" {
-				rct = true
-			}
+	var lid objectid.ID
+	for _, x := range req.Object {
+		if x.Symbol != nil && x.Symbol.List != "" {
+			lid = objectid.ID(x.Symbol.List)
+		}
+	}
+
+	if lid != "" {
+		rul, err := h.rul.SearchList([]objectid.ID{lid})
+		if err != nil {
+			return nil, tracer.Mask(err)
 		}
 
-		if rct {
-			lis, err := h.eve.SearchRctn(userid.FromContext(ctx))
-			if err != nil {
-				return nil, tracer.Mask(err)
-			}
-
-			out = append(out, lis...)
+		lis, err := h.eve.SearchRule(rul)
+		if err != nil {
+			return nil, tracer.Mask(err)
 		}
+
+		out = append(out, lis...)
 	}
 
 	//
@@ -117,6 +120,28 @@ func (h *Handler) Search(ctx context.Context, req *event.SearchI) (*event.Search
 		}
 
 		out = append(out, lis...)
+	}
+
+	//
+	// Search events by reactions.
+	//
+
+	if userid.FromContext(ctx) != "" {
+		var rct bool
+		for _, x := range req.Object {
+			if x.Symbol != nil && x.Symbol.Rctn == "default" {
+				rct = true
+			}
+		}
+
+		if rct {
+			lis, err := h.eve.SearchRctn(userid.FromContext(ctx))
+			if err != nil {
+				return nil, tracer.Mask(err)
+			}
+
+			out = append(out, lis...)
+		}
 	}
 
 	//

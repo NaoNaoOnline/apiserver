@@ -3,6 +3,7 @@ package listhandler
 import (
 	"fmt"
 
+	"github.com/NaoNaoOnline/apigocode/pkg/list"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/liststorage"
 	"github.com/xh3b4sd/logger"
 	"github.com/xh3b4sd/tracer"
@@ -30,4 +31,26 @@ func NewHandler(c HandlerConfig) *Handler {
 		lis: c.Lis,
 		log: c.Log,
 	}
+}
+
+func inpPat(upd []*list.UpdateI_Object_Update) []*liststorage.Patch {
+	var lis []*liststorage.Patch
+
+	for _, x := range upd {
+		var p *liststorage.Patch
+		{
+			p = &liststorage.Patch{
+				Ope: x.Ope,
+				Pat: x.Pat,
+			}
+		}
+
+		if x.Val != nil {
+			p.Val = *x.Val
+		}
+
+		lis = append(lis, p)
+	}
+
+	return lis
 }

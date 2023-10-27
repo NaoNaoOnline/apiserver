@@ -1,4 +1,4 @@
-package eventemitter
+package listemitter
 
 import (
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectid"
@@ -7,14 +7,14 @@ import (
 	"github.com/xh3b4sd/tracer"
 )
 
-func (e *Emitter) DeleteEvnt(eve objectid.ID) error {
+func (e *Emitter) DeleteList(lis objectid.ID) error {
 	var tas *task.Task
 	{
 		tas = &task.Task{
 			Meta: &task.Meta{
-				objectlabel.EvntAction: objectlabel.ActionDelete,
-				objectlabel.EvntObject: eve.String(),
-				objectlabel.EvntOrigin: objectlabel.OriginCustom,
+				objectlabel.ListAction: objectlabel.ActionDelete,
+				objectlabel.ListObject: lis.String(),
+				objectlabel.ListOrigin: objectlabel.OriginCustom,
 			},
 		}
 	}

@@ -3,6 +3,7 @@ package eventstorage
 import (
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectid"
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectstate"
+	"github.com/NaoNaoOnline/apiserver/pkg/storage/rulestorage"
 )
 
 type Interface interface {
@@ -65,6 +66,14 @@ type Interface interface {
 	//     @out[0] the list of event objects the given user ID reacted to
 	//
 	SearchRctn(objectid.ID) ([]*Object, error)
+
+	// SearchRule returns the event objects matching all the criteria specified by
+	// the given rule objects.
+	//
+	//     @inp[0] the rule objects of a certain list
+	//     @out[0] the list of event objects matching all the criteria of the given list
+	//
+	SearchRule([]*rulestorage.Object) ([]*Object, error)
 
 	// SearchUser returns the event objects created by the given user IDs.
 	//

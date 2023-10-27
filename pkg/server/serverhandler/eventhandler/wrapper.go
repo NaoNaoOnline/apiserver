@@ -100,7 +100,7 @@ func (w *wrapper) Search(ctx context.Context, req *event.SearchI) (*event.Search
 			if x.Public != nil && (x.Public.Cate == "" && x.Public.Host == "") {
 				return nil, tracer.Mask(searchPublicEmptyError)
 			}
-			if x.Symbol != nil && (x.Symbol.Ltst == "" && x.Symbol.Rctn == "") {
+			if x.Symbol != nil && (x.Symbol.List == "" && x.Symbol.Ltst == "" && x.Symbol.Rctn == "") {
 				return nil, tracer.Mask(searchSymbolEmptyError)
 			}
 		}
@@ -121,7 +121,13 @@ func (w *wrapper) Search(ctx context.Context, req *event.SearchI) (*event.Search
 			if x.Intern != nil && (x.Intern.Evnt != "" && x.Intern.User != "") {
 				return nil, tracer.Mask(searchInternConflictError)
 			}
+			if x.Symbol != nil && (x.Symbol.List != "" && x.Symbol.Rctn != "") {
+				return nil, tracer.Mask(searchSymbolConflictError)
+			}
 			if x.Symbol != nil && (x.Symbol.Ltst != "" && x.Symbol.Rctn != "") {
+				return nil, tracer.Mask(searchSymbolConflictError)
+			}
+			if x.Symbol != nil && (x.Symbol.List != "" && x.Symbol.Ltst != "") {
 				return nil, tracer.Mask(searchSymbolConflictError)
 			}
 		}

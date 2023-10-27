@@ -1,6 +1,6 @@
 package generic
 
-// Dup returns whether the given list contains duplicated items.
+// Dup expresses whether the given list contains duplicated items.
 func Dup[T string | int64](lis []T) bool {
 	see := map[T]struct{}{}
 

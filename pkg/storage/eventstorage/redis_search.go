@@ -7,6 +7,7 @@ import (
 	"github.com/NaoNaoOnline/apiserver/pkg/generic"
 	"github.com/NaoNaoOnline/apiserver/pkg/keyfmt"
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectid"
+	"github.com/NaoNaoOnline/apiserver/pkg/storage/rulestorage"
 	"github.com/xh3b4sd/redigo/pkg/simple"
 	"github.com/xh3b4sd/tracer"
 )
@@ -186,6 +187,50 @@ func (r *Redis) SearchRctn(use objectid.ID) ([]*Object, error) {
 		}
 
 		out = append(out, obj)
+	}
+
+	return out, nil
+}
+
+func (r *Redis) SearchRule(rul []*rulestorage.Object) ([]*Object, error) {
+	var err error
+
+	var sli rulestorage.Slicer
+	{
+		sli = rulestorage.Slicer(rul)
+	}
+
+	// val will result in a list of all event IDs to be included in the given
+	// list.
+	var val []string
+	{
+		val, err = r.red.Sorted().Search().Union(sli.Inc()...)
+		if simple.IsNotFound(err) {
+			return nil, tracer.Maskf(eventObjectNotFoundError, "%v", sli.Inc())
+		} else if err != nil {
+			return nil, tracer.Mask(err)
+		}
+	}
+
+	// There might not be any keys, and so we do not proceed, but instead return
+	// nothing.
+	if len(val) == 0 {
+		return nil, nil
+	}
+
+	var out Slicer
+	{
+		out, err = r.SearchEvnt(objectid.IDs(val))
+		if err != nil {
+			return nil, tracer.Mask(err)
+		}
+	}
+
+	// Remove the event objects that match all the rule's exclude definitions.
+	{
+		out = out.Fil().Cat(sli.Cat()...)
+		out = out.Fil().Hos(sli.Hos()...)
+		out = out.Fil().Use(sli.Use()...)
 	}
 
 	return out, nil

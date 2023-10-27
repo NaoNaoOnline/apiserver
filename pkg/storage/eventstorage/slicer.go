@@ -4,6 +4,10 @@ import "github.com/NaoNaoOnline/apiserver/pkg/object/objectid"
 
 type Slicer []*Object
 
+func (s Slicer) Fil() Filter {
+	return Filter(s)
+}
+
 func (s Slicer) IDs() []objectid.ID {
 	var ids []objectid.ID
 

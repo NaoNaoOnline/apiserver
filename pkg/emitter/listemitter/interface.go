@@ -1,7 +1,7 @@
-package eventemitter
+package listemitter
 
 import "github.com/NaoNaoOnline/apiserver/pkg/object/objectid"
 
 type Interface interface {
-	DeleteEvnt(objectid.ID) error
+	DeleteList(objectid.ID) error
 }
