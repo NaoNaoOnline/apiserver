@@ -55,7 +55,7 @@ func New(c Config) *Storage {
 			des: descriptionstorage.NewRedis(descriptionstorage.RedisConfig{Emi: c.Emi.Desc(), Log: c.Log, Red: c.Red}),
 			eve: eventstorage.NewRedis(eventstorage.RedisConfig{Emi: c.Emi.Evnt(), Log: c.Log, Red: c.Red}),
 			lab: labelstorage.NewRedis(labelstorage.RedisConfig{Log: c.Log, Red: c.Red}),
-			lis: liststorage.NewRedis(liststorage.RedisConfig{Log: c.Log, Red: c.Red}),
+			lis: liststorage.NewRedis(liststorage.RedisConfig{Emi: c.Emi.Evnt(), Log: c.Log, Red: c.Red}),
 			pol: policystorage.NewRedis(policystorage.RedisConfig{Log: c.Log, Red: c.Red}),
 			rea: reactionstorage.NewRedis(reactionstorage.RedisConfig{Log: c.Log, Red: c.Red}),
 			rul: rulestorage.NewRedis(rulestorage.RedisConfig{Log: c.Log, Red: c.Red}),

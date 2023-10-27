@@ -44,7 +44,7 @@ func IsSearchPublicEmpty(err error) bool {
 
 var searchSymbolConflictError = &tracer.Error{
 	Kind: "searchSymbolConflictError",
-	Desc: "The request expects the query object to contain one of [symbol.ltst symbol.rctn]. The query object was not found to contain one of [symbol.ltst symbol.rctn]. Therefore the request failed.",
+	Desc: "The request expects the query object to contain one of [symbol.list symbol.ltst symbol.rctn]. The query object was not found to contain one of [symbol.list symbol.ltst symbol.rctn]. Therefore the request failed.",
 }
 
 func IsSearchSymbolConflict(err error) bool {
@@ -53,7 +53,7 @@ func IsSearchSymbolConflict(err error) bool {
 
 var searchSymbolEmptyError = &tracer.Error{
 	Kind: "searchSymbolEmptyError",
-	Desc: "The request expects the query object to contain one of [symbol.ltst symbol.rctn]. The query object was not found to contain one of [symbol.ltst symbol.rctn]. Therefore the request failed.",
+	Desc: "The request expects the query object to contain one of [symbol.list symbol.ltst symbol.rctn]. The query object was not found to contain one of [symbol.list symbol.ltst symbol.rctn]. Therefore the request failed.",
 }
 
 func IsSearchSymbolEmpty(err error) bool {

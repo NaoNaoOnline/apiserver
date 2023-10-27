@@ -43,7 +43,7 @@ type Interface interface {
 	// IDs.
 	//
 	//     @inp[0] the event IDs to search descriptions for
-	//     @out[0] the list of description objects belonging the given event IDs
+	//     @out[0] the list of description objects belonging to the given event IDs
 	//
 	SearchEvnt([]objectid.ID) ([]*Object, error)
 

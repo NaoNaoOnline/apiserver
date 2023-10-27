@@ -8,6 +8,7 @@ import (
 	"github.com/NaoNaoOnline/apiserver/pkg/storage"
 	"github.com/NaoNaoOnline/apiserver/pkg/worker/workerhandler/descriptionhandler"
 	"github.com/NaoNaoOnline/apiserver/pkg/worker/workerhandler/eventhandler"
+	"github.com/NaoNaoOnline/apiserver/pkg/worker/workerhandler/listhandler"
 	"github.com/NaoNaoOnline/apiserver/pkg/worker/workerhandler/policyhandler"
 	"github.com/xh3b4sd/logger"
 	"github.com/xh3b4sd/tracer"
@@ -27,6 +28,7 @@ type Handler struct {
 	dch Interface
 	ech Interface
 	esh Interface
+	lch Interface
 	pbh Interface
 	puh Interface
 	psh []Interface
@@ -63,6 +65,7 @@ func New(c Config) *Handler {
 			dch: descriptionhandler.NewCustomHandler(descriptionhandler.CustomHandlerConfig{Des: c.Sto.Desc(), Log: c.Log, Vot: c.Sto.Vote()}),
 			ech: eventhandler.NewCustomHandler(eventhandler.CustomHandlerConfig{Eve: c.Sto.Evnt(), Des: c.Sto.Desc(), Log: c.Log, Vot: c.Sto.Vote()}),
 			esh: eventhandler.NewSystemHandler(eventhandler.SystemHandlerConfig{Eve: c.Sto.Evnt(), Log: c.Log}),
+			lch: listhandler.NewCustomHandler(listhandler.CustomHandlerConfig{Lis: c.Sto.List(), Log: c.Log, Rul: c.Sto.Rule()}),
 			pbh: policyhandler.NewBufferHandler(policyhandler.BufferHandlerConfig{Log: c.Log, Prm: c.Prm}),
 			puh: policyhandler.NewUpdateHandler(policyhandler.UpdateHandlerConfig{Cid: c.Cid, Emi: c.Emi.Plcy(), Log: c.Log, Prm: c.Prm}),
 			psh: psh,
@@ -77,6 +80,7 @@ func (h *Handler) Hand() []Interface {
 		h.dch,
 		h.ech,
 		h.esh,
+		h.lch,
 		h.pbh,
 		h.puh,
 	},

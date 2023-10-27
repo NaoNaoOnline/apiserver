@@ -25,6 +25,12 @@ const (
 )
 
 const (
+	ListAction string = "list.naonao.io/action"
+	ListObject string = "list.naonao.io/object"
+	ListOrigin string = "list.naonao.io/origin"
+)
+
+const (
 	PlcyAction string = "policy.naonao.io/action"
 	PlcyBuffer string = "policy.naonao.io/buffer"
 	PlcyChanid string = "policy.naonao.io/chanid"

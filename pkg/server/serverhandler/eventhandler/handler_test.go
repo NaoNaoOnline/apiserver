@@ -8,6 +8,7 @@ import (
 	"github.com/NaoNaoOnline/apiserver/pkg/permission"
 	"github.com/NaoNaoOnline/apiserver/pkg/server/context/userid"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/eventstorage"
+	"github.com/NaoNaoOnline/apiserver/pkg/storage/rulestorage"
 	fuzz "github.com/google/gofuzz"
 	"github.com/xh3b4sd/logger"
 )
@@ -24,6 +25,7 @@ func tesHan() event.API {
 			Eve: eventstorage.Fake(),
 			Log: logger.Fake(),
 			Prm: permission.Fake(),
+			Rul: rulestorage.Fake(),
 		}),
 	}
 }

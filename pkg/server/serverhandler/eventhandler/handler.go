@@ -9,6 +9,7 @@ import (
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectid"
 	"github.com/NaoNaoOnline/apiserver/pkg/permission"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/eventstorage"
+	"github.com/NaoNaoOnline/apiserver/pkg/storage/rulestorage"
 	"github.com/xh3b4sd/logger"
 	"github.com/xh3b4sd/tracer"
 )
@@ -17,12 +18,14 @@ type HandlerConfig struct {
 	Eve eventstorage.Interface
 	Log logger.Interface
 	Prm permission.Interface
+	Rul rulestorage.Interface
 }
 
 type Handler struct {
 	eve eventstorage.Interface
 	log logger.Interface
 	prm permission.Interface
+	rul rulestorage.Interface
 }
 
 func NewHandler(c HandlerConfig) *Handler {
@@ -35,11 +38,15 @@ func NewHandler(c HandlerConfig) *Handler {
 	if c.Prm == nil {
 		tracer.Panic(tracer.Mask(fmt.Errorf("%T.Prm must not be empty", c)))
 	}
+	if c.Rul == nil {
+		tracer.Panic(tracer.Mask(fmt.Errorf("%T.Rul must not be empty", c)))
+	}
 
 	return &Handler{
 		eve: c.Eve,
 		log: c.Log,
 		prm: c.Prm,
+		rul: c.Rul,
 	}
 }
 

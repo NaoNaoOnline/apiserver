@@ -105,6 +105,22 @@ const (
 	//
 	LabelUser = "lab/use/%s"
 
+	// ListObject is used to store our internal representation of a list object.
+	//
+	//     list ID               list object
+	//                     ->
+	//     lis/obj/1234          {"key": "val"}
+	//
+	ListObject = "lis/obj/%s"
+
+	// ListUser is used to store all the IDs of lists created by a specific user.
+	//
+	//     user ID               list IDs
+	//                     ->
+	//     lis/use/5678          1234,5678
+	//
+	ListUser = "lis/use/%s"
+
 	// PolicyBuffer is used to store all chain specific policy records
 	// intermittendly in a sorted set. The values here are policy records. The
 	// scores here are chain IDs.
