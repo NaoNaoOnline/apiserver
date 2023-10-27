@@ -177,6 +177,30 @@ const (
 	//
 	ReactionUser = "rct/use/%s"
 
+	// RuleList is used to store all the IDs of rules mapped to a specific list.
+	//
+	//     list ID               rule IDs
+	//                     ->
+	//     rul/lis/5678          1234,5678
+	//
+	RuleList = "rul/lis/%s"
+
+	// RuleObject is used to store our internal representation of a rule object.
+	//
+	//     rule ID               rule object
+	//                     ->
+	//     rul/obj/1234          {"key": "val"}
+	//
+	RuleObject = "rul/obj/%s"
+
+	// RuleUser is used to store all the IDs of rules created by a specific user.
+	//
+	//     user ID               rule IDs
+	//                     ->
+	//     rul/use/5678          1234,5678
+	//
+	RuleUser = "rul/use/%s"
+
 	// UserClaim is used to store user mappings between external and internal user
 	// representations. An external representation might be an OAuth subject claim
 	// provided with an access token when authenticating via Google. This subject

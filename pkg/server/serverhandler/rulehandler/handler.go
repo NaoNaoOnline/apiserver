@@ -2,7 +2,9 @@ package rulehandler
 
 import (
 	"fmt"
+	"strings"
 
+	"github.com/NaoNaoOnline/apiserver/pkg/object/objectid"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/rulestorage"
 	"github.com/xh3b4sd/logger"
 	"github.com/xh3b4sd/tracer"
@@ -30,4 +32,26 @@ func NewHandler(c HandlerConfig) *Handler {
 		log: c.Log,
 		rul: c.Rul,
 	}
+}
+
+func inpIDs(str string) []objectid.ID {
+	var lis []objectid.ID
+
+	for _, x := range strings.Split(str, ",") {
+		if x != "" {
+			lis = append(lis, objectid.ID(x))
+		}
+	}
+
+	return lis
+}
+
+func outIDs(ids []objectid.ID) string {
+	var str []string
+
+	for _, x := range ids {
+		str = append(str, string(x))
+	}
+
+	return strings.Join(str, ",")
 }

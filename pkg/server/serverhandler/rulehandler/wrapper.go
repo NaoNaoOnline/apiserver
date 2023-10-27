@@ -5,6 +5,7 @@ import (
 
 	"github.com/NaoNaoOnline/apigocode/pkg/rule"
 	"github.com/NaoNaoOnline/apiserver/pkg/runtime"
+	"github.com/NaoNaoOnline/apiserver/pkg/server/context/userid"
 	"github.com/xh3b4sd/tracer"
 )
 
@@ -22,6 +23,32 @@ func (w *wrapper) Create(ctx context.Context, req *rule.CreateI) (*rule.CreateO,
 			if x == nil {
 				return nil, tracer.Mask(runtime.QueryObjectEmptyError)
 			}
+		}
+	}
+
+	{
+		for _, x := range req.Object {
+			if x.Public == nil {
+				return nil, tracer.Mask(runtime.QueryObjectEmptyError)
+			}
+		}
+
+		for _, x := range req.Object {
+			if x.Public != nil && x.Public.Excl == "" && x.Public.Incl == "" {
+				return nil, tracer.Mask(resourceIDEmptyError)
+			}
+		}
+
+		for _, x := range req.Object {
+			if x.Public != nil && x.Public.Kind != "cate" && x.Public.Kind != "host" && x.Public.Kind != "user" {
+				return nil, tracer.Mask(createKindInvalidError)
+			}
+		}
+	}
+
+	{
+		if userid.FromContext(ctx) == "" {
+			return nil, tracer.Mask(runtime.UserIDEmptyError)
 		}
 	}
 

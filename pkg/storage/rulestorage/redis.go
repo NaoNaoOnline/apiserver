@@ -1,8 +1,11 @@
 package rulestorage
 
 import (
+	"encoding/json"
 	"fmt"
 
+	"github.com/NaoNaoOnline/apiserver/pkg/keyfmt"
+	"github.com/NaoNaoOnline/apiserver/pkg/object/objectid"
 	"github.com/xh3b4sd/logger"
 	"github.com/xh3b4sd/redigo"
 	"github.com/xh3b4sd/tracer"
@@ -30,4 +33,29 @@ func NewRedis(c RedisConfig) *Redis {
 		log: c.Log,
 		red: c.Red,
 	}
+}
+
+func lisObj(oid objectid.ID) string {
+	return fmt.Sprintf(keyfmt.ListObject, oid)
+}
+
+func rulLis(oid objectid.ID) string {
+	return fmt.Sprintf(keyfmt.RuleList, oid)
+}
+
+func rulObj(oid objectid.ID) string {
+	return fmt.Sprintf(keyfmt.RuleObject, oid)
+}
+
+func rulUse(oid objectid.ID) string {
+	return fmt.Sprintf(keyfmt.RuleUser, oid)
+}
+
+func musStr(obj *Object) string {
+	byt, err := json.Marshal(obj)
+	if err != nil {
+		tracer.Panic(tracer.Mask(err))
+	}
+
+	return string(byt)
 }

@@ -1,10 +1,12 @@
 package rulestorage
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/NaoNaoOnline/apiserver/pkg/keyfmt"
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectid"
+	"github.com/xh3b4sd/tracer"
 )
 
 type Object struct {
@@ -25,6 +27,8 @@ type Object struct {
 	//     user for adding or removing events created by the given user IDs
 	//
 	Kind string `json:"kind"`
+	// List is the list ID this rule is mapped to.
+	List objectid.ID `json:"list"`
 	// Rule is the ID of the rule being created.
 	Rule objectid.ID `json:"rule"`
 	// User is the user ID creating this rule.
@@ -36,9 +40,37 @@ func (o *Object) KeyFmt() string {
 		return keyfmt.EventLabel
 	}
 
-	return keyfmt.EventUser
+	if o.Kind == "cate" || o.Kind == "host" {
+		return keyfmt.EventUser
+	}
+
+	panic(fmt.Sprintf("invalid rule kind %#v in rule object %#v", o.Kind, o.Rule))
 }
 
 func (o *Object) Verify() error {
+	{
+		if o.Kind != "cate" && o.Kind != "host" && o.Kind != "user" {
+			return tracer.Maskf(ruleKindInvalidError, o.Kind)
+		}
+	}
+
+	{
+		if len(o.Excl) == 0 && len(o.Incl) == 0 {
+			return tracer.Mask(resourceIDEmptyError)
+		}
+
+		for _, x := range append(o.Excl, o.Incl...) {
+			if x == "" {
+				return tracer.Mask(resourceIDEmptyError)
+			}
+		}
+	}
+
+	{
+		if o.List == "" {
+			return tracer.Mask(ruleListEmptyError)
+		}
+	}
+
 	return nil
 }
