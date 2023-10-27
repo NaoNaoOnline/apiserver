@@ -46,6 +46,11 @@ func (h *Handler) Search(ctx context.Context, req *list.SearchI) (*list.SearchO,
 	}
 
 	for _, x := range out {
+		// Lists marked to be deleted cannot be searched anymore.
+		if !x.Dltd.IsZero() {
+			continue
+		}
+
 		res.Object = append(res.Object, &list.SearchO_Object{
 			Intern: &list.SearchO_Object_Intern{
 				Crtd: strconv.FormatInt(x.Crtd.Unix(), 10),
