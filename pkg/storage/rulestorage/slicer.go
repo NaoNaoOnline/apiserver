@@ -54,6 +54,19 @@ func (s Slicer) Inc() []string {
 	return inc
 }
 
+// Res returns the storage keys pointing to the event IDs meant to be excluded
+// and included in the list associated to the underlying rules.
+func (s Slicer) Res() []string {
+	var res []string
+
+	for _, x := range s {
+		res = append(res, objectid.Fmt(x.Excl, x.KeyFmt())...)
+		res = append(res, objectid.Fmt(x.Incl, x.KeyFmt())...)
+	}
+
+	return res
+}
+
 // Cat returns the user IDs to be excluded from the list of events that the
 // given rule set describes.
 func (s Slicer) Use() []objectid.ID {

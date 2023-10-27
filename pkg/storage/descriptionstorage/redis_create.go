@@ -86,7 +86,7 @@ func (r *Redis) Create(inp []*Object) ([]*Object, error) {
 		}
 
 		// Create the user specific mappings for user specific search queries. With
-		// that we can search for descriptions that the user reacted to.
+		// that we can show the user all descriptions they created.
 		{
 			err = r.red.Sorted().Create().Score(desUse(inp[i].User), inp[i].Desc.String(), inp[i].Desc.Float())
 			if err != nil {
