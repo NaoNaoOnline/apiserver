@@ -1,6 +1,6 @@
 package generic
 
-// Uni expresses the unique items of the given list.
+// Uni returns the unique items of the given list.
 func Uni[T string | int64](lis []T) []T {
 	see := map[T]struct{}{}
 
