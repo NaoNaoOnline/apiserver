@@ -26,4 +26,11 @@ type Interface interface {
 	//     @out[0] the list of rule objects belonging to the given list IDs
 	//
 	SearchList([]objectid.ID) ([]*Object, error)
+
+	// SearchRule returns the rule objects matching the given rule IDs.
+	//
+	//     @inp[0] the rule IDs to search for
+	//     @out[0] the list of rule objects matching the given rule IDs
+	//
+	SearchRule([]objectid.ID) ([]*Object, error)
 }
