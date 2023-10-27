@@ -5,22 +5,28 @@ import (
 	"strings"
 
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectid"
+	"github.com/NaoNaoOnline/apiserver/pkg/storage/liststorage"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/rulestorage"
 	"github.com/xh3b4sd/logger"
 	"github.com/xh3b4sd/tracer"
 )
 
 type HandlerConfig struct {
+	Lis liststorage.Interface
 	Log logger.Interface
 	Rul rulestorage.Interface
 }
 
 type Handler struct {
+	lis liststorage.Interface
 	log logger.Interface
 	rul rulestorage.Interface
 }
 
 func NewHandler(c HandlerConfig) *Handler {
+	if c.Lis == nil {
+		tracer.Panic(tracer.Mask(fmt.Errorf("%T.Lis must not be empty", c)))
+	}
 	if c.Log == nil {
 		tracer.Panic(tracer.Mask(fmt.Errorf("%T.Log must not be empty", c)))
 	}
@@ -29,6 +35,7 @@ func NewHandler(c HandlerConfig) *Handler {
 	}
 
 	return &Handler{
+		lis: c.Lis,
 		log: c.Log,
 		rul: c.Rul,
 	}
@@ -46,12 +53,12 @@ func inpIDs(str string) []objectid.ID {
 	return lis
 }
 
-// func outIDs(ids []objectid.ID) string {
-// 	var str []string
+func outIDs(ids []objectid.ID) string {
+	var str []string
 
-// 	for _, x := range ids {
-// 		str = append(str, string(x))
-// 	}
+	for _, x := range ids {
+		str = append(str, string(x))
+	}
 
-// 	return strings.Join(str, ",")
-// }
+	return strings.Join(str, ",")
+}

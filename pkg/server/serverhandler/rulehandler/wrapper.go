@@ -104,6 +104,26 @@ func (w *wrapper) Search(ctx context.Context, req *rule.SearchI) (*rule.SearchO,
 		}
 	}
 
+	{
+		for _, x := range req.Object {
+			if x.Public == nil {
+				return nil, tracer.Mask(runtime.QueryObjectEmptyError)
+			}
+		}
+
+		for _, x := range req.Object {
+			if x.Public != nil && x.Public.List == "" {
+				return nil, tracer.Mask(runtime.QueryObjectEmptyError)
+			}
+		}
+	}
+
+	{
+		if userid.FromContext(ctx) == "" {
+			return nil, tracer.Mask(runtime.UserIDEmptyError)
+		}
+	}
+
 	return w.han.Search(ctx, req)
 }
 
