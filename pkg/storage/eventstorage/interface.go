@@ -39,7 +39,9 @@ type Interface interface {
 	//
 	SearchEvnt([]objectid.ID) ([]*Object, error)
 
-	// SearchHpnd returns the event objects that happened over a week ago.
+	// SearchHpnd returns the event objects that happened over a week ago. This
+	// function is mainly used for cleaning up old events in a background process,
+	// see eventhandler.SystemHandler.
 	//
 	//     @out[0] the list of event objects that happened over a week ago
 	//

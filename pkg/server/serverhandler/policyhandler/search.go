@@ -5,6 +5,7 @@ import (
 	"strconv"
 
 	"github.com/NaoNaoOnline/apigocode/pkg/policy"
+	"github.com/NaoNaoOnline/apiserver/pkg/server/limiter"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/policystorage"
 	"github.com/xh3b4sd/tracer"
 )
@@ -41,7 +42,18 @@ func (h *Handler) Search(ctx context.Context, req *policy.SearchI) (*policy.Sear
 		res = &policy.SearchO{}
 	}
 
-	for _, x := range out {
+	if limiter.Log(len(out)) {
+		h.log.Log(
+			context.Background(),
+			"level", "warning",
+			"message", "search response got truncated",
+			"limit", strconv.Itoa(limiter.Default),
+			"resource", "policy",
+			"total", strconv.Itoa(len(out)),
+		)
+	}
+
+	for _, x := range out[:limiter.Len(len(out))] {
 		res.Object = append(res.Object, &policy.SearchO_Object{
 			Extern: outExt(x),
 			Intern: &policy.SearchO_Object_Intern{

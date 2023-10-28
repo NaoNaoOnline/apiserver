@@ -15,7 +15,9 @@ import (
 func (r *run) createVote(sto *storage.Storage, obj ...*votestorage.Object) error {
 	{
 		_, err := sto.Vote().Create(obj)
-		if err != nil {
+		if votestorage.IsVoteEventLimit(err) {
+			// fall through
+		} else if err != nil {
 			tracer.Panic(tracer.Mask(err))
 		}
 	}

@@ -19,6 +19,10 @@ func (w *wrapper) Create(ctx context.Context, req *label.CreateI) (*label.Create
 			return nil, tracer.Mask(runtime.QueryObjectEmptyError)
 		}
 
+		if len(req.Object) > 100 {
+			return nil, tracer.Mask(runtime.QueryObjectLimitError)
+		}
+
 		for _, x := range req.Object {
 			if x == nil {
 				return nil, tracer.Mask(runtime.QueryObjectEmptyError)
@@ -59,6 +63,10 @@ func (w *wrapper) Delete(ctx context.Context, req *label.DeleteI) (*label.Delete
 			return nil, tracer.Mask(runtime.QueryObjectEmptyError)
 		}
 
+		if len(req.Object) > 100 {
+			return nil, tracer.Mask(runtime.QueryObjectLimitError)
+		}
+
 		for _, x := range req.Object {
 			if x == nil {
 				return nil, tracer.Mask(runtime.QueryObjectEmptyError)
@@ -73,6 +81,10 @@ func (w *wrapper) Search(ctx context.Context, req *label.SearchI) (*label.Search
 	{
 		if len(req.Object) == 0 {
 			return nil, tracer.Mask(runtime.QueryObjectEmptyError)
+		}
+
+		if len(req.Object) > 100 {
+			return nil, tracer.Mask(runtime.QueryObjectLimitError)
 		}
 
 		for _, x := range req.Object {
@@ -103,6 +115,10 @@ func (w *wrapper) Update(ctx context.Context, req *label.UpdateI) (*label.Update
 	{
 		if len(req.Object) == 0 {
 			return nil, tracer.Mask(runtime.QueryObjectEmptyError)
+		}
+
+		if len(req.Object) > 100 {
+			return nil, tracer.Mask(runtime.QueryObjectLimitError)
 		}
 
 		for _, x := range req.Object {

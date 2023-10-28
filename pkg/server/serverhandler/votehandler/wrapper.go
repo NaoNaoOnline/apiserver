@@ -19,6 +19,10 @@ func (w *wrapper) Create(ctx context.Context, req *vote.CreateI) (*vote.CreateO,
 			return nil, tracer.Mask(runtime.QueryObjectEmptyError)
 		}
 
+		if len(req.Object) > 100 {
+			return nil, tracer.Mask(runtime.QueryObjectLimitError)
+		}
+
 		for _, x := range req.Object {
 			if x == nil {
 				return nil, tracer.Mask(runtime.QueryObjectEmptyError)
@@ -47,6 +51,10 @@ func (w *wrapper) Delete(ctx context.Context, req *vote.DeleteI) (*vote.DeleteO,
 	{
 		if len(req.Object) == 0 {
 			return nil, tracer.Mask(runtime.QueryObjectEmptyError)
+		}
+
+		if len(req.Object) > 100 {
+			return nil, tracer.Mask(runtime.QueryObjectLimitError)
 		}
 
 		for _, x := range req.Object {
@@ -79,6 +87,10 @@ func (w *wrapper) Search(ctx context.Context, req *vote.SearchI) (*vote.SearchO,
 			return nil, tracer.Mask(runtime.QueryObjectEmptyError)
 		}
 
+		if len(req.Object) > 100 {
+			return nil, tracer.Mask(runtime.QueryObjectLimitError)
+		}
+
 		for _, x := range req.Object {
 			if x == nil {
 				return nil, tracer.Mask(runtime.QueryObjectEmptyError)
@@ -107,6 +119,10 @@ func (w *wrapper) Update(ctx context.Context, req *vote.UpdateI) (*vote.UpdateO,
 	{
 		if len(req.Object) == 0 {
 			return nil, tracer.Mask(runtime.QueryObjectEmptyError)
+		}
+
+		if len(req.Object) > 100 {
+			return nil, tracer.Mask(runtime.QueryObjectLimitError)
 		}
 
 		for _, x := range req.Object {

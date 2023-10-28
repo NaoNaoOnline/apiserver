@@ -63,7 +63,7 @@ func New(c Config) *Handler {
 			lis: listhandler.NewHandler(listhandler.HandlerConfig{Lis: c.Sto.List(), Log: c.Log}),
 			pol: policyhandler.NewHandler(policyhandler.HandlerConfig{Emi: c.Emi.Plcy(), Log: c.Log, Prm: c.Prm}),
 			rea: reactionhandler.NewHandler(reactionhandler.HandlerConfig{Log: c.Log, Rct: c.Sto.Rctn()}),
-			rul: rulehandler.NewHandler(rulehandler.HandlerConfig{Log: c.Log, Rul: c.Sto.Rule()}),
+			rul: rulehandler.NewHandler(rulehandler.HandlerConfig{Lis: c.Sto.List(), Log: c.Log, Rul: c.Sto.Rule()}),
 			use: userhandler.NewHandler(userhandler.HandlerConfig{Log: c.Log, Use: c.Sto.User()}),
 			vot: votehandler.NewHandler(votehandler.HandlerConfig{Des: c.Sto.Desc(), Eve: c.Sto.Evnt(), Log: c.Log, Vot: c.Sto.Vote()}),
 			wal: wallethandler.NewHandler(wallethandler.HandlerConfig{Log: c.Log, Wal: c.Sto.Wllt()}),
