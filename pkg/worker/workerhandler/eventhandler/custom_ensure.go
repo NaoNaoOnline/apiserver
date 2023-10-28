@@ -20,7 +20,7 @@ func (h *CustomHandler) Ensure(tas *task.Task, bud *budget.Budget) error {
 
 	var des []*descriptionstorage.Object
 	{
-		des, err = h.des.SearchEvnt([]objectid.ID{eve})
+		des, err = h.des.SearchEvnt("", []objectid.ID{eve})
 		if err != nil {
 			return tracer.Mask(err)
 		}
@@ -50,7 +50,7 @@ func (h *CustomHandler) deleteDesc(inp objectid.ID, bud *budget.Budget) error {
 
 	var des []*descriptionstorage.Object
 	{
-		des, err = h.des.SearchDesc([]objectid.ID{inp})
+		des, err = h.des.SearchDesc("", []objectid.ID{inp})
 		if err != nil {
 			return tracer.Mask(err)
 		}

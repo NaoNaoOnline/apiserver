@@ -10,6 +10,15 @@ const (
 	//
 	DescriptionEvent = "des/eve/%s"
 
+	// DescriptionLike is used to store all the indications of users liking a
+	// description.
+	//
+	//     user ID / description ID          0 / 1
+	//                                 ->
+	//     des/use/1234/obj/1234             1
+	//
+	DescriptionLike = "des/use/%s/obj/%s"
+
 	// DescriptionObject is used to store our internal representation of a
 	// description object.
 	//

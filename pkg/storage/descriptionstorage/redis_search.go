@@ -2,6 +2,7 @@ package descriptionstorage
 
 import (
 	"encoding/json"
+	"fmt"
 
 	"github.com/NaoNaoOnline/apiserver/pkg/keyfmt"
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectid"
@@ -9,7 +10,7 @@ import (
 	"github.com/xh3b4sd/tracer"
 )
 
-func (r *Redis) SearchDesc(inp []objectid.ID) ([]*Object, error) {
+func (r *Redis) SearchDesc(use objectid.ID, inp []objectid.ID) ([]*Object, error) {
 	var err error
 
 	var jsn []string
@@ -22,18 +23,38 @@ func (r *Redis) SearchDesc(inp []objectid.ID) ([]*Object, error) {
 		}
 	}
 
+	var lik []string
+	if use != "" {
+		lik, err = r.red.Simple().Search().Multi(objectid.Fmt(inp, fmt.Sprintf(keyfmt.DescriptionLike, use, "%s"))...)
+		if simple.IsNotFound(err) {
+			return nil, tracer.Maskf(descriptionObjectNotFoundError, "%v", inp)
+		} else if err != nil {
+			return nil, tracer.Mask(err)
+		}
+	}
+
 	var out []*Object
-	for _, x := range jsn {
+	for i := range jsn {
 		var obj *Object
 		{
 			obj = &Object{}
 		}
 
-		if x != "" {
-			err = json.Unmarshal([]byte(x), obj)
+		if jsn[i] != "" {
+			err = json.Unmarshal([]byte(jsn[i]), obj)
 			if err != nil {
 				return nil, tracer.Mask(err)
 			}
+		}
+
+		// Annotate the description object with the indication whether the calling
+		// user liked this description already. The linear mapping between
+		// description objects and like indicators should work reliably because
+		// Simple.Search.Multi gets called with the same amount of keys for each
+		// query. And so each and every JSON string should relate to each and every
+		// like indicator for the calling user.
+		if use != "" && lik[i] == "1" {
+			obj.Like.User = true
 		}
 
 		out = append(out, obj)
@@ -42,7 +63,7 @@ func (r *Redis) SearchDesc(inp []objectid.ID) ([]*Object, error) {
 	return out, nil
 }
 
-func (r *Redis) SearchEvnt(evn []objectid.ID) ([]*Object, error) {
+func (r *Redis) SearchEvnt(use objectid.ID, evn []objectid.ID) ([]*Object, error) {
 	var err error
 
 	var out []*Object
@@ -68,7 +89,7 @@ func (r *Redis) SearchEvnt(evn []objectid.ID) ([]*Object, error) {
 		}
 
 		{
-			lis, err := r.SearchDesc(objectid.IDs(val))
+			lis, err := r.SearchDesc(use, objectid.IDs(val))
 			if err != nil {
 				return nil, tracer.Mask(err)
 			}

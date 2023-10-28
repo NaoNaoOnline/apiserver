@@ -42,10 +42,10 @@ func NewHandler(c HandlerConfig) *Handler {
 	}
 }
 
-func outExt(rec *policystorage.Object) []*policy.SearchO_Object_Extern {
+func outExt(obj *policystorage.Object) []*policy.SearchO_Object_Extern {
 	var lis []*policy.SearchO_Object_Extern
 
-	for _, x := range rec.ChID {
+	for _, x := range obj.ChID {
 		lis = append(lis, &policy.SearchO_Object_Extern{
 			Chid: strconv.FormatInt(x, 10),
 		})

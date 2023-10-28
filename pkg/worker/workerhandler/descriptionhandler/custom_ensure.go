@@ -30,7 +30,7 @@ func (h *CustomHandler) deleteDesc(inp objectid.ID, bud *budget.Budget) error {
 
 	var des []*descriptionstorage.Object
 	{
-		des, err = h.des.SearchDesc([]objectid.ID{inp})
+		des, err = h.des.SearchDesc("", []objectid.ID{inp})
 		if err != nil {
 			return tracer.Mask(err)
 		}

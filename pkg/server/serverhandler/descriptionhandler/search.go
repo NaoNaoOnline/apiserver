@@ -6,12 +6,18 @@ import (
 
 	"github.com/NaoNaoOnline/apigocode/pkg/description"
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectid"
+	"github.com/NaoNaoOnline/apiserver/pkg/server/context/userid"
 	"github.com/NaoNaoOnline/apiserver/pkg/server/limiter"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/descriptionstorage"
 	"github.com/xh3b4sd/tracer"
 )
 
 func (h *Handler) Search(ctx context.Context, req *description.SearchI) (*description.SearchO, error) {
+	var use objectid.ID
+	{
+		use = userid.FromContext(ctx)
+	}
+
 	var evn []objectid.ID
 	for _, x := range req.Object {
 		if x.Public != nil && x.Public.Evnt != "" {
@@ -21,7 +27,7 @@ func (h *Handler) Search(ctx context.Context, req *description.SearchI) (*descri
 
 	var out []*descriptionstorage.Object
 	{
-		lis, err := h.des.SearchEvnt(evn)
+		lis, err := h.des.SearchEvnt(use, evn)
 		if err != nil {
 			return nil, tracer.Mask(err)
 		}
@@ -56,6 +62,13 @@ func (h *Handler) Search(ctx context.Context, req *description.SearchI) (*descri
 		}
 
 		res.Object = append(res.Object, &description.SearchO_Object{
+			Extern: []*description.SearchO_Object_Extern{
+				{
+					Amnt: strconv.FormatInt(int64(x.Like.Data), 10),
+					Kind: "like",
+					User: x.Like.User,
+				},
+			},
 			Intern: &description.SearchO_Object_Intern{
 				Crtd: strconv.FormatInt(x.Crtd.Unix(), 10),
 				Desc: x.Desc.String(),
