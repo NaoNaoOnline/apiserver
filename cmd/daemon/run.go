@@ -22,7 +22,6 @@ import (
 	"github.com/NaoNaoOnline/apiserver/pkg/server/serverhandler"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/labelstorage"
-	"github.com/NaoNaoOnline/apiserver/pkg/storage/reactionstorage"
 	"github.com/NaoNaoOnline/apiserver/pkg/worker"
 	"github.com/NaoNaoOnline/apiserver/pkg/worker/workerhandler"
 	"github.com/gorilla/mux"
@@ -135,15 +134,6 @@ func (r *run) runE(cmd *cobra.Command, args []string) error {
 	{
 		_, err := sto.Labl().Create(sto.Labl().SearchBltn())
 		if labelstorage.IsLabelObjectAlreadyExists(err) {
-			// fall through
-		} else if err != nil {
-			return tracer.Mask(err)
-		}
-	}
-
-	{
-		_, err := sto.Rctn().Create(sto.Rctn().SearchBltn())
-		if reactionstorage.IsReactionObjectAlreadyExists(err) {
 			// fall through
 		} else if err != nil {
 			return tracer.Mask(err)

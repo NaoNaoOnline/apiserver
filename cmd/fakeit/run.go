@@ -79,11 +79,4 @@ func (r *run) run(cmd *cobra.Command, args []string) {
 			tracer.Panic(tracer.Mask(err))
 		}
 	}
-
-	for i := 0; i < 400; i++ {
-		err = r.createVote(sto, r.randomVote(sto, fak))
-		if err != nil {
-			tracer.Panic(tracer.Mask(err))
-		}
-	}
 }

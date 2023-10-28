@@ -5,7 +5,6 @@ import (
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectlabel"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/descriptionstorage"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/eventstorage"
-	"github.com/NaoNaoOnline/apiserver/pkg/storage/votestorage"
 	"github.com/NaoNaoOnline/apiserver/pkg/worker/budget"
 	"github.com/xh3b4sd/rescue/task"
 	"github.com/xh3b4sd/tracer"
@@ -28,13 +27,6 @@ func (h *CustomHandler) Ensure(tas *task.Task, bud *budget.Budget) error {
 	}
 
 	for _, x := range des {
-		{
-			err := h.deleteVote(x.Desc, bud)
-			if err != nil {
-				return tracer.Mask(err)
-			}
-		}
-
 		{
 			err := h.deleteDesc(x.Desc, bud)
 			if err != nil {
@@ -87,27 +79,6 @@ func (h *CustomHandler) deleteEvnt(inp objectid.ID, bud *budget.Budget) error {
 
 	{
 		_, err := h.eve.DeleteEvnt(eve[:bud.Claim(len(eve))])
-		if err != nil {
-			return tracer.Mask(err)
-		}
-	}
-
-	return nil
-}
-
-func (h *CustomHandler) deleteVote(inp objectid.ID, bud *budget.Budget) error {
-	var err error
-
-	var vot []*votestorage.Object
-	{
-		vot, err = h.vot.SearchDesc([]objectid.ID{inp})
-		if err != nil {
-			return tracer.Mask(err)
-		}
-	}
-
-	{
-		_, err := h.vot.Delete(vot[:bud.Claim(len(vot))])
 		if err != nil {
 			return tracer.Mask(err)
 		}
