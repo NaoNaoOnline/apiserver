@@ -19,6 +19,11 @@ var QueryObjectEmptyError = &tracer.Error{
 	Desc: "The request expects the query object not to be empty. The query object was found to be empty. Therefore the request failed.",
 }
 
+var QueryObjectLimitError = &tracer.Error{
+	Kind: "QueryObjectLimitError",
+	Desc: "The request expects an upper limit of 100 query objects per call. The upper limit of 100 query objects per call was found. Therefore the request failed.",
+}
+
 var UserIDEmptyError = &tracer.Error{
 	Kind: "UserIDEmptyError",
 	Desc: "The request expects a valid OAuth access token mapping to an internal user ID. No user ID was found. Therefore the request failed.",

@@ -6,6 +6,7 @@ import (
 
 	"github.com/NaoNaoOnline/apigocode/pkg/description"
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectid"
+	"github.com/NaoNaoOnline/apiserver/pkg/server/limiter"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/descriptionstorage"
 	"github.com/xh3b4sd/tracer"
 )
@@ -37,7 +38,18 @@ func (h *Handler) Search(ctx context.Context, req *description.SearchI) (*descri
 		res = &description.SearchO{}
 	}
 
-	for _, x := range out {
+	if limiter.Log(len(out)) {
+		h.log.Log(
+			context.Background(),
+			"level", "warning",
+			"message", "search response got truncated",
+			"limit", strconv.Itoa(limiter.Default),
+			"resource", "description",
+			"total", strconv.Itoa(len(out)),
+		)
+	}
+
+	for _, x := range out[:limiter.Len(len(out))] {
 		// Descriptions marked to be deleted cannot be searched anymore.
 		if !x.Dltd.IsZero() {
 			continue
