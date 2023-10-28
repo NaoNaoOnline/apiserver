@@ -9,10 +9,8 @@ import (
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/labelstorage"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/liststorage"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/policystorage"
-	"github.com/NaoNaoOnline/apiserver/pkg/storage/reactionstorage"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/rulestorage"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/userstorage"
-	"github.com/NaoNaoOnline/apiserver/pkg/storage/votestorage"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/walletstorage"
 	"github.com/xh3b4sd/logger"
 	"github.com/xh3b4sd/redigo"
@@ -31,10 +29,8 @@ type Storage struct {
 	lab labelstorage.Interface
 	lis liststorage.Interface
 	pol policystorage.Interface
-	rea reactionstorage.Interface
 	rul rulestorage.Interface
 	use userstorage.Interface
-	vot votestorage.Interface
 	wal walletstorage.Interface
 }
 
@@ -57,10 +53,8 @@ func New(c Config) *Storage {
 			lab: labelstorage.NewRedis(labelstorage.RedisConfig{Log: c.Log, Red: c.Red}),
 			lis: liststorage.NewRedis(liststorage.RedisConfig{Emi: c.Emi.List(), Log: c.Log, Red: c.Red}),
 			pol: policystorage.NewRedis(policystorage.RedisConfig{Log: c.Log, Red: c.Red}),
-			rea: reactionstorage.NewRedis(reactionstorage.RedisConfig{Log: c.Log, Red: c.Red}),
 			rul: rulestorage.NewRedis(rulestorage.RedisConfig{Log: c.Log, Red: c.Red}),
 			use: userstorage.NewRedis(userstorage.RedisConfig{Log: c.Log, Red: c.Red}),
-			vot: votestorage.NewRedis(votestorage.RedisConfig{Log: c.Log, Red: c.Red}),
 			wal: walletstorage.NewRedis(walletstorage.RedisConfig{Log: c.Log, Red: c.Red}),
 		}
 	}
@@ -88,20 +82,12 @@ func (s *Storage) Plcy() policystorage.Interface {
 	return s.pol
 }
 
-func (s *Storage) Rctn() reactionstorage.Interface {
-	return s.rea
-}
-
 func (s *Storage) Rule() rulestorage.Interface {
 	return s.rul
 }
 
 func (s *Storage) User() userstorage.Interface {
 	return s.use
-}
-
-func (s *Storage) Vote() votestorage.Interface {
-	return s.vot
 }
 
 func (s *Storage) Wllt() walletstorage.Interface {
