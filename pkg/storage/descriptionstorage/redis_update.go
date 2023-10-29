@@ -2,6 +2,7 @@ package descriptionstorage
 
 import (
 	"encoding/json"
+	"time"
 
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectid"
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectstate"
@@ -28,6 +29,11 @@ func (r *Redis) UpdateLike(use objectid.ID, obj []*Object, inc []bool) ([]object
 			obj[i].Like.Data++
 		} else {
 			obj[i].Like.Data--
+		}
+
+		// Track the time of the last updated like.
+		{
+			obj[i].Like.Time = time.Now().UTC()
 		}
 
 		// Verify the modified description object to ensure the applied changes are
