@@ -49,8 +49,8 @@ type Interface interface {
 	//
 	SearchEvnt(objectid.ID, []objectid.ID) ([]*Object, error)
 
-	// UpdateLike modifies the existing description objects by tracking 1
-	// additional like for the given user.
+	// UpdateLike modifies the existing description objects by tracking the
+	// addition or removal of a like for the given user.
 	//
 	//     @inp[0] the user liking or unliking the description
 	//     @inp[1] the list of description objects to modify

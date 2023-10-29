@@ -6,6 +6,11 @@ import (
 	"github.com/xh3b4sd/tracer"
 )
 
+var eventClckNegativeError = &tracer.Error{
+	Kind: "eventClckNegativeError",
+	Desc: "The request expects the event link click not to be negative. The event link click was found to be negative. Therefore the request failed.",
+}
+
 var eventDurationEmptyError = &tracer.Error{
 	Kind: "eventDurationEmptyError",
 	Desc: "The request expects the event duration not to be empty. The event duration was found to be empty. Therefore the request failed.",
