@@ -64,7 +64,7 @@ func (h *Handler) Search(ctx context.Context, req *description.SearchI) (*descri
 		res.Object = append(res.Object, &description.SearchO_Object{
 			Extern: []*description.SearchO_Object_Extern{
 				{
-					Amnt: strconv.FormatInt(int64(x.Like.Data), 10),
+					Amnt: strconv.FormatInt(x.Like.Data, 10),
 					Kind: "like",
 					User: x.Like.User,
 				},

@@ -6,7 +6,7 @@ import (
 
 type Integer struct {
 	// Data is the integer data of this object field.
-	Data int `json:"data"`
+	Data int64 `json:"data"`
 	// User a contextual flag set for the calling user on the fly if a certain
 	// condition was found to be true.
 	User bool `json:"-"`
