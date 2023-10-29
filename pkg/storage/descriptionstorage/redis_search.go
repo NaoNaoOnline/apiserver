@@ -27,7 +27,7 @@ func (r *Redis) SearchDesc(use objectid.ID, inp []objectid.ID) ([]*Object, error
 	if use != "" {
 		lik, err = r.red.Simple().Search().Multi(objectid.Fmt(inp, fmt.Sprintf(keyfmt.DescriptionLike, use, "%s"))...)
 		if simple.IsNotFound(err) {
-			return nil, tracer.Maskf(descriptionObjectNotFoundError, "%v", inp)
+			// fall through
 		} else if err != nil {
 			return nil, tracer.Mask(err)
 		}
@@ -53,7 +53,7 @@ func (r *Redis) SearchDesc(use objectid.ID, inp []objectid.ID) ([]*Object, error
 		// Simple.Search.Multi gets called with the same amount of keys for each
 		// query. And so each and every JSON string should relate to each and every
 		// like indicator for the calling user.
-		if use != "" && lik[i] == "1" {
+		if len(lik) == len(jsn) && lik[i] == "1" {
 			obj.Like.User = true
 		}
 
