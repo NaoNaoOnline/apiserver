@@ -4,6 +4,11 @@ import (
 	"github.com/xh3b4sd/tracer"
 )
 
+var descriptionLikeNegativeError = &tracer.Error{
+	Kind: "descriptionLikeNegativeError",
+	Desc: "The request expects the description like not to be negative. The description like was found to be negative. Therefore the request failed.",
+}
+
 var descriptionTextEmptyError = &tracer.Error{
 	Kind: "descriptionTextEmptyError",
 	Desc: "The request expects the description text not to be empty. The description text was found to be empty. Therefore the request failed.",

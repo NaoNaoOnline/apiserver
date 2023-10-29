@@ -38,6 +38,12 @@ func (o *Object) Verify() error {
 	}
 
 	{
+		if o.Like.Data < 0 {
+			return tracer.Mask(descriptionLikeNegativeError)
+		}
+	}
+
+	{
 		if o.Text == "" {
 			return tracer.Mask(descriptionTextEmptyError)
 		}
