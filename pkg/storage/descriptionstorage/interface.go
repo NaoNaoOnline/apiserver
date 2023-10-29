@@ -34,20 +34,32 @@ type Interface interface {
 	// SearchDesc returns the description objects matching the given description
 	// IDs.
 	//
-	//     @inp[0] the description IDs to search for
+	//     @inp[0] the calling user
+	//     @inp[1] the description IDs to search for
 	//     @out[0] the list of description objects matching the given description IDs
 	//
-	SearchDesc([]objectid.ID) ([]*Object, error)
+	SearchDesc(objectid.ID, []objectid.ID) ([]*Object, error)
 
 	// SearchEvnt returns the description objects belonging to the given event
 	// IDs.
 	//
-	//     @inp[0] the event IDs to search descriptions for
+	//     @inp[0] the calling user
+	//     @inp[1] the event IDs to search descriptions for
 	//     @out[0] the list of description objects belonging to the given event IDs
 	//
-	SearchEvnt([]objectid.ID) ([]*Object, error)
+	SearchEvnt(objectid.ID, []objectid.ID) ([]*Object, error)
 
-	// Update modifies the existing description objects by applying the given
+	// UpdateLike modifies the existing description objects by tracking 1
+	// additional like for the given user.
+	//
+	//     @inp[0] the user liking or unliking the description
+	//     @inp[1] the list of description objects to modify
+	//     @inp[2] the bool expressing whether to increment or decrement the like count
+	//     @out[0] the list of operation states related to the modified description objects
+	//
+	UpdateLike(objectid.ID, []*Object, []bool) ([]objectstate.String, error)
+
+	// UpdatePtch modifies the existing description objects by applying the given
 	// RFC6902 JSON-Patches to the underlying JSON documents. The list items are
 	// used according to their respective indices, e.g. the second patch is
 	// applied to the second object.
@@ -56,5 +68,5 @@ type Interface interface {
 	//     @inp[1] the list of RFC6902 compliant JSON-Patches
 	//     @out[0] the list of operation states related to the modified description objects
 	//
-	Update([]*Object, [][]*Patch) ([]objectstate.String, error)
+	UpdatePtch([]*Object, [][]*Patch) ([]objectstate.String, error)
 }

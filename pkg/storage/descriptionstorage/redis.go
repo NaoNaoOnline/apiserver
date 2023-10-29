@@ -46,6 +46,10 @@ func desEve(oid objectid.ID) string {
 	return fmt.Sprintf(keyfmt.DescriptionEvent, oid)
 }
 
+func desLik(use objectid.ID, oid objectid.ID) string {
+	return fmt.Sprintf(keyfmt.DescriptionLike, use, oid)
+}
+
 func desObj(oid objectid.ID) string {
 	return fmt.Sprintf(keyfmt.DescriptionObject, oid)
 }

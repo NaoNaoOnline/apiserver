@@ -33,3 +33,13 @@ var updateEmptyError = &tracer.Error{
 	Kind: "updateEmptyError",
 	Desc: "The request expects the query object to contain all of [intern update]. The query object was not found to contain all of [intern update]. Therefore the request failed.",
 }
+
+var updateSymbolConflictError = &tracer.Error{
+	Kind: "updateSymbolConflictError",
+	Desc: "The request expects the query object to not contain any of [intern update] if symbol is configured. The query object was found to contain one of [intern update]. Therefore the request failed.",
+}
+
+var updateSymbolInvalidError = &tracer.Error{
+	Kind: "updateSymbolInvalidError",
+	Desc: "The request expects symbol.like to be one of [add rem]. symbol.like was not found to be one of [add rem]. Therefore the request failed.",
+}

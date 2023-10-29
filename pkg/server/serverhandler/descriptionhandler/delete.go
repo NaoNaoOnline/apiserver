@@ -18,6 +18,11 @@ import (
 func (h *Handler) Delete(ctx context.Context, req *description.DeleteI) (*description.DeleteO, error) {
 	var err error
 
+	var use objectid.ID
+	{
+		use = userid.FromContext(ctx)
+	}
+
 	var des []objectid.ID
 	for _, x := range req.Object {
 		if x.Intern != nil && x.Intern.Desc != "" {
@@ -27,18 +32,13 @@ func (h *Handler) Delete(ctx context.Context, req *description.DeleteI) (*descri
 
 	var inp []*descriptionstorage.Object
 	{
-		inp, err = h.des.SearchDesc(des)
+		inp, err = h.des.SearchDesc(use, des)
 		if err != nil {
 			return nil, tracer.Mask(err)
 		}
 	}
 
 	for _, x := range inp {
-		var use objectid.ID
-		{
-			use = userid.FromContext(ctx)
-		}
-
 		var mod bool
 		{
 			mod, err = h.prm.ExistsAcce(permission.SystemDesc, use, permission.AccessDelete)
@@ -62,7 +62,7 @@ func (h *Handler) Delete(ctx context.Context, req *description.DeleteI) (*descri
 
 		var des []*descriptionstorage.Object
 		{
-			des, err = h.des.SearchEvnt([]objectid.ID{x.Evnt})
+			des, err = h.des.SearchEvnt(use, []objectid.ID{x.Evnt})
 			if err != nil {
 				return nil, tracer.Mask(err)
 			}
