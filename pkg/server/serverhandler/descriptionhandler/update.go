@@ -76,16 +76,16 @@ func (h *Handler) Update(ctx context.Context, req *description.UpdateI) (*descri
 		var des []objectid.ID
 		var inc []bool
 		for _, x := range req.Object {
-			if x.Intern != nil && x.Symbol != nil && x.Intern.Desc != "" && (x.Symbol.Xtrn == "like" || x.Symbol.Xtrn == "ulik") {
+			if x.Intern != nil && x.Symbol != nil && x.Intern.Desc != "" && (x.Symbol.Like == "add" || x.Symbol.Like == "rem") {
 				{
 					des = append(des, objectid.ID(x.Intern.Desc))
 				}
 
-				if x.Symbol.Xtrn == "like" {
+				if x.Symbol.Like == "add" {
 					inc = append(inc, true)
 				}
 
-				if x.Symbol.Xtrn == "ulik" {
+				if x.Symbol.Like == "rem" {
 					inc = append(inc, false)
 				}
 			}

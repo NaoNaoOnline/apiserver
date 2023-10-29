@@ -146,15 +146,6 @@ func (w *wrapper) Update(ctx context.Context, req *description.UpdateI) (*descri
 		}
 
 		for _, x := range req.Object {
-			if x.Symbol != nil && x.Symbol.Xtrn == "" {
-				return nil, tracer.Mask(runtime.QueryObjectEmptyError)
-			}
-			if x.Update != nil && len(x.Update) == 0 {
-				return nil, tracer.Mask(runtime.QueryObjectEmptyError)
-			}
-		}
-
-		for _, x := range req.Object {
 			if x.Intern == nil && x.Update != nil {
 				return nil, tracer.Mask(updateEmptyError)
 			}
@@ -170,8 +161,17 @@ func (w *wrapper) Update(ctx context.Context, req *description.UpdateI) (*descri
 			if x.Intern != nil && x.Intern.Desc == "" {
 				return nil, tracer.Mask(runtime.QueryObjectEmptyError)
 			}
-			if x.Symbol != nil && x.Symbol.Xtrn == "" {
+			if x.Symbol != nil && x.Symbol.Like == "" {
 				return nil, tracer.Mask(runtime.QueryObjectEmptyError)
+			}
+			if x.Update != nil && len(x.Update) == 0 {
+				return nil, tracer.Mask(runtime.QueryObjectEmptyError)
+			}
+		}
+
+		for _, x := range req.Object {
+			if x.Symbol != nil && x.Symbol.Like != "add" && x.Symbol.Like != "rem" {
+				return nil, tracer.Mask(updateSymbolInvalidError)
 			}
 		}
 
