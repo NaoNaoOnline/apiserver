@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/NaoNaoOnline/apiserver/pkg/generic"
+	"github.com/NaoNaoOnline/apiserver/pkg/object/objectfield"
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectid"
 	"github.com/xh3b4sd/tracer"
 )
@@ -14,6 +15,8 @@ import (
 type Object struct {
 	// Cate is the list of label IDs under which the event is categorized.
 	Cate []objectid.ID `json:"cate"`
+	// Clck is the number of link clicks this description received.
+	Clck objectfield.Integer `json:"clck"`
 	// Crtd is the time at which the event got created.
 	Crtd time.Time `json:"crtd"`
 	// Dltd is the time at which the event got deleted.
@@ -98,6 +101,12 @@ func (o *Object) Verify() error {
 		}
 		if len(o.Cate) > 5 {
 			return tracer.Maskf(eventLabelLimitError, "cate")
+		}
+	}
+
+	{
+		if o.Clck.Data < 0 {
+			return tracer.Mask(eventClckNegativeError)
 		}
 	}
 

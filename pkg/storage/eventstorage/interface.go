@@ -83,4 +83,13 @@ type Interface interface {
 	//     @out[0] the list of event objects created by the given user IDs
 	//
 	SearchUser([]objectid.ID) ([]*Object, error)
+
+	// UpdateClck modifies the existing event objects by tracking the addition of
+	// a link click for the given user.
+	//
+	//     @inp[0] the user clicking the event link
+	//     @inp[1] the list of event objects to modify
+	//     @out[0] the list of operation states related to the modified event objects
+	//
+	UpdateClck([]*Object) ([]objectstate.String, error)
 }

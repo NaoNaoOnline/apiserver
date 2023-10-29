@@ -172,6 +172,12 @@ func (h *Handler) Search(ctx context.Context, req *event.SearchI) (*event.Search
 		}
 
 		res.Object = append(res.Object, &event.SearchO_Object{
+			Extern: []*event.SearchO_Object_Extern{
+				{
+					Amnt: strconv.FormatInt(x.Clck.Data, 10),
+					Kind: "link",
+				},
+			},
 			Intern: &event.SearchO_Object_Intern{
 				Crtd: strconv.FormatInt(x.Crtd.Unix(), 10),
 				Evnt: x.Evnt.String(),

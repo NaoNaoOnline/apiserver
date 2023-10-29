@@ -1,27 +1,17 @@
 package eventhandler
 
 import (
-	"errors"
-
 	"github.com/xh3b4sd/tracer"
 )
 
-var searchInternConflictError = &tracer.Error{
-	Kind: "searchInternConflictError",
-	Desc: "The request expects the query object to contain one of [intern.evnt intern.user]. The query object was not found to contain one of [intern.evnt intern.user]. Therefore the request failed.",
+var eventAlreadyHappenedError = &tracer.Error{
+	Kind: "eventAlreadyHappenedError",
+	Desc: "The request expects event objects to be clicked until they have already happened. The event object was found to have already happened. Therefore the request failed.",
 }
 
-func IsSearchInternConflict(err error) bool {
-	return errors.Is(err, searchInternConflictError)
-}
-
-var searchInternEmptyError = &tracer.Error{
-	Kind: "searchInternEmptyError",
-	Desc: "The request expects the query object to contain one of [intern.evnt intern.user]. The query object was not found to contain one of [intern.evnt intern.user]. Therefore the request failed.",
-}
-
-func IsSearchInternEmpty(err error) bool {
-	return errors.Is(err, searchInternEmptyError)
+var eventDeletedError = &tracer.Error{
+	Kind: "eventDeletedError",
+	Desc: "The request expects event objects to be clicked until they are deleted. The event object was found to have already been deleted. Therefore the request failed.",
 }
 
 var queryObjectConflictError = &tracer.Error{
@@ -29,8 +19,14 @@ var queryObjectConflictError = &tracer.Error{
 	Desc: "The request expects the query object to contain one of [intern public symbol]. The query object was not found to contain one of [intern public symbol]. Therefore the request failed.",
 }
 
-func IsQueryObjectConflictError(err error) bool {
-	return errors.Is(err, queryObjectConflictError)
+var searchInternConflictError = &tracer.Error{
+	Kind: "searchInternConflictError",
+	Desc: "The request expects the query object to contain one of [intern.evnt intern.user]. The query object was not found to contain one of [intern.evnt intern.user]. Therefore the request failed.",
+}
+
+var searchInternEmptyError = &tracer.Error{
+	Kind: "searchInternEmptyError",
+	Desc: "The request expects the query object to contain one of [intern.evnt intern.user]. The query object was not found to contain one of [intern.evnt intern.user]. Therefore the request failed.",
 }
 
 var searchPublicEmptyError = &tracer.Error{
@@ -38,17 +34,9 @@ var searchPublicEmptyError = &tracer.Error{
 	Desc: "The request expects the query object to contain one of [public.cate public.host]. The query object was not found to contain one of [public.cate public.host]. Therefore the request failed.",
 }
 
-func IsSearchPublicEmpty(err error) bool {
-	return errors.Is(err, searchPublicEmptyError)
-}
-
 var searchSymbolConflictError = &tracer.Error{
 	Kind: "searchSymbolConflictError",
 	Desc: "The request expects the query object to contain one of [symbol.list symbol.ltst symbol.rctn]. The query object was not found to contain one of [symbol.list symbol.ltst symbol.rctn]. Therefore the request failed.",
-}
-
-func IsSearchSymbolConflict(err error) bool {
-	return errors.Is(err, searchSymbolConflictError)
 }
 
 var searchSymbolEmptyError = &tracer.Error{
@@ -56,6 +44,7 @@ var searchSymbolEmptyError = &tracer.Error{
 	Desc: "The request expects the query object to contain one of [symbol.list symbol.ltst symbol.rctn]. The query object was not found to contain one of [symbol.list symbol.ltst symbol.rctn]. Therefore the request failed.",
 }
 
-func IsSearchSymbolEmpty(err error) bool {
-	return errors.Is(err, searchSymbolEmptyError)
+var updateSymbolInvalidError = &tracer.Error{
+	Kind: "updateSymbolInvalidError",
+	Desc: "The request expects symbol.link to be one of [add]. symbol.link was not found to be one of [add]. Therefore the request failed.",
 }

@@ -165,5 +165,37 @@ func (w *wrapper) Update(ctx context.Context, req *event.UpdateI) (*event.Update
 		}
 	}
 
+	{
+		for _, x := range req.Object {
+			if x.Intern == nil && x.Symbol == nil {
+				return nil, tracer.Mask(runtime.QueryObjectEmptyError)
+			}
+		}
+
+		for _, x := range req.Object {
+			if x.Intern == nil && x.Symbol != nil {
+				return nil, tracer.Mask(runtime.QueryObjectEmptyError)
+			}
+			if x.Intern != nil && x.Symbol == nil {
+				return nil, tracer.Mask(runtime.QueryObjectEmptyError)
+			}
+		}
+
+		for _, x := range req.Object {
+			if x.Intern != nil && x.Intern.Evnt == "" {
+				return nil, tracer.Mask(runtime.QueryObjectEmptyError)
+			}
+			if x.Symbol != nil && x.Symbol.Link == "" {
+				return nil, tracer.Mask(runtime.QueryObjectEmptyError)
+			}
+		}
+
+		for _, x := range req.Object {
+			if x.Symbol != nil && x.Symbol.Link != "add" {
+				return nil, tracer.Mask(updateSymbolInvalidError)
+			}
+		}
+	}
+
 	return w.han.Update(ctx, req)
 }
