@@ -1,6 +1,7 @@
 package fakeit
 
 import (
+	"github.com/NaoNaoOnline/apiserver/pkg/object/objectfield"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/descriptionstorage"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/eventstorage"
@@ -56,6 +57,9 @@ func (r *run) randomDesc(sto *storage.Storage, fak *gofakeit.Faker) *description
 	{
 		obj = &descriptionstorage.Object{
 			Evnt: eve.Upc().IDs()[0],
+			Like: objectfield.Integer{
+				Data: int64(fak.Number(0, 10000)),
+			},
 			Text: txt,
 			User: use[0].User,
 		}

@@ -146,13 +146,13 @@ func (w *wrapper) Update(ctx context.Context, req *description.UpdateI) (*descri
 		}
 
 		for _, x := range req.Object {
-			if x.Intern == nil && x.Update != nil {
+			if x.Intern == nil {
 				return nil, tracer.Mask(updateEmptyError)
 			}
-			if x.Intern != nil && x.Update == nil {
+			if x.Intern != nil && (x.Symbol == nil && x.Update == nil) {
 				return nil, tracer.Mask(updateEmptyError)
 			}
-			if x.Symbol != nil && (x.Intern != nil || x.Update != nil) {
+			if x.Intern != nil && (x.Symbol != nil && x.Update != nil) {
 				return nil, tracer.Mask(updateSymbolConflictError)
 			}
 		}
