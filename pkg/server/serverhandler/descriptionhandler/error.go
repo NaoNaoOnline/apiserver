@@ -36,5 +36,5 @@ var updateEmptyError = &tracer.Error{
 
 var updateSymbolConflictError = &tracer.Error{
 	Kind: "updateSymbolConflictError",
-	Desc: "The request expects the query object to not contain any of [intern update] if symbol is configured. The query object was not found to contain one of [intern.evnt intern.user]. Therefore the request failed.",
+	Desc: "The request expects the query object to not contain any of [intern update] if symbol is configured. The query object was found to contain one of [intern update]. Therefore the request failed.",
 }
