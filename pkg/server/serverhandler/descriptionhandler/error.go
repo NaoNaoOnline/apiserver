@@ -41,5 +41,5 @@ var updateSymbolConflictError = &tracer.Error{
 
 var updateSymbolInvalidError = &tracer.Error{
 	Kind: "updateSymbolInvalidError",
-	Desc: "The request expects the query symbol to be one of [add rem] if symbol is configured. The query symbol was found not to found to be one of [add rem]. Therefore the request failed.",
+	Desc: "The request expects the query symbol to be one of [add rem] if symbol is configured. The query symbol was not found to be one of [add rem]. Therefore the request failed.",
 }
