@@ -25,7 +25,7 @@ func (r *Redis) SearchDesc(use objectid.ID, inp []objectid.ID) ([]*Object, error
 
 	var lik []string
 	if use != "" {
-		lik, err = r.red.Simple().Search().Multi(objectid.Fmt(inp, fmt.Sprintf(keyfmt.DescriptionLike, use, "%s"))...)
+		lik, err = r.red.Simple().Search().Multi(objectid.Fmt(inp, fmt.Sprintf(keyfmt.LikeMapping, use, "%s"))...)
 		if simple.IsNotFound(err) {
 			// fall through
 		} else if err != nil {
@@ -99,4 +99,26 @@ func (r *Redis) SearchEvnt(use objectid.ID, evn []objectid.ID) ([]*Object, error
 	}
 
 	return out, nil
+}
+
+func (r *Redis) SearchLike(des objectid.ID) ([]objectid.ID, error) {
+	var err error
+
+	// val will result in a list of all user IDs having reacted to the given
+	// description ID, if any.
+	var val []string
+	{
+		val, err = r.red.Sorted().Search().Order(likDes(des), 0, -1)
+		if err != nil {
+			return nil, tracer.Mask(err)
+		}
+	}
+
+	// There might not be any values, and so we do not proceed, but instead
+	// continue with the next event ID, if any.
+	if len(val) == 0 {
+		return nil, nil
+	}
+
+	return objectid.IDs(val), nil
 }

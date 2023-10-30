@@ -15,7 +15,7 @@ func Random(num int64) ID {
 }
 
 func System() ID {
-	return "0"
+	return "1"
 }
 
 func (i ID) Float() float64 {

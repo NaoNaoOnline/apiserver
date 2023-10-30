@@ -58,8 +58,8 @@ func labObj(oid objectid.ID) string {
 	return fmt.Sprintf(keyfmt.LabelObject, oid)
 }
 
-func votUse(oid objectid.ID) string {
-	return fmt.Sprintf(keyfmt.VoteUser, oid)
+func likUse(oid objectid.ID) string {
+	return fmt.Sprintf(keyfmt.LikeUser, oid)
 }
 
 func musStr(obj *Object) string {

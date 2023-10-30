@@ -62,12 +62,13 @@ type Interface interface {
 	//
 	SearchLtst() ([]*Object, error)
 
-	// SearchRctn returns the event objects the given user ID reacted to.
+	// SearchLike returns the event objects the given user ID reacted to in the
+	// form of description likes.
 	//
 	//     @inp[0] the user ID that reacted to events
 	//     @out[0] the list of event objects the given user ID reacted to
 	//
-	SearchRctn(objectid.ID) ([]*Object, error)
+	SearchLike(objectid.ID) ([]*Object, error)
 
 	// SearchRule returns the event objects matching all the criteria specified by
 	// the given rule objects.

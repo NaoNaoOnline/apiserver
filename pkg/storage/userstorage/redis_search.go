@@ -56,11 +56,20 @@ func (r *Redis) SearchFake() ([]*Object, error) {
 func (r *Redis) SearchName(nam []string) ([]*Object, error) {
 	var err error
 
+	// We need to generate the storage keys for the user name lookups. The first
+	// step is to clean the given user names themselves so they can be matched
+	// against our indexed format. The formatted user names are then used to
+	// create the clean storage key representation.
+	var key []string
+	{
+		key = objectid.Fmt(keyfmt.Strings(nam, keyfmt.Indx), keyfmt.UserName)
+	}
+
 	// val will result in a list of all user IDs mapped to the given user names,
 	// if any.
 	var val []string
 	{
-		val, err = r.red.Simple().Search().Multi(objectid.Fmt(nam, keyfmt.UserName)...)
+		val, err = r.red.Simple().Search().Multi(key...)
 		if simple.IsNotFound(err) {
 			return nil, tracer.Maskf(userNotFoundError, "%v", nam)
 		} else if err != nil {

@@ -57,12 +57,29 @@ func (r *Redis) UpdateLike(use objectid.ID, obj []*Object, inc []bool) ([]object
 		// Persist the like indicator for the calling user and the given description
 		// ID, if a like happened. Othwerwise remove the like indicator.
 		if inc[i] {
-			err = r.red.Simple().Create().Element(desLik(use, obj[i].Desc), "1")
+			err = r.red.Simple().Create().Element(likMap(use, obj[i].Desc), "1")
+			if err != nil {
+				return nil, tracer.Mask(err)
+			}
+			err = r.red.Sorted().Create().Score(likDes(obj[i].Desc), use.String(), use.Float())
+			if err != nil {
+				return nil, tracer.Mask(err)
+			}
+			// TODO comment score is event id
+			err = r.red.Sorted().Create().Score(likUse(use), obj[i].Desc.String(), obj[i].Evnt.Float())
 			if err != nil {
 				return nil, tracer.Mask(err)
 			}
 		} else {
-			_, err = r.red.Simple().Delete().Multi(desLik(use, obj[i].Desc))
+			_, err = r.red.Simple().Delete().Multi(likMap(use, obj[i].Desc))
+			if err != nil {
+				return nil, tracer.Mask(err)
+			}
+			err = r.red.Sorted().Delete().Score(likDes(obj[i].Desc), use.Float())
+			if err != nil {
+				return nil, tracer.Mask(err)
+			}
+			err = r.red.Sorted().Delete().Value(likUse(use), obj[i].Desc.String())
 			if err != nil {
 				return nil, tracer.Mask(err)
 			}
