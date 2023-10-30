@@ -54,17 +54,64 @@ func (r *Redis) UpdateLike(use objectid.ID, obj []*Object, inc []bool) ([]object
 			}
 		}
 
-		// Persist the like indicator for the calling user and the given description
-		// ID, if a like happened. Othwerwise remove the like indicator.
+		// Persist the like indicators for the calling user and the given description
+		// ID, if a like happened. Othwerwise remove the like indicators.
 		if inc[i] {
-			err = r.red.Simple().Create().Element(desLik(use, obj[i].Desc), "1")
-			if err != nil {
-				return nil, tracer.Mask(err)
+			// We use a simple key-value pair for a user-description relationship so
+			// we can lookup all the likes a user made on a list of descriptions. This
+			// internal data structure is used in the Description.Search endpoints.
+			{
+				err = r.red.Simple().Create().Element(likMap(use, obj[i].Desc), "1")
+				if err != nil {
+					return nil, tracer.Mask(err)
+				}
+			}
+
+			// We use a sorted set to store all the user IDs that have reacted to a
+			// particular description in the form of a like. This internal data
+			// structure is used to find and cleanup the other keys and values that we
+			// use for tracking user likes on descriptions.
+			{
+				err = r.red.Sorted().Create().Score(likDes(obj[i].Desc), use.String(), use.Float())
+				if err != nil {
+					return nil, tracer.Mask(err)
+				}
+			}
+
+			// We use a sorted set for all the event-description relationships that a
+			// user reacted to in the form of a like. This internal data structure is
+			// used in the Event.SearchLike endpoint. Note that the value here is the
+			// description ID and the score here is the event ID.
+			{
+				err = r.red.Sorted().Create().Score(likUse(use), obj[i].Desc.String(), obj[i].Evnt.Float())
+				if err != nil {
+					return nil, tracer.Mask(err)
+				}
 			}
 		} else {
-			_, err = r.red.Simple().Delete().Multi(desLik(use, obj[i].Desc))
-			if err != nil {
-				return nil, tracer.Mask(err)
+			// Just reverse the operation from above.
+			{
+				_, err = r.red.Simple().Delete().Multi(likMap(use, obj[i].Desc))
+				if err != nil {
+					return nil, tracer.Mask(err)
+				}
+			}
+
+			// Just reverse the operation from above.
+			{
+				err = r.red.Sorted().Delete().Score(likDes(obj[i].Desc), use.Float())
+				if err != nil {
+					return nil, tracer.Mask(err)
+				}
+			}
+
+			// Just reverse the operation from above. Note that we use the description
+			// ID as value to remove the like indicator.
+			{
+				err = r.red.Sorted().Delete().Value(likUse(use), obj[i].Desc.String())
+				if err != nil {
+					return nil, tracer.Mask(err)
+				}
 			}
 		}
 

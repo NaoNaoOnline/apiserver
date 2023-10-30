@@ -105,42 +105,16 @@ func (r *Redis) SearchLabl(lab []objectid.ID) ([]*Object, error) {
 	return out, nil
 }
 
-func (r *Redis) SearchLtst() ([]*Object, error) {
+func (r *Redis) SearchLike(use objectid.ID) ([]*Object, error) {
 	var err error
 
-	var now time.Time
-	{
-		now = time.Now().UTC()
-	}
-
-	var min time.Time
-	var max time.Time
-	{
-		min = now.Add(-oneWeek)
-		max = now.Add(+oneWeek)
-	}
-
-	var out []*Object
-	{
-		out, err = r.searchTime(min, max)
-		if err != nil {
-			return nil, tracer.Mask(err)
-		}
-	}
-
-	return out, nil
-}
-
-func (r *Redis) SearchRctn(use objectid.ID) ([]*Object, error) {
-	var err error
-
-	// The user votes are indexed in a way were vote IDs are values and event IDs
-	// are scores. Below we search for all values and their respective scores
-	// using the 4th parameter true. Note that the event IDs will potentially be
-	// duplicated across the list.
+	// The user likes are indexed in a way were description IDs are values and
+	// event IDs are scores. Below we search for all values and their respective
+	// scores using the 4th parameter true. Note that the event IDs will
+	// potentially be duplicated across the list.
 	var lis []string
 	{
-		lis, err = r.red.Sorted().Search().Order(votUse(use), 0, -1, true)
+		lis, err = r.red.Sorted().Search().Order(likUse(use), 0, -1, true)
 		if err != nil {
 			return nil, tracer.Mask(err)
 		}
@@ -187,6 +161,32 @@ func (r *Redis) SearchRctn(use objectid.ID) ([]*Object, error) {
 		}
 
 		out = append(out, obj)
+	}
+
+	return out, nil
+}
+
+func (r *Redis) SearchLtst() ([]*Object, error) {
+	var err error
+
+	var now time.Time
+	{
+		now = time.Now().UTC()
+	}
+
+	var min time.Time
+	var max time.Time
+	{
+		min = now.Add(-oneWeek)
+		max = now.Add(+oneWeek)
+	}
+
+	var out []*Object
+	{
+		out, err = r.searchTime(min, max)
+		if err != nil {
+			return nil, tracer.Mask(err)
+		}
 	}
 
 	return out, nil

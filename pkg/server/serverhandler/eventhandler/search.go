@@ -136,7 +136,7 @@ func (h *Handler) Search(ctx context.Context, req *event.SearchI) (*event.Search
 		}
 
 		if rct {
-			lis, err := h.eve.SearchRctn(userid.FromContext(ctx))
+			lis, err := h.eve.SearchLike(userid.FromContext(ctx))
 			if err != nil {
 				return nil, tracer.Mask(err)
 			}

@@ -21,6 +21,17 @@ type Interface interface {
 	//
 	DeleteDesc([]*Object) ([]objectstate.String, error)
 
+	// DeleteLike purges internal data structures related to description likes,
+	// given the many user IDs that have reacted to the provided description ID.
+	// This function is mainly used for cleaning up internal description related
+	// data structures in a background process.
+	//
+	//     @inp[0] the description ID to delete
+	//     @inp[1] the many user IDs that have reacted to the provided description ID
+	//     @out[0] the list of operation states related to the purged data structures
+	//
+	DeleteLike(des objectid.ID, use []objectid.ID) ([]objectstate.String, error)
+
 	// DeleteWrkr initializes the asynchronous deletion process for the given
 	// description objects and all of its associated data structures by setting
 	// Object.Dltd and creating the respective worker tasks that will be processed
@@ -48,6 +59,15 @@ type Interface interface {
 	//     @out[0] the list of description objects belonging to the given event IDs
 	//
 	SearchEvnt(objectid.ID, []objectid.ID) ([]*Object, error)
+
+	// SearchLike returns the user IDs that reacted to the given description ID in
+	// the form of a like. This function is mainly used for cleaning up internal
+	// description related data structures in a background process.
+	//
+	//     @inp[0] the description ID to search likes for
+	//     @out[0] the list of user IDs that reacted to the given description ID
+	//
+	SearchLike(objectid.ID) ([]objectid.ID, error)
 
 	// UpdateLike modifies the existing description objects by tracking the
 	// addition or removal of a like for the given user.

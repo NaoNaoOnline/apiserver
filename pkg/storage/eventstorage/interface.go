@@ -40,8 +40,7 @@ type Interface interface {
 	SearchEvnt([]objectid.ID) ([]*Object, error)
 
 	// SearchHpnd returns the event objects that happened over a week ago. This
-	// function is mainly used for cleaning up old events in a background process,
-	// see eventhandler.SystemHandler.
+	// function is mainly used for cleaning up old events in a background process.
 	//
 	//     @out[0] the list of event objects that happened over a week ago
 	//
@@ -54,6 +53,14 @@ type Interface interface {
 	//
 	SearchLabl([]objectid.ID) ([]*Object, error)
 
+	// SearchLike returns the event objects the given user ID reacted to in the
+	// form of description likes.
+	//
+	//     @inp[0] the user ID that reacted to events
+	//     @out[0] the list of event objects the given user ID reacted to
+	//
+	SearchLike(objectid.ID) ([]*Object, error)
+
 	// SearchLtst returns the event objects known to happen right now.
 	// Specifically, these are the latest events within a time range of -1 and +1
 	// week, relative to time of execution, read "now".
@@ -61,13 +68,6 @@ type Interface interface {
 	//     @out[0] the list of event objects known to happen right now
 	//
 	SearchLtst() ([]*Object, error)
-
-	// SearchRctn returns the event objects the given user ID reacted to.
-	//
-	//     @inp[0] the user ID that reacted to events
-	//     @out[0] the list of event objects the given user ID reacted to
-	//
-	SearchRctn(objectid.ID) ([]*Object, error)
 
 	// SearchRule returns the event objects matching all the criteria specified by
 	// the given rule objects.

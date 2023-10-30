@@ -10,15 +10,6 @@ const (
 	//
 	DescriptionEvent = "des/eve/%s"
 
-	// DescriptionLike is used to store all the indications of users liking a
-	// description.
-	//
-	//     user ID / description ID          0 / 1
-	//                                 ->
-	//     des/use/1234/obj/1234             1
-	//
-	DescriptionLike = "des/use/%s/obj/%s"
-
 	// DescriptionObject is used to store our internal representation of a
 	// description object.
 	//
@@ -114,6 +105,33 @@ const (
 	//
 	LabelUser = "lab/use/%s"
 
+	// LikeDescription is used to store all the user IDs that have reacted to a
+	// description in the form of a like.
+	//
+	//     description ID          user IDs
+	//                       ->
+	//     lik/des/1234            1234,5678
+	//
+	LikeDescription = "lik/des/%s"
+
+	// LikeMapping is used to store all the indications of users liking a
+	// description.
+	//
+	//     user ID / description ID          0 / 1
+	//                                 ->
+	//     lik/use/1234/des/5678             1
+	//
+	LikeMapping = "lik/use/%s/des/%s"
+
+	// LikeUser is used to store all the description IDs that a user reacted to in
+	// the form of a like.
+	//
+	//     user ID               description IDs
+	//                     ->
+	//     lik/use/1234          1234,5678
+	//
+	LikeUser = "lik/use/%s"
+
 	// ListObject is used to store our internal representation of a list object.
 	//
 	//     list ID               list object
@@ -149,42 +167,6 @@ const (
 	//     pol/act                     [{"key": "val"}]
 	//
 	PolicyActive = "pol/act"
-
-	// ReactionCustom is used to store all the IDs of reactions individually
-	// created by users.
-	//
-	//     kind custom          reaction IDs
-	//                    ->
-	//     rct/kin/cus          1234,5678
-	//
-	ReactionCustom = "rct/kin/cus"
-
-	// ReactionObject is used to store our internal representation of an reaction
-	// object.
-	//
-	//     reaction ID           reaction object
-	//                     ->
-	//     rct/obj/1234          {"key": "val"}
-	//
-	ReactionObject = "rct/obj/%s"
-
-	// ReactionSystem is used to store all the IDs of reactions natively supported
-	// by the system.
-	//
-	//     kind system          reaction IDs
-	//                    ->
-	//     rct/kin/sys          1234,5678
-	//
-	ReactionSystem = "rct/kin/sys"
-
-	// ReactionUser is used to store all the IDs of reactions created by a specific
-	// user.
-	//
-	//     user ID               reaction IDs
-	//                     ->
-	//     rct/use/5678          1234,5678
-	//
-	ReactionUser = "rct/use/%s"
 
 	// RuleList is used to store all the IDs of rules mapped to a specific list.
 	//
@@ -239,32 +221,6 @@ const (
 	//
 	UserObject = "use/obj/%s"
 
-	// VoteDescription is used to store all the IDs of votes mapped to a specific
-	// description.
-	//
-	//     description ID          vote IDs
-	//                       ->
-	//     vot/des/5678            1234,5678
-	//
-	VoteDescription = "vot/des/%s"
-
-	// VoteObject is used to store our internal representation of a vote object.
-	//
-	//     vote ID               vote object
-	//                     ->
-	//     vot/obj/1234          {"key": "val"}
-	//
-	VoteObject = "vot/obj/%s"
-
-	// VoteUser is used to store all the IDs of votes created by a specific
-	// user.
-	//
-	//     user ID               vote IDs
-	//                     ->
-	//     vot/use/5678          1234,5678
-	//
-	VoteUser = "vot/use/%s"
-
 	// WalletAddress is used to store wallet mappings between wallet address and
 	// internal user representations.
 	//
@@ -273,15 +229,6 @@ const (
 	//     wal/add/5678            1234
 	//
 	WalletAddress = "wal/add/%s"
-
-	// VoteUserEvent is used to store all the IDs of votes mapped to a specific
-	// user/event combination.
-	//
-	//     user ID / event ID             vote IDs
-	//                              ->
-	//     vot/use/1234/eve/5678          1234,5678
-	//
-	VoteUserEvent = "vot/use/%s/eve/%s"
 
 	// WalletEthereum is used to store all the IDs of user wallets with kind eth.
 	//

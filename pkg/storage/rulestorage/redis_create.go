@@ -8,7 +8,6 @@ import (
 	"github.com/xh3b4sd/tracer"
 )
 
-// TODO
 func (r *Redis) Create(inp []*Object) ([]*Object, error) {
 	var err error
 

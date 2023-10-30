@@ -46,10 +46,6 @@ func desEve(oid objectid.ID) string {
 	return fmt.Sprintf(keyfmt.DescriptionEvent, oid)
 }
 
-func desLik(use objectid.ID, oid objectid.ID) string {
-	return fmt.Sprintf(keyfmt.DescriptionLike, use, oid)
-}
-
 func desObj(oid objectid.ID) string {
 	return fmt.Sprintf(keyfmt.DescriptionObject, oid)
 }
@@ -60,6 +56,18 @@ func desUse(oid objectid.ID) string {
 
 func eveObj(oid objectid.ID) string {
 	return fmt.Sprintf(keyfmt.EventObject, oid)
+}
+
+func likDes(oid objectid.ID) string {
+	return fmt.Sprintf(keyfmt.LikeDescription, oid)
+}
+
+func likMap(use objectid.ID, oid objectid.ID) string {
+	return fmt.Sprintf(keyfmt.LikeMapping, use, oid)
+}
+
+func likUse(oid objectid.ID) string {
+	return fmt.Sprintf(keyfmt.LikeUser, oid)
 }
 
 func musByt(pat []*Patch) []byte {
