@@ -31,9 +31,9 @@ func (r *Redis) DeleteDesc(inp []*Object) ([]objectstate.String, error) {
 
 		// Since the deletion process starts with the normalized key-value pair in
 		// the handler, we delete it as the very last step, so the operation can
-		// eventually be retried.
+		// eventually be retried. Here we also delete the description ID mappings
+		// tracking all users that have reacted to it in one go.
 		{
-			// TODO comment
 			lik := likDes(inp[i].Desc)
 			obj := desObj(inp[i].Desc)
 
@@ -56,7 +56,6 @@ func (r *Redis) DeleteLike(des objectid.ID, use []objectid.ID) ([]objectstate.St
 
 	var out []objectstate.String
 	for i := range use {
-		// TODO comment
 		{
 			_, err = r.red.Simple().Delete().Multi(likMap(use[i], des))
 			if err != nil {

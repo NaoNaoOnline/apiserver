@@ -23,6 +23,8 @@ type Interface interface {
 
 	// DeleteLike purges internal data structures related to description likes,
 	// given the many user IDs that have reacted to the provided description ID.
+	// This function is mainly used for cleaning up internal description related
+	// data structures in a background process.
 	//
 	//     @inp[0] the description ID to delete
 	//     @inp[1] the many user IDs that have reacted to the provided description ID
@@ -59,7 +61,8 @@ type Interface interface {
 	SearchEvnt(objectid.ID, []objectid.ID) ([]*Object, error)
 
 	// SearchLike returns the user IDs that reacted to the given description ID in
-	// the form of a like.
+	// the form of a like. This function is mainly used for cleaning up internal
+	// description related data structures in a background process.
 	//
 	//     @inp[0] the description ID to search likes for
 	//     @out[0] the list of user IDs that reacted to the given description ID
