@@ -53,14 +53,6 @@ type Interface interface {
 	//
 	SearchLabl([]objectid.ID) ([]*Object, error)
 
-	// SearchLtst returns the event objects known to happen right now.
-	// Specifically, these are the latest events within a time range of -1 and +1
-	// week, relative to time of execution, read "now".
-	//
-	//     @out[0] the list of event objects known to happen right now
-	//
-	SearchLtst() ([]*Object, error)
-
 	// SearchLike returns the event objects the given user ID reacted to in the
 	// form of description likes.
 	//
@@ -68,6 +60,14 @@ type Interface interface {
 	//     @out[0] the list of event objects the given user ID reacted to
 	//
 	SearchLike(objectid.ID) ([]*Object, error)
+
+	// SearchLtst returns the event objects known to happen right now.
+	// Specifically, these are the latest events within a time range of -1 and +1
+	// week, relative to time of execution, read "now".
+	//
+	//     @out[0] the list of event objects known to happen right now
+	//
+	SearchLtst() ([]*Object, error)
 
 	// SearchRule returns the event objects matching all the criteria specified by
 	// the given rule objects.
