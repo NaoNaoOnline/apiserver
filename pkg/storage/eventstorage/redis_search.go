@@ -60,13 +60,13 @@ func (r *Redis) SearchHpnd() ([]*Object, error) {
 	var min time.Time
 	var max time.Time
 	{
-		min = time.Time{}
-		max = now.Add(-oneWeek)
+		min = now.Add(-oneWeek)
+		max = now
 	}
 
 	var out []*Object
 	{
-		out, err = r.searchTime(min, max)
+		out, err = r.SearchTime(min, max)
 		if err != nil {
 			return nil, tracer.Mask(err)
 		}
@@ -105,7 +105,7 @@ func (r *Redis) SearchLabl(lab []objectid.ID) ([]*Object, error) {
 	return out, nil
 }
 
-func (r *Redis) SearchLike(use objectid.ID) ([]*Object, error) {
+func (r *Redis) SearchLike(use objectid.ID, min int, max int) ([]*Object, error) {
 	var err error
 
 	// The user likes are indexed in a way were description IDs are values and
@@ -114,7 +114,7 @@ func (r *Redis) SearchLike(use objectid.ID) ([]*Object, error) {
 	// potentially be duplicated across the list.
 	var lis []string
 	{
-		lis, err = r.red.Sorted().Search().Order(likUse(use), 0, -1, true)
+		lis, err = r.red.Sorted().Search().Order(likUse(use), min, max, true)
 		if err != nil {
 			return nil, tracer.Mask(err)
 		}
@@ -166,7 +166,7 @@ func (r *Redis) SearchLike(use objectid.ID) ([]*Object, error) {
 	return out, nil
 }
 
-func (r *Redis) SearchLtst() ([]*Object, error) {
+func (r *Redis) SearchUpcm() ([]*Object, error) {
 	var err error
 
 	var now time.Time
@@ -177,13 +177,13 @@ func (r *Redis) SearchLtst() ([]*Object, error) {
 	var min time.Time
 	var max time.Time
 	{
-		min = now.Add(-oneWeek)
+		min = now
 		max = now.Add(+oneWeek)
 	}
 
 	var out []*Object
 	{
-		out, err = r.searchTime(min, max)
+		out, err = r.SearchTime(min, max)
 		if err != nil {
 			return nil, tracer.Mask(err)
 		}
@@ -236,6 +236,36 @@ func (r *Redis) SearchRule(rul []*rulestorage.Object) ([]*Object, error) {
 	return out, nil
 }
 
+func (r *Redis) SearchTime(min time.Time, max time.Time) ([]*Object, error) {
+	var err error
+
+	// val will result in a list of all event IDs indexed to happen during the
+	// given time period, if any.
+	var val []string
+	{
+		val, err = r.red.Sorted().Search().Score(keyfmt.EventTime, float64(min.Unix()), float64(max.Unix()))
+		if err != nil {
+			return nil, tracer.Mask(err)
+		}
+	}
+
+	// There might not be any values, and so we do not proceed, but instead
+	// return nothing.
+	if len(val) == 0 {
+		return nil, nil
+	}
+
+	var out []*Object
+	{
+		out, err = r.SearchEvnt(objectid.IDs(val))
+		if err != nil {
+			return nil, tracer.Mask(err)
+		}
+	}
+
+	return out, nil
+}
+
 func (r *Redis) SearchUser(use []objectid.ID) ([]*Object, error) {
 	var err error
 
@@ -264,36 +294,6 @@ func (r *Redis) SearchUser(use []objectid.ID) ([]*Object, error) {
 			}
 
 			out = append(out, lis...)
-		}
-	}
-
-	return out, nil
-}
-
-func (r *Redis) searchTime(min time.Time, max time.Time) ([]*Object, error) {
-	var err error
-
-	// val will result in a list of all event IDs indexed to happen during the
-	// given time period, if any.
-	var val []string
-	{
-		val, err = r.red.Sorted().Search().Score(keyfmt.EventTime, float64(min.Unix()), float64(max.Unix()))
-		if err != nil {
-			return nil, tracer.Mask(err)
-		}
-	}
-
-	// There might not be any values, and so we do not proceed, but instead
-	// return nothing.
-	if len(val) == 0 {
-		return nil, nil
-	}
-
-	var out []*Object
-	{
-		out, err = r.SearchEvnt(objectid.IDs(val))
-		if err != nil {
-			return nil, tracer.Mask(err)
 		}
 	}
 

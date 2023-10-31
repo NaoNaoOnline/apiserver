@@ -112,7 +112,7 @@ func (w *wrapper) Search(ctx context.Context, req *event.SearchI) (*event.Search
 			if x.Public != nil && (x.Public.Cate == "" && x.Public.Host == "") {
 				return nil, tracer.Mask(searchPublicEmptyError)
 			}
-			if x.Symbol != nil && (x.Symbol.List == "" && x.Symbol.Ltst == "" && x.Symbol.Rctn == "") {
+			if x.Symbol != nil && (x.Symbol.List == "" && x.Symbol.Rctn == "" && x.Symbol.Time == "") {
 				return nil, tracer.Mask(searchSymbolEmptyError)
 			}
 		}
@@ -136,11 +136,29 @@ func (w *wrapper) Search(ctx context.Context, req *event.SearchI) (*event.Search
 			if x.Symbol != nil && (x.Symbol.List != "" && x.Symbol.Rctn != "") {
 				return nil, tracer.Mask(searchSymbolConflictError)
 			}
-			if x.Symbol != nil && (x.Symbol.Ltst != "" && x.Symbol.Rctn != "") {
+			if x.Symbol != nil && (x.Symbol.Time != "" && x.Symbol.Rctn != "") {
 				return nil, tracer.Mask(searchSymbolConflictError)
 			}
-			if x.Symbol != nil && (x.Symbol.List != "" && x.Symbol.Ltst != "") {
+			if x.Symbol != nil && (x.Symbol.List != "" && x.Symbol.Time != "") {
 				return nil, tracer.Mask(searchSymbolConflictError)
+			}
+		}
+
+		for _, x := range req.Object {
+			if x.Symbol != nil && x.Symbol.Rctn != "" && x.Symbol.Rctn != "page" {
+				return nil, tracer.Mask(searchSymbolRctnError)
+			}
+			if x.Symbol != nil && x.Symbol.Time != "" && x.Symbol.Time != "hpnd" && x.Symbol.Time != "page" && x.Symbol.Time != "upcm" {
+				return nil, tracer.Mask(searchSymbolTimeError)
+			}
+		}
+
+		for _, x := range req.Object {
+			if x.Symbol != nil && x.Symbol.Rctn == "page" && (req.Filter == nil || req.Filter.Paging == nil || req.Filter.Paging.Strt == "" || req.Filter.Paging.Stop == "" || musNum(req.Filter.Paging.Strt) < 0 || musNum(req.Filter.Paging.Stop) < -1) {
+				return nil, tracer.Mask(searchSymbolPageError)
+			}
+			if x.Symbol != nil && x.Symbol.Time == "page" && (req.Filter == nil || req.Filter.Paging == nil || req.Filter.Paging.Strt == "" || req.Filter.Paging.Stop == "" || musNum(req.Filter.Paging.Strt) <= 0 || musNum(req.Filter.Paging.Stop) <= 0) {
+				return nil, tracer.Mask(searchSymbolPageError)
 			}
 		}
 	}

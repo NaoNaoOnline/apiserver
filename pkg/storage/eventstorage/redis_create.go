@@ -70,7 +70,7 @@ func (r *Redis) Create(inp []*Object) ([]*Object, error) {
 
 			var obj []*Object
 			{
-				obj, err = r.searchTime(min, max)
+				obj, err = r.SearchTime(min, max)
 				if err != nil {
 					return nil, tracer.Mask(err)
 				}

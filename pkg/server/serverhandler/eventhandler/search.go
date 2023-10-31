@@ -3,6 +3,7 @@ package eventhandler
 import (
 	"context"
 	"strconv"
+	"time"
 
 	"github.com/NaoNaoOnline/apigocode/pkg/event"
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectid"
@@ -104,18 +105,18 @@ func (h *Handler) Search(ctx context.Context, req *event.SearchI) (*event.Search
 	}
 
 	//
-	// Search events by time.
+	// Search events by time, happened.
 	//
 
-	var lts bool
+	var hap bool
 	for _, x := range req.Object {
-		if x.Symbol != nil && x.Symbol.Ltst == "default" {
-			lts = true
+		if x.Symbol != nil && x.Symbol.Time == "hpnd" {
+			hap = true
 		}
 	}
 
-	if lts {
-		lis, err := h.eve.SearchLtst()
+	if hap {
+		lis, err := h.eve.SearchHpnd()
 		if err != nil {
 			return nil, tracer.Mask(err)
 		}
@@ -124,19 +125,65 @@ func (h *Handler) Search(ctx context.Context, req *event.SearchI) (*event.Search
 	}
 
 	//
-	// Search events by reactions.
+	// Search events by time, pagination.
+	//
+
+	var pag bool
+	for _, x := range req.Object {
+		if x.Symbol != nil && x.Symbol.Time == "page" {
+			pag = true
+		}
+	}
+
+	if pag {
+		min := time.Unix(musNum(req.Filter.Paging.Strt), 0)
+		max := time.Unix(musNum(req.Filter.Paging.Stop), 0)
+
+		lis, err := h.eve.SearchTime(min, max)
+		if err != nil {
+			return nil, tracer.Mask(err)
+		}
+
+		out = append(out, lis...)
+	}
+
+	//
+	// Search events by time, upcoming.
+	//
+
+	var upc bool
+	for _, x := range req.Object {
+		if x.Symbol != nil && x.Symbol.Time == "upcm" {
+			upc = true
+		}
+	}
+
+	if upc {
+		lis, err := h.eve.SearchUpcm()
+		if err != nil {
+			return nil, tracer.Mask(err)
+		}
+
+		out = append(out, lis...)
+	}
+
+	//
+	// Search events by reactions, pagination.
 	//
 
 	if userid.FromContext(ctx) != "" {
 		var rct bool
 		for _, x := range req.Object {
-			if x.Symbol != nil && x.Symbol.Rctn == "default" {
+			if x.Symbol != nil && x.Symbol.Rctn == "page" {
 				rct = true
 			}
 		}
 
 		if rct {
-			lis, err := h.eve.SearchLike(userid.FromContext(ctx))
+			min := musNum(req.Filter.Paging.Strt)
+			max := musNum(req.Filter.Paging.Stop)
+
+			lis, err := h.eve.SearchLike(userid.FromContext(ctx), int(min), int(max))
 			if err != nil {
 				return nil, tracer.Mask(err)
 			}

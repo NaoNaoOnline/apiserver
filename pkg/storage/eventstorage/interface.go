@@ -1,6 +1,8 @@
 package eventstorage
 
 import (
+	"time"
+
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectid"
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectstate"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/rulestorage"
@@ -39,8 +41,8 @@ type Interface interface {
 	//
 	SearchEvnt([]objectid.ID) ([]*Object, error)
 
-	// SearchHpnd returns the event objects that happened over a week ago. This
-	// function is mainly used for cleaning up old events in a background process.
+	// SearchHpnd returns the event objects known to have happened already within
+	// the past week.
 	//
 	//     @out[0] the list of event objects that happened over a week ago
 	//
@@ -57,17 +59,11 @@ type Interface interface {
 	// form of description likes.
 	//
 	//     @inp[0] the user ID that reacted to events
+	//     @inp[1] the lower inclusive boundary of the pagination range
+	//     @inp[2] the upper inclusive boundary of the pagination range
 	//     @out[0] the list of event objects the given user ID reacted to
 	//
-	SearchLike(objectid.ID) ([]*Object, error)
-
-	// SearchLtst returns the event objects known to happen right now.
-	// Specifically, these are the latest events within a time range of -1 and +1
-	// week, relative to time of execution, read "now".
-	//
-	//     @out[0] the list of event objects known to happen right now
-	//
-	SearchLtst() ([]*Object, error)
+	SearchLike(objectid.ID, int, int) ([]*Object, error)
 
 	// SearchRule returns the event objects matching all the criteria specified by
 	// the given rule objects.
@@ -76,6 +72,21 @@ type Interface interface {
 	//     @out[0] the list of event objects matching all the criteria of the given list
 	//
 	SearchRule([]*rulestorage.Object) ([]*Object, error)
+
+	// SearchTime returns the event objects known to happen within the given time
+	// range.
+	//
+	//     @inp[0] the lower inclusive boundary of the time range
+	//     @inp[1] the upper inclusive boundary of the time range
+	//     @out[0] the list of event objects known to happen right now
+	//
+	SearchTime(time.Time, time.Time) ([]*Object, error)
+
+	// SearchUpcm returns the event objects known to happen within the next week.
+	//
+	//     @out[0] the list of event objects known to happen right now
+	//
+	SearchUpcm() ([]*Object, error)
 
 	// SearchUser returns the event objects created by the given user IDs.
 	//

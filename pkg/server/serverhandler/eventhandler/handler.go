@@ -97,3 +97,12 @@ func outLab(sco []objectid.ID) string {
 func outTim(tim time.Time) string {
 	return strconv.FormatInt(tim.Unix(), 10)
 }
+
+func musNum(str string) int64 {
+	num, err := strconv.ParseInt(str, 10, 64)
+	if err != nil {
+		return 0
+	}
+
+	return num
+}

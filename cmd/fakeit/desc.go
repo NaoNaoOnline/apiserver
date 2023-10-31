@@ -26,7 +26,7 @@ func (r *run) randomDesc(sto *storage.Storage, fak *gofakeit.Faker) *description
 
 	var eve eventstorage.Slicer
 	{
-		eve, err = sto.Evnt().SearchLtst()
+		eve, err = sto.Evnt().SearchUpcm()
 		if err != nil {
 			tracer.Panic(tracer.Mask(err))
 		}
