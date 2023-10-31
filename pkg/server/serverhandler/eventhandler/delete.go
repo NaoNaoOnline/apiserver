@@ -16,6 +16,11 @@ import (
 func (h *Handler) Delete(ctx context.Context, req *event.DeleteI) (*event.DeleteO, error) {
 	var err error
 
+	var use objectid.ID
+	{
+		use = userid.FromContext(ctx)
+	}
+
 	var eve []objectid.ID
 	for _, x := range req.Object {
 		if x.Intern != nil && x.Intern.Evnt != "" {
@@ -31,22 +36,19 @@ func (h *Handler) Delete(ctx context.Context, req *event.DeleteI) (*event.Delete
 		}
 	}
 
+	var mod bool
+	{
+		mod, err = h.prm.ExistsAcce(permission.SystemEvnt, use, permission.AccessDelete)
+		if err != nil {
+			return nil, tracer.Mask(err)
+		}
+	}
+
 	for _, x := range obj {
-		var use objectid.ID
-		{
-			use = userid.FromContext(ctx)
-		}
-
-		var mod bool
-		{
-			mod, err = h.prm.ExistsAcce(permission.SystemEvnt, use, permission.AccessDelete)
-			if err != nil {
-				return nil, tracer.Mask(err)
-			}
-		}
-
+		// Skip all validity checks for moderators and go straight ahead to
+		// deletion.
 		if mod {
-			continue
+			break
 		}
 
 		if use != x.User {
@@ -63,7 +65,7 @@ func (h *Handler) Delete(ctx context.Context, req *event.DeleteI) (*event.Delete
 	}
 
 	//
-	// Construct RPC response.
+	// Construct the RPC response.
 	//
 
 	var res *event.DeleteO

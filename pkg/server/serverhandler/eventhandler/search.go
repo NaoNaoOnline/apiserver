@@ -146,7 +146,7 @@ func (h *Handler) Search(ctx context.Context, req *event.SearchI) (*event.Search
 	}
 
 	//
-	// Construct RPC response.
+	// Construct the RPC response.
 	//
 
 	var res *event.SearchO

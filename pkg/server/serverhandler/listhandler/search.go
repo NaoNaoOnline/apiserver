@@ -38,7 +38,7 @@ func (h *Handler) Search(ctx context.Context, req *list.SearchI) (*list.SearchO,
 	}
 
 	//
-	// Construct RPC response.
+	// Construct the RPC response.
 	//
 
 	var res *list.SearchO

@@ -47,7 +47,7 @@ func (h *Handler) Update(ctx context.Context, req *list.UpdateI) (*list.UpdateO,
 	}
 
 	//
-	// Construct RPC response.
+	// Construct the RPC response.
 	//
 
 	var res *list.UpdateO

@@ -7,7 +7,7 @@ import (
 
 type Filter []*Object
 
-func (f Filter) Cat(ids ...objectid.ID) []*Object {
+func (f Filter) Cate(ids ...objectid.ID) []*Object {
 	var obj []*Object
 
 	for _, x := range f {
@@ -19,7 +19,7 @@ func (f Filter) Cat(ids ...objectid.ID) []*Object {
 	return obj
 }
 
-func (f Filter) Hos(ids ...objectid.ID) []*Object {
+func (f Filter) Host(ids ...objectid.ID) []*Object {
 	var obj []*Object
 
 	for _, x := range f {
@@ -31,7 +31,7 @@ func (f Filter) Hos(ids ...objectid.ID) []*Object {
 	return obj
 }
 
-func (f Filter) Use(ids ...objectid.ID) []*Object {
+func (f Filter) User(ids ...objectid.ID) []*Object {
 	var obj []*Object
 
 	for _, x := range f {

@@ -204,9 +204,9 @@ func (r *Redis) SearchRule(rul []*rulestorage.Object) ([]*Object, error) {
 	// list.
 	var val []string
 	{
-		val, err = r.red.Sorted().Search().Union(sli.Inc()...)
+		val, err = r.red.Sorted().Search().Union(sli.Incl()...)
 		if simple.IsNotFound(err) {
-			return nil, tracer.Maskf(eventObjectNotFoundError, "%v", sli.Inc())
+			return nil, tracer.Maskf(eventObjectNotFoundError, "%v", sli.Incl())
 		} else if err != nil {
 			return nil, tracer.Mask(err)
 		}
@@ -228,9 +228,9 @@ func (r *Redis) SearchRule(rul []*rulestorage.Object) ([]*Object, error) {
 
 	// Remove the event objects that match all the rule's exclude definitions.
 	{
-		out = out.Fil().Cat(sli.Cat()...)
-		out = out.Fil().Hos(sli.Hos()...)
-		out = out.Fil().Use(sli.Use()...)
+		out = out.Fltr().Cate(sli.Cate()...)
+		out = out.Fltr().Host(sli.Host()...)
+		out = out.Fltr().User(sli.User()...)
 	}
 
 	return out, nil

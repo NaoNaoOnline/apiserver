@@ -56,7 +56,7 @@ func (r *run) randomDesc(sto *storage.Storage, fak *gofakeit.Faker) *description
 	var obj *descriptionstorage.Object
 	{
 		obj = &descriptionstorage.Object{
-			Evnt: eve.Upc().IDs()[0],
+			Evnt: eve.Upcm().Evnt()[0],
 			Like: objectfield.Integer{
 				Data: int64(fak.Number(0, 10000)),
 			},

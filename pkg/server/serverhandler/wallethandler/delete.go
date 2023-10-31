@@ -45,7 +45,7 @@ func (h *Handler) Delete(ctx context.Context, req *wallet.DeleteI) (*wallet.Dele
 	}
 
 	//
-	// Construct RPC response.
+	// Construct the RPC response.
 	//
 
 	var res *wallet.DeleteO

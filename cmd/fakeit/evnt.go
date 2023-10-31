@@ -116,12 +116,12 @@ func (r *run) randomEvnt(sto *storage.Storage, fak *gofakeit.Faker) *eventstorag
 	var obj *eventstorage.Object
 	{
 		obj = &eventstorage.Object{
-			Cate: cat.IDs()[:fak.Number(1, 4)],
+			Cate: cat.Labl()[:fak.Number(1, 4)],
 			Dura: time.Duration(dur * int(time.Minute)),
-			Host: hos.IDs()[:fak.Number(1, 4)],
+			Host: hos.Labl()[:fak.Number(1, 4)],
 			Link: fmt.Sprintf("https://%s.%s", fak.DomainName(), fak.DomainSuffix()),
 			Time: tim,
-			User: use.IDs()[0],
+			User: use.User()[0],
 		}
 	}
 

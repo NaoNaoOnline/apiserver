@@ -47,15 +47,20 @@ func (h *Handler) Update(ctx context.Context, req *description.UpdateI) (*descri
 				}
 			}
 
-			for _, x := range inp {
-				if use == x.User {
-					return nil, tracer.Mask(runtime.UserNotOwnerError)
-				}
-				// Ensure descriptions cannot be updated after 5 minutes of their creation.
-				if x.Crtd.Add(5 * time.Minute).Before(time.Now().UTC()) {
-					return nil, tracer.Mask(descriptionUpdatePeriodError)
+			//
+			// Verify the given input.
+			//
+
+			{
+				err = h.updateVrfyPtch(ctx, inp)
+				if err != nil {
+					return nil, tracer.Mask(err)
 				}
 			}
+
+			//
+			// Update the given resources.
+			//
 
 			{
 				lis, err := h.des.UpdatePtch(inp, pat)
@@ -100,31 +105,20 @@ func (h *Handler) Update(ctx context.Context, req *description.UpdateI) (*descri
 				}
 			}
 
-			for _, x := range inp {
-				var eve []*eventstorage.Object
-				{
-					eve, err = h.eve.SearchEvnt([]objectid.ID{x.Evnt})
-					if err != nil {
-						return nil, tracer.Mask(err)
-					}
-				}
+			//
+			// Verify the given input.
+			//
 
-				if len(eve) != 1 {
-					return nil, tracer.Mask(runtime.ExecutionFailedError)
-				}
-
-				// Ensure descriptions cannot be liked if their events have already been
-				// deleted.
-				if !eve[0].Dltd.IsZero() {
-					return nil, tracer.Mask(eventDeletedError)
-				}
-
-				// Ensure descriptions cannot be liked if their events have already
-				// happened.
-				if eve[0].Happnd() {
-					return nil, tracer.Mask(eventAlreadyHappenedError)
+			{
+				err = h.updateVrfyLike(ctx, inp)
+				if err != nil {
+					return nil, tracer.Mask(err)
 				}
 			}
+
+			//
+			// Update the given resources.
+			//
 
 			{
 				lis, err := h.des.UpdateLike(use, inp, inc)
@@ -138,7 +132,7 @@ func (h *Handler) Update(ctx context.Context, req *description.UpdateI) (*descri
 	}
 
 	//
-	// Construct RPC response.
+	// Construct the RPC response.
 	//
 
 	var res *description.UpdateO
@@ -156,4 +150,52 @@ func (h *Handler) Update(ctx context.Context, req *description.UpdateI) (*descri
 	}
 
 	return res, nil
+}
+
+func (h *Handler) updateVrfyLike(ctx context.Context, inp descriptionstorage.Slicer) error {
+	var err error
+
+	var eve []*eventstorage.Object
+	{
+		eve, err = h.eve.SearchEvnt(inp.Evnt())
+		if err != nil {
+			return tracer.Mask(err)
+		}
+	}
+
+	for _, x := range eve {
+		// Ensure descriptions cannot be liked if their events have already been
+		// deleted.
+		if !x.Dltd.IsZero() {
+			return tracer.Mask(eventDeletedError)
+		}
+
+		// Ensure descriptions cannot be liked if their events have already
+		// happened.
+		if x.Happnd() {
+			return tracer.Mask(eventAlreadyHappenedError)
+		}
+	}
+
+	return nil
+}
+
+func (h *Handler) updateVrfyPtch(ctx context.Context, inp descriptionstorage.Slicer) error {
+	var use objectid.ID
+	{
+		use = userid.FromContext(ctx)
+	}
+
+	for _, x := range inp {
+		if use == x.User {
+			return tracer.Mask(runtime.UserNotOwnerError)
+		}
+
+		// Ensure descriptions cannot be updated after 5 minutes of their creation.
+		if x.Crtd.Add(5 * time.Minute).Before(time.Now().UTC()) {
+			return tracer.Mask(descriptionUpdatePeriodError)
+		}
+	}
+
+	return nil
 }

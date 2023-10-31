@@ -21,7 +21,7 @@ func (h *Handler) Update(ctx context.Context, req *policy.UpdateI) (*policy.Upda
 	}
 
 	//
-	// Construct RPC response.
+	// Construct the RPC response.
 	//
 
 	var res *policy.UpdateO

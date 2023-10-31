@@ -24,7 +24,7 @@ func (r *Redis) Create(inp []*Object) ([]*Object, error) {
 
 		var key []string
 		{
-			key = append(Slicer([]*Object{inp[i]}).Res(), lisObj(inp[i].List))
+			key = append(Slicer([]*Object{inp[i]}).Rsrc(), lisObj(inp[i].List))
 		}
 
 		var cou int64
