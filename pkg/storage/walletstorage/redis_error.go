@@ -11,6 +11,8 @@ var walletObjectNotFoundError = &tracer.Error{
 	Desc: "The request expects a wallet object to exist. The wallet object was not found to exist. Therefore the request failed.",
 }
 
+// IsWalletObjectNotFound is used to assert walletObjectNotFoundError, e.g. in
+// pkg/permission, see Permission.SearchActv.
 func IsWalletObjectNotFound(err error) bool {
 	return errors.Is(err, walletObjectNotFoundError)
 }
@@ -18,8 +20,4 @@ func IsWalletObjectNotFound(err error) bool {
 var walletUserLimitError = &tracer.Error{
 	Kind: "walletUserLimitError",
 	Desc: "The request expects an upper limit of 5 wallet objects per user globally. The upper limit of 5 wallet objects per user globally was found. Therefore the request failed.",
-}
-
-func IsWalletUserLimit(err error) bool {
-	return errors.Is(err, walletUserLimitError)
 }
