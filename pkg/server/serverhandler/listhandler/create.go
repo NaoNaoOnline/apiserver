@@ -32,7 +32,7 @@ func (h *Handler) Create(ctx context.Context, req *list.CreateI) (*list.CreateO,
 	}
 
 	//
-	// Construct RPC response.
+	// Construct the RPC response.
 	//
 
 	var res *list.CreateO

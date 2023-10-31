@@ -57,7 +57,7 @@ func (h *Handler) Create(ctx context.Context, req *rule.CreateI) (*rule.CreateO,
 	}
 
 	//
-	// Construct RPC response.
+	// Construct the RPC response.
 	//
 
 	var res *rule.CreateO

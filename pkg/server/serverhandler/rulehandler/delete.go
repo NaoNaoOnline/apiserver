@@ -63,7 +63,7 @@ func (h *Handler) Delete(ctx context.Context, req *rule.DeleteI) (*rule.DeleteO,
 	}
 
 	//
-	// Construct RPC response.
+	// Construct the RPC response.
 	//
 
 	var res *rule.DeleteO

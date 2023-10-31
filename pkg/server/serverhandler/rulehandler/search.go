@@ -49,7 +49,7 @@ func (h *Handler) Search(ctx context.Context, req *rule.SearchI) (*rule.SearchO,
 	}
 
 	//
-	// Construct RPC response.
+	// Construct the RPC response.
 	//
 
 	var res *rule.SearchO

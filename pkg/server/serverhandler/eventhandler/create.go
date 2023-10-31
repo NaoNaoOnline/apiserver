@@ -36,7 +36,7 @@ func (h *Handler) Create(ctx context.Context, req *event.CreateI) (*event.Create
 	}
 
 	//
-	// Construct RPC response.
+	// Construct the RPC response.
 	//
 
 	var res *event.CreateO

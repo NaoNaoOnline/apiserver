@@ -45,7 +45,7 @@ func (h *Handler) Delete(ctx context.Context, req *list.DeleteI) (*list.DeleteO,
 	}
 
 	//
-	// Construct RPC response.
+	// Construct the RPC response.
 	//
 
 	var res *list.DeleteO

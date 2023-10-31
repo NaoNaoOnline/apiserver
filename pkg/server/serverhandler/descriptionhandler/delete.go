@@ -38,6 +38,10 @@ func (h *Handler) Delete(ctx context.Context, req *description.DeleteI) (*descri
 		}
 	}
 
+	//
+	// Verify the given input.
+	//
+
 	var mod bool
 	{
 		mod, err = h.prm.ExistsAcce(permission.SystemDesc, use, permission.AccessDelete)
@@ -46,55 +50,19 @@ func (h *Handler) Delete(ctx context.Context, req *description.DeleteI) (*descri
 		}
 	}
 
-	for _, x := range inp {
+	if mod {
 		// Skip all validity checks for moderators and go straight ahead to
 		// deletion.
-		if mod {
-			break
-		}
-
-		if use != x.User {
-			return nil, tracer.Mask(runtime.UserNotOwnerError)
-		}
-
-		// Ensure descriptions cannot be deleted after 5 minutes of their creation.
-		if x.Crtd.Add(5 * time.Minute).Before(time.Now().UTC()) {
-			return nil, tracer.Mask(descriptionDeletePeriodError)
-		}
-
-		var des []*descriptionstorage.Object
-		{
-			des, err = h.des.SearchEvnt(use, []objectid.ID{x.Evnt})
-			if err != nil {
-				return nil, tracer.Mask(err)
-			}
-		}
-
-		// Ensure the only description of an event cannot be deleted.
-		if len(des) == 1 {
-			return nil, tracer.Mask(descriptionRequirementError)
-		}
-
-		var eve []*eventstorage.Object
-		{
-			eve, err = h.eve.SearchEvnt([]objectid.ID{x.Evnt})
-			if err != nil {
-				return nil, tracer.Mask(err)
-			}
-		}
-
-		// Ensure descriptions cannot be removed from events that have already been
-		// deleted.
-		if !eve[0].Dltd.IsZero() {
-			return nil, tracer.Mask(eventDeletedError)
-		}
-
-		// Ensure descriptions cannot be removed from events that have already
-		// happened.
-		if eve[0].Happnd() {
-			return nil, tracer.Mask(eventAlreadyHappenedError)
+	} else {
+		err = h.deleteVrfy(ctx, inp)
+		if err != nil {
+			return nil, tracer.Mask(err)
 		}
 	}
+
+	//
+	// Delete the given resources.
+	//
 
 	var out []objectstate.String
 	{
@@ -105,7 +73,7 @@ func (h *Handler) Delete(ctx context.Context, req *description.DeleteI) (*descri
 	}
 
 	//
-	// Construct RPC response.
+	// Construct the RPC response.
 	//
 
 	var res *description.DeleteO
@@ -123,4 +91,61 @@ func (h *Handler) Delete(ctx context.Context, req *description.DeleteI) (*descri
 	}
 
 	return res, nil
+}
+
+func (h *Handler) deleteVrfy(ctx context.Context, inp descriptionstorage.Slicer) error {
+	var err error
+
+	var use objectid.ID
+	{
+		use = userid.FromContext(ctx)
+	}
+
+	for _, x := range inp {
+		if use != x.User {
+			return tracer.Mask(runtime.UserNotOwnerError)
+		}
+
+		// Ensure descriptions cannot be deleted after 5 minutes of their creation.
+		if x.Crtd.Add(5 * time.Minute).Before(time.Now().UTC()) {
+			return tracer.Mask(descriptionDeletePeriodError)
+		}
+
+		var des []*descriptionstorage.Object
+		{
+			des, err = h.des.SearchEvnt(use, []objectid.ID{x.Evnt})
+			if err != nil {
+				return tracer.Mask(err)
+			}
+		}
+
+		// Ensure the only description of an event cannot be deleted.
+		if len(des) == 1 {
+			return tracer.Mask(descriptionRequirementError)
+		}
+	}
+
+	var eve []*eventstorage.Object
+	{
+		eve, err = h.eve.SearchEvnt(inp.Evnt())
+		if err != nil {
+			return tracer.Mask(err)
+		}
+	}
+
+	for _, x := range eve {
+		// Ensure descriptions cannot be removed from events that have already been
+		// deleted.
+		if !x.Dltd.IsZero() {
+			return tracer.Mask(eventDeletedError)
+		}
+
+		// Ensure descriptions cannot be removed from events that have already
+		// happened.
+		if x.Happnd() {
+			return tracer.Mask(eventAlreadyHappenedError)
+		}
+	}
+
+	return nil
 }

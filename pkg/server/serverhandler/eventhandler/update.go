@@ -60,7 +60,7 @@ func (h *Handler) Update(ctx context.Context, req *event.UpdateI) (*event.Update
 	}
 
 	//
-	// Construct RPC response.
+	// Construct the RPC response.
 	//
 
 	var res *event.UpdateO

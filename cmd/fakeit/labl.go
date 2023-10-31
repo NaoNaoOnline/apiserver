@@ -101,7 +101,7 @@ func (r *run) randomLabl(sto *storage.Storage, fak *gofakeit.Faker) *labelstorag
 		obj = &labelstorage.Object{
 			Kind: kin,
 			Name: nam,
-			User: use.IDs()[0],
+			User: use.User()[0],
 		}
 	}
 

@@ -6,7 +6,6 @@ import (
 
 	"github.com/NaoNaoOnline/apigocode/pkg/description"
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectid"
-	"github.com/NaoNaoOnline/apiserver/pkg/runtime"
 	"github.com/NaoNaoOnline/apiserver/pkg/server/context/userid"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/descriptionstorage"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/eventstorage"
@@ -27,30 +26,20 @@ func (h *Handler) Create(ctx context.Context, req *description.CreateI) (*descri
 		}
 	}
 
-	for _, x := range inp {
-		var eve []*eventstorage.Object
-		{
-			eve, err = h.eve.SearchEvnt([]objectid.ID{x.Evnt})
-			if err != nil {
-				return nil, tracer.Mask(err)
-			}
-		}
+	//
+	// Verify the given input.
+	//
 
-		if len(eve) != 1 {
-			return nil, tracer.Mask(runtime.ExecutionFailedError)
-		}
-
-		// Ensure descriptions cannot be added to events that have already been
-		// deleted.
-		if !eve[0].Dltd.IsZero() {
-			return nil, tracer.Mask(eventDeletedError)
-		}
-
-		// Ensure descriptions cannot be added to events that have already happened.
-		if eve[0].Happnd() {
-			return nil, tracer.Mask(eventAlreadyHappenedError)
+	{
+		err = h.createVrfy(ctx, inp)
+		if err != nil {
+			return nil, tracer.Mask(err)
 		}
 	}
+
+	//
+	// Create the given resources.
+	//
 
 	var out []*descriptionstorage.Object
 	{
@@ -61,7 +50,7 @@ func (h *Handler) Create(ctx context.Context, req *description.CreateI) (*descri
 	}
 
 	//
-	// Construct RPC response.
+	// Construct the RPC response.
 	//
 
 	var res *description.CreateO
@@ -79,4 +68,31 @@ func (h *Handler) Create(ctx context.Context, req *description.CreateI) (*descri
 	}
 
 	return res, nil
+}
+
+func (h *Handler) createVrfy(ctx context.Context, inp descriptionstorage.Slicer) error {
+	var err error
+
+	var eve []*eventstorage.Object
+	{
+		eve, err = h.eve.SearchEvnt(inp.Evnt())
+		if err != nil {
+			return tracer.Mask(err)
+		}
+	}
+
+	for _, x := range eve {
+		// Ensure descriptions cannot be added to events that have already been
+		// deleted.
+		if !x.Dltd.IsZero() {
+			return tracer.Mask(eventDeletedError)
+		}
+
+		// Ensure descriptions cannot be added to events that have already happened.
+		if x.Happnd() {
+			return tracer.Mask(eventAlreadyHappenedError)
+		}
+	}
+
+	return nil
 }

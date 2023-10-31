@@ -25,6 +25,10 @@ func (h *Handler) Search(ctx context.Context, req *description.SearchI) (*descri
 		}
 	}
 
+	//
+	// Search the given resources.
+	//
+
 	var out []*descriptionstorage.Object
 	{
 		lis, err := h.des.SearchEvnt(use, evn)
@@ -36,7 +40,7 @@ func (h *Handler) Search(ctx context.Context, req *description.SearchI) (*descri
 	}
 
 	//
-	// Construct RPC response.
+	// Construct the RPC response.
 	//
 
 	var res *description.SearchO

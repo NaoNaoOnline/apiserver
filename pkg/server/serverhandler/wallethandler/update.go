@@ -62,7 +62,7 @@ func (h *Handler) Update(ctx context.Context, req *wallet.UpdateI) (*wallet.Upda
 	}
 
 	//
-	// Construct RPC response.
+	// Construct the RPC response.
 	//
 
 	var res *wallet.UpdateO
