@@ -38,17 +38,19 @@ func (h *Handler) Delete(ctx context.Context, req *description.DeleteI) (*descri
 		}
 	}
 
-	for _, x := range inp {
-		var mod bool
-		{
-			mod, err = h.prm.ExistsAcce(permission.SystemDesc, use, permission.AccessDelete)
-			if err != nil {
-				return nil, tracer.Mask(err)
-			}
+	var mod bool
+	{
+		mod, err = h.prm.ExistsAcce(permission.SystemDesc, use, permission.AccessDelete)
+		if err != nil {
+			return nil, tracer.Mask(err)
 		}
+	}
 
+	for _, x := range inp {
+		// Skip all validity checks for moderators and go straight ahead to
+		// deletion.
 		if mod {
-			continue
+			break
 		}
 
 		if use != x.User {

@@ -21,12 +21,12 @@ var descriptionRequirementError = &tracer.Error{
 
 var eventAlreadyHappenedError = &tracer.Error{
 	Kind: "eventAlreadyHappenedError",
-	Desc: "The request expects likes to be added or removed until the associated event has already happened. The associated event was found to have already happened. Therefore the request failed.",
+	Desc: "The request expects descriptions to be added, removed or modified until the associated event has already happened. The associated event was found to have already happened. Therefore the request failed.",
 }
 
 var eventDeletedError = &tracer.Error{
 	Kind: "eventDeletedError",
-	Desc: "The request expects likes to be added or removed until the associated event was already deleted. The associated event was found to have already been deleted. Therefore the request failed.",
+	Desc: "The request expects descriptions to be added, removed or modified until the associated event has been deleted. The associated event was found to have already been deleted. Therefore the request failed.",
 }
 
 var updateEmptyError = &tracer.Error{
