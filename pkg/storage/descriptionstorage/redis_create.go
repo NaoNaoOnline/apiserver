@@ -55,6 +55,18 @@ func (r *Redis) Create(inp []*Object) ([]*Object, error) {
 			return nil, tracer.Mask(eventAlreadyHappenedError)
 		}
 
+		// Ensure the maximum allowed amount of descriptions on a single event.
+		{
+			cou, err := r.red.Sorted().Metric().Count(desEve(inp[i].Evnt))
+			if err != nil {
+				return nil, tracer.Mask(err)
+			}
+
+			if cou >= 50 {
+				return nil, tracer.Mask(descriptionEventLimitError)
+			}
+		}
+
 		var now time.Time
 		{
 			now = time.Now().UTC()

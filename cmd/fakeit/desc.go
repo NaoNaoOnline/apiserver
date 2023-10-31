@@ -49,7 +49,7 @@ func (r *run) randomDesc(sto *storage.Storage, fak *gofakeit.Faker) *description
 	}
 
 	var txt string
-	for len(txt) < 20 && len(txt) < 80 {
+	for len(txt) < 40 && len(txt) < 80 {
 		txt += fak.Phrase() + " "
 	}
 

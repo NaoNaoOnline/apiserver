@@ -2,6 +2,7 @@ package descriptionstorage
 
 import (
 	"regexp"
+	"strings"
 	"time"
 
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectfield"
@@ -44,17 +45,19 @@ func (o *Object) Verify() error {
 	}
 
 	{
-		if o.Text == "" {
+		txt := strings.TrimSpace(o.Text)
+
+		if txt == "" {
 			return tracer.Mask(descriptionTextEmptyError)
 		}
-		if !textexpr.MatchString(o.Text) {
+		if !textexpr.MatchString(txt) {
 			return tracer.Mask(descriptionTextFormatError)
 		}
-		if len(o.Text) < 20 {
-			return tracer.Maskf(descriptionTextLengthError, "%d", len(o.Text))
+		if len(txt) < 20 {
+			return tracer.Maskf(descriptionTextLengthError, "%d", len(txt))
 		}
-		if len(o.Text) > 120 {
-			return tracer.Maskf(descriptionTextLengthError, "%d", len(o.Text))
+		if len(txt) > 120 {
+			return tracer.Maskf(descriptionTextLengthError, "%d", len(txt))
 		}
 	}
 
