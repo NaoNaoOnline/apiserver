@@ -32,16 +32,6 @@ func (s Slicer) Host() []objectid.ID {
 	return hos
 }
 
-func (s Slicer) Rule() []objectid.ID {
-	var ids []objectid.ID
-
-	for _, x := range s {
-		ids = append(ids, x.Rule)
-	}
-
-	return ids
-}
-
 // Incl returns the storage keys pointing to the event IDs meant to be included
 // in the list associated to the underlying rules.
 func (s Slicer) Incl() []string {
@@ -52,6 +42,20 @@ func (s Slicer) Incl() []string {
 	}
 
 	return inc
+}
+
+// Like returns the user IDs to be excluded from the list of events that the
+// given rule set describes.
+func (s Slicer) Like() []objectid.ID {
+	var use []objectid.ID
+
+	for _, x := range s {
+		if x.Kind == "like" {
+			use = append(use, x.Excl...)
+		}
+	}
+
+	return use
 }
 
 // Rsrc returns the storage keys pointing to the event IDs meant to be excluded
@@ -65,6 +69,16 @@ func (s Slicer) Rsrc() []string {
 	}
 
 	return res
+}
+
+func (s Slicer) Rule() []objectid.ID {
+	var ids []objectid.ID
+
+	for _, x := range s {
+		ids = append(ids, x.Rule)
+	}
+
+	return ids
 }
 
 // User returns the user IDs to be excluded from the list of events that the

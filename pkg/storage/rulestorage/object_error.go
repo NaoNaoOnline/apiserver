@@ -14,7 +14,7 @@ var resourceIDEmptyError = &tracer.Error{
 
 var ruleKindInvalidError = &tracer.Error{
 	Kind: "ruleKindInvalidError",
-	Desc: "The request expects the rule kind to be one of [cate host user]. The rule kind was not found to be one of [cate host user]. Therefore the request failed.",
+	Desc: "The request expects the rule kind to be one of [cate host like user]. The rule kind was not found to be one of [cate host like user]. Therefore the request failed.",
 }
 
 var ruleListEmptyError = &tracer.Error{

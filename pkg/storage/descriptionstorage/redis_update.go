@@ -7,6 +7,7 @@ import (
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectid"
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectstate"
 	jsonpatch "github.com/evanphx/json-patch/v5"
+	"github.com/xh3b4sd/redigo/pkg/sorted"
 	"github.com/xh3b4sd/tracer"
 )
 
@@ -78,13 +79,17 @@ func (r *Redis) UpdateLike(use objectid.ID, obj []*Object, inc []bool) ([]object
 				}
 			}
 
-			// We use a sorted set for all the event-description relationships that a
-			// user reacted to in the form of a like. This internal data structure is
-			// used in the Event.SearchLike endpoint. Note that the value here is the
-			// description ID and the score here is the event ID.
+			// We use a sorted set for all the events that a user reacted to in the
+			// form of a description like. This internal data structure is used in
+			// Event.SearchLike and Event.SearchRule. Note that there should not be a
+			// need to verify the integrity of the input object's event-description
+			// relationship, because the RPC update handler should only provide data
+			// from our internal storage, which should always be properly persisted.
 			{
-				err = r.red.Sorted().Create().Score(likUse(use), obj[i].Desc.String(), obj[i].Evnt.Float())
-				if err != nil {
+				err = r.red.Sorted().Create().Score(likUse(use), obj[i].Evnt.String(), obj[i].Desc.Float())
+				if sorted.IsAlreadyExistsError(err) {
+					// fall through
+				} else if err != nil {
 					return nil, tracer.Mask(err)
 				}
 			}
@@ -105,10 +110,9 @@ func (r *Redis) UpdateLike(use objectid.ID, obj []*Object, inc []bool) ([]object
 				}
 			}
 
-			// Just reverse the operation from above. Note that we use the description
-			// ID as value to remove the like indicator.
+			// Just reverse the operation from above.
 			{
-				err = r.red.Sorted().Delete().Value(likUse(use), obj[i].Desc.String())
+				err = r.red.Sorted().Delete().Score(likUse(use), obj[i].Desc.Float())
 				if err != nil {
 					return nil, tracer.Mask(err)
 				}

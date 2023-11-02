@@ -123,10 +123,10 @@ const (
 	//
 	LikeMapping = "lik/use/%s/des/%s"
 
-	// LikeUser is used to store all the description IDs that a user reacted to in
-	// the form of a like.
+	// LikeUser is used to store all the event IDs that a user reacted to in the
+	// form of a description like.
 	//
-	//     user ID               description IDs
+	//     user ID               event IDs
 	//                     ->
 	//     lik/use/1234          1234,5678
 	//
