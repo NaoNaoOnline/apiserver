@@ -202,7 +202,7 @@ func (r *Redis) SearchRule(rul []*rulestorage.Object) ([]*Object, error) {
 	}
 
 	// Remove the event objects that the given user IDs reacted to in the form of
-	// a like.
+	// a description like.
 	if len(sli.Like()) != 0 {
 		// val will result in a list of all event IDs that the given users reacted
 		// to in the form of a description like.
