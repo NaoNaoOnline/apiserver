@@ -24,6 +24,7 @@ type Object struct {
 	//
 	//     cate for adding or removing events matching the given category IDs
 	//     host for adding or removing events matching the given host IDs
+	//     like for adding or removing events liked by the given user IDs
 	//     user for adding or removing events created by the given user IDs
 	//
 	Kind string `json:"kind"`
@@ -40,6 +41,10 @@ func (o *Object) KeyFmt() string {
 		return keyfmt.EventLabel
 	}
 
+	if o.Kind == "like" {
+		return keyfmt.LikeUser
+	}
+
 	if o.Kind == "user" {
 		return keyfmt.EventUser
 	}
@@ -49,7 +54,7 @@ func (o *Object) KeyFmt() string {
 
 func (o *Object) Verify() error {
 	{
-		if o.Kind != "cate" && o.Kind != "host" && o.Kind != "user" {
+		if o.Kind != "cate" && o.Kind != "host" && o.Kind != "like" && o.Kind != "user" {
 			return tracer.Maskf(ruleKindInvalidError, o.Kind)
 		}
 	}

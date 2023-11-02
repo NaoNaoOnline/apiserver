@@ -13,7 +13,9 @@ import (
 func (r *run) createDesc(sto *storage.Storage, obj ...*descriptionstorage.Object) error {
 	{
 		_, err := sto.Desc().Create(obj)
-		if err != nil {
+		if descriptionstorage.IsDescriptionEventLimit(err) {
+			// fall through
+		} else if err != nil {
 			tracer.Panic(tracer.Mask(err))
 		}
 	}

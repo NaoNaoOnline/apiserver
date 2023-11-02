@@ -19,6 +19,18 @@ func (f Filter) Cate(ids ...objectid.ID) []*Object {
 	return obj
 }
 
+func (f Filter) Evnt(ids ...objectid.ID) []*Object {
+	var obj []*Object
+
+	for _, x := range f {
+		if !generic.Any([]string{string(x.Evnt)}, objectid.Strings(ids)) {
+			obj = append(obj, x)
+		}
+	}
+
+	return obj
+}
+
 func (f Filter) Host(ids ...objectid.ID) []*Object {
 	var obj []*Object
 

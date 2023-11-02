@@ -44,7 +44,7 @@ func (w *wrapper) Create(ctx context.Context, req *rule.CreateI) (*rule.CreateO,
 		}
 
 		for _, x := range req.Object {
-			if x.Public != nil && x.Public.Kind != "cate" && x.Public.Kind != "host" && x.Public.Kind != "user" {
+			if x.Public != nil && x.Public.Kind != "cate" && x.Public.Kind != "host" && x.Public.Kind != "like" && x.Public.Kind != "user" {
 				return nil, tracer.Mask(createKindInvalidError)
 			}
 		}

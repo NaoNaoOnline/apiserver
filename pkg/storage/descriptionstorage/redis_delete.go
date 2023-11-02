@@ -64,7 +64,7 @@ func (r *Redis) DeleteLike(des objectid.ID, use []objectid.ID) ([]objectstate.St
 		}
 
 		{
-			err = r.red.Sorted().Delete().Value(likUse(use[i]), des.String())
+			err = r.red.Sorted().Delete().Score(likUse(use[i]), des.Float())
 			if err != nil {
 				return nil, tracer.Mask(err)
 			}

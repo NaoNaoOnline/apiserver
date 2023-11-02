@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"time"
 
-	"github.com/NaoNaoOnline/apiserver/pkg/generic"
 	"github.com/NaoNaoOnline/apiserver/pkg/keyfmt"
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectid"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/rulestorage"
@@ -108,59 +107,28 @@ func (r *Redis) SearchLabl(lab []objectid.ID) ([]*Object, error) {
 func (r *Redis) SearchLike(use objectid.ID, min int, max int) ([]*Object, error) {
 	var err error
 
-	// The user likes are indexed in a way were description IDs are values and
-	// event IDs are scores. Below we search for all values and their respective
-	// scores using the 4th parameter true. Note that the event IDs will
-	// potentially be duplicated across the list.
-	var lis []string
+	// val will result in a list of all event IDs that the given user reacted to
+	// in the form of a description like.
+	var val []string
 	{
-		lis, err = r.red.Sorted().Search().Order(likUse(use), min, max, true)
+		val, err = r.red.Sorted().Search().Order(likUse(use), min, max)
 		if err != nil {
 			return nil, tracer.Mask(err)
 		}
 	}
 
-	// There might not be any items, and so we do not proceed, but instead return
+	// There might not be any values, and so we do not proceed, but instead return
 	// nothing.
-	if len(lis) == 0 {
+	if len(val) == 0 {
 		return nil, nil
 	}
 
-	// Here we select the event IDs from the list gathered above. Every other
-	// string in that list represents an element score since we searched by order
-	// using true.
-	var sco []string
-	for i := 1; i < len(lis); i += 2 {
-		sco = append(sco, lis[i])
-	}
-
-	var jsn []string
+	var out []*Object
 	{
-		jsn, err = r.red.Simple().Search().Multi(objectid.Fmt(generic.Uni(sco), keyfmt.EventObject)...)
-		if simple.IsNotFound(err) {
-			// It may happen that events get deleted, that users have reacted to. The
-			// event deletion process is not atomic and so it might happen that some
-			// event objects cannot be found anymore intermittently.
-		} else if err != nil {
+		out, err = r.SearchEvnt(objectid.IDs(val))
+		if err != nil {
 			return nil, tracer.Mask(err)
 		}
-	}
-
-	var out []*Object
-	for _, x := range jsn {
-		var obj *Object
-		{
-			obj = &Object{}
-		}
-
-		if x != "" {
-			err = json.Unmarshal([]byte(x), obj)
-			if err != nil {
-				return nil, tracer.Mask(err)
-			}
-		}
-
-		out = append(out, obj)
 	}
 
 	return out, nil
@@ -231,6 +199,25 @@ func (r *Redis) SearchRule(rul []*rulestorage.Object) ([]*Object, error) {
 		out = out.Fltr().Cate(sli.Cate()...)
 		out = out.Fltr().Host(sli.Host()...)
 		out = out.Fltr().User(sli.User()...)
+	}
+
+	// Remove the event objects that the given user IDs reacted to in the form of
+	// a like.
+	if len(sli.Like()) != 0 {
+		// val will result in a list of all event IDs that the given users reacted
+		// to in the form of a description like.
+		var val []string
+		{
+			val, err = r.red.Sorted().Search().Union(objectid.Fmt(sli.Like(), keyfmt.LikeUser)...)
+			if err != nil {
+				return nil, tracer.Mask(err)
+			}
+		}
+
+		// Filter event IDs against event IDs.
+		{
+			out = out.Fltr().Evnt(objectid.IDs(val)...)
+		}
 	}
 
 	return out, nil

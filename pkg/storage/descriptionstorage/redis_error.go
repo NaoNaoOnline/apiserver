@@ -1,12 +1,18 @@
 package descriptionstorage
 
 import (
+	"errors"
+
 	"github.com/xh3b4sd/tracer"
 )
 
 var descriptionEventLimitError = &tracer.Error{
 	Kind: "descriptionEventLimitError",
 	Desc: "The request expects an upper limit of 50 description objects per event. The upper limit of 50 description objects per event was found. Therefore the request failed.",
+}
+
+func IsDescriptionEventLimit(err error) bool {
+	return errors.Is(err, descriptionEventLimitError)
 }
 
 var descriptionLikeAlreadyExistsError = &tracer.Error{

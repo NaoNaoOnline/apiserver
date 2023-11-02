@@ -64,7 +64,7 @@ type Interface interface {
 	// the form of a like. This function is mainly used for cleaning up internal
 	// description related data structures in a background process.
 	//
-	//     @inp[0] the description ID to search likes for
+	//     @inp[0] the description ID to search users for
 	//     @out[0] the list of user IDs that reacted to the given description ID
 	//
 	SearchLike(objectid.ID) ([]objectid.ID, error)
