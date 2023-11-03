@@ -1,7 +1,9 @@
 package generic
 
+import "github.com/NaoNaoOnline/apiserver/pkg/object/objectid"
+
 // Uni returns the unique items of the given list.
-func Uni[T string | int64](lis []T) []T {
+func Uni[T string | objectid.ID | int64](lis []T) []T {
 	see := map[T]struct{}{}
 
 	var uni []T

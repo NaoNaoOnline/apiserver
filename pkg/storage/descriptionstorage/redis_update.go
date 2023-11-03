@@ -7,7 +7,6 @@ import (
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectid"
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectstate"
 	jsonpatch "github.com/evanphx/json-patch/v5"
-	"github.com/xh3b4sd/redigo/pkg/sorted"
 	"github.com/xh3b4sd/tracer"
 )
 
@@ -86,10 +85,8 @@ func (r *Redis) UpdateLike(use objectid.ID, obj []*Object, inc []bool) ([]object
 			// relationship, because the RPC update handler should only provide data
 			// from our internal storage, which should always be properly persisted.
 			{
-				err = r.red.Sorted().Create().Score(likUse(use), obj[i].Evnt.String(), obj[i].Desc.Float())
-				if sorted.IsAlreadyExistsError(err) {
-					// fall through
-				} else if err != nil {
+				err = r.red.Sorted().Create().Score(likUse(use), objectid.Pair(obj[i].Evnt, obj[i].Desc), obj[i].Desc.Float())
+				if err != nil {
 					return nil, tracer.Mask(err)
 				}
 			}

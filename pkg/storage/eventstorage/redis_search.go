@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"time"
 
+	"github.com/NaoNaoOnline/apiserver/pkg/generic"
 	"github.com/NaoNaoOnline/apiserver/pkg/keyfmt"
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectid"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/rulestorage"
@@ -107,8 +108,8 @@ func (r *Redis) SearchLabl(lab []objectid.ID) ([]*Object, error) {
 func (r *Redis) SearchLike(use objectid.ID, min int, max int) ([]*Object, error) {
 	var err error
 
-	// val will result in a list of all event IDs that the given user reacted to
-	// in the form of a description like.
+	// val will result in a list of all paired ID strings, containing the event ID
+	// that the given user reacted to in the form of a description like.
 	var val []string
 	{
 		val, err = r.red.Sorted().Search().Order(likUse(use), min, max)
@@ -125,7 +126,7 @@ func (r *Redis) SearchLike(use objectid.ID, min int, max int) ([]*Object, error)
 
 	var out []*Object
 	{
-		out, err = r.SearchEvnt(objectid.IDs(val))
+		out, err = r.SearchEvnt(generic.Uni(objectid.Frst(val)))
 		if err != nil {
 			return nil, tracer.Mask(err)
 		}
@@ -216,7 +217,7 @@ func (r *Redis) SearchRule(rul []*rulestorage.Object) ([]*Object, error) {
 
 		// Filter event IDs against event IDs.
 		{
-			out = out.Fltr().Evnt(objectid.IDs(val)...)
+			out = out.Fltr().Evnt(generic.Uni(objectid.Frst(val))...)
 		}
 	}
 
