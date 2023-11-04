@@ -58,19 +58,6 @@ func (s Slicer) Like() []objectid.ID {
 	return use
 }
 
-// Rsrc returns the storage keys pointing to the event IDs meant to be excluded
-// and included in the list associated to the underlying rules.
-func (s Slicer) Rsrc() []string {
-	var res []string
-
-	for _, x := range s {
-		res = append(res, objectid.Fmt(x.Excl, x.KeyFmt())...)
-		res = append(res, objectid.Fmt(x.Incl, x.KeyFmt())...)
-	}
-
-	return res
-}
-
 func (s Slicer) Rule() []objectid.ID {
 	var ids []objectid.ID
 

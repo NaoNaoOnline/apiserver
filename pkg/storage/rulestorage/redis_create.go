@@ -22,24 +22,24 @@ func (r *Redis) Create(inp []*Object) ([]*Object, error) {
 			}
 		}
 
-		var key []string
+		var key string
 		{
-			key = append(Slicer([]*Object{inp[i]}).Rsrc(), lisObj(inp[i].List))
+			key = lisObj(inp[i].List)
 		}
 
 		var cou int64
 		{
-			cou, err = r.red.Simple().Exists().Multi(key...)
+			cou, err = r.red.Simple().Exists().Multi(key)
 			if simple.IsNotFound(err) {
-				return nil, tracer.Maskf(resourceObjectNotFoundError, "%#v", key)
+				return nil, tracer.Maskf(listObjectNotFoundError, "%#v", key)
 			} else if err != nil {
 				return nil, tracer.Mask(err)
 			}
 		}
 
 		// Ensure all of the referenced resource objects do in fact exist.
-		if cou != int64(len(key)) {
-			return nil, tracer.Maskf(resourceObjectNotFoundError, "%#v", key)
+		if cou != 1 {
+			return nil, tracer.Maskf(listObjectNotFoundError, "%#v", key)
 		}
 
 		var now time.Time
