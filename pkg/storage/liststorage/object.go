@@ -33,10 +33,10 @@ func (o *Object) Verify() error {
 		if !descexpr.MatchString(o.Desc) {
 			return tracer.Maskf(listDescFormatError, o.Desc)
 		}
-		if len(o.Desc) < 3 {
+		if len(o.Desc) < 2 {
 			return tracer.Maskf(listDescLengthError, "%d", len(o.Desc))
 		}
-		if len(o.Desc) > 120 {
+		if len(o.Desc) > 40 {
 			return tracer.Maskf(listDescLengthError, "%d", len(o.Desc))
 		}
 	}

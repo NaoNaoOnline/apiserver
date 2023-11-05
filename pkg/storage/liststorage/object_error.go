@@ -16,5 +16,5 @@ var listDescFormatError = &tracer.Error{
 
 var listDescLengthError = &tracer.Error{
 	Kind: "listDescLengthError",
-	Desc: "The request expects the list description to have between 3 and 120 characters. The list description was not found to have between 3 and 20 characters. Therefore the request failed.",
+	Desc: "The request expects the list description to have between 2 and 40 characters. The list description was not found to have between 3 and 20 characters. Therefore the request failed.",
 }

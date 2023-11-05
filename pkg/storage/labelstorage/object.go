@@ -52,7 +52,7 @@ func (o *Object) Verify() error {
 		if !lablexpr.MatchString(o.Name) {
 			return tracer.Maskf(labelNameFormatError, o.Name)
 		}
-		if len(o.Name) < 3 {
+		if len(o.Name) < 2 {
 			return tracer.Maskf(labelNameLengthError, "%d", len(o.Name))
 		}
 		if len(o.Name) > 20 {
