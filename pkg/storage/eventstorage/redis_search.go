@@ -189,7 +189,7 @@ func (r *Redis) SearchRule(rul []*rulestorage.Object) ([]*Object, error) {
 
 	var out Slicer
 	{
-		out, err = r.SearchEvnt(objectid.IDs(val))
+		out, err = r.SearchEvnt(generic.Uni(objectid.Frst(val)))
 		if err != nil {
 			return nil, tracer.Mask(err)
 		}
