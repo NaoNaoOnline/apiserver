@@ -45,14 +45,14 @@ type Interface interface {
 	//
 	SearchUser([]objectid.ID) ([]*Object, error)
 
-	// Update modifies the existing description objects by applying the given
-	// RFC6902 JSON-Patches to the underlying JSON documents. The list items are
-	// used according to their respective indices, e.g. the second patch is
-	// applied to the second object.
+	// Update modifies the existing user objects by applying the given RFC6902
+	// JSON-Patches to the underlying JSON documents. The list items are used
+	// according to their respective indices, e.g. the second patch is applied to
+	// the second object.
 	//
-	//     @inp[0] the list of description objects to modify
+	//     @inp[0] the list of user objects to modify
 	//     @inp[1] the list of RFC6902 compliant JSON-Patches
-	//     @out[0] the list of operation states related to the modified description objects
+	//     @out[0] the list of operation states related to the modified user objects
 	//
 	Update([]*Object, [][]*Patch) ([]objectstate.String, error)
 }
