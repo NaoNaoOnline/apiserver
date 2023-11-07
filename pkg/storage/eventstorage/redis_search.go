@@ -164,6 +164,12 @@ func (r *Redis) SearchUpcm() ([]*Object, error) {
 func (r *Redis) SearchRule(rul []*rulestorage.Object) ([]*Object, error) {
 	var err error
 
+	// There might not be any rules to begin with, and so we do not proceed, but
+	// instead return nothing.
+	if len(rul) == 0 {
+		return nil, nil
+	}
+
 	var sli rulestorage.Slicer
 	{
 		sli = rulestorage.Slicer(rul)

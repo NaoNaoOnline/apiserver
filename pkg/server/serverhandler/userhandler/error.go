@@ -43,3 +43,8 @@ var updateEmptyError = &tracer.Error{
 	Kind: "updateEmptyError",
 	Desc: "The request expects the query object to contain all of [intern update]. The query object was not found to contain all of [intern update]. Therefore the request failed.",
 }
+
+var nameUpdatePeriodError = &tracer.Error{
+	Kind: "descriptionUpdatePeriodError",
+	Desc: "The request expects the user name to be updated once within the past 7 days. The user name was tried to be updated more than once within the past 7 days. Therefore the request failed.",
+}

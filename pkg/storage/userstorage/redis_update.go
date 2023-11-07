@@ -2,13 +2,14 @@ package userstorage
 
 import (
 	"encoding/json"
+	"time"
 
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectstate"
 	jsonpatch "github.com/evanphx/json-patch/v5"
 	"github.com/xh3b4sd/tracer"
 )
 
-func (r *Redis) Update(obj []*Object, pat [][]*Patch) ([]objectstate.String, error) {
+func (r *Redis) Update(obj []*Object, pat PatchSlicer) ([]objectstate.String, error) {
 	var err error
 
 	var out []objectstate.String
@@ -19,6 +20,21 @@ func (r *Redis) Update(obj []*Object, pat [][]*Patch) ([]objectstate.String, err
 			err := x.Verify()
 			if err != nil {
 				return nil, tracer.Mask(err)
+			}
+		}
+
+		var now time.Time
+		{
+			now = time.Now().UTC()
+		}
+
+		{
+			if pat.RepHom(i) {
+				obj[i].Home.Time = now
+			}
+
+			if pat.RepNam(i) {
+				obj[i].Name.Time = now
 			}
 		}
 
