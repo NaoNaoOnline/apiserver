@@ -3,6 +3,7 @@ package userhandler
 import (
 	"fmt"
 
+	"github.com/NaoNaoOnline/apigocode/pkg/user"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/userstorage"
 	"github.com/xh3b4sd/logger"
 	"github.com/xh3b4sd/tracer"
@@ -30,4 +31,26 @@ func NewHandler(c HandlerConfig) *Handler {
 		log: c.Log,
 		use: c.Use,
 	}
+}
+
+func inpPat(upd []*user.UpdateI_Object_Update) []*userstorage.Patch {
+	var lis []*userstorage.Patch
+
+	for _, x := range upd {
+		var p *userstorage.Patch
+		{
+			p = &userstorage.Patch{
+				Ope: x.Ope,
+				Pat: x.Pat,
+			}
+		}
+
+		if x.Val != nil {
+			p.Val = *x.Val
+		}
+
+		lis = append(lis, p)
+	}
+
+	return lis
 }

@@ -12,6 +12,11 @@ type Object struct {
 	Crtd time.Time `json:"crtd"`
 	// Dltd is the time at which the user got deleted.
 	Dltd time.Time `json:"dltd,omitempty"`
+	// Home is the list ID describing a custom default view, optionally configured
+	// by premium subscribers. The default "default view" is "/", that is, the
+	// index page of the platform showing some derivative of the latest events
+	// globally.
+	Home string `json:"home"`
 	// Imag is the URL pointing to the user's profile picture.
 	Imag string `json:"imag"`
 	// Name is the user name.
