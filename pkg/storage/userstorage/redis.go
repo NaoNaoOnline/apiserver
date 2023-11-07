@@ -47,6 +47,15 @@ func useObj(oid objectid.ID) string {
 	return fmt.Sprintf(keyfmt.UserObject, oid)
 }
 
+func musByt(pat []*Patch) []byte {
+	byt, err := json.Marshal(pat)
+	if err != nil {
+		tracer.Panic(tracer.Mask(err))
+	}
+
+	return byt
+}
+
 func musStr(obj *Object) string {
 	byt, err := json.Marshal(obj)
 	if err != nil {
