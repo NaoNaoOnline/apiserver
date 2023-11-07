@@ -187,7 +187,7 @@ func (h *Handler) updateVrfyPtch(ctx context.Context, inp descriptionstorage.Sli
 	}
 
 	for _, x := range inp {
-		if use == x.User {
+		if use != x.User {
 			return tracer.Mask(runtime.UserNotOwnerError)
 		}
 

@@ -32,11 +32,20 @@ func (h *Handler) Update(ctx context.Context, req *user.UpdateI) (*user.UpdateO,
 		}
 	}
 
-	for _, x := range inp {
-		if userid.FromContext(ctx) != x.User {
-			return nil, tracer.Mask(runtime.UserNotOwnerError)
+	//
+	// Verify the given input.
+	//
+
+	{
+		err = h.updateVrfyPtch(ctx, inp, pat)
+		if err != nil {
+			return nil, tracer.Mask(err)
 		}
 	}
+
+	//
+	// Update the given resources.
+	//
 
 	var out []objectstate.String
 	{
@@ -65,4 +74,24 @@ func (h *Handler) Update(ctx context.Context, req *user.UpdateI) (*user.UpdateO,
 	}
 
 	return res, nil
+}
+
+func (h *Handler) updateVrfyPtch(ctx context.Context, inp []*userstorage.Object, pat userstorage.PatchSlicer) error {
+	var use objectid.ID
+	{
+		use = userid.FromContext(ctx)
+	}
+
+	for i, x := range inp {
+		if use != x.User {
+			return tracer.Mask(runtime.UserNotOwnerError)
+		}
+
+		// Ensure user names can only be updated once within the past 7 days.
+		if pat.RepNam(i) && !x.UpdNam() {
+			return tracer.Mask(nameUpdatePeriodError)
+		}
+	}
+
+	return nil
 }

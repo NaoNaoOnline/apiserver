@@ -73,7 +73,7 @@ func (r *run) run(cmd *cobra.Command, args []string) {
 		}
 	}
 
-	for i := 0; i < 100; i++ {
+	for i := 0; i < 50; i++ {
 		err = r.createDesc(sto, r.randomDesc(sto, fak))
 		if err != nil {
 			tracer.Panic(tracer.Mask(err))

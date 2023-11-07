@@ -21,5 +21,5 @@ var jsonPatchPathEmptyError = &tracer.Error{
 
 var jsonPatchPathInvalidError = &tracer.Error{
 	Kind: "jsonPatchPathInvalidError",
-	Desc: "The request expects the JSON-Patch path to be one of [/home /user]. The JSON-Patch path was not found to be one of [/home /user]. Therefore the request failed.",
+	Desc: "The request expects the JSON-Patch path to be one of [/home/data /name/data]. The JSON-Patch path was not found to be one of [/home/data /name/data]. Therefore the request failed.",
 }

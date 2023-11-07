@@ -5,6 +5,7 @@ import (
 	"strconv"
 
 	"github.com/NaoNaoOnline/apigocode/pkg/user"
+	"github.com/NaoNaoOnline/apiserver/pkg/object/objectfield"
 	"github.com/NaoNaoOnline/apiserver/pkg/server/context/subjectclaim"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/userstorage"
 	"github.com/xh3b4sd/tracer"
@@ -18,7 +19,9 @@ func (h *Handler) Create(ctx context.Context, req *user.CreateI) (*user.CreateO,
 		inp = &userstorage.Object{
 			Subj: []string{subjectclaim.FromContext(ctx)},
 			Imag: req.Object[0].Public.Imag,
-			Name: req.Object[0].Public.Name,
+			Name: objectfield.String{
+				Data: req.Object[0].Public.Name,
+			},
 		}
 	}
 

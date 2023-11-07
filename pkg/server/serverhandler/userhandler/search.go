@@ -110,9 +110,9 @@ func (h *Handler) Search(ctx context.Context, req *user.SearchI) (*user.SearchO,
 				User: x.User.String(),
 			},
 			Public: &user.SearchO_Object_Public{
-				Home: x.Home,
+				Home: x.Home.Data,
 				Imag: x.Imag,
-				Name: x.Name,
+				Name: x.Name.Data,
 			},
 		})
 	}

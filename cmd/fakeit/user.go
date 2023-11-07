@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/NaoNaoOnline/apiserver/pkg/object/objectfield"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/userstorage"
 	"github.com/brianvoe/gofakeit/v6"
@@ -50,7 +51,9 @@ func (r *run) randomUser(sto *storage.Storage, fak *gofakeit.Faker) *userstorage
 	{
 		obj = &userstorage.Object{
 			Imag: res.Header.Get("location"),
-			Name: fak.Username(),
+			Name: objectfield.String{
+				Data: fak.Username(),
+			},
 			Subj: []string{
 				fmt.Sprintf("google-oauth2|%06d", fak.Number(0, 99999)),
 			},
