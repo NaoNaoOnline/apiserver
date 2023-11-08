@@ -24,6 +24,11 @@ var descriptionTextLengthError = &tracer.Error{
 	Desc: "The request expects the description text to have between 20 and 120 characters. The description text was not found to have between 20 and 120 characters. Therefore the request failed.",
 }
 
+var descriptionTextURLError = &tracer.Error{
+	Kind: "descriptionTextURLError",
+	Desc: "The request expects the description text not to contain any URL. The description text was found to contain URLs. Therefore the request failed.",
+}
+
 var eventIDEmptyError = &tracer.Error{
 	Kind: "eventIDEmptyError",
 	Desc: "The request expects the event ID not to be empty. The event ID was found to be empty. Therefore the request failed.",

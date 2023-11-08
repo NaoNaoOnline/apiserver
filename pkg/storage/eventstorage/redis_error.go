@@ -28,7 +28,3 @@ var labelObjectNotFoundError = &tracer.Error{
 	Kind: "labelObjectNotFoundError",
 	Desc: "The request expects a label object associated to the event object. The associated label object was not found. Therefore the request failed.",
 }
-
-func IsLabelObjectNotFound(err error) bool {
-	return errors.Is(err, labelObjectNotFoundError)
-}

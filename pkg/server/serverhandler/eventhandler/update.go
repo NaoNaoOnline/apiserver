@@ -6,12 +6,18 @@ import (
 	"github.com/NaoNaoOnline/apigocode/pkg/event"
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectid"
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectstate"
+	"github.com/NaoNaoOnline/apiserver/pkg/server/context/userid"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/eventstorage"
 	"github.com/xh3b4sd/tracer"
 )
 
 func (h *Handler) Update(ctx context.Context, req *event.UpdateI) (*event.UpdateO, error) {
 	var err error
+
+	var use objectid.ID
+	{
+		use = userid.FromContext(ctx)
+	}
 
 	var out []objectstate.String
 
@@ -41,15 +47,10 @@ func (h *Handler) Update(ctx context.Context, req *event.UpdateI) (*event.Update
 				if !inp[i].Dltd.IsZero() {
 					return nil, tracer.Mask(eventDeletedError)
 				}
-
-				// Ensure events cannot be clicked if they have already happened.
-				if inp[i].Happnd() {
-					return nil, tracer.Mask(eventAlreadyHappenedError)
-				}
 			}
 
 			{
-				lis, err := h.eve.UpdateClck(inp)
+				lis, err := h.eve.UpdateClck(use, inp)
 				if err != nil {
 					return nil, tracer.Mask(err)
 				}

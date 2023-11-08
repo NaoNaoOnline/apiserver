@@ -46,7 +46,10 @@ func (r *Redis) DeleteEvnt(inp []*Object) ([]objectstate.String, error) {
 		// the handler, we delete it as the very last step, so the operation can
 		// eventually be retried.
 		{
-			_, err = r.red.Simple().Delete().Multi(eveObj(inp[i].Evnt))
+			clk := clkEve(inp[i].Evnt)
+			obj := eveObj(inp[i].Evnt)
+
+			_, err = r.red.Simple().Delete().Multi(clk, obj)
 			if err != nil {
 				return nil, tracer.Mask(err)
 			}

@@ -30,6 +30,7 @@ func (r *Redis) Create(inp []*Object) ([]*Object, error) {
 		var cou int64
 		{
 			cou, err = r.red.Simple().Exists().Multi(key)
+			// TODO Exists() should never return not found errors, only false
 			if simple.IsNotFound(err) {
 				return nil, tracer.Maskf(listObjectNotFoundError, "%#v", key)
 			} else if err != nil {

@@ -8,6 +8,7 @@ import (
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectfield"
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectid"
 	"github.com/xh3b4sd/tracer"
+	"mvdan.cc/xurls/v2"
 )
 
 type Object struct {
@@ -29,6 +30,10 @@ type Object struct {
 
 var (
 	textexpr = regexp.MustCompile(`^([A-Za-z0-9\s,.:\-'"!$%&#]+(?:\s*,\s*[A-Za-z0-9\s,.:\-'"!$%&#]+)*)$`)
+)
+
+var (
+	relxed = xurls.Relaxed()
 )
 
 func (o *Object) Verify() error {
@@ -58,6 +63,9 @@ func (o *Object) Verify() error {
 		}
 		if len(txt) > 120 {
 			return tracer.Maskf(descriptionTextLengthError, "%d", len(txt))
+		}
+		if relxed.FindString(o.Text) != "" {
+			return tracer.Mask(descriptionTextURLError)
 		}
 	}
 

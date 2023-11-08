@@ -102,5 +102,5 @@ type Interface interface {
 	//     @inp[1] the list of event objects to modify
 	//     @out[0] the list of operation states related to the modified event objects
 	//
-	UpdateClck([]*Object) ([]objectstate.String, error)
+	UpdateClck(objectid.ID, []*Object) ([]objectstate.String, error)
 }

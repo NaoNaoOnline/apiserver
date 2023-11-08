@@ -215,5 +215,11 @@ func (w *wrapper) Update(ctx context.Context, req *event.UpdateI) (*event.Update
 		}
 	}
 
+	{
+		if userid.FromContext(ctx) == "" {
+			return nil, tracer.Mask(runtime.UserIDEmptyError)
+		}
+	}
+
 	return w.han.Update(ctx, req)
 }
