@@ -9,7 +9,7 @@ const (
 	// occur multiple times, even though we do not want to count duplicates for
 	// such a metric. Instead of returning an error, because the operation in and
 	// of itself is legitimate, we return without any underlying modification.
-	Dropped String = "Dropped"
+	Dropped String = "dropped"
 
 	// Started is the status returned when an update operation was initiated for
 	// thorough bachground processing.
