@@ -13,6 +13,14 @@ func (r *Redis) UpdateClck(use objectid.ID, obj []*Object) ([]objectstate.String
 
 	var out []objectstate.String
 	for i := range obj {
+		// Ensure user clicks are not counted on events that have already happened.
+		{
+			if obj[i].Happnd() {
+				out = append(out, objectstate.Dropped)
+				continue
+			}
+		}
+
 		// Ensure user clicks are not counted twice.
 		{
 			exi, err := r.red.Sorted().Exists().Score(clkEve(obj[i].Evnt), use.Float())
