@@ -4,11 +4,6 @@ import (
 	"github.com/xh3b4sd/tracer"
 )
 
-var eventAlreadyHappenedError = &tracer.Error{
-	Kind: "eventAlreadyHappenedError",
-	Desc: "The request expects event objects to be clicked until they have already happened. The event object was found to have already happened. Therefore the request failed.",
-}
-
 var eventDeletedError = &tracer.Error{
 	Kind: "eventDeletedError",
 	Desc: "The request expects event objects to be clicked until they are deleted. The event object was found to have already been deleted. Therefore the request failed.",

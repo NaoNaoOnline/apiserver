@@ -1,6 +1,17 @@
 package keyfmt
 
 const (
+
+	// ClickEvent is used to store all the user IDs that have clicked on the event
+	// link while it was actively listed. Events that have already happened are
+	// not active and thus do not track clicks.
+	//
+	//     event ID              user IDs
+	//                     ->
+	//     clk/eve/1234          1234,5678
+	//
+	ClickEvent = "clk/eve/%s"
+
 	// DescriptionEvent is used to store all the IDs of descriptions mapped to a
 	// specific event.
 	//

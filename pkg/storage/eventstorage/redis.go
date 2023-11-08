@@ -42,6 +42,10 @@ func NewRedis(c RedisConfig) *Redis {
 	}
 }
 
+func clkEve(oid objectid.ID) string {
+	return fmt.Sprintf(keyfmt.ClickEvent, oid)
+}
+
 func eveLab(oid objectid.ID) string {
 	return fmt.Sprintf(keyfmt.EventLabel, oid)
 }

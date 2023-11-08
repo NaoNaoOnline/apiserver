@@ -20,6 +20,7 @@ require (
 	github.com/xh3b4sd/redigo v0.36.1
 	github.com/xh3b4sd/rescue v0.17.10
 	github.com/xh3b4sd/tracer v0.10.1
+	mvdan.cc/xurls/v2 v2.5.0
 )
 
 require (

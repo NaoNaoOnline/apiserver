@@ -28,13 +28,17 @@ func (h *Handler) Delete(ctx context.Context, req *event.DeleteI) (*event.Delete
 		}
 	}
 
-	var obj []*eventstorage.Object
+	var inp []*eventstorage.Object
 	{
-		obj, err = h.eve.SearchEvnt(eve)
+		inp, err = h.eve.SearchEvnt(eve)
 		if err != nil {
 			return nil, tracer.Mask(err)
 		}
 	}
+
+	//
+	// Verify the given input.
+	//
 
 	var mod bool
 	{
@@ -44,21 +48,23 @@ func (h *Handler) Delete(ctx context.Context, req *event.DeleteI) (*event.Delete
 		}
 	}
 
-	for _, x := range obj {
+	if mod {
 		// Skip all validity checks for moderators and go straight ahead to
 		// deletion.
-		if mod {
-			break
-		}
-
-		if use != x.User {
-			return nil, tracer.Mask(runtime.UserNotOwnerError)
+	} else {
+		err = h.deleteVrfy(ctx, inp)
+		if err != nil {
+			return nil, tracer.Mask(err)
 		}
 	}
 
+	//
+	// Delete the given resources.
+	//
+
 	var out []objectstate.String
 	{
-		out, err = h.eve.DeleteWrkr(obj)
+		out, err = h.eve.DeleteWrkr(inp)
 		if err != nil {
 			return nil, tracer.Mask(err)
 		}
@@ -83,4 +89,19 @@ func (h *Handler) Delete(ctx context.Context, req *event.DeleteI) (*event.Delete
 	}
 
 	return res, nil
+}
+
+func (h *Handler) deleteVrfy(ctx context.Context, inp eventstorage.Slicer) error {
+	var use objectid.ID
+	{
+		use = userid.FromContext(ctx)
+	}
+
+	for _, x := range inp {
+		if use != x.User {
+			return tracer.Mask(runtime.UserNotOwnerError)
+		}
+	}
+
+	return nil
 }
