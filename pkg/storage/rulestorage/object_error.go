@@ -1,6 +1,10 @@
 package rulestorage
 
-import "github.com/xh3b4sd/tracer"
+import (
+	"errors"
+
+	"github.com/xh3b4sd/tracer"
+)
 
 var listIDEmptyError = &tracer.Error{
 	Kind: "eventIDEmptyError",
@@ -10,6 +14,10 @@ var listIDEmptyError = &tracer.Error{
 var resourceIDEmptyError = &tracer.Error{
 	Kind: "resourceIDEmptyError",
 	Desc: "The request expects the rule object to contain one of [Object.Excl Object.Incl]. The rule object was not found to contain one of [Object.Excl Object.Incl]. Therefore the request failed.",
+}
+
+func IsResourceIDEmpty(err error) bool {
+	return errors.Is(err, resourceIDEmptyError)
 }
 
 var ruleKindInvalidError = &tracer.Error{

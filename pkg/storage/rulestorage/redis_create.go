@@ -4,7 +4,6 @@ import (
 	"time"
 
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectid"
-	"github.com/xh3b4sd/redigo/pkg/simple"
 	"github.com/xh3b4sd/tracer"
 )
 
@@ -27,20 +26,28 @@ func (r *Redis) Create(inp []*Object) ([]*Object, error) {
 			key = lisObj(inp[i].List)
 		}
 
-		var cou int64
+		// Ensure the referenced list object does in fact exist.
 		{
-			cou, err = r.red.Simple().Exists().Multi(key)
-			// TODO Exists() should never return not found errors, only false
-			if simple.IsNotFound(err) {
-				return nil, tracer.Maskf(listObjectNotFoundError, "%#v", key)
-			} else if err != nil {
+			cou, err := r.red.Simple().Exists().Multi(key)
+			if err != nil {
 				return nil, tracer.Mask(err)
+			}
+
+			if cou != 1 {
+				return nil, tracer.Maskf(listObjectNotFoundError, "%#v", key)
 			}
 		}
 
-		// Ensure all of the referenced resource objects do in fact exist.
-		if cou != 1 {
-			return nil, tracer.Maskf(listObjectNotFoundError, "%#v", key)
+		// Ensure the maximum allowed amount of rules per list.
+		{
+			cou, err := r.red.Sorted().Metric().Count(rulLis(inp[i].List))
+			if err != nil {
+				return nil, tracer.Mask(err)
+			}
+
+			if cou >= 100 {
+				return nil, tracer.Mask(ruleListLimitError)
+			}
 		}
 
 		var now time.Time
