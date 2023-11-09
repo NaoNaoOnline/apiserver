@@ -2,6 +2,7 @@ package eventstorage
 
 import (
 	"encoding/json"
+	"fmt"
 	"time"
 
 	"github.com/NaoNaoOnline/apiserver/pkg/generic"
@@ -16,7 +17,7 @@ const (
 	oneWeek = time.Hour * 24 * 7
 )
 
-func (r *Redis) SearchEvnt(inp []objectid.ID) ([]*Object, error) {
+func (r *Redis) SearchEvnt(use objectid.ID, inp []objectid.ID) ([]*Object, error) {
 	var err error
 
 	var jsn []string
@@ -29,21 +30,43 @@ func (r *Redis) SearchEvnt(inp []objectid.ID) ([]*Object, error) {
 		}
 	}
 
+	var lin []string
+	if use != "" {
+		lin, err = r.red.Simple().Search().Multi(objectid.Fmt(inp, fmt.Sprintf(keyfmt.LinkMapping, use, "%s"))...)
+		if simple.IsNotFound(err) {
+			// fall through
+		} else if err != nil {
+			return nil, tracer.Mask(err)
+		}
+	}
+
 	var out []*Object
-	for _, x := range jsn {
+	for i := range jsn {
 		var obj *Object
 		{
 			obj = &Object{}
 		}
 
-		if x != "" {
-			err = json.Unmarshal([]byte(x), obj)
+		if jsn[i] != "" {
+			err = json.Unmarshal([]byte(jsn[i]), obj)
 			if err != nil {
 				return nil, tracer.Mask(err)
 			}
 		}
 
-		out = append(out, obj)
+		// Annotate the event object with the indication whether the calling user
+		// visited this event already. The linear mapping between event objects and
+		// visit indicators should work reliably because Simple.Search.Multi gets
+		// called with the same amount of keys for each query. And so each and every
+		// JSON string should relate to each and every visit indicator for the
+		// calling user.
+		if len(lin) == len(jsn) && lin[i] == "1" {
+			obj.Clck.User = true
+		}
+
+		{
+			out = append(out, obj)
+		}
 	}
 
 	return out, nil
@@ -96,7 +119,7 @@ func (r *Redis) SearchLabl(lab []objectid.ID) ([]*Object, error) {
 
 	var out []*Object
 	{
-		out, err = r.SearchEvnt(objectid.IDs(val))
+		out, err = r.SearchEvnt("", objectid.IDs(val))
 		if err != nil {
 			return nil, tracer.Mask(err)
 		}
@@ -108,8 +131,8 @@ func (r *Redis) SearchLabl(lab []objectid.ID) ([]*Object, error) {
 func (r *Redis) SearchLike(use objectid.ID, min int, max int) ([]*Object, error) {
 	var err error
 
-	// val will result in a list of all paired ID strings, containing the event ID
-	// that the given user reacted to in the form of a description like.
+	// val will result in a list of all paired ID strings, containing the event
+	// ID, that the given user reacted to in the form of a description like.
 	var val []string
 	{
 		val, err = r.red.Sorted().Search().Order(likUse(use), min, max)
@@ -126,13 +149,35 @@ func (r *Redis) SearchLike(use objectid.ID, min int, max int) ([]*Object, error)
 
 	var out []*Object
 	{
-		out, err = r.SearchEvnt(generic.Uni(objectid.Frst(val)))
+		out, err = r.SearchEvnt(use, generic.Uni(objectid.Frst(val)))
 		if err != nil {
 			return nil, tracer.Mask(err)
 		}
 	}
 
 	return out, nil
+}
+
+func (r *Redis) SearchLink(eve objectid.ID) ([]objectid.ID, error) {
+	var err error
+
+	// val will result in a list of all user IDs having visited the given event
+	// ID, if any.
+	var val []string
+	{
+		val, err = r.red.Sorted().Search().Order(linEve(eve), 0, -1)
+		if err != nil {
+			return nil, tracer.Mask(err)
+		}
+	}
+
+	// There might not be any values, and so we do not proceed, but instead
+	// continue with the next event ID, if any.
+	if len(val) == 0 {
+		return nil, nil
+	}
+
+	return objectid.IDs(val), nil
 }
 
 func (r *Redis) SearchUpcm() ([]*Object, error) {
@@ -195,7 +240,7 @@ func (r *Redis) SearchRule(rul []*rulestorage.Object) ([]*Object, error) {
 
 	var out Slicer
 	{
-		out, err = r.SearchEvnt(generic.Uni(objectid.Frst(val)))
+		out, err = r.SearchEvnt("", generic.Uni(objectid.Frst(val)))
 		if err != nil {
 			return nil, tracer.Mask(err)
 		}
@@ -251,7 +296,7 @@ func (r *Redis) SearchTime(min time.Time, max time.Time) ([]*Object, error) {
 
 	var out []*Object
 	{
-		out, err = r.SearchEvnt(objectid.IDs(val))
+		out, err = r.SearchEvnt("", objectid.IDs(val))
 		if err != nil {
 			return nil, tracer.Mask(err)
 		}
@@ -282,7 +327,7 @@ func (r *Redis) SearchUser(use []objectid.ID) ([]*Object, error) {
 		}
 
 		{
-			lis, err := r.SearchEvnt(objectid.IDs(val))
+			lis, err := r.SearchEvnt(x, objectid.IDs(val))
 			if err != nil {
 				return nil, tracer.Mask(err)
 			}

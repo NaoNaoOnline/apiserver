@@ -23,7 +23,7 @@ func (r *Redis) UpdateClck(use objectid.ID, obj []*Object) ([]objectstate.String
 
 		// Ensure user clicks are not counted twice.
 		{
-			exi, err := r.red.Sorted().Exists().Score(clkEve(obj[i].Evnt), use.Float())
+			exi, err := r.red.Sorted().Exists().Score(linEve(obj[i].Evnt), use.Float())
 			if err != nil {
 				return nil, tracer.Mask(err)
 			}
@@ -63,11 +63,31 @@ func (r *Redis) UpdateClck(use objectid.ID, obj []*Object) ([]objectstate.String
 			}
 		}
 
+		// We use a simple key-value pair for a user-event relationship so we can
+		// lookup all the links a user visited on a list of events. This internal
+		// data structure is used in the Event.Search endpoints.
+		{
+			err = r.red.Simple().Create().Element(linMap(use, obj[i].Evnt), "1")
+			if err != nil {
+				return nil, tracer.Mask(err)
+			}
+		}
+
 		// We use a sorted set to store all the user IDs that have clicked on an
 		// event link. This internal data structure is used to prevent counting
 		// duplicates on this particular metric.
 		{
-			err = r.red.Sorted().Create().Score(clkEve(obj[i].Evnt), use.String(), use.Float())
+			err = r.red.Sorted().Create().Score(linEve(obj[i].Evnt), use.String(), use.Float())
+			if err != nil {
+				return nil, tracer.Mask(err)
+			}
+		}
+
+		// We use a sorted set for all the events that a user visited in the form of
+		// a link click. This internal data structure is used during the process of
+		// subscription accounting.
+		{
+			err = r.red.Sorted().Create().Score(linUse(use), obj[i].Evnt.String(), obj[i].Evnt.Float())
 			if err != nil {
 				return nil, tracer.Mask(err)
 			}

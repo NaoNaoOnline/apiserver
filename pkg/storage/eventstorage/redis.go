@@ -42,8 +42,16 @@ func NewRedis(c RedisConfig) *Redis {
 	}
 }
 
-func clkEve(oid objectid.ID) string {
-	return fmt.Sprintf(keyfmt.ClickEvent, oid)
+func linEve(oid objectid.ID) string {
+	return fmt.Sprintf(keyfmt.LinkEvent, oid)
+}
+
+func linMap(use objectid.ID, oid objectid.ID) string {
+	return fmt.Sprintf(keyfmt.LinkMapping, use, oid)
+}
+
+func linUse(oid objectid.ID) string {
+	return fmt.Sprintf(keyfmt.LinkUser, oid)
 }
 
 func eveLab(oid objectid.ID) string {

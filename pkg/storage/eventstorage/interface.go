@@ -24,6 +24,17 @@ type Interface interface {
 	//
 	DeleteEvnt([]*Object) ([]objectstate.String, error)
 
+	// DeleteLink purges internal data structures related to event links, given
+	// the many user IDs that have visited the provided event ID. This function is
+	// mainly used for cleaning up internal event related data structures in a
+	// background process.
+	//
+	//     @inp[0] the event ID to delete
+	//     @inp[1] the many user IDs that have visited the provided event ID
+	//     @out[0] the list of operation states related to the purged data structures
+	//
+	DeleteLink(objectid.ID, []objectid.ID) ([]objectstate.String, error)
+
 	// DeleteWrkr initializes the asynchronous deletion process for the given
 	// event objects and all of its associated data structures by setting
 	// Object.Dltd and creating the respective worker tasks that will be processed
@@ -36,10 +47,11 @@ type Interface interface {
 
 	// SearchEvnt returns the event objects matching the given event IDs.
 	//
-	//     @inp[0] the event IDs to search for
+	//     @inp[0] the calling user
+	//     @inp[1] the event IDs to search for
 	//     @out[0] the list of event objects matching the given event IDs
 	//
-	SearchEvnt([]objectid.ID) ([]*Object, error)
+	SearchEvnt(objectid.ID, []objectid.ID) ([]*Object, error)
 
 	// SearchHpnd returns the event objects known to have happened already within
 	// the past week.
@@ -64,6 +76,15 @@ type Interface interface {
 	//     @out[0] the list of event objects the given user ID reacted to
 	//
 	SearchLike(objectid.ID, int, int) ([]*Object, error)
+
+	// SearchLink returns the user IDs that visited the given event ID in
+	// the form of a link. This function is mainly used for cleaning up internal
+	// description related data structures in a background process.
+	//
+	//     @inp[0] the event ID to search users for
+	//     @out[0] the list of user IDs that visited the given event ID
+	//
+	SearchLink(objectid.ID) ([]objectid.ID, error)
 
 	// SearchRule returns the event objects matching all the criteria specified by
 	// the given rule objects.

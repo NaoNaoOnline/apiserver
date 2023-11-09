@@ -4,6 +4,7 @@ import (
 	"time"
 
 	"github.com/NaoNaoOnline/apiserver/pkg/keyfmt"
+	"github.com/NaoNaoOnline/apiserver/pkg/object/objectid"
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectstate"
 	"github.com/xh3b4sd/tracer"
 )
@@ -44,12 +45,40 @@ func (r *Redis) DeleteEvnt(inp []*Object) ([]objectstate.String, error) {
 
 		// Since the deletion process starts with the normalized key-value pair in
 		// the handler, we delete it as the very last step, so the operation can
-		// eventually be retried.
+		// eventually be retried. Here we also delete the event ID mappings
+		// tracking all users that have clicked on the event link.
 		{
-			clk := clkEve(inp[i].Evnt)
+			lin := linEve(inp[i].Evnt)
 			obj := eveObj(inp[i].Evnt)
 
-			_, err = r.red.Simple().Delete().Multi(clk, obj)
+			_, err = r.red.Simple().Delete().Multi(lin, obj)
+			if err != nil {
+				return nil, tracer.Mask(err)
+			}
+		}
+
+		{
+			out = append(out, objectstate.Deleted)
+		}
+	}
+
+	return out, nil
+}
+
+func (r *Redis) DeleteLink(eve objectid.ID, use []objectid.ID) ([]objectstate.String, error) {
+	var err error
+
+	var out []objectstate.String
+	for i := range use {
+		{
+			_, err = r.red.Simple().Delete().Multi(linMap(use[i], eve))
+			if err != nil {
+				return nil, tracer.Mask(err)
+			}
+		}
+
+		{
+			err = r.red.Sorted().Delete().Score(linUse(use[i]), eve.Float())
 			if err != nil {
 				return nil, tracer.Mask(err)
 			}

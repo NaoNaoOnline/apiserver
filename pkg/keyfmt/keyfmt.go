@@ -1,17 +1,6 @@
 package keyfmt
 
 const (
-
-	// ClickEvent is used to store all the user IDs that have clicked on the event
-	// link while it was actively listed. Events that have already happened are
-	// not active and thus do not track clicks.
-	//
-	//     event ID              user IDs
-	//                     ->
-	//     clk/eve/1234          1234,5678
-	//
-	ClickEvent = "clk/eve/%s"
-
 	// DescriptionEvent is used to store all the IDs of descriptions mapped to a
 	// specific event.
 	//
@@ -142,6 +131,34 @@ const (
 	//     lik/use/1234          1234,5678
 	//
 	LikeUser = "lik/use/%s"
+
+	// LinkEvent is used to store all the user IDs that have clicked on the event
+	// link while it was actively listed. Events that have already happened are
+	// not active and thus do not track clicks.
+	//
+	//     event ID              user IDs
+	//                     ->
+	//     lin/eve/1234          1234,5678
+	//
+	LinkEvent = "lin/eve/%s"
+
+	// LinkMapping is used to store all the indications of users visiting an
+	// event.
+	//
+	//     user ID / event ID             0 / 1
+	//                              ->
+	//     lin/use/1234/eve/5678          1
+	//
+	LinkMapping = "lin/use/%s/eve/%s"
+
+	// LinkUser is used to store all the event IDs that a user visited in the form
+	// of a link click.
+	//
+	//     user ID               event IDs
+	//                     ->
+	//     lik/use/1234          1234,5678
+	//
+	LinkUser = "lin/use/%s"
 
 	// ListObject is used to store our internal representation of a list object.
 	//

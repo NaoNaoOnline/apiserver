@@ -157,7 +157,7 @@ func (h *Handler) updateVrfyLike(ctx context.Context, inp descriptionstorage.Sli
 
 	var eve []*eventstorage.Object
 	{
-		eve, err = h.eve.SearchEvnt(inp.Evnt())
+		eve, err = h.eve.SearchEvnt("", inp.Evnt())
 		if err != nil {
 			return tracer.Mask(err)
 		}

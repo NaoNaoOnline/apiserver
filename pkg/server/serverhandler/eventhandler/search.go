@@ -16,6 +16,11 @@ import (
 func (h *Handler) Search(ctx context.Context, req *event.SearchI) (*event.SearchO, error) {
 	var out []*eventstorage.Object
 
+	var use objectid.ID
+	{
+		use = userid.FromContext(ctx)
+	}
+
 	//
 	// Search events by ID.
 	//
@@ -28,7 +33,7 @@ func (h *Handler) Search(ctx context.Context, req *event.SearchI) (*event.Search
 	}
 
 	if len(evn) != 0 {
-		lis, err := h.eve.SearchEvnt(evn)
+		lis, err := h.eve.SearchEvnt(use, evn)
 		if err != nil {
 			return nil, tracer.Mask(err)
 		}
@@ -40,15 +45,15 @@ func (h *Handler) Search(ctx context.Context, req *event.SearchI) (*event.Search
 	// Search events by user.
 	//
 
-	var use []objectid.ID
+	var usr []objectid.ID
 	for _, x := range req.Object {
 		if x.Intern != nil && x.Intern.User != "" {
-			use = append(use, objectid.ID(x.Intern.User))
+			usr = append(usr, objectid.ID(x.Intern.User))
 		}
 	}
 
-	if len(use) != 0 {
-		lis, err := h.eve.SearchUser(use)
+	if len(usr) != 0 {
+		lis, err := h.eve.SearchUser(usr)
 		if err != nil {
 			return nil, tracer.Mask(err)
 		}
@@ -223,6 +228,7 @@ func (h *Handler) Search(ctx context.Context, req *event.SearchI) (*event.Search
 				{
 					Amnt: strconv.FormatInt(x.Clck.Data, 10),
 					Kind: "link",
+					User: x.Clck.User,
 				},
 			},
 			Intern: &event.SearchO_Object_Intern{
