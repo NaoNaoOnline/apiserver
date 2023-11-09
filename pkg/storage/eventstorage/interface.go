@@ -33,7 +33,7 @@ type Interface interface {
 	//     @inp[1] the many user IDs that have visited the provided event ID
 	//     @out[0] the list of operation states related to the purged data structures
 	//
-	DeleteLink(des objectid.ID, use []objectid.ID) ([]objectstate.String, error)
+	DeleteLink(objectid.ID, []objectid.ID) ([]objectstate.String, error)
 
 	// DeleteWrkr initializes the asynchronous deletion process for the given
 	// event objects and all of its associated data structures by setting
