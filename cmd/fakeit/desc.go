@@ -45,9 +45,14 @@ func (r *run) randomDesc(sto *storage.Storage, fak *gofakeit.Faker) *description
 		gofakeit.ShuffleAnySlice(eve)
 	}
 
+	var evo *eventstorage.Object
+	{
+		evo = eve.Upcm().Obct()[0]
+	}
+
 	var eid objectid.ID
 	{
-		eid = eve.Upcm().Evnt()[0]
+		eid = evo.Evnt
 	}
 
 	var des []*descriptionstorage.Object
@@ -76,8 +81,12 @@ func (r *run) randomDesc(sto *storage.Storage, fak *gofakeit.Faker) *description
 		}
 	}
 
-	{
+	var uid objectid.ID
+	if len(des) == 0 {
+		uid = evo.User
+	} else {
 		gofakeit.ShuffleAnySlice(use)
+		uid = use[0].User
 	}
 
 	var txt string
@@ -93,7 +102,7 @@ func (r *run) randomDesc(sto *storage.Storage, fak *gofakeit.Faker) *description
 				Data: int64(fak.Number(minRan[fak.Number(0, 3)], maxRan[fak.Number(0, 3)])),
 			},
 			Text: txt,
-			User: use[0].User,
+			User: uid,
 		}
 	}
 

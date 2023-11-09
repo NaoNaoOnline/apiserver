@@ -209,24 +209,32 @@ func (r *Redis) SearchUpcm() ([]*Object, error) {
 func (r *Redis) SearchRule(rul []*rulestorage.Object) ([]*Object, error) {
 	var err error
 
-	// There might not be any rules to begin with, and so we do not proceed, but
-	// instead return nothing.
-	if len(rul) == 0 {
-		return nil, nil
-	}
-
 	var sli rulestorage.Slicer
 	{
 		sli = rulestorage.Slicer(rul)
+	}
+
+	var inc []string
+	{
+		inc = sli.Incl()
+	}
+
+	// There might not be any rules to begin with, and so we do not proceed, but
+	// instead return nothing. Note that we check for the included items and not
+	// the whole list of rules, because it may be that all rules only defines
+	// excludes. While a list containing only of excludes does not make sense, it
+	// may happen that we face such a situation.
+	if len(inc) == 0 {
+		return nil, nil
 	}
 
 	// val will result in a list of all event IDs to be included in the given
 	// list.
 	var val []string
 	{
-		val, err = r.red.Sorted().Search().Union(sli.Incl()...)
+		val, err = r.red.Sorted().Search().Union(inc...)
 		if simple.IsNotFound(err) {
-			return nil, tracer.Maskf(eventObjectNotFoundError, "%v", sli.Incl())
+			return nil, tracer.Maskf(eventObjectNotFoundError, "%v", inc)
 		} else if err != nil {
 			return nil, tracer.Mask(err)
 		}

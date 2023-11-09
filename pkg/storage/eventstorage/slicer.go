@@ -35,6 +35,10 @@ func (s Slicer) Func(fun func(*Object) bool) Slicer {
 	return obj
 }
 
+func (s Slicer) Obct() []*Object {
+	return s
+}
+
 // Upcm returns the subset of event objects that have not yet happened based on
 // the current time of execution. That is, the subset of upcoming events.
 func (s Slicer) Upcm() Slicer {
