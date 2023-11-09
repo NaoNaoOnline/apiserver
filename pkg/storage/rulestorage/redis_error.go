@@ -1,8 +1,19 @@
 package rulestorage
 
 import (
+	"errors"
+
 	"github.com/xh3b4sd/tracer"
 )
+
+var ruleListLimitError = &tracer.Error{
+	Kind: "ruleListLimitError",
+	Desc: "The request expects an upper limit of 100 rule objects per list. The upper limit of 100 rule objects per list was found. Therefore the request failed.",
+}
+
+func IsRuleListLimit(err error) bool {
+	return errors.Is(err, ruleListLimitError)
+}
 
 var listObjectNotFoundError = &tracer.Error{
 	Kind: "listObjectNotFoundError",

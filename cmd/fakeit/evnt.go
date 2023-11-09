@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/NaoNaoOnline/apiserver/pkg/object/objectfield"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/eventstorage"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/labelstorage"
@@ -117,6 +118,9 @@ func (r *run) randomEvnt(sto *storage.Storage, fak *gofakeit.Faker) *eventstorag
 	{
 		obj = &eventstorage.Object{
 			Cate: cat.Labl()[:fak.Number(1, 4)],
+			Clck: objectfield.Integer{
+				Data: int64(fak.Number(minRan[fak.Number(0, 3)], maxRan[fak.Number(0, 3)])),
+			},
 			Dura: time.Duration(dur * int(time.Minute)),
 			Host: hos.Labl()[:fak.Number(1, 4)],
 			Link: fmt.Sprintf("https://%s.%s", fak.DomainName(), fak.DomainSuffix()),

@@ -31,6 +31,13 @@ type Interface interface {
 	//
 	DeleteWrkr([]*Object) ([]objectstate.String, error)
 
+	// SearchFake returns all list objects. This is used to create fake test data
+	// during development. DO NOT USE IN PRODUCTION.
+	//
+	//     @out[0] the list of all list objects in redis
+	//
+	SearchFake() ([]*Object, error)
+
 	// SearchList returns the list objects matching the given list IDs.
 	//
 	//     @inp[0] the list IDs to search for

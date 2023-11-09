@@ -27,6 +27,15 @@ func (i ID) Float() float64 {
 	return f
 }
 
+func (i ID) Int() int64 {
+	n, e := strconv.ParseInt(string(i), 10, 64)
+	if e != nil {
+		tracer.Panic(tracer.Mask(e))
+	}
+
+	return n
+}
+
 func (i ID) String() string {
 	return string(i)
 }

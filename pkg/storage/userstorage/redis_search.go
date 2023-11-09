@@ -16,7 +16,7 @@ func (r *Redis) SearchFake() ([]*Object, error) {
 
 	var pat string
 	{
-		pat = fmt.Sprintf(keyfmt.UserName, "*")
+		pat = fmt.Sprintf(keyfmt.UserObject, "*")
 	}
 
 	var res chan string
@@ -24,15 +24,15 @@ func (r *Redis) SearchFake() ([]*Object, error) {
 		res = make(chan string, 1)
 	}
 
-	var nam []string
+	var ids []string
 	go func() {
 		for s := range res {
 			spl := strings.Split(s, "/")
-			nam = append(nam, spl[len(spl)-1])
+			ids = append(ids, spl[len(spl)-1])
 		}
 	}()
 
-	// For our testing purposes we want to read all user names available. For that
+	// For our testing purposes we want to read all user IDs available. For that
 	// purpose we do not need to provide a done channel, because we do not want to
 	// cancel the walk through all data early. We want all users.
 	{
@@ -44,7 +44,7 @@ func (r *Redis) SearchFake() ([]*Object, error) {
 
 	var out []*Object
 	{
-		out, err = r.SearchName(nam)
+		out, err = r.SearchUser(objectid.IDs(ids))
 		if err != nil {
 			return nil, tracer.Mask(err)
 		}

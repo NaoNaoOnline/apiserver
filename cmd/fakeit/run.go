@@ -10,6 +10,11 @@ import (
 	"github.com/xh3b4sd/tracer"
 )
 
+var (
+	minRan = []int{0, 5, 10, 15, 20}
+	maxRan = []int{50, 5000, 500000, 50000000}
+)
+
 type run struct{}
 
 func (r *run) run(cmd *cobra.Command, args []string) {
@@ -52,7 +57,7 @@ func (r *run) run(cmd *cobra.Command, args []string) {
 
 	// --------------------------------------------------------------------- //
 
-	for i := 0; i < 5; i++ {
+	for i := 0; i < 10; i++ {
 		err = r.createUser(sto, r.randomUser(sto, fak))
 		if err != nil {
 			tracer.Panic(tracer.Mask(err))
@@ -75,6 +80,20 @@ func (r *run) run(cmd *cobra.Command, args []string) {
 
 	for i := 0; i < 50; i++ {
 		err = r.createDesc(sto, r.randomDesc(sto, fak))
+		if err != nil {
+			tracer.Panic(tracer.Mask(err))
+		}
+	}
+
+	for i := 0; i < 50; i++ {
+		err = r.createList(sto, r.randomList(sto, fak))
+		if err != nil {
+			tracer.Panic(tracer.Mask(err))
+		}
+	}
+
+	for i := 0; i < 100; i++ {
+		err = r.createRule(sto, r.randomRule(sto, fak))
 		if err != nil {
 			tracer.Panic(tracer.Mask(err))
 		}
