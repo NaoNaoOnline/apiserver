@@ -30,7 +30,7 @@ func (h *Handler) Delete(ctx context.Context, req *event.DeleteI) (*event.Delete
 
 	var inp []*eventstorage.Object
 	{
-		inp, err = h.eve.SearchEvnt(eve)
+		inp, err = h.eve.SearchEvnt("", eve)
 		if err != nil {
 			return nil, tracer.Mask(err)
 		}

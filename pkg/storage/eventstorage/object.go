@@ -151,7 +151,13 @@ func (o *Object) Verify() error {
 		if o.Time.Compare(time.Now().UTC().Add(time.Hour*24*30)) == +1 {
 			return tracer.Mask(eventTimeFutureError)
 		}
-		if o.Time.Compare(time.Now().UTC()) != +1 {
+		// When creating events, we want to ensure that events cannot be created
+		// with event times that are in the past. During event creation, event IDs
+		// are only allocated once the input data got verified. During event
+		// updates, the event time may very well be in the past at the time of the
+		// update happening. Then we do not want to run the check below, which is
+		// only useful during event creation.
+		if o.Evnt == "" && o.Time.Compare(time.Now().UTC()) != +1 {
 			return tracer.Mask(eventTimePastError)
 		}
 	}

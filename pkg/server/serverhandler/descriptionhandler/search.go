@@ -13,6 +13,8 @@ import (
 )
 
 func (h *Handler) Search(ctx context.Context, req *description.SearchI) (*description.SearchO, error) {
+	var out []*descriptionstorage.Object
+
 	var use objectid.ID
 	{
 		use = userid.FromContext(ctx)
@@ -29,7 +31,6 @@ func (h *Handler) Search(ctx context.Context, req *description.SearchI) (*descri
 	// Search the given resources.
 	//
 
-	var out []*descriptionstorage.Object
 	{
 		lis, err := h.des.SearchEvnt(use, evn)
 		if err != nil {

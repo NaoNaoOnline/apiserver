@@ -36,7 +36,7 @@ func (h *Handler) Update(ctx context.Context, req *event.UpdateI) (*event.Update
 		if len(eve) != 0 {
 			var inp []*eventstorage.Object
 			{
-				inp, err = h.eve.SearchEvnt(eve)
+				inp, err = h.eve.SearchEvnt("", eve)
 				if err != nil {
 					return nil, tracer.Mask(err)
 				}

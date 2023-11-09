@@ -57,7 +57,9 @@ func (r *Redis) SearchDesc(use objectid.ID, inp []objectid.ID) ([]*Object, error
 			obj.Like.User = true
 		}
 
-		out = append(out, obj)
+		{
+			out = append(out, obj)
+		}
 	}
 
 	return out, nil
