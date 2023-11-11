@@ -63,7 +63,7 @@ func New(c Config) *Handler {
 	{
 		h = &Handler{
 			dch: descriptionhandler.NewCustomHandler(descriptionhandler.CustomHandlerConfig{Des: c.Sto.Desc(), Log: c.Log}),
-			ech: eventhandler.NewCustomHandler(eventhandler.CustomHandlerConfig{Eve: c.Sto.Evnt(), Des: c.Sto.Desc(), Log: c.Log}),
+			ech: eventhandler.NewCustomHandler(eventhandler.CustomHandlerConfig{Eve: c.Sto.Evnt(), Des: c.Sto.Desc(), Lis: c.Sto.List(), Log: c.Log, Rul: c.Sto.Rule()}),
 			esh: eventhandler.NewSystemHandler(eventhandler.SystemHandlerConfig{Eve: c.Sto.Evnt(), Log: c.Log}),
 			lch: listhandler.NewCustomHandler(listhandler.CustomHandlerConfig{Lis: c.Sto.List(), Log: c.Log, Rul: c.Sto.Rule()}),
 			pbh: policyhandler.NewBufferHandler(policyhandler.BufferHandlerConfig{Log: c.Log, Prm: c.Prm}),

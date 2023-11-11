@@ -42,24 +42,16 @@ func NewRedis(c RedisConfig) *Redis {
 	}
 }
 
-func linEve(oid objectid.ID) string {
-	return fmt.Sprintf(keyfmt.LinkEvent, oid)
-}
-
-func linMap(use objectid.ID, oid objectid.ID) string {
-	return fmt.Sprintf(keyfmt.LinkMapping, use, oid)
-}
-
-func linUse(oid objectid.ID) string {
-	return fmt.Sprintf(keyfmt.LinkUser, oid)
-}
-
 func eveLab(oid objectid.ID) string {
 	return fmt.Sprintf(keyfmt.EventLabel, oid)
 }
 
 func eveObj(oid objectid.ID) string {
 	return fmt.Sprintf(keyfmt.EventObject, oid)
+}
+
+func eveRef(oid objectid.ID) string {
+	return fmt.Sprintf(keyfmt.EventReference, oid)
 }
 
 func eveUse(oid objectid.ID) string {
@@ -72,6 +64,22 @@ func labObj(oid objectid.ID) string {
 
 func likUse(oid objectid.ID) string {
 	return fmt.Sprintf(keyfmt.LikeUser, oid)
+}
+
+func linEve(oid objectid.ID) string {
+	return fmt.Sprintf(keyfmt.LinkEvent, oid)
+}
+
+func linMap(use objectid.ID, oid objectid.ID) string {
+	return fmt.Sprintf(keyfmt.LinkMapping, use, oid)
+}
+
+func linUse(oid objectid.ID) string {
+	return fmt.Sprintf(keyfmt.LinkUser, oid)
+}
+
+func rulEve(eve objectid.ID) string {
+	return fmt.Sprintf(keyfmt.RuleEvent, eve)
 }
 
 func musStr(obj *Object) string {

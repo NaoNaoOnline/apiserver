@@ -23,6 +23,7 @@ type Object struct {
 	// respective host label IDs when computing the associated list.
 	//
 	//     cate for adding or removing events matching the given category IDs
+	//     evnt for adding or removing events matching the given event IDs
 	//     host for adding or removing events matching the given host IDs
 	//     like for adding or removing events liked by the given user IDs
 	//     user for adding or removing events created by the given user IDs
@@ -36,9 +37,17 @@ type Object struct {
 	User objectid.ID `json:"user"`
 }
 
+func (o *Object) HasRes() bool {
+	return len(o.Excl) != 0 || len(o.Incl) != 0
+}
+
 func (o *Object) KeyFmt() string {
 	if o.Kind == "cate" || o.Kind == "host" {
 		return keyfmt.EventLabel
+	}
+
+	if o.Kind == "evnt" {
+		return keyfmt.EventReference
 	}
 
 	if o.Kind == "like" {
@@ -52,9 +61,14 @@ func (o *Object) KeyFmt() string {
 	panic(fmt.Sprintf("invalid rule kind %#v in rule object %#v", o.Kind, o.Rule))
 }
 
+func (o *Object) RemRes(res objectid.ID) {
+	o.Excl = remRes(o.Excl, res)
+	o.Incl = remRes(o.Incl, res)
+}
+
 func (o *Object) Verify() error {
 	{
-		if o.Kind != "cate" && o.Kind != "host" && o.Kind != "like" && o.Kind != "user" {
+		if o.Kind != "cate" && o.Kind != "evnt" && o.Kind != "host" && o.Kind != "like" && o.Kind != "user" {
 			return tracer.Maskf(ruleKindInvalidError, o.Kind)
 		}
 	}
@@ -78,4 +92,16 @@ func (o *Object) Verify() error {
 	}
 
 	return nil
+}
+
+func remRes(ids []objectid.ID, res objectid.ID) []objectid.ID {
+	var lis []objectid.ID
+
+	for _, x := range ids {
+		if x != res {
+			lis = append(lis, x)
+		}
+	}
+
+	return lis
 }

@@ -1,6 +1,8 @@
 package permission
 
 import (
+	"time"
+
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectid"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/policystorage"
 	"github.com/NaoNaoOnline/apiserver/pkg/worker/budget"
@@ -8,6 +10,10 @@ import (
 )
 
 type Interface interface {
+	CreateLock() error
+	DeleteLock() error
+	ExistsLock() (bool, error)
+
 	// BufferActv tries to read the active permission state from the underlying
 	// sorted set in order to track these in the policy cache's memory. If no
 	// active permission state can be found, then BufferActv is a noop and false
@@ -65,6 +71,12 @@ type Interface interface {
 	//     @out[0] the list of aggregated policy records augmented with user IDs
 	//
 	SearchActv() ([]*policystorage.Object, error)
+
+	// SearchTime returns the timestamp of the most recent update lifecycle.
+	//
+	//     @out[0] the timestamp of the most recent update lifecycle
+	//
+	SearchTime() (time.Time, error)
 
 	// SearchUser returns the SMA members for the given user ID.
 	//

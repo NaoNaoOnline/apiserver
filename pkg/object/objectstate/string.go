@@ -17,6 +17,10 @@ const (
 
 	// Updated is the status returned when an update operation was successful.
 	Updated String = "updated"
+
+	// Waiting is the status returned when an update operation is still in
+	// progress.
+	Waiting String = "waiting"
 )
 
 type String string

@@ -42,5 +42,19 @@ func (p *Permission) UpdateActv() error {
 		}
 	}
 
+	{
+		err = p.pol.DeleteLock()
+		if err != nil {
+			return tracer.Mask(err)
+		}
+	}
+
+	{
+		err = p.pol.CreateTime()
+		if err != nil {
+			return tracer.Mask(err)
+		}
+	}
+
 	return nil
 }

@@ -4,8 +4,8 @@ github.com/FZambia/sentinel v1.1.1 h1:0ovTimlR7Ldm+wR15GgO+8C2dt7kkn+tm3PQS+Qk3E
 github.com/FZambia/sentinel v1.1.1/go.mod h1:ytL1Am/RLlAoAXG6Kj5LNuw/TRRQrv2rt2FT26vP5gI=
 github.com/Microsoft/go-winio v0.6.1 h1:9/kr64B9VUZrLm5YYwbGtUJnMgqWVOdUAXu6Migciow=
 github.com/Microsoft/go-winio v0.6.1/go.mod h1:LRdKpFKfdobln8UmuiYcKPot9D2v6svN5+sAH+4kjUM=
-github.com/NaoNaoOnline/apigocode v0.8.4 h1:ZGrzWtdxKqiyFTeStJe2mO1/i4AlwaJK750dlUtAJJo=
-github.com/NaoNaoOnline/apigocode v0.8.4/go.mod h1:gEIhGtjAQm05l9JkDaMmIgM34rkgUCYn2Q3WmowWcE0=
+github.com/NaoNaoOnline/apigocode v0.8.5 h1:B8pjwIll22LD0o1FTOVqQHHfJgY1IUq9PSjkL6Cilug=
+github.com/NaoNaoOnline/apigocode v0.8.5/go.mod h1:gEIhGtjAQm05l9JkDaMmIgM34rkgUCYn2Q3WmowWcE0=
 github.com/StackExchange/wmi v1.2.1 h1:VIkavFPXSjcnS+O8yTq7NI32k0R5Aj+v39y29VYDOSA=
 github.com/StackExchange/wmi v1.2.1/go.mod h1:rcmrprowKIVzvc+NUiLncP2uuArMWLCbu9SBzvHz7e8=
 github.com/VictoriaMetrics/fastcache v1.6.0 h1:C/3Oi3EiBCqufydp1neRZkqcwmEiuRT9c3fqvvgKm5o=

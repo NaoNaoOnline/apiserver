@@ -10,6 +10,16 @@ func (r *Redis) Delete(inp []*Object) ([]objectstate.String, error) {
 
 	var out []objectstate.String
 	for i := range inp {
+		// Delete the event specific mappings for event specific search queries.
+		if inp[i].Kind == "evnt" {
+			for _, y := range append(inp[i].Incl, inp[i].Excl...) {
+				err = r.red.Sorted().Delete().Score(rulEve(y), inp[i].Rule.Float())
+				if err != nil {
+					return nil, tracer.Mask(err)
+				}
+			}
+		}
+
 		// Delete the the user specific mappings for user specific search queries.
 		{
 			err = r.red.Sorted().Delete().Score(rulUse(inp[i].User), inp[i].Rule.Float())

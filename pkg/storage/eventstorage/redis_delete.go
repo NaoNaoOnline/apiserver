@@ -50,8 +50,9 @@ func (r *Redis) DeleteEvnt(inp []*Object) ([]objectstate.String, error) {
 		{
 			lin := linEve(inp[i].Evnt)
 			obj := eveObj(inp[i].Evnt)
+			ref := eveRef(inp[i].Evnt)
 
-			_, err = r.red.Simple().Delete().Multi(lin, obj)
+			_, err = r.red.Simple().Delete().Multi(lin, obj, ref)
 			if err != nil {
 				return nil, tracer.Mask(err)
 			}
@@ -87,6 +88,24 @@ func (r *Redis) DeleteLink(eve objectid.ID, use []objectid.ID) ([]objectstate.St
 		{
 			out = append(out, objectstate.Deleted)
 		}
+	}
+
+	return out, nil
+}
+
+func (r *Redis) DeleteRule(eve objectid.ID, rul []objectid.ID) ([]objectstate.String, error) {
+	var err error
+
+	{
+		err = r.red.Sorted().Delete().Value(rulEve(eve), objectid.Strings(rul)...)
+		if err != nil {
+			return nil, tracer.Mask(err)
+		}
+	}
+
+	var out []objectstate.String
+	for range rul {
+		out = append(out, objectstate.Deleted)
 	}
 
 	return out, nil

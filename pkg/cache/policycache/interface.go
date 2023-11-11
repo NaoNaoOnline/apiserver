@@ -1,6 +1,8 @@
 package policycache
 
-import "github.com/NaoNaoOnline/apiserver/pkg/storage/policystorage"
+import (
+	"github.com/NaoNaoOnline/apiserver/pkg/storage/policystorage"
+)
 
 type Interface interface {
 	// ExistsAcce verifies whether the given member has the given access within

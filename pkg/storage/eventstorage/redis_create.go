@@ -105,6 +105,16 @@ func (r *Redis) Create(inp []*Object) ([]*Object, error) {
 			}
 		}
 
+		// Create the self referential event ID pointer. This must be a sorted set
+		// because we need the pointer to reference the event ID value when
+		// searching for custom lists.
+		{
+			err = r.red.Sorted().Create().Score(eveRef(inp[i].Evnt), inp[i].Evnt.String(), inp[i].Evnt.Float())
+			if err != nil {
+				return nil, tracer.Mask(err)
+			}
+		}
+
 		// Create the time specific mappings for time specific search queries. With
 		// that we can search for events that are happening right now. For event
 		// time indexing, we use the event time as score. There might be many events
