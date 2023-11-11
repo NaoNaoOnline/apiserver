@@ -4,32 +4,10 @@ import "github.com/NaoNaoOnline/apiserver/pkg/object/objectid"
 
 type Slicer []*Object
 
-// Cate returns the category label IDs to be excluded from the list of events
-// that the given rule set describes.
-func (s Slicer) Cate() []objectid.ID {
-	var cat []objectid.ID
-
-	for _, x := range s {
-		if x.Kind == "cate" {
-			cat = append(cat, x.Excl...)
-		}
-	}
-
-	return cat
-}
-
-// Host returns the host label IDs to be excluded from the list of events that
-// the given rule set describes.
-func (s Slicer) Host() []objectid.ID {
-	var hos []objectid.ID
-
-	for _, x := range s {
-		if x.Kind == "host" {
-			hos = append(hos, x.Excl...)
-		}
-	}
-
-	return hos
+// Fltr returns a slicer implementation to remove certain objects from this
+// list.
+func (s Slicer) Fltr() Filter {
+	return Filter(s)
 }
 
 // Incl returns the storage keys pointing to the event IDs meant to be included
@@ -44,20 +22,7 @@ func (s Slicer) Incl() []string {
 	return inc
 }
 
-// Like returns the user IDs to be excluded from the list of events that the
-// given rule set describes.
-func (s Slicer) Like() []objectid.ID {
-	var use []objectid.ID
-
-	for _, x := range s {
-		if x.Kind == "like" {
-			use = append(use, x.Excl...)
-		}
-	}
-
-	return use
-}
-
+// Rule returns all the rule IDs for the underling list of rule objects.
 func (s Slicer) Rule() []objectid.ID {
 	var ids []objectid.ID
 
@@ -66,18 +31,4 @@ func (s Slicer) Rule() []objectid.ID {
 	}
 
 	return ids
-}
-
-// User returns the user IDs to be excluded from the list of events that the
-// given rule set describes.
-func (s Slicer) User() []objectid.ID {
-	var use []objectid.ID
-
-	for _, x := range s {
-		if x.Kind == "user" {
-			use = append(use, x.Excl...)
-		}
-	}
-
-	return use
 }

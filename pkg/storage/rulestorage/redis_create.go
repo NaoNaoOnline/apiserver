@@ -87,6 +87,25 @@ func (r *Redis) Create(inp []*Object) ([]*Object, error) {
 				return nil, tracer.Mask(err)
 			}
 		}
+
+		// Create the event specific mappings for event specific search queries. We
+		// use a sorted set for all the events that a user explicitely added to a
+		// list. This internal data structure is used to cleanup in background
+		// processes. If any event explicitely added to a rule is deleted
+		// eventually, then
+		//
+		//     the event has to be removed from any rule referencing it
+		//     any resulting empty rule has to be deleted
+		//     any deleted rule has to be removed from its list
+		//
+		if inp[i].Kind == "evnt" {
+			for _, y := range append(inp[i].Incl, inp[i].Excl...) {
+				err = r.red.Sorted().Create().Score(rulEve(y), inp[i].Rule.String(), inp[i].Rule.Float())
+				if err != nil {
+					return nil, tracer.Mask(err)
+				}
+			}
+		}
 	}
 
 	return inp, nil

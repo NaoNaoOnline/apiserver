@@ -33,4 +33,11 @@ type Interface interface {
 	//     @out[0] the list of rule objects matching the given rule IDs
 	//
 	SearchRule([]objectid.ID) ([]*Object, error)
+
+	// Update modifies the existing rule objects.
+	//
+	//     @inp[0] the list of rule objects to modify
+	//     @out[0] the list of operation states related to the modified rule objects
+	//
+	Update([]*Object) ([]objectstate.String, error)
 }

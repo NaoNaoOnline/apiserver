@@ -172,7 +172,29 @@ func (r *Redis) SearchLink(eve objectid.ID) ([]objectid.ID, error) {
 	}
 
 	// There might not be any values, and so we do not proceed, but instead
-	// continue with the next event ID, if any.
+	// return nothing.
+	if len(val) == 0 {
+		return nil, nil
+	}
+
+	return objectid.IDs(val), nil
+}
+
+func (r *Redis) SearchRule(eve objectid.ID) ([]objectid.ID, error) {
+	var err error
+
+	// val will result in a list of all rule IDs explicitely defining the given
+	// event ID, if any.
+	var val []string
+	{
+		val, err = r.red.Sorted().Search().Order(rulEve(eve), 0, -1)
+		if err != nil {
+			return nil, tracer.Mask(err)
+		}
+	}
+
+	// There might not be any values, and so we do not proceed, but instead
+	// return nothing.
 	if len(val) == 0 {
 		return nil, nil
 	}
@@ -206,7 +228,7 @@ func (r *Redis) SearchUpcm() ([]*Object, error) {
 	return out, nil
 }
 
-func (r *Redis) SearchRule(rul []*rulestorage.Object) ([]*Object, error) {
+func (r *Redis) SearchList(rul []*rulestorage.Object) ([]*Object, error) {
 	var err error
 
 	var sli rulestorage.Slicer
@@ -256,19 +278,20 @@ func (r *Redis) SearchRule(rul []*rulestorage.Object) ([]*Object, error) {
 
 	// Remove the event objects that match all the rule's exclude definitions.
 	{
-		out = out.Fltr().Cate(sli.Cate()...)
-		out = out.Fltr().Host(sli.Host()...)
-		out = out.Fltr().User(sli.User()...)
+		out = out.Fltr().Cate(sli.Fltr().Cate()...)
+		out = out.Fltr().Evnt(sli.Fltr().Evnt()...)
+		out = out.Fltr().Host(sli.Fltr().Host()...)
+		out = out.Fltr().User(sli.Fltr().User()...)
 	}
 
 	// Remove the event objects that the given user IDs reacted to in the form of
 	// a description like.
-	if len(sli.Like()) != 0 {
+	if len(sli.Fltr().Like()) != 0 {
 		// val will result in a list of all event IDs that the given users reacted
 		// to in the form of a description like.
 		var val []string
 		{
-			val, err = r.red.Sorted().Search().Union(objectid.Fmt(sli.Like(), keyfmt.LikeUser)...)
+			val, err = r.red.Sorted().Search().Union(objectid.Fmt(sli.Fltr().Like(), keyfmt.LikeUser)...)
 			if err != nil {
 				return nil, tracer.Mask(err)
 			}

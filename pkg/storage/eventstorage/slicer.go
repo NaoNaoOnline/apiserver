@@ -10,6 +10,7 @@ func (s Slicer) Fltr() Filter {
 	return Filter(s)
 }
 
+// Evnt returns all the event IDs for the underling list of event objects.
 func (s Slicer) Evnt() []objectid.ID {
 	var ids []objectid.ID
 

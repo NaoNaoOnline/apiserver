@@ -5,11 +5,19 @@ import (
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectlabel"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/descriptionstorage"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/eventstorage"
+	"github.com/NaoNaoOnline/apiserver/pkg/storage/rulestorage"
 	"github.com/NaoNaoOnline/apiserver/pkg/worker/budget"
 	"github.com/xh3b4sd/rescue/task"
 	"github.com/xh3b4sd/tracer"
 )
 
+// Ensure purges all event related data structures as defined by the provided
+// task. If the given budget got exhausted intermittently, then that means there
+// are still more data structures to purge and the description itself should not
+// be removed just yet. Instead, we stop processing here and continue cleaning
+// up on the next execution. If we would just go ahead and remove the actual
+// description, then we would leave internal data structures behind that we
+// cannot easily find to cleanup, causing systemic state bloat.
 func (h *CustomHandler) Ensure(tas *task.Task, bud *budget.Budget) error {
 	var err error
 
@@ -32,16 +40,10 @@ func (h *CustomHandler) Ensure(tas *task.Task, bud *budget.Budget) error {
 			if err != nil {
 				return tracer.Mask(err)
 			}
-		}
 
-		// If the given budget got exhausted, then that means there are still more
-		// data structures to purge and the description itself should not be removed
-		// just yet. Instead, we stop processing here and continue cleaning up on the
-		// next execution. If we would just go ahead and remove the actual
-		// description, then we would leave internal data structures behind that we
-		// cannot easily find to cleanup, causing systemic state bloat.
-		if bud.Break() {
-			return nil
+			if bud.Break() {
+				return nil
+			}
 		}
 
 		{
@@ -49,17 +51,22 @@ func (h *CustomHandler) Ensure(tas *task.Task, bud *budget.Budget) error {
 			if err != nil {
 				return tracer.Mask(err)
 			}
+
+			if bud.Break() {
+				return nil
+			}
 		}
 	}
 
-	// If the given budget got exhausted, then that means there are still more
-	// data structures to purge and the event itself should not be removed just
-	// yet. Instead, we stop processing here and continue cleaning up on the next
-	// execution. If we would just go ahead and remove the actual event, then we
-	// would leave internal data structures behind that we cannot easily find to
-	// cleanup, causing systemic state bloat.
-	if bud.Break() {
-		return nil
+	{
+		err := h.deleteRule(eve, bud)
+		if err != nil {
+			return tracer.Mask(err)
+		}
+
+		if bud.Break() {
+			return nil
+		}
 	}
 
 	{
@@ -67,16 +74,10 @@ func (h *CustomHandler) Ensure(tas *task.Task, bud *budget.Budget) error {
 		if err != nil {
 			return tracer.Mask(err)
 		}
-	}
 
-	// If the given budget got exhausted, then that means there are still more
-	// data structures to purge and the event itself should not be removed just
-	// yet. Instead, we stop processing here and continue cleaning up on the next
-	// execution. If we would just go ahead and remove the actual event, then we
-	// would leave internal data structures behind that we cannot easily find to
-	// cleanup, causing systemic state bloat.
-	if bud.Break() {
-		return nil
+		if bud.Break() {
+			return nil
+		}
 	}
 
 	{
@@ -165,6 +166,71 @@ func (h *CustomHandler) deleteLink(inp objectid.ID, bud *budget.Budget) error {
 
 	{
 		_, err := h.eve.DeleteLink(inp, use[:bud.Claim(len(use))])
+		if err != nil {
+			return tracer.Mask(err)
+		}
+	}
+
+	return nil
+}
+
+func (h *CustomHandler) deleteRule(inp objectid.ID, bud *budget.Budget) error {
+	var err error
+
+	var rid []objectid.ID
+	{
+		rid, err = h.eve.SearchRule(inp)
+		if err != nil {
+			return tracer.Mask(err)
+		}
+	}
+
+	var rul rulestorage.Slicer
+	{
+		rul, err = h.rul.SearchRule(rid[:bud.Claim(len(rid))])
+		if err != nil {
+			return tracer.Mask(err)
+		}
+	}
+
+	var del []*rulestorage.Object
+	var upd []*rulestorage.Object
+	for _, x := range rul {
+		// For each rule object, remove the given event and then check whether the
+		// rule is empty or not.
+		{
+			x.RemRes(inp)
+		}
+
+		if x.HasRes() {
+			upd = append(upd, x)
+		} else {
+			del = append(del, x)
+		}
+	}
+
+	// If there are rules that are empty after we cleaned them up, then delete
+	// those rule objects from storage.
+	if len(del) != 0 {
+		_, err = h.rul.Delete(del)
+		if err != nil {
+			return tracer.Mask(err)
+		}
+	}
+
+	// If there are rules that are not empty after we cleaned them up, then update
+	// those rule objects in storage.
+	if len(upd) != 0 {
+		_, err = h.rul.Update(upd)
+		if err != nil {
+			return tracer.Mask(err)
+		}
+	}
+
+	// Remove the rule elements from the event reference list to ensure that
+	// consecutive calls do not start all over from scratch.
+	{
+		_, err := h.eve.DeleteRule(inp, rul.Rule())
 		if err != nil {
 			return tracer.Mask(err)
 		}

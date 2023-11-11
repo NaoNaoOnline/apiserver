@@ -101,12 +101,12 @@ func (h *Handler) Search(ctx context.Context, req *event.SearchI) (*event.Search
 			return nil, tracer.Mask(err)
 		}
 
-		lis, err := h.eve.SearchRule(rul)
+		eve, err := h.eve.SearchList(rul)
 		if err != nil {
 			return nil, tracer.Mask(err)
 		}
 
-		out = append(out, lis...)
+		out = append(out, eve...)
 	}
 
 	//

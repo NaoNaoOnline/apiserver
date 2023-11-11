@@ -35,6 +35,17 @@ type Interface interface {
 	//
 	DeleteLink(objectid.ID, []objectid.ID) ([]objectstate.String, error)
 
+	// DeleteRule purges internal data structures related to event rules, given
+	// the many rule IDs that have referenced the provided event ID. This function
+	// is mainly used for cleaning up internal event related data structures in a
+	// background process.
+	//
+	//     @inp[0] the event ID to delete
+	//     @inp[1] the many rule IDs that have visited the provided event ID
+	//     @out[0] the list of operation states related to the purged data structures
+	//
+	DeleteRule(objectid.ID, []objectid.ID) ([]objectstate.String, error)
+
 	// DeleteWrkr initializes the asynchronous deletion process for the given
 	// event objects and all of its associated data structures by setting
 	// Object.Dltd and creating the respective worker tasks that will be processed
@@ -77,22 +88,32 @@ type Interface interface {
 	//
 	SearchLike(objectid.ID, int, int) ([]*Object, error)
 
-	// SearchLink returns the user IDs that visited the given event ID in
-	// the form of a link. This function is mainly used for cleaning up internal
-	// description related data structures in a background process.
+	// SearchLink returns the user IDs that visited the given event ID in the form
+	// of a link. This function is mainly used for cleaning up internal user
+	// related data structures in a background process.
 	//
 	//     @inp[0] the event ID to search users for
 	//     @out[0] the list of user IDs that visited the given event ID
 	//
 	SearchLink(objectid.ID) ([]objectid.ID, error)
 
-	// SearchRule returns the event objects matching all the criteria specified by
+	// SearchList returns the event objects matching all the criteria specified by
 	// the given rule objects.
 	//
 	//     @inp[0] the rule objects of a certain list
 	//     @out[0] the list of event objects matching all the criteria of the given list
 	//
-	SearchRule([]*rulestorage.Object) ([]*Object, error)
+	SearchList([]*rulestorage.Object) ([]*Object, error)
+
+	// SearchRule returns the rule IDs that explicitely define the given event ID
+	// in the form of an include or exclude reference. This function is mainly used
+	// for cleaning up internal event related data structures in a background
+	// process.
+	//
+	//     @inp[0] the event ID to search rules for
+	//     @out[0] the list of rule IDs that reference the given event ID
+	//
+	SearchRule(objectid.ID) ([]objectid.ID, error)
 
 	// SearchTime returns the event objects known to happen within the given time
 	// range.

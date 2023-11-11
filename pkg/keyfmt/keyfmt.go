@@ -46,6 +46,16 @@ const (
 	//
 	EventObject = "eve/obj/%s"
 
+	// EventReference is used to store a self referential event ID. We need this
+	// for instance to resolve event keys to event values when collecting event
+	// objects based on rules for custom lists.
+	//
+	//     event ID              event ID
+	//                     ->
+	//     eve/ref/1234          1234
+	//
+	EventReference = "eve/ref/%s"
+
 	// EventTime is used to resolve from event times to their respective event
 	// IDs.
 	//
@@ -195,6 +205,32 @@ const (
 	//     pol/act                     [{"key": "val"}]
 	//
 	PolicyActive = "pol/act"
+
+	// PolicyLock is used to store an indicator for an ongoing update lifecycle.
+	//
+	//     update lock          update lock
+	//                    ->
+	//     pol/loc              1
+	//
+	PolicyLock = "pol/loc"
+
+	// PolicyTime is used to store the timestamp of the most recent update
+	// lifecycle.
+	//
+	//     updated timestamp           updated timestamp
+	//                           ->
+	//     pol/tim                     1234
+	//
+	PolicyTime = "pol/tim"
+
+	// RuleEvent is used to store all the IDs of rules defining single event IDs
+	// in their resource list.
+	//
+	//     event ID               rule IDs
+	//                     ->
+	//     rul/eve/5678          1234,5678
+	//
+	RuleEvent = "rul/eve/%s"
 
 	// RuleList is used to store all the IDs of rules mapped to a specific list.
 	//

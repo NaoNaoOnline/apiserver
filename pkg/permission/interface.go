@@ -1,6 +1,8 @@
 package permission
 
 import (
+	"time"
+
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectid"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/policystorage"
 	"github.com/NaoNaoOnline/apiserver/pkg/worker/budget"
@@ -13,6 +15,12 @@ type Interface interface {
 	// active permission state can be found, then BufferActv is a noop and false
 	// is returned.
 	BufferActv() (bool, error)
+
+	// CreateLock creates an indicator for a new ongoing update lifecycle.
+	CreateLock() error
+
+	// DeleteLock removes the indicator for the past update lifecycle.
+	DeleteLock() error
 
 	// EnsureActv executes BufferActv, and if BufferActv returns false, then an
 	// update cycle will be initiated by emitting all necessary scrape tasks. At
@@ -30,6 +38,12 @@ type Interface interface {
 	//     @out[0] the bool expressing whether the given user has the given access within the given system
 	//
 	ExistsAcce(int64, objectid.ID, int64) (bool, error)
+
+	// ExistsLock returns whether an update lifecycle is currently ongoing.
+	//
+	//     @out[0] the bool expressing whether an update lifecycle is currently ongoing
+	//
+	ExistsLock() (bool, error)
 
 	// ExistsMemb verifies whether the given user ID is a policy member.
 	//
@@ -65,6 +79,12 @@ type Interface interface {
 	//     @out[0] the list of aggregated policy records augmented with user IDs
 	//
 	SearchActv() ([]*policystorage.Object, error)
+
+	// SearchTime returns the timestamp of the most recent update lifecycle.
+	//
+	//     @out[0] the timestamp of the most recent update lifecycle
+	//
+	SearchTime() (time.Time, error)
 
 	// SearchUser returns the SMA members for the given user ID.
 	//

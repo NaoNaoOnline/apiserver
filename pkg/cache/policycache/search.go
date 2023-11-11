@@ -1,6 +1,8 @@
 package policycache
 
-import "github.com/NaoNaoOnline/apiserver/pkg/storage/policystorage"
+import (
+	"github.com/NaoNaoOnline/apiserver/pkg/storage/policystorage"
+)
 
 func (m *Memory) SearchRcrd() []*policystorage.Object {
 	m.mut.Lock()

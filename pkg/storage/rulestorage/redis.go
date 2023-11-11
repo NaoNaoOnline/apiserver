@@ -35,20 +35,24 @@ func NewRedis(c RedisConfig) *Redis {
 	}
 }
 
-func lisObj(oid objectid.ID) string {
-	return fmt.Sprintf(keyfmt.ListObject, oid)
+func lisObj(lis objectid.ID) string {
+	return fmt.Sprintf(keyfmt.ListObject, lis)
 }
 
-func rulLis(oid objectid.ID) string {
-	return fmt.Sprintf(keyfmt.RuleList, oid)
+func rulEve(eve objectid.ID) string {
+	return fmt.Sprintf(keyfmt.RuleEvent, eve)
 }
 
-func rulObj(oid objectid.ID) string {
-	return fmt.Sprintf(keyfmt.RuleObject, oid)
+func rulLis(lis objectid.ID) string {
+	return fmt.Sprintf(keyfmt.RuleList, lis)
 }
 
-func rulUse(oid objectid.ID) string {
-	return fmt.Sprintf(keyfmt.RuleUser, oid)
+func rulObj(rul objectid.ID) string {
+	return fmt.Sprintf(keyfmt.RuleObject, rul)
+}
+
+func rulUse(use objectid.ID) string {
+	return fmt.Sprintf(keyfmt.RuleUser, use)
 }
 
 func musStr(obj *Object) string {
