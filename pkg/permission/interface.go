@@ -10,15 +10,17 @@ import (
 )
 
 type Interface interface {
-	CreateLock() error
-	DeleteLock() error
-	ExistsLock() (bool, error)
-
 	// BufferActv tries to read the active permission state from the underlying
 	// sorted set in order to track these in the policy cache's memory. If no
 	// active permission state can be found, then BufferActv is a noop and false
 	// is returned.
 	BufferActv() (bool, error)
+
+	// CreateLock creates an indicator for a new ongoing update lifecycle.
+	CreateLock() error
+
+	// DeleteLock removes the indicator for the past update lifecycle.
+	DeleteLock() error
 
 	// EnsureActv executes BufferActv, and if BufferActv returns false, then an
 	// update cycle will be initiated by emitting all necessary scrape tasks. At
@@ -36,6 +38,12 @@ type Interface interface {
 	//     @out[0] the bool expressing whether the given user has the given access within the given system
 	//
 	ExistsAcce(int64, objectid.ID, int64) (bool, error)
+
+	// ExistsLock returns whether an update lifecycle is currently ongoing.
+	//
+	//     @out[0] the bool expressing whether an update lifecycle is currently ongoing
+	//
+	ExistsLock() (bool, error)
 
 	// ExistsMemb verifies whether the given user ID is a policy member.
 	//
