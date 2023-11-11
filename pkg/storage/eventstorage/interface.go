@@ -106,7 +106,7 @@ type Interface interface {
 	SearchList([]*rulestorage.Object) ([]*Object, error)
 
 	// SearchRule returns the rule IDs that explicitely define the given event ID
-	// in the form of a include or exclude reference. This function is mainly used
+	// in the form of an include or exclude reference. This function is mainly used
 	// for cleaning up internal event related data structures in a background
 	// process.
 	//
