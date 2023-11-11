@@ -100,7 +100,7 @@ func (r *Redis) Create(inp []*Object) ([]*Object, error) {
 		//
 		if inp[i].Kind == "evnt" {
 			for _, y := range append(inp[i].Incl, inp[i].Excl...) {
-				err = r.red.Sorted().Create().Score(rulEve(y), objectid.Pair(inp[i].List, inp[i].Rule), inp[i].Rule.Float())
+				err = r.red.Sorted().Create().Score(rulEve(y), inp[i].Rule.String(), inp[i].Rule.Float())
 				if err != nil {
 					return nil, tracer.Mask(err)
 				}

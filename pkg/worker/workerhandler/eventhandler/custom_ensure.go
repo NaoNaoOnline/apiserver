@@ -187,7 +187,7 @@ func (h *CustomHandler) deleteRule(inp objectid.ID, bud *budget.Budget) error {
 
 	var rul rulestorage.Slicer
 	{
-		rul, err = h.rul.SearchRule(rid[:bud.Claim(len(rul))])
+		rul, err = h.rul.SearchRule(rid[:bud.Claim(len(rid))])
 		if err != nil {
 			return tracer.Mask(err)
 		}
