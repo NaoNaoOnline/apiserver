@@ -185,6 +185,12 @@ func (h *CustomHandler) deleteRule(inp objectid.ID, bud *budget.Budget) error {
 		}
 	}
 
+	// It might very well be that the event we want to delete was not added to any
+	// list. In this case we just return here.
+	if len(rid) == 0 {
+		return nil
+	}
+
 	var rul rulestorage.Slicer
 	{
 		rul, err = h.rul.SearchRule(rid[:bud.Claim(len(rid))])

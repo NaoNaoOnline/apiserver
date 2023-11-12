@@ -14,6 +14,76 @@ const (
 	addTwo = "0x1111111111111111111111111111111111111111"
 )
 
+// Test_Cache_Policy_Memory_ExistsAcce is to ensure that access levels within
+// systems are a threshold based requirement, instead of a strict definition.
+// Having access level 1 should provide the associated member with access to
+// level 2 and below, but not to level 0.
+func Test_Cache_Policy_Memory_ExistsAcce(t *testing.T) {
+	var pol Interface
+	{
+		pol = Fake()
+	}
+
+	var buf []*policystorage.Object
+	{
+		buf = []*policystorage.Object{
+			tesRec(0, addOne, 1, []int64{1}),
+		}
+	}
+
+	{
+		err := pol.UpdateRcrd(buf)
+		if err != nil {
+			t.Fatal(err)
+		}
+	}
+
+	{
+		one := pol.ExistsAcce(0, addOne, 0)
+		if one {
+			t.Fatal("expected", false, "got", true)
+		}
+		two := pol.ExistsAcce(0, addOne, 1)
+		if !two {
+			t.Fatal("expected", true, "got", false)
+		}
+		thr := pol.ExistsAcce(0, addOne, 2)
+		if !thr {
+			t.Fatal("expected", true, "got", false)
+		}
+	}
+
+	{
+		one := pol.ExistsAcce(1, addOne, 0)
+		if one {
+			t.Fatal("expected", false, "got", true)
+		}
+		two := pol.ExistsAcce(1, addOne, 1)
+		if two {
+			t.Fatal("expected", false, "got", true)
+		}
+		thr := pol.ExistsAcce(1, addOne, 2)
+		if thr {
+			t.Fatal("expected", false, "got", true)
+		}
+	}
+
+	{
+		one := pol.ExistsAcce(0, addTwo, 0)
+		if one {
+			t.Fatal("expected", false, "got", true)
+		}
+		two := pol.ExistsAcce(0, addTwo, 1)
+		if two {
+			t.Fatal("expected", false, "got", true)
+		}
+		thr := pol.ExistsAcce(0, addTwo, 2)
+		if thr {
+			t.Fatal("expected", false, "got", true)
+		}
+	}
+}
+
 func Test_Cache_Policy_Memory_Lifecycle(t *testing.T) {
 	var pol Interface
 	{

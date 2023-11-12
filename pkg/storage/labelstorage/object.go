@@ -35,7 +35,7 @@ type Object struct {
 }
 
 var (
-	lablexpr = regexp.MustCompile(`^[A-Za-z0-9\s]+$`)
+	lablexpr = regexp.MustCompile(`^[A-Za-z0-9.\s]+$`)
 )
 
 func (o *Object) Verify() error {
@@ -53,10 +53,10 @@ func (o *Object) Verify() error {
 			return tracer.Maskf(labelNameFormatError, o.Name)
 		}
 		if len(o.Name) < 2 {
-			return tracer.Maskf(labelNameLengthError, "%d", len(o.Name))
+			return tracer.Maskf(labelNameLengthError, "%s (%d)", o.Name, len(o.Name))
 		}
-		if len(o.Name) > 20 {
-			return tracer.Maskf(labelNameLengthError, "%d", len(o.Name))
+		if len(o.Name) > 25 {
+			return tracer.Maskf(labelNameLengthError, "%s (%d)", o.Name, len(o.Name))
 		}
 	}
 

@@ -13,7 +13,7 @@ func (m *Memory) ExistsAcce(sys int64, mem string, acc int64) bool {
 		rec = m.searchRcrd(sys, mem)
 	}
 
-	return rec != nil && rec.Acce == acc
+	return rec != nil && rec.Acce <= acc
 }
 
 func (m *Memory) ExistsMemb(mem string) bool {
