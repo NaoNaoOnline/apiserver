@@ -56,6 +56,8 @@ func (p *Permission) SearchActv() ([]*policystorage.Object, error) {
 func (p *Permission) SearchUser(use objectid.ID) ([]string, error) {
 	var err error
 
+	// wal will result in a list of all wallet objects owned by the given user, if
+	// any.
 	var wal []*walletstorage.Object
 	{
 		wal, err = p.wal.SearchKind(use, []string{"eth"})

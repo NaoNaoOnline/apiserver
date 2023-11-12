@@ -6,34 +6,33 @@ import (
 
 	"github.com/NaoNaoOnline/apigocode/pkg/list"
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectid"
-	"github.com/NaoNaoOnline/apiserver/pkg/runtime"
-	"github.com/NaoNaoOnline/apiserver/pkg/server/context/userid"
 	"github.com/NaoNaoOnline/apiserver/pkg/server/limiter"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/liststorage"
 	"github.com/xh3b4sd/tracer"
 )
 
 func (h *Handler) Search(ctx context.Context, req *list.SearchI) (*list.SearchO, error) {
-	var err error
-
-	var use objectid.ID
-	for _, x := range req.Object {
-		if x.Intern != nil && x.Intern.User != "" {
-			use = objectid.ID(x.Intern.User)
-		}
-	}
-
-	{
-		if userid.FromContext(ctx) != use {
-			return nil, tracer.Mask(runtime.UserNotOwnerError)
-		}
-	}
-
 	var out []*liststorage.Object
+
+	//
+	// Search lists by user, created.
+	//
+
 	{
-		out, err = h.lis.SearchUser(use)
-		if err != nil {
-			return nil, tracer.Mask(err)
+		var use objectid.ID
+		for _, x := range req.Object {
+			if x.Intern != nil && x.Intern.User != "" {
+				use = objectid.ID(x.Intern.User)
+			}
+		}
+
+		{
+			lis, err := h.lis.SearchUser(use)
+			if err != nil {
+				return nil, tracer.Mask(err)
+			}
+
+			out = append(out, lis...)
 		}
 	}
 

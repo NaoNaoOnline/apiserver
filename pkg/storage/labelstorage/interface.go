@@ -1,5 +1,7 @@
 package labelstorage
 
+import "github.com/NaoNaoOnline/apiserver/pkg/object/objectid"
+
 type Interface interface {
 	// Create persists new label objects, if none exists already with the given
 	// name.
@@ -24,4 +26,18 @@ type Interface interface {
 	//     @out[0] the list of label objects matching the given label kinds
 	//
 	SearchKind([]string) ([]*Object, error)
+
+	// SearchLabl returns the label objects matching the given label IDs.
+	//
+	//     @inp[0] the label IDs to search for
+	//     @out[0] the list of label objects matching the given label IDs
+	//
+	SearchLabl([]objectid.ID) ([]*Object, error)
+
+	// SearchUser returns the label objects created by the given user.
+	//
+	//     @inp[0] the user ID used to search labels
+	//     @out[0] the list of label objects for the given user
+	//
+	SearchUser(objectid.ID) ([]*Object, error)
 }

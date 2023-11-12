@@ -96,12 +96,15 @@ func (w *wrapper) Search(ctx context.Context, req *label.SearchI) (*label.Search
 
 	{
 		for _, x := range req.Object {
-			if x.Public == nil {
+			if x.Intern == nil && x.Public == nil {
 				return nil, tracer.Mask(runtime.QueryObjectEmptyError)
 			}
 		}
 
 		for _, x := range req.Object {
+			if x.Intern != nil && x.Intern.Labl == "" && x.Intern.User == "" {
+				return nil, tracer.Mask(runtime.QueryObjectEmptyError)
+			}
 			if x.Public != nil && x.Public.Kind == "" {
 				return nil, tracer.Mask(runtime.QueryObjectEmptyError)
 			}

@@ -45,7 +45,7 @@ type Interface interface {
 	//
 	SearchList([]objectid.ID) ([]*Object, error)
 
-	// SearchUser returns the list objects for the given user.
+	// SearchUser returns the list objects created by the given user.
 	//
 	//     @inp[0] the user ID used to search lists
 	//     @out[0] the list of list objects for the given user

@@ -91,7 +91,8 @@ func (r *Redis) SearchUser(use objectid.ID) ([]*Object, error) {
 
 	var out []*Object
 	{
-		// val will result in a list of all list IDs for the given user.
+		// val will result in a list of all list IDs created by the given user, if
+		// any.
 		var val []string
 		{
 			val, err = r.red.Sorted().Search().Order(lisUse(use), 0, -1)
