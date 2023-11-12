@@ -31,22 +31,17 @@ var searchPublicEmptyError = &tracer.Error{
 
 var searchSymbolConflictError = &tracer.Error{
 	Kind: "searchSymbolConflictError",
-	Desc: "The request expects the query object to contain one of [symbol.list symbol.time symbol.rctn]. The query object was not found to contain one of [symbol.list symbol.time symbol.rctn]. Therefore the request failed.",
+	Desc: "The request expects the query object to contain one of [symbol.like symbol.list symbol.time]. The query object was not found to contain one of [symbol.like symbol.list symbol.time]. Therefore the request failed.",
 }
 
 var searchSymbolEmptyError = &tracer.Error{
 	Kind: "searchSymbolEmptyError",
-	Desc: "The request expects the query object to contain one of [symbol.list symbol.time symbol.rctn]. The query object was not found to contain one of [symbol.list symbol.time symbol.rctn]. Therefore the request failed.",
+	Desc: "The request expects the query object to contain one of [symbol.like symbol.list symbol.time]. The query object was not found to contain one of [symbol.like symbol.list symbol.time]. Therefore the request failed.",
 }
 
 var searchSymbolPageError = &tracer.Error{
 	Kind: "searchSymbolPageError",
-	Desc: "The request expects the query filter to contain all of [filter.strt filter.stop] if one of [symbol.rctn symbol.time] is set to page. The query filter was not found to contain all of [filter.strt filter.stop]. Therefore the request failed.",
-}
-
-var searchSymbolRctnError = &tracer.Error{
-	Kind: "searchSymbolRctnError",
-	Desc: "The request expects the query object to contain one of [page] if symbol.rctn is configured. The query object was not found to contain one of [page]. Therefore the request failed.",
+	Desc: "The request expects the query filter to contain all of [filter.strt filter.stop] if one of [symbol.like symbol.time] is set to page. The query filter was not found to contain all of [filter.strt filter.stop]. Therefore the request failed.",
 }
 
 var searchSymbolTimeError = &tracer.Error{
