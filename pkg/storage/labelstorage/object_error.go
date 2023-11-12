@@ -26,5 +26,5 @@ var labelNameFormatError = &tracer.Error{
 
 var labelNameLengthError = &tracer.Error{
 	Kind: "labelNameLengthError",
-	Desc: "The request expects the label name to have between 2 and 20 characters. The label name was not found to have between 3 and 20 characters. Therefore the request failed.",
+	Desc: "The request expects the label name to have between 2 and 25 characters. The label name was not found to have between 3 and 20 characters. Therefore the request failed.",
 }
