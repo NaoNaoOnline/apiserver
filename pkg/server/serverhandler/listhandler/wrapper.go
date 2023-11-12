@@ -124,12 +124,6 @@ func (w *wrapper) Search(ctx context.Context, req *list.SearchI) (*list.SearchO,
 		}
 	}
 
-	{
-		if userid.FromContext(ctx) == "" {
-			return nil, tracer.Mask(runtime.UserIDEmptyError)
-		}
-	}
-
 	return w.han.Search(ctx, req)
 }
 
