@@ -71,9 +71,9 @@ type Interface interface {
 	//
 	SearchHpnd() ([]*Object, error)
 
-	// SearchLabl returns the event objects grouped under all the given labels.
+	// SearchLabl returns the event objects grouped under all the given label IDs.
 	//
-	//     @inp[0] the category and/or host labels to include in the search query, if any
+	//     @inp[0] the category and/or host label IDs to search for
 	//     @out[0] the list of event objects associated to all the given labels
 	//
 	SearchLabl([]objectid.ID) ([]*Object, error)

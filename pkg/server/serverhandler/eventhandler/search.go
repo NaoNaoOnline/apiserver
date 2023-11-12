@@ -25,170 +25,184 @@ func (h *Handler) Search(ctx context.Context, req *event.SearchI) (*event.Search
 	// Search events by ID.
 	//
 
-	var evn []objectid.ID
-	for _, x := range req.Object {
-		if x.Intern != nil && x.Intern.Evnt != "" {
-			evn = append(evn, objectid.ID(x.Intern.Evnt))
-		}
-	}
-
-	if len(evn) != 0 {
-		lis, err := h.eve.SearchEvnt(use, evn)
-		if err != nil {
-			return nil, tracer.Mask(err)
+	{
+		var eve []objectid.ID
+		for _, x := range req.Object {
+			if x.Intern != nil && x.Intern.Evnt != "" {
+				eve = append(eve, objectid.ID(x.Intern.Evnt))
+			}
 		}
 
-		out = append(out, lis...)
+		if len(eve) != 0 {
+			lis, err := h.eve.SearchEvnt(use, eve)
+			if err != nil {
+				return nil, tracer.Mask(err)
+			}
+
+			out = append(out, lis...)
+		}
 	}
 
 	//
-	// Search events by user.
+	// Search events by user, created.
 	//
 
-	var usr []objectid.ID
-	for _, x := range req.Object {
-		if x.Intern != nil && x.Intern.User != "" {
-			usr = append(usr, objectid.ID(x.Intern.User))
-		}
-	}
-
-	if len(usr) != 0 {
-		lis, err := h.eve.SearchUser(usr)
-		if err != nil {
-			return nil, tracer.Mask(err)
+	{
+		var use []objectid.ID
+		for _, x := range req.Object {
+			if x.Intern != nil && x.Intern.User != "" {
+				use = append(use, objectid.ID(x.Intern.User))
+			}
 		}
 
-		out = append(out, lis...)
+		if len(use) != 0 {
+			lis, err := h.eve.SearchUser(use)
+			if err != nil {
+				return nil, tracer.Mask(err)
+			}
+
+			out = append(out, lis...)
+		}
 	}
 
 	//
 	// Search events by label.
 	//
 
-	var lab [][]objectid.ID
-	for _, x := range req.Object {
-		if x.Public != nil && x.Public.Cate != "" {
-			lab = append(lab, inpLab(x.Public.Cate))
-		}
-		if x.Public != nil && x.Public.Host != "" {
-			lab = append(lab, inpLab(x.Public.Host))
-		}
-	}
-
-	for _, x := range lab {
-		lis, err := h.eve.SearchLabl(x)
-		if err != nil {
-			return nil, tracer.Mask(err)
+	{
+		var lab [][]objectid.ID
+		for _, x := range req.Object {
+			if x.Public != nil && x.Public.Cate != "" {
+				lab = append(lab, inpLab(x.Public.Cate))
+			}
+			if x.Public != nil && x.Public.Host != "" {
+				lab = append(lab, inpLab(x.Public.Host))
+			}
 		}
 
-		out = append(out, lis...)
+		for _, x := range lab {
+			lis, err := h.eve.SearchLabl(x)
+			if err != nil {
+				return nil, tracer.Mask(err)
+			}
+
+			out = append(out, lis...)
+		}
 	}
 
 	//
 	// Search events by list.
 	//
 
-	var lid objectid.ID
-	for _, x := range req.Object {
-		if x.Symbol != nil && x.Symbol.List != "" {
-			lid = objectid.ID(x.Symbol.List)
-		}
-	}
-
-	if lid != "" {
-		rul, err := h.rul.SearchList([]objectid.ID{lid})
-		if err != nil {
-			return nil, tracer.Mask(err)
+	{
+		var lis objectid.ID
+		for _, x := range req.Object {
+			if x.Symbol != nil && x.Symbol.List != "" {
+				lis = objectid.ID(x.Symbol.List)
+			}
 		}
 
-		eve, err := h.eve.SearchList(rul)
-		if err != nil {
-			return nil, tracer.Mask(err)
-		}
+		if lis != "" {
+			rul, err := h.rul.SearchList([]objectid.ID{lis})
+			if err != nil {
+				return nil, tracer.Mask(err)
+			}
 
-		out = append(out, eve...)
+			eve, err := h.eve.SearchList(rul)
+			if err != nil {
+				return nil, tracer.Mask(err)
+			}
+
+			out = append(out, eve...)
+		}
 	}
 
 	//
 	// Search events by time, happened.
 	//
 
-	var hap bool
-	for _, x := range req.Object {
-		if x.Symbol != nil && x.Symbol.Time == "hpnd" {
-			hap = true
-		}
-	}
-
-	if hap {
-		lis, err := h.eve.SearchHpnd()
-		if err != nil {
-			return nil, tracer.Mask(err)
+	{
+		var hap bool
+		for _, x := range req.Object {
+			if x.Symbol != nil && x.Symbol.Time == "hpnd" {
+				hap = true
+			}
 		}
 
-		out = append(out, lis...)
+		if hap {
+			lis, err := h.eve.SearchHpnd()
+			if err != nil {
+				return nil, tracer.Mask(err)
+			}
+
+			out = append(out, lis...)
+		}
 	}
 
 	//
 	// Search events by time, pagination.
 	//
 
-	var pag bool
-	for _, x := range req.Object {
-		if x.Symbol != nil && x.Symbol.Time == "page" {
-			pag = true
-		}
-	}
-
-	if pag {
-		min := time.Unix(musNum(req.Filter.Paging.Strt), 0)
-		max := time.Unix(musNum(req.Filter.Paging.Stop), 0)
-
-		lis, err := h.eve.SearchTime(min, max)
-		if err != nil {
-			return nil, tracer.Mask(err)
+	{
+		var pag bool
+		for _, x := range req.Object {
+			if x.Symbol != nil && x.Symbol.Time == "page" {
+				pag = true
+			}
 		}
 
-		out = append(out, lis...)
+		if pag {
+			min := time.Unix(musNum(req.Filter.Paging.Strt), 0)
+			max := time.Unix(musNum(req.Filter.Paging.Stop), 0)
+
+			lis, err := h.eve.SearchTime(min, max)
+			if err != nil {
+				return nil, tracer.Mask(err)
+			}
+
+			out = append(out, lis...)
+		}
 	}
 
 	//
 	// Search events by time, upcoming.
 	//
 
-	var upc bool
-	for _, x := range req.Object {
-		if x.Symbol != nil && x.Symbol.Time == "upcm" {
-			upc = true
-		}
-	}
-
-	if upc {
-		lis, err := h.eve.SearchUpcm()
-		if err != nil {
-			return nil, tracer.Mask(err)
-		}
-
-		out = append(out, lis...)
-	}
-
-	//
-	// Search events by reactions, pagination.
-	//
-
-	if userid.FromContext(ctx) != "" {
-		var rct bool
+	{
+		var upc bool
 		for _, x := range req.Object {
-			if x.Symbol != nil && x.Symbol.Rctn == "page" {
-				rct = true
+			if x.Symbol != nil && x.Symbol.Time == "upcm" {
+				upc = true
 			}
 		}
 
-		if rct {
+		if upc {
+			lis, err := h.eve.SearchUpcm()
+			if err != nil {
+				return nil, tracer.Mask(err)
+			}
+
+			out = append(out, lis...)
+		}
+	}
+
+	//
+	// Search events by likes, pagination.
+	//
+
+	{
+		var lik string
+		for _, x := range req.Object {
+			if x.Symbol != nil && x.Symbol.Like != "" {
+				lik = x.Symbol.Like
+			}
+		}
+
+		if lik != "" {
 			min := musNum(req.Filter.Paging.Strt)
 			max := musNum(req.Filter.Paging.Stop)
 
-			lis, err := h.eve.SearchLike(userid.FromContext(ctx), int(min), int(max))
+			lis, err := h.eve.SearchLike(objectid.ID(lik), int(min), int(max))
 			if err != nil {
 				return nil, tracer.Mask(err)
 			}
