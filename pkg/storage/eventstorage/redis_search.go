@@ -341,7 +341,7 @@ func (r *Redis) SearchUser(use []objectid.ID) ([]*Object, error) {
 
 	var out []*Object
 	for _, x := range use {
-		// val will result in a list of all event IDs created by the given user ID, if
+		// val will result in a list of all event IDs created by the given user, if
 		// any.
 		var val []string
 		{
