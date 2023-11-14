@@ -5,6 +5,7 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/NaoNaoOnline/apiserver/pkg/generic"
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectfield"
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectid"
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectlabel"
@@ -134,9 +135,30 @@ func (o *Object) VerifyObct() error {
 }
 
 func (o *Object) VerifyPtch() error {
-	for _, x := range o.Labl.Data {
-		if x != objectlabel.WalletUnassigned && x != objectlabel.WalletAccounting && x != objectlabel.WalletModeration {
-			return tracer.Maskf(walletLablInvalidError, x)
+	{
+		// Wallet labels cannot be set multiple times.
+		if generic.Dup(o.Labl.Data) {
+			return tracer.Mask(walletLablDuplicateError)
+		}
+
+		// Wallet labels cannot be arbitrary.
+		for _, x := range o.Labl.Data {
+			if x != objectlabel.WalletUnassigned && x != objectlabel.WalletAccounting && x != objectlabel.WalletModeration {
+				return tracer.Maskf(walletLablInvalidError, x)
+			}
+		}
+
+		// Wallet labels cannot be used together.
+		for _, x := range o.Labl.Data {
+			if o.HasLab(objectlabel.WalletUnassigned) && (x == objectlabel.WalletAccounting || x == objectlabel.WalletModeration) {
+				return tracer.Maskf(walletLablConflictError, x)
+			}
+			if o.HasLab(objectlabel.WalletAccounting) && (x == objectlabel.WalletUnassigned || x == objectlabel.WalletModeration) {
+				return tracer.Maskf(walletLablConflictError, x)
+			}
+			if o.HasLab(objectlabel.WalletModeration) && (x == objectlabel.WalletUnassigned || x == objectlabel.WalletAccounting) {
+				return tracer.Maskf(walletLablConflictError, x)
+			}
 		}
 	}
 
