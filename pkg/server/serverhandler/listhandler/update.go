@@ -32,15 +32,23 @@ func (h *Handler) Update(ctx context.Context, req *list.UpdateI) (*list.UpdateO,
 		}
 	}
 
+	//
+	// Verify the given input.
+	//
+
 	for _, x := range inp {
 		if userid.FromContext(ctx) != x.User {
 			return nil, tracer.Mask(runtime.UserNotOwnerError)
 		}
 	}
 
+	//
+	// Update the given resources.
+	//
+
 	var out []objectstate.String
 	{
-		out, err = h.lis.Update(inp, pat)
+		out, err = h.lis.UpdatePtch(inp, pat)
 		if err != nil {
 			return nil, tracer.Mask(err)
 		}

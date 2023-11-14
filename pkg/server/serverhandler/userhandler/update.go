@@ -49,7 +49,7 @@ func (h *Handler) Update(ctx context.Context, req *user.UpdateI) (*user.UpdateO,
 
 	var out []objectstate.String
 	{
-		out, err = h.use.Update(inp, pat)
+		out, err = h.use.UpdatePtch(inp, pat)
 		if err != nil {
 			return nil, tracer.Mask(err)
 		}

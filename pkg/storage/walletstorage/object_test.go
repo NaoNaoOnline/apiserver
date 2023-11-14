@@ -4,9 +4,12 @@ import (
 	"errors"
 	"fmt"
 	"testing"
+
+	"github.com/NaoNaoOnline/apiserver/pkg/object/objectfield"
+	"github.com/NaoNaoOnline/apiserver/pkg/object/objectlabel"
 )
 
-func Test_Storage_walletstorage_Object_Messtim(t *testing.T) {
+func Test_Storage_Wallet_Object_Messtim(t *testing.T) {
 	testCases := []struct {
 		mes string
 		tim string
@@ -48,7 +51,7 @@ func Test_Storage_walletstorage_Object_Messtim(t *testing.T) {
 	}
 }
 
-func Test_Storage_walletstorage_Object_Verify_Kind(t *testing.T) {
+func Test_Storage_Wallet_Object_Verify_Kind(t *testing.T) {
 	testCases := []struct {
 		kin string
 		err error
@@ -77,7 +80,7 @@ func Test_Storage_walletstorage_Object_Verify_Kind(t *testing.T) {
 
 	for i, tc := range testCases {
 		t.Run(fmt.Sprintf("%03d", i), func(t *testing.T) {
-			err := witKin(tc.kin).Verify()
+			err := witKin(tc.kin).VerifyObct()
 			if !errors.Is(err, tc.err) {
 				t.Fatalf("expected %#v got %#v", tc.err, err)
 			}
@@ -85,7 +88,121 @@ func Test_Storage_walletstorage_Object_Verify_Kind(t *testing.T) {
 	}
 }
 
-func Test_Storage_walletstorage_Object_Verify_Mess(t *testing.T) {
+func Test_Storage_Wallet_Object_Verify_Labl(t *testing.T) {
+	testCases := []struct {
+		lab []string
+		err error
+	}{
+		// Case 000
+		{
+			lab: nil,
+			err: nil,
+		},
+		// Case 001
+		{
+			lab: []string{
+				objectlabel.WalletUnassigned,
+			},
+			err: nil,
+		},
+		// Case 002
+		{
+			lab: []string{
+				objectlabel.WalletAccounting,
+			},
+			err: nil,
+		},
+		// Case 003
+		{
+			lab: []string{
+				objectlabel.WalletModeration,
+			},
+			err: nil,
+		},
+		// Case 004
+		{
+			lab: []string{
+				objectlabel.WalletUnassigned,
+				objectlabel.WalletUnassigned,
+			},
+			err: walletLablDuplicateError,
+		},
+		// Case 005
+		{
+			lab: []string{
+				objectlabel.WalletAccounting,
+				objectlabel.WalletAccounting,
+			},
+			err: walletLablDuplicateError,
+		},
+		// Case 006
+		{
+			lab: []string{
+				objectlabel.WalletModeration,
+				objectlabel.WalletModeration,
+			},
+			err: walletLablDuplicateError,
+		},
+		// Case 007
+		{
+			lab: []string{
+				objectlabel.WalletUnassigned,
+				objectlabel.WalletAccounting,
+			},
+			err: walletLablConflictError,
+		},
+		// Case 008
+		{
+			lab: []string{
+				objectlabel.WalletUnassigned,
+				objectlabel.WalletModeration,
+			},
+			err: walletLablConflictError,
+		},
+		// Case 009
+		{
+			lab: []string{
+				objectlabel.WalletAccounting,
+				objectlabel.WalletModeration,
+			},
+			err: walletLablConflictError,
+		},
+		// Case 010
+		{
+			lab: []string{
+				objectlabel.WalletUnassigned,
+				objectlabel.WalletAccounting,
+				objectlabel.WalletModeration,
+			},
+			err: walletLablConflictError,
+		},
+		// Case 011
+		{
+			lab: []string{
+				"",
+			},
+			err: walletLablInvalidError,
+		},
+		// Case 012
+		{
+			lab: []string{
+				"foo",
+			},
+			err: walletLablInvalidError,
+		},
+	}
+
+	for i, tc := range testCases {
+		t.Run(fmt.Sprintf("%03d", i), func(t *testing.T) {
+			err := witLab(tc.lab).VerifyPtch()
+			if !errors.Is(err, tc.err) {
+				t.Fatalf("expected %#v got %#v", tc.err, err)
+			}
+		})
+	}
+}
+
+func Test_Storage_Wallet_Object_Verify_Mess(t *testing.T) {
 	testCases := []struct {
 		mes string
 		err error
@@ -128,7 +245,7 @@ func Test_Storage_walletstorage_Object_Verify_Mess(t *testing.T) {
 
 	for i, tc := range testCases {
 		t.Run(fmt.Sprintf("%03d", i), func(t *testing.T) {
-			err := witMes(tc.mes).Verify()
+			err := witMes(tc.mes).VerifySign()
 			if !errors.Is(err, tc.err) {
 				t.Fatalf("expected %#v got %#v", tc.err, err)
 			}
@@ -142,6 +259,14 @@ func witKin(kin string) *Object {
 		Mess: "signing ownership of 0x7483••••ba5B at 1695326302",
 		Pubk: "0x0437c4df64cdef106fe01c0c55a579d05a78bb97fc4151840ed712f154407a01e07c91b07da6d1bf5ffa4930b941f4787b44c2c7b88e1efd8da2905df5cbd59cda",
 		Sign: "0xba7fc983705f2067588a0119abc2c0eee035f0b9dee47fb3a4f5603d057dc2dd0d8768a056e5a6a060aace35772f446a4f64a241a1988410e6f0ab2af28c16cb1b",
+	}
+}
+
+func witLab(lab []string) *Object {
+	return &Object{
+		Labl: objectfield.Strings{
+			Data: lab,
+		},
 	}
 }
 

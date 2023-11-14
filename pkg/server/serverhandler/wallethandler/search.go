@@ -3,6 +3,7 @@ package wallethandler
 import (
 	"context"
 	"strconv"
+	"strings"
 
 	"github.com/NaoNaoOnline/apigocode/pkg/wallet"
 	"github.com/NaoNaoOnline/apiserver/pkg/generic"
@@ -85,15 +86,19 @@ func (h *Handler) Search(ctx context.Context, req *wallet.SearchI) (*wallet.Sear
 		res.Object = append(res.Object, &wallet.SearchO_Object{
 			Intern: &wallet.SearchO_Object_Intern{
 				Addr: &wallet.SearchO_Object_Intern_Addr{
-					Time: strconv.Itoa(int(x.Addr.Time.Unix())),
+					Time: outTim(x.Addr.Time),
 				},
 				Crtd: strconv.FormatInt(x.Crtd.Unix(), 10),
+				Labl: &wallet.SearchO_Object_Intern_Labl{
+					Time: outTim(x.Labl.Time),
+				},
 				User: x.User.String(),
 				Wllt: x.Wllt.String(),
 			},
 			Public: &wallet.SearchO_Object_Public{
 				Addr: x.Addr.Data,
 				Kind: x.Kind,
+				Labl: strings.Join(x.Labl.Data, ","),
 			},
 		})
 	}

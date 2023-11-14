@@ -12,6 +12,14 @@ docker run --rm --name redis-stack-apiserver -p 6379:6379 -p 8001:8001 redis/red
 
 
 
+Filling the apiserver with test data.
+
+```
+./apiserver fakeit
+```
+
+
+
 Running the apiserver locally.
 
 ```

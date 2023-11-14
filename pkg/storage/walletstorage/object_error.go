@@ -24,6 +24,21 @@ func IsWalletKindInvalid(err error) bool {
 	return errors.Is(err, walletKindInvalidError)
 }
 
+var walletLablConflictError = &tracer.Error{
+	Kind: "walletLablConflictError",
+	Desc: "The request expects the wallet label to be one of [unassigned accounting moderation]. The wallet label was not found to be one of [unassigned accounting moderation]. Therefore the request failed.",
+}
+
+var walletLablDuplicateError = &tracer.Error{
+	Kind: "walletLablDuplicateError",
+	Desc: "The request expects the wallet labels not to be duplicated. The wallet labels were found to be duplicated. Therefore the request failed.",
+}
+
+var walletLablInvalidError = &tracer.Error{
+	Kind: "walletLablInvalidError",
+	Desc: "The request expects the wallet label to be one of [unassigned accounting moderation]. The wallet label was not found to be one of [unassigned accounting moderation]. Therefore the request failed.",
+}
+
 var walletMessEmptyError = &tracer.Error{
 	Kind: "walletMessEmptyError",
 	Desc: "The request expects the wallet message not to be empty. The wallet message was found to be empty. Therefore the request failed.",

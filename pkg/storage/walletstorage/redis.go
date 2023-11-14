@@ -47,12 +47,21 @@ func walKin(use objectid.ID, kin string) string {
 	panic(fmt.Sprintf("kin must be eth, got %s", kin))
 }
 
-func walObj(use objectid.ID, oid objectid.ID) string {
-	return fmt.Sprintf(keyfmt.WalletObject, use, oid)
+func walObj(use objectid.ID, wal objectid.ID) string {
+	return fmt.Sprintf(keyfmt.WalletObject, use, wal)
 }
 
 func walUse(use objectid.ID) string {
 	return fmt.Sprintf(keyfmt.WalletUser, use)
+}
+
+func musByt(pat []*Patch) []byte {
+	byt, err := json.Marshal(pat)
+	if err != nil {
+		tracer.Panic(tracer.Mask(err))
+	}
+
+	return byt
 }
 
 func musStr(obj *Object) string {

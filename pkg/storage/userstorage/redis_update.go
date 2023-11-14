@@ -9,7 +9,7 @@ import (
 	"github.com/xh3b4sd/tracer"
 )
 
-func (r *Redis) Update(obj []*Object, pat PatchSlicer) ([]objectstate.String, error) {
+func (r *Redis) UpdatePtch(obj []*Object, pat PatchSlicer) ([]objectstate.String, error) {
 	var err error
 
 	var out []objectstate.String
@@ -77,9 +77,15 @@ func (r *Redis) Update(obj []*Object, pat PatchSlicer) ([]objectstate.String, er
 		}
 
 		// Once we know the modified user object is still valid after applying the
-		// JSON-Patch, we update its normalized key-value pair.
+		// JSON-Patch, we update its normalized key-value pair. Note that we use the
+		// resource IDs from the given input in order to construct the storage key
+		// for the user object. This input data should come from our internal
+		// storage. If we were to use the updated state to construct the storage
+		// keys, and if the input validation were to fail for any reason, a
+		// potential attack vector would open, because an attacker could choose to
+		// overwrite any user object.
 		{
-			err = r.red.Simple().Create().Element(useObj(upd.User), musStr(upd))
+			err = r.red.Simple().Create().Element(useObj(obj[i].User), musStr(upd))
 			if err != nil {
 				return nil, tracer.Mask(err)
 			}

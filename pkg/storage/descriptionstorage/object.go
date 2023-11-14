@@ -23,7 +23,7 @@ type Object struct {
 	// Like is the number of likes this description received.
 	Like objectfield.Integer `json:"like"`
 	// Text is the description explaining what an event is about.
-	Text string `json:"text"`
+	Text string `json:"text"` // TODO should be objectfield.String
 	// User is the user ID creating this description.
 	User objectid.ID `json:"user"`
 }

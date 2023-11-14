@@ -81,7 +81,7 @@ func inpTim(str string) time.Time {
 }
 
 func outDur(dur time.Duration) string {
-	return strconv.Itoa(int(dur.Seconds()))
+	return strconv.FormatInt(int64(dur.Seconds()), 10)
 }
 
 func outLab(sco []objectid.ID) string {

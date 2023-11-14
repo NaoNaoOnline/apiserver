@@ -176,10 +176,16 @@ func (r *Redis) UpdatePtch(obj []*Object, pat [][]*Patch) ([]objectstate.String,
 			}
 		}
 
-		// Once we know the modified description object is still valid after applying
-		// the JSON-Patch, we update its normalized key-value pair.
+		// Once we know the modified description object is still valid after
+		// applying the JSON-Patch, we update its normalized key-value pair. Note
+		// that we use the resource IDs from the given input in order to construct
+		// the storage key for the description object. This input data should come
+		// from our internal storage. If we were to use the updated state to
+		// construct the storage keys, and if the input validation were to fail for
+		// any reason, a potential attack vector would open, because an attacker
+		// could choose to overwrite any description object.
 		{
-			err = r.red.Simple().Create().Element(desObj(upd.Desc), musStr(upd))
+			err = r.red.Simple().Create().Element(desObj(obj[i].Desc), musStr(upd))
 			if err != nil {
 				return nil, tracer.Mask(err)
 			}
