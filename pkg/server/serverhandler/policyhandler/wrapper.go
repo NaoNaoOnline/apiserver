@@ -110,7 +110,7 @@ func (w *wrapper) Search(ctx context.Context, req *policy.SearchI) (*policy.Sear
 	// We do not want the call to fail because the overview of policy records is
 	// integrated into the policy section on the settings page in the webclient.
 	// Every user looking at their settings page will make a request to get the
-	// list of available policies. It is ok to not get any result for the majority
+	// list of available policies. It is ok not to get any result for the majority
 	// of users. That is why we do not fail, but instead return an empty list,
 	// together with an explanation for the empty response.
 	if !exi {

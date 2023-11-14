@@ -3,7 +3,7 @@ module github.com/NaoNaoOnline/apiserver
 go 1.21
 
 require (
-	github.com/NaoNaoOnline/apigocode v0.8.7
+	github.com/NaoNaoOnline/apigocode v0.8.8
 	github.com/auth0/go-jwt-middleware/v2 v2.1.0
 	github.com/brianvoe/gofakeit/v6 v6.24.0
 	github.com/ethereum/go-ethereum v1.13.1
@@ -13,6 +13,7 @@ require (
 	github.com/gorilla/mux v1.8.0
 	github.com/joho/godotenv v1.5.1
 	github.com/kelseyhightower/envconfig v1.4.0
+	github.com/rafaeljusto/redigomock/v3 v3.1.2
 	github.com/rs/cors v1.10.0
 	github.com/spf13/cobra v1.8.0
 	github.com/twitchtv/twirp v8.1.3+incompatible

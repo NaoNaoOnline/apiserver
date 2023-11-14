@@ -43,7 +43,7 @@ func (h *Handler) Create(ctx context.Context, req *user.CreateI) (*user.CreateO,
 			Object: []*user.CreateO_Object{
 				{
 					Intern: &user.CreateO_Object_Intern{
-						Crtd: strconv.Itoa(int(out.Crtd.Unix())),
+						Crtd: strconv.FormatInt(out.Crtd.Unix(), 10),
 						User: out.User.String(),
 					},
 				},

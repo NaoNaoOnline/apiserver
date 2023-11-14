@@ -142,14 +142,40 @@ func (w *wrapper) Update(ctx context.Context, req *wallet.UpdateI) (*wallet.Upda
 
 	{
 		for _, x := range req.Object {
-			if x.Intern == nil && x.Public == nil {
+			if x.Intern == nil && x.Public == nil && x.Update == nil {
 				return nil, tracer.Mask(runtime.QueryObjectEmptyError)
 			}
 		}
 
 		for _, x := range req.Object {
+			if x.Intern == nil {
+				return nil, tracer.Mask(updateEmptyError)
+			}
+			if x.Intern != nil && (x.Public == nil && x.Update == nil) {
+				return nil, tracer.Mask(updateEmptyError)
+			}
+			if x.Intern != nil && (x.Public != nil && x.Update != nil) {
+				return nil, tracer.Mask(updateSymbolConflictError)
+			}
+		}
+
+		for _, x := range req.Object {
 			if x.Intern != nil && x.Intern.Wllt == "" {
-				return nil, tracer.Mask(updateInternEmptyError)
+				return nil, tracer.Mask(runtime.QueryObjectEmptyError)
+			}
+			if x.Public != nil && x.Public.Sign == "" {
+				return nil, tracer.Mask(runtime.QueryObjectEmptyError)
+			}
+			if x.Update != nil && len(x.Update) == 0 {
+				return nil, tracer.Mask(runtime.QueryObjectEmptyError)
+			}
+		}
+
+		for _, x := range req.Object {
+			for _, y := range x.Update {
+				if y == nil {
+					return nil, tracer.Mask(runtime.QueryObjectEmptyError)
+				}
 			}
 		}
 	}

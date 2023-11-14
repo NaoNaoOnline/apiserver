@@ -8,7 +8,7 @@ import (
 	"github.com/xh3b4sd/tracer"
 )
 
-func (r *Redis) Update(obj []*Object, pat [][]*Patch) ([]objectstate.String, error) {
+func (r *Redis) UpdatePtch(obj []*Object, pat [][]*Patch) ([]objectstate.String, error) {
 	var err error
 
 	var out []objectstate.String
@@ -61,9 +61,15 @@ func (r *Redis) Update(obj []*Object, pat [][]*Patch) ([]objectstate.String, err
 		}
 
 		// Once we know the modified list object is still valid after applying the
-		// JSON-Patch, we update its normalized key-value pair.
+		// JSON-Patch, we update its normalized key-value pair. Note that we use the
+		// resource IDs from the given input in order to construct the storage key
+		// for the list object. This input data should come from our internal
+		// storage. If we were to use the updated state to construct the storage
+		// keys, and if the input validation were to fail for any reason, a
+		// potential attack vector would open, because an attacker could choose to
+		// overwrite any list object.
 		{
-			err = r.red.Simple().Create().Element(lisObj(upd.List), musStr(upd))
+			err = r.red.Simple().Create().Element(lisObj(obj[i].List), musStr(upd))
 			if err != nil {
 				return nil, tracer.Mask(err)
 			}

@@ -46,7 +46,19 @@ type Interface interface {
 	//
 	SearchWllt(objectid.ID, []objectid.ID) ([]*Object, error)
 
-	// Update modifies the existing wallet objects by solving the signature
+	// UpdatePtch modifies the existing wallet objects by applying the given
+	// RFC6902 JSON-Patches to the underlying JSON documents. The list items are
+	// used according to their respective indices, e.g. the second patch is
+	// applied to the second object.
+	//
+	//     @inp[0] the list of wallet objects to modify
+	//     @inp[1] the list of RFC6902 compliant JSON-Patches
+	//     @out[0] the list of modified wallet objects
+	//     @out[1] the list of operation states related to the modified wallet objects
+	//
+	UpdatePtch([]*Object, PatchSlicer) ([]*Object, []objectstate.String, error)
+
+	// UpdateSign modifies the existing wallet objects by solving the signature
 	// verification challenge again. On success object.intern.last is set to the
 	// time of execution.
 	//
@@ -54,5 +66,5 @@ type Interface interface {
 	//     @out[0] the list of modified wallet objects
 	//     @out[1] the list of operation states related to the modified wallet objects
 	//
-	Update([]*Object) ([]*Object, []objectstate.String, error)
+	UpdateSign([]*Object) ([]*Object, []objectstate.String, error)
 }

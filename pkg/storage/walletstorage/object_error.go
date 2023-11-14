@@ -24,6 +24,11 @@ func IsWalletKindInvalid(err error) bool {
 	return errors.Is(err, walletKindInvalidError)
 }
 
+var walletLablInvalidError = &tracer.Error{
+	Kind: "walletLablInvalidError",
+	Desc: "The request expects the wallet label to be one of [unassigned accounting moderation]. The wallet label was not found to be one of [unassigned accounting moderation]. Therefore the request failed.",
+}
+
 var walletMessEmptyError = &tracer.Error{
 	Kind: "walletMessEmptyError",
 	Desc: "The request expects the wallet message not to be empty. The wallet message was found to be empty. Therefore the request failed.",

@@ -17,7 +17,11 @@ func (r *Redis) CreateXtrn(inp []*Object) ([]*Object, error) {
 		// instance, we cannot create a wallet for an user that is not owned by that
 		// user.
 		{
-			err := inp[i].Verify()
+			err = inp[i].VerifyObct()
+			if err != nil {
+				return nil, tracer.Mask(err)
+			}
+			err = inp[i].VerifySign()
 			if err != nil {
 				return nil, tracer.Mask(err)
 			}
@@ -37,15 +41,6 @@ func (r *Redis) CreateXtrn(inp []*Object) ([]*Object, error) {
 			return nil, tracer.Mask(walletSignTooOldError)
 		}
 
-		{
-			inp[i].Addr = objectfield.String{
-				Data: inp[i].Comadd().Hex(),
-				Time: now,
-			}
-			inp[i].Crtd = now
-			inp[i].Wllt = objectid.Random(objectid.Time(now))
-		}
-
 		// Ensure the user wallet limit globally is respected.
 		{
 			cou, err := r.red.Sorted().Metric().Count(walUse(inp[i].User))
@@ -56,6 +51,15 @@ func (r *Redis) CreateXtrn(inp []*Object) ([]*Object, error) {
 			if cou >= 5 {
 				return nil, tracer.Mask(walletUserLimitError)
 			}
+		}
+
+		{
+			inp[i].Addr = objectfield.String{
+				Data: inp[i].Comadd().Hex(),
+				Time: now,
+			}
+			inp[i].Crtd = now
+			inp[i].Wllt = objectid.Random(objectid.Time(now))
 		}
 
 		// Once we know the wallet's signature is valid, we create the normalized

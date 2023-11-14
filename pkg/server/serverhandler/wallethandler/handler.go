@@ -2,7 +2,10 @@ package wallethandler
 
 import (
 	"fmt"
+	"strconv"
+	"time"
 
+	"github.com/NaoNaoOnline/apigocode/pkg/wallet"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/walletstorage"
 	"github.com/xh3b4sd/logger"
 	"github.com/xh3b4sd/tracer"
@@ -30,4 +33,34 @@ func NewHandler(c HandlerConfig) *Handler {
 		log: c.Log,
 		wal: c.Wal,
 	}
+}
+
+func inpPat(upd []*wallet.UpdateI_Object_Update) []*walletstorage.Patch {
+	var lis []*walletstorage.Patch
+
+	for _, x := range upd {
+		var p *walletstorage.Patch
+		{
+			p = &walletstorage.Patch{
+				Ope: x.Ope,
+				Pat: x.Pat,
+			}
+		}
+
+		if x.Val != nil {
+			p.Val = *x.Val
+		}
+
+		lis = append(lis, p)
+	}
+
+	return lis
+}
+
+func outTim(tim time.Time) string {
+	if !tim.IsZero() {
+		return strconv.FormatInt(tim.Unix(), 10)
+	}
+
+	return ""
 }

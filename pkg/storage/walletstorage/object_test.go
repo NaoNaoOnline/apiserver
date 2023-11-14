@@ -6,7 +6,7 @@ import (
 	"testing"
 )
 
-func Test_Storage_walletstorage_Object_Messtim(t *testing.T) {
+func Test_Storage_Wallet_Object_Messtim(t *testing.T) {
 	testCases := []struct {
 		mes string
 		tim string
@@ -48,7 +48,7 @@ func Test_Storage_walletstorage_Object_Messtim(t *testing.T) {
 	}
 }
 
-func Test_Storage_walletstorage_Object_Verify_Kind(t *testing.T) {
+func Test_Storage_Wallet_Object_Verify_Kind(t *testing.T) {
 	testCases := []struct {
 		kin string
 		err error
@@ -77,7 +77,7 @@ func Test_Storage_walletstorage_Object_Verify_Kind(t *testing.T) {
 
 	for i, tc := range testCases {
 		t.Run(fmt.Sprintf("%03d", i), func(t *testing.T) {
-			err := witKin(tc.kin).Verify()
+			err := witKin(tc.kin).VerifyObct()
 			if !errors.Is(err, tc.err) {
 				t.Fatalf("expected %#v got %#v", tc.err, err)
 			}
@@ -85,7 +85,7 @@ func Test_Storage_walletstorage_Object_Verify_Kind(t *testing.T) {
 	}
 }
 
-func Test_Storage_walletstorage_Object_Verify_Mess(t *testing.T) {
+func Test_Storage_Wallet_Object_Verify_Mess(t *testing.T) {
 	testCases := []struct {
 		mes string
 		err error
@@ -128,7 +128,7 @@ func Test_Storage_walletstorage_Object_Verify_Mess(t *testing.T) {
 
 	for i, tc := range testCases {
 		t.Run(fmt.Sprintf("%03d", i), func(t *testing.T) {
-			err := witMes(tc.mes).Verify()
+			err := witMes(tc.mes).VerifySign()
 			if !errors.Is(err, tc.err) {
 				t.Fatalf("expected %#v got %#v", tc.err, err)
 			}

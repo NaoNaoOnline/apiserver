@@ -86,7 +86,12 @@ type Interface interface {
 	//
 	SearchTime() (time.Time, error)
 
-	// SearchUser returns the SMA members for the given user ID.
+	// SearchUser returns the SMA members for the given user ID that are labelled
+	// for moderation. The SMA members returned here are used in all of the
+	// Permission.Exists* methods. Therefore permissions can only be granted to
+	// users if two conditions are true. First, permissions have to be recorded
+	// onchain within the policy smart contracts. Second, user wallets must be
+	// labelled for moderation.
 	//
 	//     @inp[0] the user ID to search
 	//     @out[0] the list of SMA members matching the given user ID

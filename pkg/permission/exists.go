@@ -50,13 +50,9 @@ func (p *Permission) ExistsMemb(use objectid.ID) (bool, error) {
 		}
 	}
 
-	for _, x := range mem {
-		if p.cac.ExistsMemb(x) {
-			return true, nil
-		}
-	}
-
-	return false, nil
+	// SearchUser returns the SMA members for the given user ID. So as long as mem
+	// is not empty, the given user is considered a policy member.
+	return len(mem) != 0, nil
 }
 
 func (p *Permission) ExistsSyst(sys int64, use objectid.ID) (bool, error) {

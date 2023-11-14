@@ -4,6 +4,7 @@ import (
 	"time"
 
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectid"
+	"github.com/NaoNaoOnline/apiserver/pkg/object/objectlabel"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/policystorage"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/walletstorage"
 	"github.com/xh3b4sd/tracer"
@@ -68,7 +69,10 @@ func (p *Permission) SearchUser(use objectid.ID) ([]string, error) {
 
 	var mem []string
 	for _, x := range wal {
-		if p.cac.ExistsMemb(x.Addr.Data) {
+		// Using PolicyCache.ExistsMemb here is critical for Permission.ExistsMemb
+		// to work correctly. Only wallet addresses recorded in the policy contract
+		// should be considered policy members.
+		if x.HasLab(objectlabel.WalletModeration) && p.cac.ExistsMemb(x.Addr.Data) {
 			mem = append(mem, x.Addr.Data)
 		}
 	}
