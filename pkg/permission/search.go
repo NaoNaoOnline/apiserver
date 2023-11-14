@@ -13,27 +13,22 @@ import (
 func (p *Permission) SearchActv() ([]*policystorage.Object, error) {
 	var err error
 
-	var obj []*policystorage.Object
+	var sli policystorage.Slicer
 	{
-		obj = p.cac.SearchRcrd()
+		sli = p.cac.SearchRcrd()
 	}
 
 	// Especially durring the program's startup sequence it may happen that no
 	// policy records have been buffered and merged yet. So in order to prevent
 	// invalid storage calls below we just return nil if there is in fact not a
 	// single policy available right now.
-	if len(obj) == 0 {
+	if len(sli) == 0 {
 		return nil, nil
-	}
-
-	var add []string
-	for _, x := range obj {
-		add = append(add, x.Memb)
 	}
 
 	var use []objectid.ID
 	{
-		use, err = p.wal.SearchAddr(add)
+		use, err = p.wal.SearchAddr(sli.Memb())
 		if walletstorage.IsWalletObjectNotFound(err) {
 			// It may happen, especially during development or first platform
 			// deployment, that there is only one policy record without an associated
@@ -41,17 +36,17 @@ func (p *Permission) SearchActv() ([]*policystorage.Object, error) {
 			// returns "not found" errors if single objects cannot be found. In that
 			// case we simply return the policy record that we have, without
 			// augmenting it with a user ID.
-			return obj, nil
+			return sli, nil
 		} else if err != nil {
 			return nil, tracer.Mask(err)
 		}
 	}
 
-	for i := range obj {
-		obj[i].User = use[i]
+	for i := range sli {
+		sli[i].User = use[i]
 	}
 
-	return obj, nil
+	return sli, nil
 }
 
 func (p *Permission) SearchUser(use objectid.ID) ([]string, error) {
