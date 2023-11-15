@@ -22,13 +22,13 @@ func (r *Redis) Create(inp []*Object) ([]*Object, error) {
 		}
 
 		{
-			exi, err := r.red.Sorted().Exists().Index(labKin(inp[i].Kind), keyfmt.Indx(inp[i].Name))
+			exi, err := r.red.Sorted().Exists().Index(labKin(inp[i].Kind), keyfmt.Indx(inp[i].Name.Data))
 			if err != nil {
 				return nil, tracer.Mask(err)
 			}
 
 			if exi {
-				return nil, tracer.Maskf(labelObjectAlreadyExistsError, keyfmt.Indx(inp[i].Name))
+				return nil, tracer.Maskf(labelObjectAlreadyExistsError, keyfmt.Indx(inp[i].Name.Data))
 			}
 		}
 
@@ -40,7 +40,7 @@ func (r *Redis) Create(inp []*Object) ([]*Object, error) {
 		{
 			inp[i].Crtd = now
 			inp[i].Labl = objectid.Random(objectid.Time(now))
-			inp[i].Name = keyfmt.Name(inp[i].Name)
+			inp[i].Name.Data = keyfmt.Name(inp[i].Name.Data)
 		}
 
 		// Once we know the label is unique, we create the normalized key-value pair
@@ -57,7 +57,7 @@ func (r *Redis) Create(inp []*Object) ([]*Object, error) {
 		// label names are unique by using the label name as additional index within
 		// the redis sorted sets.
 		{
-			err = r.red.Sorted().Create().Index(labKin(inp[i].Kind), inp[i].Labl.String(), inp[i].Labl.Float(), keyfmt.Indx(inp[i].Name))
+			err = r.red.Sorted().Create().Index(labKin(inp[i].Kind), inp[i].Labl.String(), inp[i].Labl.Float(), keyfmt.Indx(inp[i].Name.Data))
 			if err != nil {
 				return nil, tracer.Mask(err)
 			}
@@ -66,7 +66,7 @@ func (r *Redis) Create(inp []*Object) ([]*Object, error) {
 		// Create the user specific mappings for user specific search queries. With
 		// that we can show the user all labels they created.
 		{
-			err = r.red.Sorted().Create().Score(labUse(inp[i].User), inp[i].Labl.String(), inp[i].Labl.Float())
+			err = r.red.Sorted().Create().Score(labUse(inp[i].User.Data), inp[i].Labl.String(), inp[i].Labl.Float())
 			if err != nil {
 				return nil, tracer.Mask(err)
 			}

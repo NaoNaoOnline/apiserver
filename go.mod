@@ -3,7 +3,7 @@ module github.com/NaoNaoOnline/apiserver
 go 1.21
 
 require (
-	github.com/NaoNaoOnline/apigocode v0.8.8
+	github.com/NaoNaoOnline/apigocode v0.8.9
 	github.com/auth0/go-jwt-middleware/v2 v2.1.0
 	github.com/brianvoe/gofakeit/v6 v6.24.0
 	github.com/ethereum/go-ethereum v1.13.1
@@ -21,6 +21,7 @@ require (
 	github.com/xh3b4sd/redigo v0.36.1
 	github.com/xh3b4sd/rescue v0.17.10
 	github.com/xh3b4sd/tracer v0.10.1
+	golang.org/x/text v0.12.0
 	mvdan.cc/xurls/v2 v2.5.0
 )
 

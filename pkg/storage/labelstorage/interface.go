@@ -13,7 +13,9 @@ type Interface interface {
 
 	// SearchBltn returns the static list of curated event labels natively
 	// supported by the system. This method should only be used to bootstrap the
-	// initial system state, never to serve RPC requests.
+	// initial system state, never to serve RPC requests. Note that the names of
+	// builtin labels need to match the eventstorage.Object.Pltfrm implementation
+	// of parsing a platforms hostname.
 	//
 	//     @out[0] static list of curated event labels natively supported by the system
 	//

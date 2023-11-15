@@ -5,6 +5,7 @@ import (
 	"strconv"
 
 	"github.com/NaoNaoOnline/apigocode/pkg/description"
+	"github.com/NaoNaoOnline/apiserver/pkg/object/objectfield"
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectid"
 	"github.com/NaoNaoOnline/apiserver/pkg/server/context/userid"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/descriptionstorage"
@@ -20,7 +21,9 @@ func (h *Handler) Create(ctx context.Context, req *description.CreateI) (*descri
 		if x.Public != nil {
 			inp = append(inp, &descriptionstorage.Object{
 				Evnt: objectid.ID(x.Public.Evnt),
-				Text: x.Public.Text,
+				Text: objectfield.String{
+					Data: x.Public.Text,
+				},
 				User: userid.FromContext(ctx),
 			})
 		}

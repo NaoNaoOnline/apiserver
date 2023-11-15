@@ -1,8 +1,7 @@
 package policystorage
 
 import (
-	"regexp"
-
+	"github.com/NaoNaoOnline/apiserver/pkg/format/hexformat"
 	"github.com/NaoNaoOnline/apiserver/pkg/generic"
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectid"
 	"github.com/xh3b4sd/tracer"
@@ -27,10 +26,6 @@ type Object struct {
 	// that there is no user association for a policy record intermittently.
 	User objectid.ID `json:"-"`
 }
-
-var (
-	hexaexpr = regexp.MustCompile(`^0x[0-9a-fA-F]+$`)
-)
 
 func (r *Object) Verify() error {
 	{
@@ -61,7 +56,7 @@ func (r *Object) Verify() error {
 		if len(r.Memb) != 42 {
 			return tracer.Maskf(policyMembLengthError, "%d", len(r.Memb))
 		}
-		if !hexaexpr.MatchString(r.Memb) {
+		if !hexformat.Verify(r.Memb) {
 			return tracer.Mask(policyMembFormatError)
 		}
 	}

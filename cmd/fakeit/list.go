@@ -1,6 +1,7 @@
 package fakeit
 
 import (
+	"github.com/NaoNaoOnline/apiserver/pkg/object/objectfield"
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectid"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/liststorage"
@@ -58,7 +59,9 @@ func (r *run) randomList(sto *storage.Storage, fak *gofakeit.Faker) *liststorage
 	var obj *liststorage.Object
 	{
 		obj = &liststorage.Object{
-			Desc: fak.Phrase(),
+			Desc: objectfield.String{
+				Data: fak.Phrase(),
+			},
 			User: uid,
 		}
 	}

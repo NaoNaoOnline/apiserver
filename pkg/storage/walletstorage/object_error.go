@@ -3,6 +3,7 @@ package walletstorage
 import (
 	"errors"
 
+	"github.com/NaoNaoOnline/apiserver/pkg/format/hexformat"
 	"github.com/xh3b4sd/tracer"
 )
 
@@ -66,10 +67,7 @@ func IsWalletPubkEmpty(err error) bool {
 	return errors.Is(err, walletPubkEmptyError)
 }
 
-var walletPubkFormatError = &tracer.Error{
-	Kind: "walletPubkFormatError",
-	Desc: "The request expects the wallet public key to be in hex format including 0x prefix. The wallet public key was not found to be in hex format including 0x prefix. Therefore the request failed.",
-}
+var walletPubkFormatError = hexformat.Errorf("wallet", "pubk")
 
 func IsWalletPubkFormat(err error) bool {
 	return errors.Is(err, walletPubkFormatError)
@@ -93,10 +91,7 @@ func IsWalletSignEmpty(err error) bool {
 	return errors.Is(err, walletSignEmptyError)
 }
 
-var walletSignFormatError = &tracer.Error{
-	Kind: "walletSignFormatError",
-	Desc: "The request expects the wallet signature to be in hex format including 0x prefix. The wallet signature was not found to be in hex format including 0x prefix. Therefore the request failed.",
-}
+var walletSignFormatError = hexformat.Errorf("wallet", "sign")
 
 func IsWalletSignFormat(err error) bool {
 	return errors.Is(err, walletSignFormatError)

@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 
 	"github.com/NaoNaoOnline/apiserver/pkg/keyfmt"
+	"github.com/NaoNaoOnline/apiserver/pkg/object/objectfield"
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectid"
 	"github.com/xh3b4sd/redigo/pkg/simple"
 	"github.com/xh3b4sd/tracer"
@@ -13,28 +14,48 @@ func (r *Redis) SearchBltn() []*Object {
 	return []*Object{
 		{
 			Kind: "bltn",
-			Name: "Discord",
-			User: objectid.System(),
+			Name: objectfield.String{
+				Data: "Discord",
+			},
+			User: objectfield.ID{
+				Data: objectid.System(),
+			},
 		},
 		{
 			Kind: "bltn",
-			Name: "Google",
-			User: objectid.System(),
+			Name: objectfield.String{
+				Data: "Google",
+			},
+			User: objectfield.ID{
+				Data: objectid.System(),
+			},
 		},
 		{
 			Kind: "bltn",
-			Name: "Twitch",
-			User: objectid.System(),
+			Name: objectfield.String{
+				Data: "Twitch",
+			},
+			User: objectfield.ID{
+				Data: objectid.System(),
+			},
 		},
 		{
 			Kind: "bltn",
-			Name: "Twitter",
-			User: objectid.System(),
+			Name: objectfield.String{
+				Data: "Twitter",
+			},
+			User: objectfield.ID{
+				Data: objectid.System(),
+			},
 		},
 		{
 			Kind: "bltn",
-			Name: "YouTube",
-			User: objectid.System(),
+			Name: objectfield.String{
+				Data: "YouTube",
+			},
+			User: objectfield.ID{
+				Data: objectid.System(),
+			},
 		},
 	}
 }

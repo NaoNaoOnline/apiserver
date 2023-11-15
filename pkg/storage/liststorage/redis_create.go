@@ -1,6 +1,7 @@
 package liststorage
 
 import (
+	"strings"
 	"time"
 
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectid"
@@ -40,6 +41,7 @@ func (r *Redis) Create(inp []*Object) ([]*Object, error) {
 		{
 			inp[i].Crtd = now
 			inp[i].List = objectid.Random(objectid.Time(now))
+			inp[i].Desc.Data = strings.TrimSpace(inp[i].Desc.Data)
 		}
 
 		// Once we know the list description is valid, we create the normalized

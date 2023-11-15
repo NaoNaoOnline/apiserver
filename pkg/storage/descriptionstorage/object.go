@@ -1,10 +1,10 @@
 package descriptionstorage
 
 import (
-	"regexp"
 	"strings"
 	"time"
 
+	"github.com/NaoNaoOnline/apiserver/pkg/format/descriptionformat"
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectfield"
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectid"
 	"github.com/xh3b4sd/tracer"
@@ -23,14 +23,10 @@ type Object struct {
 	// Like is the number of likes this description received.
 	Like objectfield.Integer `json:"like"`
 	// Text is the description explaining what an event is about.
-	Text string `json:"text"` // TODO should be objectfield.String
+	Text objectfield.String `json:"text"`
 	// User is the user ID creating this description.
 	User objectid.ID `json:"user"`
 }
-
-var (
-	textexpr = regexp.MustCompile(`^([A-Za-z0-9\s,.:\-'"!$%&#]+(?:\s*,\s*[A-Za-z0-9\s,.:\-'"!$%&#]+)*)$`)
-)
 
 var (
 	relxed = xurls.Relaxed()
@@ -50,12 +46,12 @@ func (o *Object) Verify() error {
 	}
 
 	{
-		txt := strings.TrimSpace(o.Text)
+		txt := strings.TrimSpace(o.Text.Data)
 
 		if txt == "" {
 			return tracer.Mask(descriptionTextEmptyError)
 		}
-		if !textexpr.MatchString(txt) {
+		if !descriptionformat.Verify(txt) {
 			return tracer.Mask(descriptionTextFormatError)
 		}
 		if len(txt) < 20 {
@@ -64,7 +60,7 @@ func (o *Object) Verify() error {
 		if len(txt) > 120 {
 			return tracer.Maskf(descriptionTextLengthError, "%d", len(txt))
 		}
-		if relxed.FindString(o.Text) != "" {
+		if relxed.FindString(o.Text.Data) != "" {
 			return tracer.Mask(descriptionTextURLError)
 		}
 	}

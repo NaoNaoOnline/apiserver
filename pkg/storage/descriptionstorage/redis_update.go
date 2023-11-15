@@ -138,6 +138,15 @@ func (r *Redis) UpdatePtch(obj []*Object, pat [][]*Patch) ([]objectstate.String,
 			}
 		}
 
+		var now time.Time
+		{
+			now = time.Now().UTC()
+		}
+
+		{
+			obj[i].Text.Time = now
+		}
+
 		var dec jsonpatch.Patch
 		{
 			dec, err = jsonpatch.DecodePatch(musByt(pat[i]))

@@ -81,7 +81,7 @@ func (h *Handler) Search(ctx context.Context, req *description.SearchI) (*descri
 			},
 			Public: &description.SearchO_Object_Public{
 				Evnt: x.Evnt.String(),
-				Text: x.Text,
+				Text: x.Text.Data,
 			},
 		})
 	}

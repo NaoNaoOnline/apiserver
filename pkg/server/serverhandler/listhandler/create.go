@@ -5,6 +5,7 @@ import (
 	"strconv"
 
 	"github.com/NaoNaoOnline/apigocode/pkg/list"
+	"github.com/NaoNaoOnline/apiserver/pkg/object/objectfield"
 	"github.com/NaoNaoOnline/apiserver/pkg/server/context/userid"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/liststorage"
 	"github.com/xh3b4sd/tracer"
@@ -17,7 +18,9 @@ func (h *Handler) Create(ctx context.Context, req *list.CreateI) (*list.CreateO,
 	for _, x := range req.Object {
 		if x.Public != nil {
 			inp = append(inp, &liststorage.Object{
-				Desc: x.Public.Desc,
+				Desc: objectfield.String{
+					Data: x.Public.Desc,
+				},
 				User: userid.FromContext(ctx),
 			})
 		}
