@@ -5,6 +5,7 @@ import (
 	"strconv"
 
 	"github.com/NaoNaoOnline/apigocode/pkg/label"
+	"github.com/NaoNaoOnline/apiserver/pkg/object/objectfield"
 	"github.com/NaoNaoOnline/apiserver/pkg/server/context/userid"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/labelstorage"
 	"github.com/xh3b4sd/tracer"
@@ -17,12 +18,13 @@ func (h *Handler) Create(ctx context.Context, req *label.CreateI) (*label.Create
 	for _, x := range req.Object {
 		if x.Public != nil {
 			inp = append(inp, &labelstorage.Object{
-				Desc: x.Public.Desc,
-				Disc: x.Public.Disc,
 				Kind: x.Public.Kind,
-				Name: x.Public.Name,
-				Twit: x.Public.Twit,
-				User: userid.FromContext(ctx),
+				Name: objectfield.String{
+					Data: x.Public.Name,
+				},
+				User: objectfield.ID{
+					Data: userid.FromContext(ctx),
+				},
 			})
 		}
 	}

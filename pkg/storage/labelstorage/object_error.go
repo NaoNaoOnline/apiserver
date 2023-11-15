@@ -1,13 +1,12 @@
 package labelstorage
 
 import (
+	"github.com/NaoNaoOnline/apiserver/pkg/format/descriptionformat"
+	"github.com/NaoNaoOnline/apiserver/pkg/format/nameformat"
 	"github.com/xh3b4sd/tracer"
 )
 
-var fieldUnsupportedError = &tracer.Error{
-	Kind: "fieldUnsupportedError",
-	Desc: "Neither desc, disc nor twit are supported fields right now, you shadowy super coder. Let's talk!",
-}
+var labelDescFormatError = descriptionformat.Errorf("label", "desc")
 
 var labelKindInvalidError = &tracer.Error{
 	Kind: "labelKindInvalidError",
@@ -19,10 +18,7 @@ var labelNameEmptyError = &tracer.Error{
 	Desc: "The request expects the label name not to be empty. The label name was found to be empty. Therefore the request failed.",
 }
 
-var labelNameFormatError = &tracer.Error{
-	Kind: "labelNameFormatError",
-	Desc: "The request expects the label name to contain words or numbers. The label name was found to contain invalid characters. Therefore the request failed.",
-}
+var labelNameFormatError = nameformat.Errorf("label", "name")
 
 var labelNameLengthError = &tracer.Error{
 	Kind: "labelNameLengthError",

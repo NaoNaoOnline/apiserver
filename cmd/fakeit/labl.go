@@ -1,6 +1,7 @@
 package fakeit
 
 import (
+	"github.com/NaoNaoOnline/apiserver/pkg/object/objectfield"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/labelstorage"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/userstorage"
@@ -116,8 +117,12 @@ func (r *run) randomLabl(sto *storage.Storage, fak *gofakeit.Faker) *labelstorag
 	{
 		obj = &labelstorage.Object{
 			Kind: kin,
-			Name: nam,
-			User: use.User()[0],
+			Name: objectfield.String{
+				Data: nam,
+			},
+			User: objectfield.ID{
+				Data: use.User()[0],
+			},
 		}
 	}
 

@@ -2,6 +2,7 @@ package liststorage
 
 import (
 	"encoding/json"
+	"time"
 
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectstate"
 	jsonpatch "github.com/evanphx/json-patch/v5"
@@ -20,6 +21,15 @@ func (r *Redis) UpdatePtch(obj []*Object, pat [][]*Patch) ([]objectstate.String,
 			if err != nil {
 				return nil, tracer.Mask(err)
 			}
+		}
+
+		var now time.Time
+		{
+			now = time.Now().UTC()
+		}
+
+		{
+			obj[i].Desc.Time = now
 		}
 
 		var dec jsonpatch.Patch

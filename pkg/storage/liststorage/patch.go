@@ -22,7 +22,7 @@ func (p *Patch) Verify() error {
 	if p.Pat == "" {
 		return tracer.Maskf(jsonPatchPathEmptyError, p.Pat)
 	}
-	if p.Pat != "/desc" {
+	if p.Pat != "/desc/data" {
 		return tracer.Maskf(jsonPatchPathInvalidError, p.Pat)
 	}
 

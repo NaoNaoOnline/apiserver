@@ -4,6 +4,8 @@ import (
 	"errors"
 	"fmt"
 	"testing"
+
+	"github.com/NaoNaoOnline/apiserver/pkg/object/objectfield"
 )
 
 func Test_Storage_Description_Object_Verify_Text(t *testing.T) {
@@ -51,6 +53,8 @@ func Test_Storage_Description_Object_Verify_Text(t *testing.T) {
 func witTxt(txt string) *Object {
 	return &Object{
 		Evnt: "1234",
-		Text: txt,
+		Text: objectfield.String{
+			Data: txt,
+		},
 	}
 }

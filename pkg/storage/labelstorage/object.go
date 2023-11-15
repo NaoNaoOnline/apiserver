@@ -1,9 +1,12 @@
 package labelstorage
 
 import (
-	"regexp"
+	"strings"
 	"time"
 
+	"github.com/NaoNaoOnline/apiserver/pkg/format/descriptionformat"
+	"github.com/NaoNaoOnline/apiserver/pkg/format/nameformat"
+	"github.com/NaoNaoOnline/apiserver/pkg/object/objectfield"
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectid"
 	"github.com/xh3b4sd/tracer"
 )
@@ -14,9 +17,7 @@ type Object struct {
 	// Dltd is the time at which the label got deleted.
 	Dltd time.Time `json:"dltd,omitempty"`
 	// Desc is the label's description.
-	Desc string `json:"desc"`
-	// Disc is the label's Discord link.
-	Disc string `json:"disc"`
+	Desc objectfield.String `json:"desc"`
 	// Kind is the label type.
 	//
 	//     bltn for system labels
@@ -27,18 +28,28 @@ type Object struct {
 	// Labl is the ID of the label being created.
 	Labl objectid.ID `json:"labl"`
 	// Name is the label name.
-	Name string `json:"name"`
-	// Twit is the label's Twitter link.
-	Twit string `json:"twit"`
-	// User is the user ID creating this label.
-	User objectid.ID `json:"user"`
+	Name objectfield.String `json:"name"`
+	// Prfl is the map of external accounts related to this label. These accounts
+	// may point to references about this label or to the label owner on other
+	// platforms.
+	Prfl objectfield.Map `json:"prfl"`
+	// User is the user ID creating this label, or the user ID owning this label
+	// after ownership transferal. Because labels are transferable. user IDs are
+	// not just object IDs but objectfield IDs, in order to reflect update
+	// timestamps.
+	User objectfield.ID `json:"user"`
 }
 
-var (
-	lablexpr = regexp.MustCompile(`^[A-Za-z0-9.\s]+$`)
-)
-
 func (o *Object) Verify() error {
+	{
+		txt := strings.TrimSpace(o.Desc.Data)
+
+		// Label description might just be empty.
+		if txt != "" && !descriptionformat.Verify(txt) {
+			return tracer.Mask(labelDescFormatError)
+		}
+	}
+
 	{
 		if o.Kind != "bltn" && o.Kind != "cate" && o.Kind != "host" {
 			return tracer.Maskf(labelKindInvalidError, o.Kind)
@@ -46,23 +57,17 @@ func (o *Object) Verify() error {
 	}
 
 	{
-		if o.Name == "" {
+		if o.Name.Data == "" {
 			return tracer.Mask(labelNameEmptyError)
 		}
-		if !lablexpr.MatchString(o.Name) {
-			return tracer.Maskf(labelNameFormatError, o.Name)
+		if !nameformat.Verify(o.Name.Data) {
+			return tracer.Maskf(labelNameFormatError, o.Name.Data)
 		}
-		if len(o.Name) < 2 {
-			return tracer.Maskf(labelNameLengthError, "%s (%d)", o.Name, len(o.Name))
+		if len(o.Name.Data) < 2 {
+			return tracer.Maskf(labelNameLengthError, "%s (%d)", o.Name.Data, len(o.Name.Data))
 		}
-		if len(o.Name) > 25 {
-			return tracer.Maskf(labelNameLengthError, "%s (%d)", o.Name, len(o.Name))
-		}
-	}
-
-	{
-		if o.Desc != "" || o.Disc != "" || o.Twit != "" {
-			return tracer.Mask(fieldUnsupportedError)
+		if len(o.Name.Data) > 25 {
+			return tracer.Maskf(labelNameLengthError, "%s (%d)", o.Name.Data, len(o.Name.Data))
 		}
 	}
 

@@ -101,7 +101,9 @@ func (r *run) randomDesc(sto *storage.Storage, fak *gofakeit.Faker) *description
 			Like: objectfield.Integer{
 				Data: int64(fak.Number(minRan[fak.Number(0, 3)], maxRan[fak.Number(0, 3)])),
 			},
-			Text: txt,
+			Text: objectfield.String{
+				Data: txt,
+			},
 			User: uid,
 		}
 	}

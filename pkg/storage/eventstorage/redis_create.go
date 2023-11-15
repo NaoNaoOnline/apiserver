@@ -36,7 +36,7 @@ func (r *Redis) Create(inp []*Object) ([]*Object, error) {
 			}
 
 			if cou != int64(len(key)) {
-				return nil, tracer.Maskf(labelObjectNotFoundError, "%d labels do not exist", int64(len(key))-cou)
+				return nil, tracer.Maskf(labelObjectNotFoundError, "%d of these labels do not exist %v", int64(len(key))-cou, key)
 			}
 		}
 

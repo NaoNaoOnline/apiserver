@@ -5,6 +5,7 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/NaoNaoOnline/apiserver/pkg/format/hexformat"
 	"github.com/NaoNaoOnline/apiserver/pkg/generic"
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectfield"
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectid"
@@ -119,7 +120,6 @@ func (o *Object) Signtr() []byte {
 }
 
 var (
-	hexaexpr = regexp.MustCompile(`^0x[0-9a-fA-F]+$`)
 	messexpr = regexp.MustCompile(`^signing ownership of 0x[0-9a-fA-F]{4}••••[0-9a-fA-F]{4} at [0-9]{10,}$`)
 	unixexpr = regexp.MustCompile(`[0-9]{10,}$`)
 )
@@ -182,7 +182,7 @@ func (o *Object) VerifySign() error {
 		if len(o.Pubk) != 132 {
 			return tracer.Maskf(walletPubkLengthError, "%d", len(o.Pubk))
 		}
-		if !hexaexpr.MatchString(o.Pubk) {
+		if !hexformat.Verify(o.Pubk) {
 			return tracer.Mask(walletPubkFormatError)
 		}
 	}
@@ -194,7 +194,7 @@ func (o *Object) VerifySign() error {
 		if len(o.Sign) != 132 {
 			return tracer.Maskf(walletSignLengthError, "%d", len(o.Sign))
 		}
-		if !hexaexpr.MatchString(o.Sign) {
+		if !hexformat.Verify(o.Sign) {
 			return tracer.Mask(walletSignFormatError)
 		}
 	}

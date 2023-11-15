@@ -4,6 +4,8 @@ import (
 	"errors"
 	"fmt"
 	"testing"
+
+	"github.com/NaoNaoOnline/apiserver/pkg/object/objectfield"
 )
 
 func Test_Storage_LabelStorage_Object_Verify_Kind(t *testing.T) {
@@ -56,6 +58,8 @@ func Test_Storage_LabelStorage_Object_Verify_Kind(t *testing.T) {
 func witKin(kin string) *Object {
 	return &Object{
 		Kind: kin,
-		Name: "name",
+		Name: objectfield.String{
+			Data: "name",
+		},
 	}
 }

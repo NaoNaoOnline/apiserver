@@ -89,14 +89,12 @@ func (h *Handler) Search(ctx context.Context, req *label.SearchI) (*label.Search
 			Intern: &label.SearchO_Object_Intern{
 				Crtd: strconv.FormatInt(x.Crtd.Unix(), 10),
 				Labl: x.Labl.String(),
-				User: x.User.String(),
+				User: x.User.Data.String(),
 			},
 			Public: &label.SearchO_Object_Public{
-				Desc: x.Desc,
-				Disc: x.Disc,
+				Desc: x.Desc.Data,
 				Kind: x.Kind,
-				Name: x.Name,
-				Twit: x.Twit,
+				Name: x.Name.Data,
 			},
 		})
 	}

@@ -59,6 +59,9 @@ func (r *Redis) CreateXtrn(inp []*Object) ([]*Object, error) {
 				Time: now,
 			}
 			inp[i].Crtd = now
+			inp[i].Labl = objectfield.Strings{
+				Data: []string{},
+			}
 			inp[i].Wllt = objectid.Random(objectid.Time(now))
 		}
 

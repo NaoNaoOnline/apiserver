@@ -1,6 +1,7 @@
 package policystorage
 
 import (
+	"github.com/NaoNaoOnline/apiserver/pkg/format/hexformat"
 	"github.com/xh3b4sd/tracer"
 )
 
@@ -24,10 +25,7 @@ var policyMembEmptyError = &tracer.Error{
 	Desc: "The request expects the policy member not to be empty. The policy member was found to be empty. Therefore the request failed.",
 }
 
-var policyMembFormatError = &tracer.Error{
-	Kind: "policyMembFormatError",
-	Desc: "The request expects the policy member to be in hex format including 0x prefix. The policy member was not found to be in hex format including 0x prefix. Therefore the request failed.",
-}
+var policyMembFormatError = hexformat.Errorf("policy", "memb")
 
 var policyMembLengthError = &tracer.Error{
 	Kind: "policyMembLengthError",

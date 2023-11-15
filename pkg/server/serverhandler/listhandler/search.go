@@ -69,7 +69,7 @@ func (h *Handler) Search(ctx context.Context, req *list.SearchI) (*list.SearchO,
 				User: x.User.String(),
 			},
 			Public: &list.SearchO_Object_Public{
-				Desc: x.Desc,
+				Desc: x.Desc.Data,
 			},
 		})
 	}
