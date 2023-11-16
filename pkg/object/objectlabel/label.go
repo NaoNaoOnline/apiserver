@@ -1,19 +1,23 @@
 package objectlabel
 
 const (
-	ActionBuffer string = "buffer"
-	ActionDelete string = "delete"
-	ActionScrape string = "scrape"
-	ActionUpdate string = "update"
+	LabelDiscord  string = "Discord"
+	LabelGoogle   string = "Google"
+	LabelTwitter  string = "Twitter"
+	LabelTwitch   string = "Twitch"
+	LabelUnlonely string = "Unlonely"
+	LabelYouTube  string = "YouTube"
+	LabelZoom     string = "Zoom"
 )
 
-const (
-	OriginCustom string = "custom"
-	OriginSystem string = "system"
-)
-
-const (
-	WalletUnassigned string = "unassigned"
-	WalletAccounting string = "accounting"
-	WalletModeration string = "moderation"
-)
+func SearchLabel() []string {
+	return []string{
+		LabelDiscord,
+		LabelGoogle,
+		LabelTwitter,
+		LabelTwitch,
+		LabelUnlonely,
+		LabelYouTube,
+		LabelZoom,
+	}
+}

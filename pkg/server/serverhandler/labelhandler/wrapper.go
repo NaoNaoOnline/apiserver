@@ -102,9 +102,18 @@ func (w *wrapper) Search(ctx context.Context, req *label.SearchI) (*label.Search
 		}
 
 		for _, x := range req.Object {
-			if x.Intern != nil && x.Intern.Labl == "" && x.Intern.User == "" {
+			if x.Intern != nil && (x.Intern.Labl == "" && x.Intern.User == "") {
 				return nil, tracer.Mask(runtime.QueryObjectEmptyError)
 			}
+			if x.Intern != nil && (x.Intern.Labl != "" && x.Intern.User != "") {
+				return nil, tracer.Mask(searchInternConflictError)
+			}
+			if x.Public != nil && (x.Public.Name != "" && x.Public.Kind == "") {
+				return nil, tracer.Mask(runtime.QueryObjectEmptyError)
+			}
+		}
+
+		for _, x := range req.Object {
 			if x.Public != nil && x.Public.Kind == "" {
 				return nil, tracer.Mask(runtime.QueryObjectEmptyError)
 			}
@@ -128,6 +137,43 @@ func (w *wrapper) Update(ctx context.Context, req *label.UpdateI) (*label.Update
 			if x == nil {
 				return nil, tracer.Mask(runtime.QueryObjectEmptyError)
 			}
+		}
+	}
+
+	{
+		for _, x := range req.Object {
+			if x.Intern == nil && x.Update == nil {
+				return nil, tracer.Mask(runtime.QueryObjectEmptyError)
+			}
+		}
+
+		for _, x := range req.Object {
+			if x.Intern == nil || x.Update == nil {
+				return nil, tracer.Mask(runtime.QueryObjectEmptyError)
+			}
+		}
+
+		for _, x := range req.Object {
+			if x.Intern != nil && x.Intern.Labl == "" {
+				return nil, tracer.Mask(runtime.QueryObjectEmptyError)
+			}
+			if x.Update != nil && len(x.Update) == 0 {
+				return nil, tracer.Mask(runtime.QueryObjectEmptyError)
+			}
+		}
+
+		for _, x := range req.Object {
+			for _, y := range x.Update {
+				if y == nil {
+					return nil, tracer.Mask(runtime.QueryObjectEmptyError)
+				}
+			}
+		}
+	}
+
+	{
+		if userid.FromContext(ctx) == "" {
+			return nil, tracer.Mask(runtime.UserIDEmptyError)
 		}
 	}
 

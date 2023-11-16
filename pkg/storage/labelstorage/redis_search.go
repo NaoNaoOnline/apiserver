@@ -6,6 +6,7 @@ import (
 	"github.com/NaoNaoOnline/apiserver/pkg/keyfmt"
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectfield"
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectid"
+	"github.com/NaoNaoOnline/apiserver/pkg/object/objectlabel"
 	"github.com/xh3b4sd/redigo/pkg/simple"
 	"github.com/xh3b4sd/tracer"
 )
@@ -15,7 +16,7 @@ func (r *Redis) SearchBltn() []*Object {
 		{
 			Kind: "bltn",
 			Name: objectfield.String{
-				Data: "Discord",
+				Data: objectlabel.LabelDiscord,
 			},
 			User: objectfield.ID{
 				Data: objectid.System(),
@@ -24,7 +25,7 @@ func (r *Redis) SearchBltn() []*Object {
 		{
 			Kind: "bltn",
 			Name: objectfield.String{
-				Data: "Google",
+				Data: objectlabel.LabelGoogle,
 			},
 			User: objectfield.ID{
 				Data: objectid.System(),
@@ -33,7 +34,7 @@ func (r *Redis) SearchBltn() []*Object {
 		{
 			Kind: "bltn",
 			Name: objectfield.String{
-				Data: "Twitch",
+				Data: objectlabel.LabelTwitch,
 			},
 			User: objectfield.ID{
 				Data: objectid.System(),
@@ -42,7 +43,7 @@ func (r *Redis) SearchBltn() []*Object {
 		{
 			Kind: "bltn",
 			Name: objectfield.String{
-				Data: "Twitter",
+				Data: objectlabel.LabelTwitter,
 			},
 			User: objectfield.ID{
 				Data: objectid.System(),
@@ -51,7 +52,25 @@ func (r *Redis) SearchBltn() []*Object {
 		{
 			Kind: "bltn",
 			Name: objectfield.String{
-				Data: "YouTube",
+				Data: objectlabel.LabelUnlonely,
+			},
+			User: objectfield.ID{
+				Data: objectid.System(),
+			},
+		},
+		{
+			Kind: "bltn",
+			Name: objectfield.String{
+				Data: objectlabel.LabelYouTube,
+			},
+			User: objectfield.ID{
+				Data: objectid.System(),
+			},
+		},
+		{
+			Kind: "bltn",
+			Name: objectfield.String{
+				Data: objectlabel.LabelZoom,
 			},
 			User: objectfield.ID{
 				Data: objectid.System(),
@@ -126,6 +145,49 @@ func (r *Redis) SearchLabl(inp []objectid.ID) ([]*Object, error) {
 		}
 
 		out = append(out, obj)
+	}
+
+	return out, nil
+}
+
+func (r *Redis) SearchName(kin []string, nam []string) ([]*Object, error) {
+	var err error
+
+	var val []string
+	for i := range kin {
+		if kin[i] != "bltn" && kin[i] != "cate" && kin[i] != "host" {
+			return nil, tracer.Mask(labelKindInvalidError)
+		}
+
+		// val will result in the label ID indexed under the given label name, if
+		// any.
+		var lab string
+		{
+			lab, err = r.red.Sorted().Search().Index(labKin(kin[i]), keyfmt.Indx(nam[i]))
+			if err != nil {
+				return nil, tracer.Mask(err)
+			}
+		}
+
+		{
+			val = append(val, lab)
+		}
+	}
+
+	// There might not be any values, and so we do not proceed, but instead return
+	// nothing.
+	if len(val) == 0 {
+		return nil, nil
+	}
+
+	var out []*Object
+	{
+		lis, err := r.SearchLabl(objectid.IDs(val))
+		if err != nil {
+			return nil, tracer.Mask(err)
+		}
+
+		out = append(out, lis...)
 	}
 
 	return out, nil
