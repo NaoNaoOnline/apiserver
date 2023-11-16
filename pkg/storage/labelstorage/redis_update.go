@@ -28,12 +28,8 @@ func (r *Redis) UpdatePtch(obj []*Object, pat PatchSlicer) ([]objectstate.String
 			now = time.Now().UTC()
 		}
 
-		for k := range obj[i].Prfl {
-			if pat.AddPro(i, k) {
-				m := obj[i].Prfl[k]
-				m.Time = now
-				obj[i].Prfl[k] = m
-			}
+		{
+			obj[i].Prfl.Time = now
 		}
 
 		var dec jsonpatch.Patch
@@ -47,7 +43,7 @@ func (r *Redis) UpdatePtch(obj []*Object, pat PatchSlicer) ([]objectstate.String
 		// Now apply the valid JSON-Patches to the internal label object.
 		var byt []byte
 		{
-			byt, err = dec.Apply([]byte(musStr(obj[i])))
+			byt, err = dec.ApplyWithOptions([]byte(musStr(obj[i])), &jsonpatch.ApplyOptions{EnsurePathExistsOnAdd: true})
 			if err != nil {
 				return nil, tracer.Mask(err)
 			}

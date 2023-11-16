@@ -18,9 +18,9 @@ func (s PatchSlicer) AddPat(ind int) []string {
 // AddPro expresses whether any patch object within the indexed list adds the
 // given label profile. Here ind describes the list of patches linked to the
 // label object in question.
-func (s PatchSlicer) AddPro(ind int, pro string) bool {
+func (s PatchSlicer) AddPro(ind int, key string) bool {
 	for _, x := range s[ind] {
-		if x.Ope == "add" && x.Pat == "/prfl/"+pro+"/data" {
+		if x.Ope == "add" && x.Pat == "/prfl/data/"+key {
 			return true
 		}
 	}
@@ -44,9 +44,9 @@ func (s PatchSlicer) RemPat(ind int) []string {
 // RemPro expresses whether any patch object within the indexed list removes the
 // given label profile. Here ind describes the list of patches linked to the
 // label object in question.
-func (s PatchSlicer) RemPro(ind int, pro string) bool {
+func (s PatchSlicer) RemPro(ind int, key string) bool {
 	for _, x := range s[ind] {
-		if x.Ope == "remove" && x.Pat == "/prfl/"+pro+"/data" {
+		if x.Ope == "remove" && x.Pat == "/prfl/data/"+key {
 			return true
 		}
 	}

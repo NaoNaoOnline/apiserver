@@ -21,5 +21,5 @@ var jsonPatchPathEmptyError = &tracer.Error{
 
 var jsonPatchPathInvalidError = &tracer.Error{
 	Kind: "jsonPatchPathInvalidError",
-	Desc: "The request expects the JSON-Patch path format to be one of [/prfl/*/data]. The JSON-Patch path format was not found to be one of [/prfl/*/data]. Therefore the request failed.",
+	Desc: "The request expects the JSON-Patch path prefix to be one of [/prfl/data/]. The JSON-Patch path prefix was not found to be one of [/prfl/data/]. Therefore the request failed.",
 }

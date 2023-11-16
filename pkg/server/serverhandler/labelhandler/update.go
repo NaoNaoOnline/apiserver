@@ -99,7 +99,7 @@ func (h *Handler) updateVrfyPtch(ctx context.Context, obj labelstorage.Slicer, p
 			return tracer.Mask(runtime.UserNotOwnerError)
 		}
 
-		for k := range x.Prfl {
+		for k := range x.Prfl.Data {
 			// Ensure label profiles can only be added if they do not already exist.
 			// If RemLab returns false, given the existing label y, then it means that
 			// a patch defines a label to be added that does not already exist.
@@ -108,7 +108,7 @@ func (h *Handler) updateVrfyPtch(ctx context.Context, obj labelstorage.Slicer, p
 			}
 
 			// Ensure label profiles can only be removed if they do already exist.
-			if !generic.All(obj[i].ProPat(), pat.RemPat(i)) {
+			if len(pat.RemPat(i)) != 0 && !generic.All(obj[i].ProPat(), pat.RemPat(i)) {
 				return tracer.Maskf(labelProfileNotFoundError, k)
 			}
 		}
