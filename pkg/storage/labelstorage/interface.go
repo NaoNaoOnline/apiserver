@@ -1,6 +1,9 @@
 package labelstorage
 
-import "github.com/NaoNaoOnline/apiserver/pkg/object/objectid"
+import (
+	"github.com/NaoNaoOnline/apiserver/pkg/object/objectid"
+	"github.com/NaoNaoOnline/apiserver/pkg/object/objectstate"
+)
 
 type Interface interface {
 	// Create persists new label objects, if none exists already with the given
@@ -36,10 +39,29 @@ type Interface interface {
 	//
 	SearchLabl([]objectid.ID) ([]*Object, error)
 
+	// SearchName returns the label objects matching the given label names.
+	//
+	//     @inp[0] the label kinds matching their respective label names
+	//     @inp[1] the label names to search for
+	//     @out[0] the list of label objects matching the given label names
+	//
+	SearchName([]string, []string) ([]*Object, error)
+
 	// SearchUser returns the label objects created by the given user.
 	//
 	//     @inp[0] the user ID used to search labels
 	//     @out[0] the list of label objects for the given user
 	//
 	SearchUser(objectid.ID) ([]*Object, error)
+
+	// UpdatePtch modifies the existing label objects by applying the given
+	// RFC6902 JSON-Patches to the underlying JSON documents. The list items are
+	// used according to their respective indices, e.g. the second patch is
+	// applied to the second object.
+	//
+	//     @inp[0] the list of label objects to modify
+	//     @inp[1] the list of RFC6902 compliant JSON-Patches
+	//     @out[0] the list of operation states related to the modified label objects
+	//
+	UpdatePtch([]*Object, PatchSlicer) ([]objectstate.String, error)
 }

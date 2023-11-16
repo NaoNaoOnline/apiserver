@@ -27,8 +27,30 @@ func (h *Handler) Search(ctx context.Context, req *label.SearchI) (*label.Search
 			}
 		}
 
-		{
+		if use != "" {
 			lis, err := h.lab.SearchUser(use)
+			if err != nil {
+				return nil, tracer.Mask(err)
+			}
+
+			out = append(out, lis...)
+		}
+	}
+
+	//
+	// Search labels by ID.
+	//
+
+	{
+		var lab []objectid.ID
+		for _, x := range req.Object {
+			if x.Intern != nil && x.Intern.Labl != "" {
+				lab = append(lab, objectid.ID(x.Intern.Labl))
+			}
+		}
+
+		if len(lab) != 0 {
+			lis, err := h.lab.SearchLabl(lab)
 			if err != nil {
 				return nil, tracer.Mask(err)
 			}
@@ -44,13 +66,36 @@ func (h *Handler) Search(ctx context.Context, req *label.SearchI) (*label.Search
 	{
 		var kin []string
 		for _, x := range req.Object {
-			if x.Public != nil && x.Public.Kind != "" {
+			if x.Public != nil && x.Public.Kind != "" && x.Public.Name == "" {
 				kin = append(kin, x.Public.Kind)
 			}
 		}
 
-		{
+		if len(kin) != 0 {
 			lis, err := h.lab.SearchKind(generic.Uni(kin))
+			if err != nil {
+				return nil, tracer.Mask(err)
+			}
+
+			out = append(out, lis...)
+		}
+	}
+	//
+	// Search labels by name.
+	//
+
+	{
+		var kin []string
+		var nam []string
+		for _, x := range req.Object {
+			if x.Public != nil && x.Public.Kind != "" && x.Public.Name != "" {
+				kin = append(kin, x.Public.Kind)
+				nam = append(nam, x.Public.Name)
+			}
+		}
+
+		if len(kin) != 0 && len(nam) != 0 {
+			lis, err := h.lab.SearchName(kin, nam)
 			if err != nil {
 				return nil, tracer.Mask(err)
 			}
@@ -95,6 +140,7 @@ func (h *Handler) Search(ctx context.Context, req *label.SearchI) (*label.Search
 				Desc: x.Desc.Data,
 				Kind: x.Kind,
 				Name: x.Name.Data,
+				Prfl: outMap(x.Prfl),
 			},
 		})
 	}
