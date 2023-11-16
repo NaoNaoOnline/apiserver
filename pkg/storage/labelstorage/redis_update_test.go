@@ -74,8 +74,6 @@ func Test_Storage_Label_UpdatePtch(t *testing.T) {
 		}
 	}
 
-	// The patch defines the existing wallet label accounting to be removed and
-	// the wallet label unassigned to be set.
 	var pat []*Patch
 	{
 		pat = []*Patch{
