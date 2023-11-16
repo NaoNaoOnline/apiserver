@@ -56,11 +56,11 @@ func inpPat(upd []*label.UpdateI_Object_Update) []*labelstorage.Patch {
 	return lis
 }
 
-func outMap(inp map[string]objectfield.String) map[string]string {
+func outMap(inp objectfield.Map) map[string]string {
 	out := map[string]string{}
 
-	for k, v := range inp {
-		out[k] = v.Data
+	for k, v := range inp.Data {
+		out[k] = v
 	}
 
 	return out

@@ -33,7 +33,7 @@ type Object struct {
 	// Prfl is the map of external accounts related to this label. These accounts
 	// may point to references about this label or to the label owner on other
 	// platforms.
-	Prfl map[string]objectfield.String `json:"prfl"`
+	Prfl objectfield.Map `json:"prfl"`
 	// User is the user ID creating this label, or the user ID owning this label
 	// after ownership transferal. Because labels are transferable. user IDs are
 	// not just object IDs but objectfield IDs, in order to reflect update
@@ -44,8 +44,8 @@ type Object struct {
 func (o *Object) ProPat() []string {
 	var pat []string
 
-	for k := range o.Prfl {
-		pat = append(pat, "/prfl/"+k+"/data")
+	for k := range o.Prfl.Data {
+		pat = append(pat, "/prfl/data/"+k)
 	}
 
 	return pat
@@ -83,12 +83,12 @@ func (o *Object) Verify() error {
 	}
 
 	{
-		for k, v := range o.Prfl {
+		for k, v := range o.Prfl.Data {
 			if !vldPrfl(k) {
 				return tracer.Maskf(labelPrflInvalidError, k)
 			}
-			if !nameformat.Verify(v.Data) {
-				return tracer.Maskf(labelPrflFormatError, v.Data)
+			if !nameformat.Verify(v) {
+				return tracer.Maskf(labelPrflFormatError, v)
 			}
 		}
 	}

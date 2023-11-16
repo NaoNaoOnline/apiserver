@@ -26,10 +26,7 @@ func (p *Patch) Verify() error {
 	if p.Pat == "" {
 		return tracer.Maskf(jsonPatchPathEmptyError, p.Pat)
 	}
-	if !strings.HasPrefix(p.Pat, "/prfl/") {
-		return tracer.Maskf(jsonPatchPathInvalidError, p.Pat)
-	}
-	if !strings.HasSuffix(p.Pat, "/data") {
+	if !strings.HasPrefix(p.Pat, "/prfl/data/") {
 		return tracer.Maskf(jsonPatchPathInvalidError, p.Pat)
 	}
 

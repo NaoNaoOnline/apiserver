@@ -43,71 +43,79 @@ func Test_Server_Handler_Label_Update_Fuzz(t *testing.T) {
 
 func Test_Server_Handler_Label_updateVrfyPtch(t *testing.T) {
 	testCases := []struct {
-		pro map[string]objectfield.String
+		pro objectfield.Map
 		pat []*labelstorage.Patch
 		err error
 	}{
-		// Case 000 verifies that adding a new profile is allowed.
+		// Case 000 ensures that adding a new profile is allowed.
 		{
-			pro: map[string]objectfield.String{},
+			pro: objectfield.Map{},
 			pat: []*labelstorage.Patch{
-				{Ope: "add" /*****/, Pat: "/prfl/Twitter/data", Val: "flashbots"},
+				{Ope: "add" /*****/, Pat: "/prfl/data/Twitter", Val: "flashbots"},
 			},
 			err: nil,
 		},
-		// Case 001 verifies that removing an existing profile is allowed.
+		// Case 001 ensures that adding a second profile is allowed.
 		{
-			pro: map[string]objectfield.String{
-				"Twitter": {
-					Data: "FlashbotsFDN",
+			pro: objectfield.Map{
+				Data: map[string]string{
+					"Twitter": "FlashbotsFDN",
 				},
 			},
 			pat: []*labelstorage.Patch{
-				{Ope: "remove" /**/, Pat: "/prfl/Twitter/data", Val: "FlashbotsFDN"},
+				{Ope: "add" /*****/, Pat: "/prfl/data/Warpcast", Val: "flashyboys"},
 			},
 			err: nil,
 		},
-		// Case 002 verifies that replacing an existing profile is allowed.
+		// Case 002 ensures that removing an existing profile is allowed.
 		{
-			pro: map[string]objectfield.String{
-				"Twitter": {
-					Data: "FlashbotsFDN",
-				},
-				"Warpcast": {
-					Data: "flashbots",
+			pro: objectfield.Map{
+				Data: map[string]string{
+					"Twitter": "FlashbotsFDN",
 				},
 			},
 			pat: []*labelstorage.Patch{
-				{Ope: "remove" /**/, Pat: "/prfl/Twitter/data", Val: "FlashbotsFDN"},
-				{Ope: "add" /*****/, Pat: "/prfl/Twitter/data", Val: "flashbots"},
+				{Ope: "remove" /**/, Pat: "/prfl/data/Twitter", Val: "FlashbotsFDN"},
 			},
 			err: nil,
 		},
-		// Case 003 verifies that adding an existing profile is not allowed.
+		// Case 003 ensures that replacing an existing profile is allowed.
 		{
-			pro: map[string]objectfield.String{
-				"Twitter": {
-					Data: "FlashbotsFDN",
+			pro: objectfield.Map{
+				Data: map[string]string{
+					"Twitter":  "FlashbotsFDN",
+					"Warpcast": "flashbots",
 				},
 			},
 			pat: []*labelstorage.Patch{
-				{Ope: "add" /**/, Pat: "/prfl/Twitter/data", Val: "flashbots"},
+				{Ope: "remove" /**/, Pat: "/prfl/data/Twitter", Val: "FlashbotsFDN"},
+				{Ope: "add" /*****/, Pat: "/prfl/data/Twitter", Val: "flashbots"},
+			},
+			err: nil,
+		},
+		// Case 004 ensures that adding an existing profile is not allowed.
+		{
+			pro: objectfield.Map{
+				Data: map[string]string{
+					"Twitter": "FlashbotsFDN",
+				},
+			},
+			pat: []*labelstorage.Patch{
+				{Ope: "add" /**/, Pat: "/prfl/data/Twitter", Val: "flashbots"},
 			},
 			err: labelProfileAlreadyExistsError,
 		},
-		// Case 004 verifies that removing a profile that does not exist is not
+		// Case 005 ensures that removing a profile that does not exist is not
 		// allowed.
 		{
-			pro: map[string]objectfield.String{
-				"Twitter": {
-					Data: "FlashbotsFDN",
-				},
-				"Warpcast": {
-					Data: "flashbots",
+			pro: objectfield.Map{
+				Data: map[string]string{
+					"Twitter":  "FlashbotsFDN",
+					"Warpcast": "flashbots",
 				},
 			},
 			pat: []*labelstorage.Patch{
-				{Ope: "remove" /**/, Pat: "/prfl/Foo/data", Val: "Bar"},
+				{Ope: "remove" /**/, Pat: "/prfl/data/Foo", Val: "Bar"},
 			},
 			err: labelProfileNotFoundError,
 		},
