@@ -5,11 +5,12 @@ import (
 
 	"github.com/NaoNaoOnline/apiserver/pkg/keyfmt"
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectid"
+	"github.com/NaoNaoOnline/apiserver/pkg/object/objectstate"
 	"github.com/xh3b4sd/redigo/pkg/sorted"
 	"github.com/xh3b4sd/tracer"
 )
 
-func (r *Redis) Create(inp []*Object) ([]*Object, error) {
+func (r *Redis) CreateEvnt(inp []*Object) ([]*Object, error) {
 	var err error
 
 	for i := range inp {
@@ -147,4 +148,24 @@ func (r *Redis) Create(inp []*Object) ([]*Object, error) {
 	}
 
 	return inp, nil
+}
+
+func (r *Redis) CreateWrkr(inp []*Object) ([]objectstate.String, error) {
+	var err error
+
+	var out []objectstate.String
+	for i := range inp {
+		{
+			err = r.emi.CreateEvnt(inp[i].Evnt)
+			if err != nil {
+				return nil, tracer.Mask(err)
+			}
+		}
+
+		{
+			out = append(out, objectstate.Started)
+		}
+	}
+
+	return out, nil
 }
