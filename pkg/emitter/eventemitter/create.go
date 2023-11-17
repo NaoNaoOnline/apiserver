@@ -14,7 +14,7 @@ func (e *Emitter) CreateEvnt(eve objectid.ID) error {
 			Meta: &task.Meta{
 				objectlabel.EvntAction: objectlabel.ActionCreate,
 				objectlabel.EvntObject: eve.String(),
-				objectlabel.EvntOrigin: objectlabel.OriginCustom,
+				objectlabel.EvntOrigin: objectlabel.OriginSystem,
 			},
 		}
 	}
