@@ -9,12 +9,22 @@ import (
 )
 
 type Interface interface {
-	// Create persists new event objects.
+	// CreateEvnt persists new event objects.
 	//
 	//     @inp[0] the list of event objects providing event specific information
 	//     @out[0] the list of event objects persisted internally
 	//
-	Create([]*Object) ([]*Object, error)
+	CreateEvnt([]*Object) ([]*Object, error)
+
+	// CreateWrkr emits the respective worker tasks that will be processed in the
+	// background for the given event objects that have just been created. Workers
+	// can subscribe to certain event creation tasks and manage e.g. forms of
+	// notification.
+	//
+	//     @inp[0] the event objects that have been created
+	//     @out[0] the list of operation states related to the initialized event objects
+	//
+	CreateWrkr([]*Object) ([]objectstate.String, error)
 
 	// DeleteEvnt purges the given event objects. Note that DeleteEvnt does not
 	// purge associated data structures.

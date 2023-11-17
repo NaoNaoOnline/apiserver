@@ -15,7 +15,7 @@ import (
 
 func (r *run) createEvnt(sto *storage.Storage, obj ...*eventstorage.Object) error {
 	{
-		_, err := sto.Evnt().Create(obj)
+		_, err := sto.Evnt().CreateEvnt(obj)
 		if eventstorage.IsEventParticipationConflict(err) {
 			// fall through
 		} else if err != nil {

@@ -27,9 +27,24 @@ func (h *Handler) Create(ctx context.Context, req *event.CreateI) (*event.Create
 		}
 	}
 
+	//
+	// Create the given resources.
+	//
+
 	var out []*eventstorage.Object
 	{
-		out, err = h.eve.Create(inp)
+		out, err = h.eve.CreateEvnt(inp)
+		if err != nil {
+			return nil, tracer.Mask(err)
+		}
+	}
+
+	//
+	// Create background tasks for the created resources.
+	//
+
+	{
+		_, err = h.eve.CreateWrkr(inp)
 		if err != nil {
 			return nil, tracer.Mask(err)
 		}
