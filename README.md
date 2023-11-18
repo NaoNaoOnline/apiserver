@@ -61,7 +61,21 @@ curl -s --request "POST" --header "Content-Type: application/json" --data '{"obj
     "time": "1699804800"
   }
 }
+```
 
+
+
+Given the following environment variables, some automation in combination with
+the Twitter API might be enabled, e.g. creating tweets for accounts associated
+to events created on NaoNao. The `API_KEY` set here is for the twitter apps
+making the API calls. The `ACCESS_TOKEN` set here is for the twitter account on
+which behalf the API calls are made.
+
+```
+export GOTWI_ACCESS_TOKEN=$(        cat ~/.credential/apiserver-twitter-acc-key    )
+export GOTWI_ACCESS_TOKEN_SECRET=$( cat ~/.credential/apiserver-twitter-acc-secret )
+export GOTWI_API_KEY=$(             cat ~/.credential/apiserver-twitter-api-key    )
+export GOTWI_API_KEY_SECRET=$(      cat ~/.credential/apiserver-twitter-api-secret )
 ```
 
 
