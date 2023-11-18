@@ -67,9 +67,9 @@ curl -s --request "POST" --header "Content-Type: application/json" --data '{"obj
 
 Given the following environment variables, some automation in combination with
 the Twitter API might be enabled, e.g. creating tweets for accounts associated
-to events created on NaoNao. The `API_KEY` set here is for the twitter apps
-making the API calls. The `ACCESS_TOKEN` set here is for the twitter account on
-which behalf the API calls are made.
+to events created on NaoNao. The `API_KEY` and `ACCESS_TOKEN` set here is for
+the same twitter account. Creating posts is free, meaning there is no need for a
+paid subscription plan.
 
 ```
 export GOTWI_ACCESS_TOKEN=$(        cat ~/.credential/apiserver-twitter-acc-key    )
