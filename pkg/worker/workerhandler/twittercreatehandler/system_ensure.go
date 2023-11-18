@@ -68,7 +68,6 @@ func (h *SystemHandler) Ensure(tas *task.Task, bud *budget.Budget) error {
 		}
 	}
 
-	// collect all twitter acounts
 	{
 		err = h.twi.Create(twt)
 		if err != nil {
