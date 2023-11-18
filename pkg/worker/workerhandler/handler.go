@@ -6,6 +6,7 @@ import (
 	"github.com/NaoNaoOnline/apiserver/pkg/emitter"
 	"github.com/NaoNaoOnline/apiserver/pkg/permission"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage"
+	"github.com/NaoNaoOnline/apiserver/pkg/worker/client/twitterclient"
 	"github.com/NaoNaoOnline/apiserver/pkg/worker/workerhandler/descriptiondeletehandler"
 	"github.com/NaoNaoOnline/apiserver/pkg/worker/workerhandler/eventcreatehandler"
 	"github.com/NaoNaoOnline/apiserver/pkg/worker/workerhandler/eventdeletehandler"
@@ -13,6 +14,7 @@ import (
 	"github.com/NaoNaoOnline/apiserver/pkg/worker/workerhandler/policybufferhandler"
 	"github.com/NaoNaoOnline/apiserver/pkg/worker/workerhandler/policyscrapehandler"
 	"github.com/NaoNaoOnline/apiserver/pkg/worker/workerhandler/policyupdatehandler"
+	"github.com/NaoNaoOnline/apiserver/pkg/worker/workerhandler/twittercreatehandler"
 	"github.com/xh3b4sd/logger"
 	"github.com/xh3b4sd/tracer"
 )
@@ -25,6 +27,7 @@ type Config struct {
 	Prm permission.Interface
 	Rpc []string
 	Sto *storage.Storage
+	Twi twitterclient.Interface
 }
 
 type Handler struct {
@@ -44,6 +47,9 @@ func New(c Config) *Handler {
 	if c.Sto == nil {
 		tracer.Panic(tracer.Mask(fmt.Errorf("%T.Sto must not be empty", c)))
 	}
+	if c.Twi == nil {
+		tracer.Panic(tracer.Mask(fmt.Errorf("%T.Twi must not be empty", c)))
+	}
 
 	var han []Interface
 
@@ -58,6 +64,7 @@ func New(c Config) *Handler {
 		han = append(han, eventcreatehandler.NewSystemHandler(eventcreatehandler.SystemHandlerConfig{
 			Emi: c.Emi.Evnt(),
 			Log: c.Log,
+			Twi: c.Twi,
 		}))
 	}
 
@@ -93,6 +100,16 @@ func New(c Config) *Handler {
 		}))
 	}
 
+	for i := range c.Rpc {
+		han = append(han, policyscrapehandler.NewScrapeHandler(policyscrapehandler.ScrapeHandlerConfig{
+			Cid: c.Cid[i],
+			Cnt: c.Cnt[i],
+			Log: c.Log,
+			Prm: c.Prm,
+			Rpc: c.Rpc[i],
+		}))
+	}
+
 	{
 		han = append(han, policyupdatehandler.NewUpdateHandler(policyupdatehandler.UpdateHandlerConfig{
 			Cid: c.Cid,
@@ -102,13 +119,13 @@ func New(c Config) *Handler {
 		}))
 	}
 
-	for i := range c.Rpc {
-		han = append(han, policyscrapehandler.NewScrapeHandler(policyscrapehandler.ScrapeHandlerConfig{
-			Cid: c.Cid[i],
-			Cnt: c.Cnt[i],
+	{
+		han = append(han, twittercreatehandler.NewSystemHandler(twittercreatehandler.SystemHandlerConfig{
+			Des: c.Sto.Desc(),
+			Eve: c.Sto.Evnt(),
+			Lab: c.Sto.Labl(),
 			Log: c.Log,
-			Prm: c.Prm,
-			Rpc: c.Rpc[i],
+			Twi: c.Twi,
 		}))
 	}
 
