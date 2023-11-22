@@ -1,9 +1,12 @@
 package twitterclient
 
 import (
+	"context"
+	"fmt"
 	"os"
 
 	"github.com/michimani/gotwi"
+	"github.com/xh3b4sd/logger"
 	"github.com/xh3b4sd/tracer"
 )
 
@@ -20,16 +23,34 @@ var (
 	}
 )
 
-type Client struct {
-	cli *gotwi.Client
+type Config struct {
+	Log logger.Interface
 }
 
-func New() *Client {
+type Client struct {
+	cli *gotwi.Client
+	log logger.Interface
+}
+
+func New(c Config) *Client {
+	if c.Log == nil {
+		tracer.Panic(tracer.Mask(fmt.Errorf("%T.Log must not be empty", c)))
+	}
+
 	var cli *Client
 	{
 		cli = &Client{
 			cli: musCli(),
+			log: c.Log,
 		}
+	}
+
+	if !cli.cli.IsReady() {
+		cli.log.Log(
+			context.Background(),
+			"level", "info",
+			"message", "twitter client not initialized",
+		)
 	}
 
 	return cli
@@ -38,7 +59,7 @@ func New() *Client {
 func musCli() *gotwi.Client {
 	cli, err := gotwi.NewClient(cfg)
 	if err != nil {
-		tracer.Panic(err)
+		return nil
 	}
 
 	return cli

@@ -108,7 +108,7 @@ func (r *run) runE(cmd *cobra.Command, args []string) error {
 
 	var twi twitterclient.Interface
 	{
-		twi = twitterclient.New()
+		twi = twitterclient.New(twitterclient.Config{Log: log})
 	}
 
 	// --------------------------------------------------------------------- //
