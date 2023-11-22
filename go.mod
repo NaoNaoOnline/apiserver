@@ -18,10 +18,10 @@ require (
 	github.com/rs/cors v1.10.1
 	github.com/spf13/cobra v1.8.0
 	github.com/twitchtv/twirp v8.1.3+incompatible
-	github.com/xh3b4sd/logger v0.7.3
-	github.com/xh3b4sd/redigo v0.36.1
-	github.com/xh3b4sd/rescue v0.17.10
-	github.com/xh3b4sd/tracer v0.10.1
+	github.com/xh3b4sd/logger v0.8.1
+	github.com/xh3b4sd/redigo v0.36.2
+	github.com/xh3b4sd/rescue v0.17.11
+	github.com/xh3b4sd/tracer v0.11.1
 	golang.org/x/text v0.14.0
 	mvdan.cc/xurls/v2 v2.5.0
 )
@@ -36,7 +36,7 @@ require (
 	github.com/consensys/bavard v0.1.13 // indirect
 	github.com/consensys/gnark-crypto v0.12.1 // indirect
 	github.com/crate-crypto/go-kzg-4844 v0.7.0 // indirect
-	github.com/deckarep/golang-set/v2 v2.3.1 // indirect
+	github.com/deckarep/golang-set/v2 v2.4.0 // indirect
 	github.com/decred/dcrd/dcrec/secp256k1/v4 v4.2.0 // indirect
 	github.com/ethereum/c-kzg-4844 v0.4.0 // indirect
 	github.com/fsnotify/fsnotify v1.7.0 // indirect
@@ -62,7 +62,7 @@ require (
 	github.com/supranational/blst v0.3.11 // indirect
 	github.com/tklauser/go-sysconf v0.3.12 // indirect
 	github.com/tklauser/numcpus v0.6.1 // indirect
-	github.com/xh3b4sd/budget/v3 v3.3.0 // indirect
+	github.com/xh3b4sd/breakr v0.1.0 // indirect
 	github.com/yusufpapurcu/wmi v1.2.3 // indirect
 	golang.org/x/crypto v0.15.0 // indirect
 	golang.org/x/exp v0.0.0-20231110203233-9a3e6036ecaa // indirect
