@@ -8,7 +8,7 @@ import (
 	"github.com/rafaeljusto/redigomock/v3"
 	"github.com/xh3b4sd/logger"
 	"github.com/xh3b4sd/redigo"
-	"github.com/xh3b4sd/redigo/pkg/pool"
+	"github.com/xh3b4sd/redigo/pool"
 	"github.com/xh3b4sd/tracer"
 )
 

@@ -3,7 +3,7 @@ module github.com/NaoNaoOnline/apiserver
 go 1.21
 
 require (
-	github.com/NaoNaoOnline/apigocode v0.8.10
+	github.com/NaoNaoOnline/apigocode v0.8.11
 	github.com/auth0/go-jwt-middleware/v2 v2.1.0
 	github.com/brianvoe/gofakeit/v6 v6.24.0
 	github.com/ethereum/go-ethereum v1.13.5
@@ -19,8 +19,8 @@ require (
 	github.com/spf13/cobra v1.8.0
 	github.com/twitchtv/twirp v8.1.3+incompatible
 	github.com/xh3b4sd/logger v0.8.1
-	github.com/xh3b4sd/redigo v0.36.2
-	github.com/xh3b4sd/rescue v0.17.11
+	github.com/xh3b4sd/redigo v0.37.0
+	github.com/xh3b4sd/rescue v0.17.12
 	github.com/xh3b4sd/tracer v0.11.1
 	golang.org/x/text v0.14.0
 	mvdan.cc/xurls/v2 v2.5.0

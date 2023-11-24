@@ -22,6 +22,14 @@ type Interface interface {
 	//
 	SearchFake() ([]*Object, error)
 
+	// SearchLink returns the event IDs that the given user IDs visited in the
+	// form of clicking the respective event links.
+	//
+	//     @inp[0] the user IDs to search for
+	//     @out[0] the list of event IDs visited by the given users
+	//
+	SearchLink([]objectid.ID) ([]objectid.ID, error)
+
 	// SearchName returns the user objects matching the given user names.
 	//
 	//     @inp[0] the user names to search for
