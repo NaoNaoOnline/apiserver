@@ -7,7 +7,7 @@ import (
 
 	"github.com/NaoNaoOnline/apiserver/pkg/keyfmt"
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectid"
-	"github.com/xh3b4sd/redigo/pkg/simple"
+	"github.com/xh3b4sd/redigo/simple"
 	"github.com/xh3b4sd/tracer"
 )
 
@@ -47,6 +47,27 @@ func (r *Redis) SearchFake() ([]*Object, error) {
 		out, err = r.SearchUser(objectid.IDs(ids))
 		if err != nil {
 			return nil, tracer.Mask(err)
+		}
+	}
+
+	return out, nil
+}
+
+func (r *Redis) SearchLink(use []objectid.ID) ([]objectid.ID, error) {
+	var err error
+
+	var out []objectid.ID
+	for i := range use {
+		var val []string
+		{
+			val, err = r.red.Sorted().Search().Order(linUse(use[i]), 0, -1)
+			if err != nil {
+				return nil, tracer.Mask(err)
+			}
+		}
+
+		{
+			out = append(out, objectid.IDs(val)...)
 		}
 	}
 

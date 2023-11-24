@@ -35,6 +35,10 @@ func NewRedis(c RedisConfig) *Redis {
 	}
 }
 
+func linUse(oid objectid.ID) string {
+	return fmt.Sprintf(keyfmt.LinkUser, oid)
+}
+
 func useCla(str string) string {
 	return fmt.Sprintf(keyfmt.UserClaim, str)
 }

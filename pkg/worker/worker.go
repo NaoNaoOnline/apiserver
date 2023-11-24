@@ -8,6 +8,7 @@ import (
 	"github.com/NaoNaoOnline/apiserver/pkg/worker/budget"
 	"github.com/NaoNaoOnline/apiserver/pkg/worker/workerhandler"
 	"github.com/xh3b4sd/logger"
+	"github.com/xh3b4sd/logger/meta"
 	"github.com/xh3b4sd/rescue"
 	"github.com/xh3b4sd/rescue/engine"
 	"github.com/xh3b4sd/rescue/task"
@@ -208,7 +209,13 @@ func (w *Worker) search() {
 				// budget tells us here that Handler.Ensure successfully resolved the
 				// task from its own point of view, allowing us to count with it towards
 				// the desired amount of handlers we that we track.
-				if !bud.Break() {
+				if bud.Break() {
+					w.log.Log(
+						logctx(tas),
+						"level", "warning",
+						"message", "task budget exhausted",
+					)
+				} else {
 					cur++
 				}
 			}
@@ -230,4 +237,14 @@ func (w *Worker) ticker() {
 	if err != nil {
 		w.lerror(tracer.Mask(err))
 	}
+}
+
+func logctx(tas *task.Task) context.Context {
+	ctx := context.Background()
+
+	for k, v := range *tas.Meta {
+		ctx = meta.Add(ctx, k, v)
+	}
+
+	return ctx
 }
