@@ -9,10 +9,6 @@ import (
 	"github.com/xh3b4sd/tracer"
 )
 
-const (
-	Layout = "2006-01-02T15:04:05.999999Z"
-)
-
 type RedisConfig struct {
 	Log logger.Interface
 	Red redigo.Interface

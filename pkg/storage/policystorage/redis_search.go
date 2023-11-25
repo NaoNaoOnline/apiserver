@@ -2,7 +2,6 @@ package policystorage
 
 import (
 	"encoding/json"
-	"time"
 
 	"github.com/NaoNaoOnline/apiserver/pkg/keyfmt"
 	"github.com/NaoNaoOnline/apiserver/pkg/runtime"
@@ -68,30 +67,4 @@ func (r *Redis) SearchBffr() ([]*Object, error) {
 	}
 
 	return out, nil
-}
-
-func (r *Redis) SearchTime() (time.Time, error) {
-	var err error
-
-	var val []string
-	{
-		val, err = r.red.Simple().Search().Multi(keyfmt.PolicyTime)
-		if err != nil {
-			return time.Time{}, tracer.Mask(err)
-		}
-	}
-
-	if len(val) != 1 {
-		return time.Time{}, tracer.Mask(runtime.ExecutionFailedError)
-	}
-
-	var tim time.Time
-	{
-		tim, err = time.Parse(Layout, val[0])
-		if err != nil {
-			return time.Time{}, tracer.Mask(err)
-		}
-	}
-
-	return tim, nil
 }

@@ -2,7 +2,6 @@ package policystorage
 
 import (
 	"encoding/json"
-	"time"
 
 	"github.com/NaoNaoOnline/apiserver/pkg/keyfmt"
 	"github.com/xh3b4sd/tracer"
@@ -70,33 +69,6 @@ func (r *Redis) CreateBffr(inp []*Object) error {
 
 	for _, x := range inp {
 		err = r.red.Sorted().Create().Score(keyfmt.PolicyBuffer, musStr(x), float64(x.ChID[0]))
-		if err != nil {
-			return tracer.Mask(err)
-		}
-	}
-
-	return nil
-}
-
-func (r *Redis) CreateLock() error {
-	{
-		err := r.red.Simple().Create().Element(keyfmt.PolicyLock, "1")
-		if err != nil {
-			return tracer.Mask(err)
-		}
-	}
-
-	return nil
-}
-
-func (r *Redis) CreateTime() error {
-	var tim time.Time
-	{
-		tim = time.Now().UTC()
-	}
-
-	{
-		err := r.red.Simple().Create().Element(keyfmt.PolicyTime, tim.Format(Layout))
 		if err != nil {
 			return tracer.Mask(err)
 		}

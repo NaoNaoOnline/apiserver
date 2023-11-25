@@ -8,18 +8,21 @@ import (
 	"github.com/NaoNaoOnline/apiserver/pkg/emitter/policyemitter"
 	"github.com/NaoNaoOnline/apiserver/pkg/permission"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/policystorage"
+	"github.com/xh3b4sd/locker"
 	"github.com/xh3b4sd/logger"
 	"github.com/xh3b4sd/tracer"
 )
 
 type HandlerConfig struct {
 	Emi policyemitter.Interface
+	Loc locker.Interface
 	Log logger.Interface
 	Prm permission.Interface
 }
 
 type Handler struct {
 	emi policyemitter.Interface
+	loc locker.Interface
 	log logger.Interface
 	prm permission.Interface
 }
@@ -27,6 +30,9 @@ type Handler struct {
 func NewHandler(c HandlerConfig) *Handler {
 	if c.Emi == nil {
 		tracer.Panic(tracer.Mask(fmt.Errorf("%T.Emi must not be empty", c)))
+	}
+	if c.Loc == nil {
+		tracer.Panic(tracer.Mask(fmt.Errorf("%T.Loc must not be empty", c)))
 	}
 	if c.Log == nil {
 		tracer.Panic(tracer.Mask(fmt.Errorf("%T.Log must not be empty", c)))
@@ -37,6 +43,7 @@ func NewHandler(c HandlerConfig) *Handler {
 
 	return &Handler{
 		emi: c.Emi,
+		loc: c.Loc,
 		log: c.Log,
 		prm: c.Prm,
 	}

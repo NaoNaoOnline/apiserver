@@ -1,8 +1,6 @@
 package permission
 
 import (
-	"time"
-
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectid"
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectlabel"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/policystorage"
@@ -73,18 +71,4 @@ func (p *Permission) SearchUser(use objectid.ID) ([]string, error) {
 	}
 
 	return mem, nil
-}
-
-func (p *Permission) SearchTime() (time.Time, error) {
-	var err error
-
-	var tim time.Time
-	{
-		tim, err = p.pol.SearchTime()
-		if err != nil {
-			return time.Time{}, tracer.Mask(err)
-		}
-	}
-
-	return tim, nil
 }

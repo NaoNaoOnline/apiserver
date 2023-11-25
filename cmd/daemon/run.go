@@ -28,8 +28,12 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/spf13/cobra"
 	"github.com/twitchtv/twirp"
+	"github.com/xh3b4sd/breakr"
+	"github.com/xh3b4sd/locker"
+	"github.com/xh3b4sd/locker/lock"
 	"github.com/xh3b4sd/logger"
 	"github.com/xh3b4sd/redigo"
+	"github.com/xh3b4sd/redigo/pool"
 	"github.com/xh3b4sd/rescue"
 	"github.com/xh3b4sd/rescue/engine"
 	"github.com/xh3b4sd/tracer"
@@ -106,6 +110,11 @@ func (r *run) runE(cmd *cobra.Command, args []string) error {
 		})
 	}
 
+	var loc locker.Interface
+	{
+		loc = defLoc(red.Listen())
+	}
+
 	var twi twitterclient.Interface
 	{
 		twi = twitterclient.New(twitterclient.Config{Log: log})
@@ -160,6 +169,7 @@ func (r *run) runE(cmd *cobra.Command, args []string) error {
 		prm = permission.New(permission.Config{
 			Cac: cac,
 			Emi: emi.Plcy(),
+			Loc: loc,
 			Log: log,
 			Pol: sto.Plcy(),
 			Wal: sto.Wllt(),
@@ -179,6 +189,7 @@ func (r *run) runE(cmd *cobra.Command, args []string) error {
 	{
 		shn = serverhandler.New(serverhandler.Config{
 			Emi: emi,
+			Loc: loc,
 			Log: log,
 			Prm: prm,
 			Sto: sto,
@@ -263,6 +274,18 @@ func (r *run) runE(cmd *cobra.Command, args []string) error {
 	}
 
 	return nil
+}
+
+func defLoc(add string) locker.Interface {
+	return lock.New(lock.Config{
+		Brk: breakr.New(breakr.Config{
+			Failure: breakr.Failure{
+				Budget: 30,
+				Cooler: 1 * time.Second,
+			},
+		}),
+		Poo: pool.NewSinglePoolWithAddress(add),
+	})
 }
 
 func splNum(str string) []int64 {
