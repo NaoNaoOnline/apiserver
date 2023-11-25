@@ -224,7 +224,7 @@ func (h *Handler) Search(ctx context.Context, req *event.SearchI) (*event.Search
 		h.log.Log(
 			context.Background(),
 			"level", "warning",
-			"message", "search response got truncated",
+			"message", "search response truncated",
 			"limit", strconv.Itoa(limiter.Default),
 			"resource", "event",
 			"total", strconv.Itoa(len(out)),

@@ -70,7 +70,7 @@ func (h *Handler) Search(ctx context.Context, req *wallet.SearchI) (*wallet.Sear
 		h.log.Log(
 			context.Background(),
 			"level", "warning",
-			"message", "search response got truncated",
+			"message", "search response truncated",
 			"limit", strconv.Itoa(limiter.Default),
 			"resource", "wallet",
 			"total", strconv.Itoa(len(out)),

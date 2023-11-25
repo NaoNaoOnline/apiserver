@@ -46,7 +46,7 @@ func (h *Handler) Search(ctx context.Context, req *policy.SearchI) (*policy.Sear
 		h.log.Log(
 			context.Background(),
 			"level", "warning",
-			"message", "search response got truncated",
+			"message", "search response truncated",
 			"limit", strconv.Itoa(limiter.Default),
 			"resource", "policy",
 			"total", strconv.Itoa(len(out)),

@@ -49,7 +49,7 @@ func (h *Handler) Search(ctx context.Context, req *list.SearchI) (*list.SearchO,
 		h.log.Log(
 			context.Background(),
 			"level", "warning",
-			"message", "search response got truncated",
+			"message", "search response truncated",
 			"limit", strconv.Itoa(limiter.Default),
 			"resource", "list",
 			"total", strconv.Itoa(len(out)),
