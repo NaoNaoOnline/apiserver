@@ -21,11 +21,12 @@ import (
 
 type Config struct {
 	Cid []int64
-	Cnt []string
 	Emi *emitter.Emitter
 	Log logger.Interface
+	Pcn []string
 	Prm permission.Interface
 	Rpc []string
+	Scn []string
 	Sto *storage.Storage
 	Twi twitterclient.Interface
 }
@@ -103,7 +104,7 @@ func New(c Config) *Handler {
 	for i := range c.Rpc {
 		han = append(han, policyscrapehandler.NewScrapeHandler(policyscrapehandler.ScrapeHandlerConfig{
 			Cid: c.Cid[i],
-			Cnt: c.Cnt[i],
+			Cnt: c.Pcn[i],
 			Log: c.Log,
 			Prm: c.Prm,
 			Rpc: c.Rpc[i],
