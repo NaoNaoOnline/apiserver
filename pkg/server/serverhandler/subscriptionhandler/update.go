@@ -2,6 +2,7 @@ package subscriptionhandler
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/NaoNaoOnline/apigocode/pkg/subscription"
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectlabel"
@@ -26,7 +27,7 @@ func (h *Handler) Update(ctx context.Context, req *subscription.UpdateI) (*subsc
 	var des string
 	var exi bool
 	{
-		des, exi, err = h.loc.Exists(objectlabel.SubsLocker)
+		des, exi, err = h.loc.Exists(fmt.Sprintf(objectlabel.SubsLocker, "TODO"))
 		if err != nil {
 			return nil, tracer.Mask(err)
 		}
@@ -40,7 +41,7 @@ func (h *Handler) Update(ctx context.Context, req *subscription.UpdateI) (*subsc
 
 		if cur == "" && !exi {
 			{
-				des, err = h.loc.Create(objectlabel.SubsLocker)
+				des, err = h.loc.Create(fmt.Sprintf(objectlabel.SubsLocker, "TODO"))
 				if err != nil {
 					return nil, tracer.Mask(err)
 				}
