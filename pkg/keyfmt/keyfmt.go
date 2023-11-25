@@ -206,23 +206,6 @@ const (
 	//
 	PolicyActive = "pol/act"
 
-	// PolicyLock is used to store an indicator for an ongoing update lifecycle.
-	//
-	//     update lock          update lock
-	//                    ->
-	//     pol/loc              1
-	//
-	PolicyLock = "pol/loc"
-
-	// PolicyTime is used to store the timestamp of the most recent update
-	// lifecycle.
-	//
-	//     updated timestamp           updated timestamp
-	//                           ->
-	//     pol/tim                     1234
-	//
-	PolicyTime = "pol/tim"
-
 	// RuleEvent is used to store all the IDs of rules defining single event IDs
 	// in their resource list.
 	//

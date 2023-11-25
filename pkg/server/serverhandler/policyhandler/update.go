@@ -2,10 +2,9 @@ package policyhandler
 
 import (
 	"context"
-	"strconv"
-	"time"
 
 	"github.com/NaoNaoOnline/apigocode/pkg/policy"
+	"github.com/NaoNaoOnline/apiserver/pkg/object/objectlabel"
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectstate"
 	"github.com/xh3b4sd/tracer"
 )
@@ -17,14 +16,6 @@ func (h *Handler) Update(ctx context.Context, req *policy.UpdateI) (*policy.Upda
 	// Emit scrape tasks.
 	//
 
-	var poi time.Time
-	{
-		poi, err = h.prm.SearchTime()
-		if err != nil {
-			return nil, tracer.Mask(err)
-		}
-	}
-
 	var cur string
 	for _, x := range req.Object {
 		if x.Symbol != nil && x.Symbol.Pntr != "" {
@@ -33,34 +24,30 @@ func (h *Handler) Update(ctx context.Context, req *policy.UpdateI) (*policy.Upda
 	}
 
 	var des string
+	var exi bool
 	{
-		des = strconv.FormatInt(poi.Unix(), 10)
+		des, exi, err = h.loc.Exists(objectlabel.PlcyLocker)
+		if err != nil {
+			return nil, tracer.Mask(err)
+		}
 	}
 
 	var sta objectstate.String
 	{
-		if cur == "" {
-			var exi bool
+		if cur == "" && exi {
+			return nil, tracer.Mask(updateSyncLockError)
+		}
+
+		if cur == "" && !exi {
 			{
-				exi, err = h.prm.ExistsLock()
+				des, err = h.loc.Create(objectlabel.PlcyLocker)
 				if err != nil {
 					return nil, tracer.Mask(err)
 				}
-			}
-
-			if exi {
-				return nil, tracer.Mask(updateSyncLockError)
 			}
 
 			{
 				err = h.emi.Scrape()
-				if err != nil {
-					return nil, tracer.Mask(err)
-				}
-			}
-
-			{
-				err = h.prm.CreateLock()
 				if err != nil {
 					return nil, tracer.Mask(err)
 				}

@@ -25,20 +25,6 @@ func (p *Permission) ExistsAcce(sys int64, use objectid.ID, acc int64) (bool, er
 	return false, nil
 }
 
-func (p *Permission) ExistsLock() (bool, error) {
-	var err error
-
-	var exi bool
-	{
-		exi, err = p.pol.ExistsLock()
-		if err != nil {
-			return false, tracer.Mask(err)
-		}
-	}
-
-	return exi, nil
-}
-
 func (p *Permission) ExistsMemb(use objectid.ID) (bool, error) {
 	var err error
 

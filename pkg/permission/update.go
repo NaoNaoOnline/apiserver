@@ -1,6 +1,7 @@
 package permission
 
 import (
+	"github.com/NaoNaoOnline/apiserver/pkg/object/objectlabel"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/policystorage"
 	"github.com/xh3b4sd/tracer"
 )
@@ -43,14 +44,7 @@ func (p *Permission) UpdateActv() error {
 	}
 
 	{
-		err = p.pol.DeleteLock()
-		if err != nil {
-			return tracer.Mask(err)
-		}
-	}
-
-	{
-		err = p.pol.CreateTime()
+		err = p.loc.Delete(objectlabel.PlcyLocker)
 		if err != nil {
 			return tracer.Mask(err)
 		}

@@ -19,14 +19,3 @@ func (r *Redis) DeleteBffr() error {
 
 	return nil
 }
-
-func (r *Redis) DeleteLock() error {
-	{
-		_, err := r.red.Simple().Delete().Multi(keyfmt.PolicyLock)
-		if err != nil {
-			return tracer.Mask(err)
-		}
-	}
-
-	return nil
-}

@@ -1,6 +1,10 @@
 package objectlabel
 
 const (
+	PlcyLocker string = "policy.naonao.io/locker"
+)
+
+const (
 	PlcyAction string = "policy.naonao.io/action"
 	PlcyBuffer string = "policy.naonao.io/buffer"
 	PlcyChanid string = "policy.naonao.io/chanid"

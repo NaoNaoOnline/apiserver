@@ -14,12 +14,14 @@ import (
 	"github.com/NaoNaoOnline/apiserver/pkg/server/serverhandler/userhandler"
 	"github.com/NaoNaoOnline/apiserver/pkg/server/serverhandler/wallethandler"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage"
+	"github.com/xh3b4sd/locker"
 	"github.com/xh3b4sd/logger"
 	"github.com/xh3b4sd/tracer"
 )
 
 type Config struct {
 	Emi *emitter.Emitter
+	Loc locker.Interface
 	Log logger.Interface
 	Prm permission.Interface
 	Sto *storage.Storage
@@ -40,6 +42,9 @@ func New(c Config) *Handler {
 	if c.Emi == nil {
 		tracer.Panic(tracer.Mask(fmt.Errorf("%T.Emi must not be empty", c)))
 	}
+	if c.Loc == nil {
+		tracer.Panic(tracer.Mask(fmt.Errorf("%T.Loc must not be empty", c)))
+	}
 	if c.Log == nil {
 		tracer.Panic(tracer.Mask(fmt.Errorf("%T.Log must not be empty", c)))
 	}
@@ -57,7 +62,7 @@ func New(c Config) *Handler {
 			eve: eventhandler.NewHandler(eventhandler.HandlerConfig{Eve: c.Sto.Evnt(), Log: c.Log, Prm: c.Prm, Rul: c.Sto.Rule()}),
 			lab: labelhandler.NewHandler(labelhandler.HandlerConfig{Lab: c.Sto.Labl(), Log: c.Log}),
 			lis: listhandler.NewHandler(listhandler.HandlerConfig{Lis: c.Sto.List(), Log: c.Log}),
-			pol: policyhandler.NewHandler(policyhandler.HandlerConfig{Emi: c.Emi.Plcy(), Log: c.Log, Prm: c.Prm}),
+			pol: policyhandler.NewHandler(policyhandler.HandlerConfig{Emi: c.Emi.Plcy(), Loc: c.Loc, Log: c.Log, Prm: c.Prm}),
 			rul: rulehandler.NewHandler(rulehandler.HandlerConfig{Lis: c.Sto.List(), Log: c.Log, Rul: c.Sto.Rule()}),
 			use: userhandler.NewHandler(userhandler.HandlerConfig{Log: c.Log, Use: c.Sto.User()}),
 			wal: wallethandler.NewHandler(wallethandler.HandlerConfig{Log: c.Log, Wal: c.Sto.Wllt()}),

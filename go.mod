@@ -1,6 +1,6 @@
 module github.com/NaoNaoOnline/apiserver
 
-go 1.21
+go 1.21.1
 
 require (
 	github.com/NaoNaoOnline/apigocode v0.8.11
@@ -18,6 +18,8 @@ require (
 	github.com/rs/cors v1.10.1
 	github.com/spf13/cobra v1.8.0
 	github.com/twitchtv/twirp v8.1.3+incompatible
+	github.com/xh3b4sd/breakr v0.1.0
+	github.com/xh3b4sd/locker v0.1.0
 	github.com/xh3b4sd/logger v0.8.1
 	github.com/xh3b4sd/redigo v0.37.0
 	github.com/xh3b4sd/rescue v0.17.12
@@ -62,7 +64,6 @@ require (
 	github.com/supranational/blst v0.3.11 // indirect
 	github.com/tklauser/go-sysconf v0.3.12 // indirect
 	github.com/tklauser/numcpus v0.6.1 // indirect
-	github.com/xh3b4sd/breakr v0.1.0 // indirect
 	github.com/yusufpapurcu/wmi v1.2.3 // indirect
 	golang.org/x/crypto v0.15.0 // indirect
 	golang.org/x/exp v0.0.0-20231110203233-9a3e6036ecaa // indirect
