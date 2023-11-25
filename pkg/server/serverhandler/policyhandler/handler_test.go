@@ -9,6 +9,7 @@ import (
 	"github.com/NaoNaoOnline/apiserver/pkg/permission"
 	"github.com/NaoNaoOnline/apiserver/pkg/server/context/userid"
 	fuzz "github.com/google/gofuzz"
+	"github.com/xh3b4sd/locker"
 	"github.com/xh3b4sd/logger"
 )
 
@@ -22,6 +23,7 @@ func tesHan() policy.API {
 	return &wrapper{
 		han: NewHandler(HandlerConfig{
 			Emi: policyemitter.Fake(),
+			Loc: locker.Fake(),
 			Log: logger.Fake(),
 			Prm: permission.Fake(),
 		}),
