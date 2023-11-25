@@ -7,6 +7,7 @@ import (
 	"github.com/NaoNaoOnline/apiserver/pkg/emitter/eventemitter"
 	"github.com/NaoNaoOnline/apiserver/pkg/emitter/listemitter"
 	"github.com/NaoNaoOnline/apiserver/pkg/emitter/policyemitter"
+	"github.com/NaoNaoOnline/apiserver/pkg/emitter/subscriptionemitter"
 	"github.com/xh3b4sd/logger"
 	"github.com/xh3b4sd/rescue"
 	"github.com/xh3b4sd/tracer"
@@ -14,10 +15,11 @@ import (
 
 type Config struct {
 	Cid []int64
-	Cnt []string
 	Log logger.Interface
+	Pcn []string
 	Res rescue.Interface
 	Rpc []string
+	Scn []string
 }
 
 type Emitter struct {
@@ -25,6 +27,7 @@ type Emitter struct {
 	eve eventemitter.Interface
 	lis listemitter.Interface
 	pol policyemitter.Interface
+	sub subscriptionemitter.Interface
 }
 
 func New(c Config) *Emitter {
@@ -41,7 +44,8 @@ func New(c Config) *Emitter {
 			des: descriptionemitter.NewEmitter(descriptionemitter.EmitterConfig{Log: c.Log, Res: c.Res}),
 			eve: eventemitter.NewEmitter(eventemitter.EmitterConfig{Log: c.Log, Res: c.Res}),
 			lis: listemitter.NewEmitter(listemitter.EmitterConfig{Log: c.Log, Res: c.Res}),
-			pol: policyemitter.NewEmitter(policyemitter.EmitterConfig{Cid: c.Cid, Cnt: c.Cnt, Log: c.Log, Res: c.Res, Rpc: c.Rpc}),
+			pol: policyemitter.NewEmitter(policyemitter.EmitterConfig{Cid: c.Cid, Cnt: c.Pcn, Log: c.Log, Res: c.Res, Rpc: c.Rpc}),
+			sub: subscriptionemitter.NewEmitter(subscriptionemitter.EmitterConfig{Cid: c.Cid, Cnt: c.Scn, Log: c.Log, Res: c.Res, Rpc: c.Rpc}),
 		}
 	}
 

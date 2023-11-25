@@ -58,9 +58,9 @@ func (r *run) runE(cmd *cobra.Command, args []string) error {
 		cid = append(cid, splNum(env.ChainCid)...)
 	}
 
-	var cnt []string
+	var pcn []string
 	{
-		cnt = append(cnt, splStr(env.ChainPol)...)
+		pcn = append(pcn, splStr(env.ChainPol)...)
 	}
 
 	var rpc []string
@@ -68,16 +68,21 @@ func (r *run) runE(cmd *cobra.Command, args []string) error {
 		rpc = append(rpc, splStr(env.ChainRpc)...)
 	}
 
-	if len(cid) != len(cnt) {
-		tracer.Panic(tracer.Mask(fmt.Errorf("amount of configured chain ids and contract addresses must be equal, got %d and %d", len(cid), len(cnt))))
+	var scn []string
+	{
+		scn = append(scn, splStr(env.ChainSub)...)
+	}
+
+	if len(cid) != len(pcn) && len(pcn) != len(scn) {
+		tracer.Panic(tracer.Mask(fmt.Errorf("amount of configured chain ids and contract addresses must be equal, got %d and %d", len(cid), len(pcn))))
 	}
 
 	if len(cid) != len(rpc) {
 		tracer.Panic(tracer.Mask(fmt.Errorf("amount of configured chain ids and rpc endpoints must be equal, got %d and %d", len(cid), len(rpc))))
 	}
 
-	if len(cnt) != len(rpc) {
-		tracer.Panic(tracer.Mask(fmt.Errorf("amount of configured contract addresses and rpc endpoints must be equal, got %d and %d", len(cnt), len(rpc))))
+	if len(pcn) != len(rpc) && len(pcn) != len(scn) {
+		tracer.Panic(tracer.Mask(fmt.Errorf("amount of configured contract addresses and rpc endpoints must be equal, got %d and %d", len(pcn), len(rpc))))
 	}
 
 	// --------------------------------------------------------------------- //
@@ -126,10 +131,11 @@ func (r *run) runE(cmd *cobra.Command, args []string) error {
 	{
 		emi = emitter.New(emitter.Config{
 			Cid: cid,
-			Cnt: cnt,
 			Log: log,
+			Pcn: pcn,
 			Res: res,
 			Rpc: rpc,
+			Scn: scn,
 		})
 	}
 
@@ -225,11 +231,12 @@ func (r *run) runE(cmd *cobra.Command, args []string) error {
 	{
 		whn = workerhandler.New(workerhandler.Config{
 			Cid: cid,
-			Cnt: cnt,
 			Emi: emi,
 			Log: log,
+			Pcn: pcn,
 			Prm: prm,
 			Rpc: rpc,
+			Scn: scn,
 			Sto: sto,
 			Twi: twi,
 		})

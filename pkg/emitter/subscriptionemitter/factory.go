@@ -1,17 +1,16 @@
-package emitter
+package subscriptionemitter
 
 import (
 	"github.com/xh3b4sd/logger"
 	"github.com/xh3b4sd/rescue"
 )
 
-func Fake() *Emitter {
-	return New(Config{
+func Fake() Interface {
+	return NewEmitter(EmitterConfig{
 		Cid: []int64{1},
+		Cnt: []string{"0x0"},
 		Log: logger.Fake(),
-		Pcn: []string{"0x0"},
 		Res: rescue.Fake(),
 		Rpc: []string{"127.0.0.1:8545"},
-		Scn: []string{"0x0"},
 	})
 }
