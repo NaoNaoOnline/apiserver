@@ -3,12 +3,13 @@ package subscriptionemitter
 import (
 	"fmt"
 
+	"github.com/NaoNaoOnline/apiserver/pkg/object/objectid"
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectlabel"
 	"github.com/xh3b4sd/rescue/task"
 	"github.com/xh3b4sd/tracer"
 )
 
-func (e *Emitter) Scrape() error {
+func (e *Emitter) Scrape(sid objectid.ID) error {
 	for i := range e.cid {
 		var tas *task.Task
 		{
@@ -17,6 +18,7 @@ func (e *Emitter) Scrape() error {
 					objectlabel.SubsAction: objectlabel.ActionScrape,
 					objectlabel.SubsChanid: fmt.Sprintf("%d", e.cid[i]),
 					objectlabel.SubsCntrct: e.cnt[i],
+					objectlabel.SubsObject: sid.String(),
 					objectlabel.SubsOrigin: objectlabel.OriginCustom,
 					objectlabel.SubsRpcUrl: e.rpc[i],
 				},

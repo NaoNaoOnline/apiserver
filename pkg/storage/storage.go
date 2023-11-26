@@ -10,6 +10,7 @@ import (
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/liststorage"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/policystorage"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/rulestorage"
+	"github.com/NaoNaoOnline/apiserver/pkg/storage/subscriptionstorage"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/userstorage"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/walletstorage"
 	"github.com/xh3b4sd/logger"
@@ -30,6 +31,7 @@ type Storage struct {
 	lis liststorage.Interface
 	pol policystorage.Interface
 	rul rulestorage.Interface
+	sub subscriptionstorage.Interface
 	use userstorage.Interface
 	wal walletstorage.Interface
 }
@@ -54,6 +56,7 @@ func New(c Config) *Storage {
 			lis: liststorage.NewRedis(liststorage.RedisConfig{Emi: c.Emi.List(), Log: c.Log, Red: c.Red}),
 			pol: policystorage.NewRedis(policystorage.RedisConfig{Log: c.Log, Red: c.Red}),
 			rul: rulestorage.NewRedis(rulestorage.RedisConfig{Log: c.Log, Red: c.Red}),
+			sub: subscriptionstorage.NewRedis(subscriptionstorage.RedisConfig{Emi: c.Emi.Subs(), Log: c.Log, Red: c.Red}),
 			use: userstorage.NewRedis(userstorage.RedisConfig{Log: c.Log, Red: c.Red}),
 			wal: walletstorage.NewRedis(walletstorage.RedisConfig{Log: c.Log, Red: c.Red}),
 		}
@@ -84,6 +87,10 @@ func (s *Storage) Plcy() policystorage.Interface {
 
 func (s *Storage) Rule() rulestorage.Interface {
 	return s.rul
+}
+
+func (s *Storage) Subs() subscriptionstorage.Interface {
+	return s.sub
 }
 
 func (s *Storage) User() userstorage.Interface {

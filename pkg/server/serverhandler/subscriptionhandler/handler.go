@@ -2,6 +2,9 @@ package subscriptionhandler
 
 import (
 	"fmt"
+	"strconv"
+	"strings"
+	"time"
 
 	"github.com/NaoNaoOnline/apiserver/pkg/emitter/subscriptionemitter"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/subscriptionstorage"
@@ -44,4 +47,25 @@ func NewHandler(c HandlerConfig) *Handler {
 		log: c.Log,
 		sub: c.Sub,
 	}
+}
+
+func inpCrt(str string) []string {
+	var lis []string
+
+	for _, x := range strings.Split(str, ",") {
+		if x != "" {
+			lis = append(lis, x)
+		}
+	}
+
+	return lis
+}
+
+func inpUni(str string) time.Time {
+	sec, err := strconv.ParseInt(str, 10, 64)
+	if err != nil {
+		return time.Time{}
+	}
+
+	return time.Unix(sec, 0).UTC()
 }

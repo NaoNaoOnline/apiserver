@@ -13,6 +13,13 @@ type Object struct {
 	ChID int64 `json:"chid"`
 	// Crtd is the time at which the subscription got created.
 	Crtd time.Time `json:"crtd"`
+	// Crtr is the wallet address of a content creator designated for the purpose
+	// of accounting. These are the addresses getting paid peer-to-peer by users
+	// subscribing for accessing premium features.
+	Crtr []string `json:"crtr"`
+	// Sbsc is the wallet address of the user getting access to premium features
+	// upon asynchronous subscription verification.
+	Sbsc string `json:"sbsc"`
 	// Subs is the ID of the subscription being created.
 	Subs objectid.ID `json:"evnt"`
 	// Unix is the timestamp of the subscription period. This timestamp must be
@@ -24,6 +31,7 @@ type Object struct {
 	User objectid.ID `json:"user"`
 }
 
+// TODO verify
 func (r *Object) Verify() error {
 	{
 		if r.ChID == 0 {
