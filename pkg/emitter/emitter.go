@@ -67,3 +67,7 @@ func (e *Emitter) List() listemitter.Interface {
 func (e *Emitter) Plcy() policyemitter.Interface {
 	return e.pol
 }
+
+func (e *Emitter) Subs() subscriptionemitter.Interface {
+	return e.sub
+}

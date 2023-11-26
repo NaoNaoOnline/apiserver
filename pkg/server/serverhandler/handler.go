@@ -11,6 +11,7 @@ import (
 	"github.com/NaoNaoOnline/apiserver/pkg/server/serverhandler/listhandler"
 	"github.com/NaoNaoOnline/apiserver/pkg/server/serverhandler/policyhandler"
 	"github.com/NaoNaoOnline/apiserver/pkg/server/serverhandler/rulehandler"
+	"github.com/NaoNaoOnline/apiserver/pkg/server/serverhandler/subscriptionhandler"
 	"github.com/NaoNaoOnline/apiserver/pkg/server/serverhandler/userhandler"
 	"github.com/NaoNaoOnline/apiserver/pkg/server/serverhandler/wallethandler"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage"
@@ -28,14 +29,7 @@ type Config struct {
 }
 
 type Handler struct {
-	des *descriptionhandler.Handler
-	eve *eventhandler.Handler
-	lab *labelhandler.Handler
-	lis *listhandler.Handler
-	pol *policyhandler.Handler
-	rul *rulehandler.Handler
-	use *userhandler.Handler
-	wal *wallethandler.Handler
+	han []Interface
 }
 
 func New(c Config) *Handler {
@@ -55,17 +49,84 @@ func New(c Config) *Handler {
 		tracer.Panic(tracer.Mask(fmt.Errorf("%T.Sto must not be empty", c)))
 	}
 
+	var han []Interface
+
+	{
+		han = append(han, descriptionhandler.NewHandler(descriptionhandler.HandlerConfig{
+			Eve: c.Sto.Evnt(),
+			Des: c.Sto.Desc(),
+			Log: c.Log,
+			Prm: c.Prm,
+		}))
+	}
+
+	{
+		han = append(han, eventhandler.NewHandler(eventhandler.HandlerConfig{
+			Eve: c.Sto.Evnt(),
+			Log: c.Log,
+			Prm: c.Prm,
+			Rul: c.Sto.Rule(),
+		}))
+	}
+
+	{
+		han = append(han, labelhandler.NewHandler(labelhandler.HandlerConfig{
+			Lab: c.Sto.Labl(),
+			Log: c.Log,
+		}))
+	}
+
+	{
+		han = append(han, listhandler.NewHandler(listhandler.HandlerConfig{
+			Lis: c.Sto.List(),
+			Log: c.Log,
+		}))
+	}
+
+	{
+		han = append(han, policyhandler.NewHandler(policyhandler.HandlerConfig{
+			Emi: c.Emi.Plcy(),
+			Loc: c.Loc,
+			Log: c.Log,
+			Prm: c.Prm,
+		}))
+	}
+
+	{
+		han = append(han, rulehandler.NewHandler(rulehandler.HandlerConfig{
+			Lis: c.Sto.List(),
+			Log: c.Log,
+			Rul: c.Sto.Rule(),
+		}))
+	}
+
+	{
+		han = append(han, subscriptionhandler.NewHandler(subscriptionhandler.HandlerConfig{
+			Emi: c.Emi.Subs(),
+			Loc: c.Loc,
+			Log: c.Log,
+			Sub: c.Sto.Subs(),
+		}))
+	}
+
+	{
+		han = append(han, userhandler.NewHandler(userhandler.HandlerConfig{
+			Log: c.Log,
+			Use: c.Sto.User(),
+		}))
+	}
+
+	{
+		han = append(han, wallethandler.NewHandler(wallethandler.HandlerConfig{
+			Log: c.Log,
+			Wal: c.Sto.Wllt(),
+		}))
+	}
+
 	var h *Handler
 	{
 		h = &Handler{
-			des: descriptionhandler.NewHandler(descriptionhandler.HandlerConfig{Eve: c.Sto.Evnt(), Des: c.Sto.Desc(), Log: c.Log, Prm: c.Prm}),
-			eve: eventhandler.NewHandler(eventhandler.HandlerConfig{Eve: c.Sto.Evnt(), Log: c.Log, Prm: c.Prm, Rul: c.Sto.Rule()}),
-			lab: labelhandler.NewHandler(labelhandler.HandlerConfig{Lab: c.Sto.Labl(), Log: c.Log}),
-			lis: listhandler.NewHandler(listhandler.HandlerConfig{Lis: c.Sto.List(), Log: c.Log}),
-			pol: policyhandler.NewHandler(policyhandler.HandlerConfig{Emi: c.Emi.Plcy(), Loc: c.Loc, Log: c.Log, Prm: c.Prm}),
-			rul: rulehandler.NewHandler(rulehandler.HandlerConfig{Lis: c.Sto.List(), Log: c.Log, Rul: c.Sto.Rule()}),
-			use: userhandler.NewHandler(userhandler.HandlerConfig{Log: c.Log, Use: c.Sto.User()}),
-			wal: wallethandler.NewHandler(wallethandler.HandlerConfig{Log: c.Log, Wal: c.Sto.Wllt()}),
+			han: han,
 		}
 	}
 
@@ -73,14 +134,5 @@ func New(c Config) *Handler {
 }
 
 func (h *Handler) Hand() []Interface {
-	return []Interface{
-		h.des,
-		h.eve,
-		h.lab,
-		h.lis,
-		h.pol,
-		h.rul,
-		h.use,
-		h.wal,
-	}
+	return h.han
 }

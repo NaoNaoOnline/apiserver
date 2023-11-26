@@ -1,5 +1,7 @@
 package subscriptionemitter
 
+import "github.com/NaoNaoOnline/apiserver/pkg/object/objectid"
+
 type Interface interface {
-	Scrape() error
+	Scrape(objectid.ID) error
 }
