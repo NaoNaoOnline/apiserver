@@ -1,9 +1,12 @@
 package subscriptionstorage
 
 import (
+	"encoding/json"
 	"fmt"
 
 	"github.com/NaoNaoOnline/apiserver/pkg/emitter/subscriptionemitter"
+	"github.com/NaoNaoOnline/apiserver/pkg/keyfmt"
+	"github.com/NaoNaoOnline/apiserver/pkg/object/objectid"
 	"github.com/xh3b4sd/logger"
 	"github.com/xh3b4sd/redigo"
 	"github.com/xh3b4sd/tracer"
@@ -39,11 +42,23 @@ func NewRedis(c RedisConfig) *Redis {
 	}
 }
 
-// func musStr(obj *Object) string {
-// 	byt, err := json.Marshal(obj)
-// 	if err != nil {
-// 		tracer.Panic(tracer.Mask(err))
-// 	}
+func subAdd(add string) string {
+	return fmt.Sprintf(keyfmt.SubscriptionAddress, add)
+}
 
-// 	return string(byt)
-// }
+func subObj(use objectid.ID) string {
+	return fmt.Sprintf(keyfmt.SubscriptionObject, use)
+}
+
+func subUse(use objectid.ID) string {
+	return fmt.Sprintf(keyfmt.SubscriptionUser, use)
+}
+
+func musStr(obj *Object) string {
+	byt, err := json.Marshal(obj)
+	if err != nil {
+		tracer.Panic(tracer.Mask(err))
+	}
+
+	return string(byt)
+}

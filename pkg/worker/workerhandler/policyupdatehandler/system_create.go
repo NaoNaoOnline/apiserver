@@ -25,11 +25,11 @@ import (
 // demand.
 func (h *UpdateHandler) Create() *task.Task {
 	return &task.Task{
+		Gate: cidGat(h.cid),
 		Meta: &task.Meta{
 			objectlabel.PlcyAction: objectlabel.ActionUpdate,
 			objectlabel.PlcyOrigin: objectlabel.OriginSystem,
 		},
-		Gate: cidGat(h.cid),
 	}
 }
 

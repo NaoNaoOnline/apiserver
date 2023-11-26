@@ -239,6 +239,38 @@ const (
 	//
 	RuleUser = "rul/use/%s"
 
+	// SubscriptionAddress is used to store subscription mappings between
+	// subscription address and subscription IDs. The subscription addresses here
+	// are pointing to the subscriptions that they themselves have. Note that
+	// having a subscription and paying for it may not be the same things, since
+	// subscriptions can be gifted.
+	//
+	//     subscription address          subscription IDs
+	//                             ->
+	//     sub/add/0x5678                1234,5678
+	//
+	SubscriptionAddress = "sub/add/%s"
+
+	// SubscriptionObject is used to store our internal representation of a
+	// Subscription object.
+	//
+	//     subscription ID          subscription object
+	//                        ->
+	//     sub/obj/1234             {"key": "val"}
+	//
+	SubscriptionObject = "sub/obj/%s"
+
+	// SubscriptionUser is used to store all the IDs of subscriptions created by a
+	// specific user. The user IDs here are pointing to the subscription IDs that
+	// they themselves paid for. Note that having a subscription and paying for it
+	// may not be the same things, since subscriptions can be gifted.
+	//
+	//     user ID               subscription IDs
+	//                     ->
+	//     sub/use/5678          1234,5678
+	//
+	SubscriptionUser = "sub/use/%s"
+
 	// UserClaim is used to store user mappings between external and internal user
 	// representations. An external representation might be an OAuth subject claim
 	// provided with an access token when authenticating via Google. This subject
@@ -273,7 +305,7 @@ const (
 	//
 	//     wallet address          user ID
 	//                       ->
-	//     wal/add/5678            1234
+	//     wal/add/0x5678          1234
 	//
 	WalletAddress = "wal/add/%s"
 

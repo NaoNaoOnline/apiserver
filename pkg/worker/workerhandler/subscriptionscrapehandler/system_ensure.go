@@ -7,7 +7,8 @@ import (
 
 func (h *ScrapeHandler) Ensure(tas *task.Task, bud *budget.Budget) error {
 	// TODO scrape subscription from the respective chain
-	// TODO create subscription object in redis for subscription found onchain
+	// TODO ensure only current month is allowed
+	// TODO forward valid flag in Task.Sync
 
 	return nil
 }

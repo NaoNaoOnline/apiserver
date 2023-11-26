@@ -22,6 +22,9 @@ func (e *Emitter) Scrape(sid objectid.ID) error {
 					objectlabel.SubsOrigin: objectlabel.OriginCustom,
 					objectlabel.SubsRpcUrl: e.rpc[i],
 				},
+				Gate: &task.Gate{
+					fmt.Sprintf(objectlabel.PlcyUnique, e.cid[i]): task.Trigger,
+				},
 			}
 		}
 
