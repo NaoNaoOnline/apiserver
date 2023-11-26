@@ -3,7 +3,9 @@ package subscriptionstorage
 import (
 	"time"
 
+	"github.com/NaoNaoOnline/apiserver/pkg/format/hexformat"
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectid"
+	"github.com/NaoNaoOnline/apiserver/pkg/runtime"
 	"github.com/xh3b4sd/tracer"
 )
 
@@ -31,7 +33,6 @@ type Object struct {
 	User objectid.ID `json:"user"`
 }
 
-// TODO verify
 func (r *Object) Verify() error {
 	{
 		if r.ChID == 0 {
@@ -39,5 +40,56 @@ func (r *Object) Verify() error {
 		}
 	}
 
+	{
+		if len(r.Crtr) == 0 {
+			return tracer.Mask(subscriptionCrtrEmptyError)
+		}
+		if len(r.Crtr) > 3 {
+			return tracer.Mask(subscriptionCrtrLimitError)
+		}
+		for _, x := range r.Crtr {
+			if x == "" {
+				return tracer.Mask(subscriptionCrtrEmptyError)
+			}
+			if len(x) != 42 {
+				return tracer.Maskf(subscriptionCrtrLengthError, "%d", len(x))
+			}
+			if !hexformat.Verify(x) {
+				return tracer.Mask(subscriptionCrtrFormatError)
+			}
+		}
+	}
+
+	{
+		if r.Sbsc == "" {
+			return tracer.Mask(subscriptionSbcbEmptyError)
+		}
+		if len(r.Sbsc) != 42 {
+			return tracer.Maskf(subscriptionSbcbLengthError, "%d", len(r.Sbsc))
+		}
+		if !hexformat.Verify(r.Sbsc) {
+			return tracer.Mask(subscriptionSbcbFormatError)
+		}
+	}
+
+	{
+		if r.Unix.IsZero() {
+			return tracer.Mask(subscriptionUnixEmptyError)
+		}
+		if !r.Unix.Equal(timMon(r.Unix)) {
+			return tracer.Mask(subscriptionUnixInvalidError)
+		}
+	}
+
+	{
+		if r.User == "" {
+			return tracer.Mask(runtime.UserIDEmptyError)
+		}
+	}
+
 	return nil
+}
+
+func timMon(tim time.Time) time.Time {
+	return time.Date(tim.Year(), tim.Month(), 1, 0, 0, 0, 0, time.UTC)
 }
