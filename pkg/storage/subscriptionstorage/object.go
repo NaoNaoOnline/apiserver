@@ -90,6 +90,7 @@ func (r *Object) Verify() error {
 	return nil
 }
 
+// TODO ensure only current month is allowed
 func timMon(tim time.Time) time.Time {
 	return time.Date(tim.Year(), tim.Month(), 1, 0, 0, 0, 0, time.UTC)
 }

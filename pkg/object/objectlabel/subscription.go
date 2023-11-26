@@ -12,4 +12,6 @@ const (
 	SubsObject string = "subscription.naonao.io/object"
 	SubsRpcUrl string = "subscription.naonao.io/rpcurl"
 	SubsOrigin string = "subscription.naonao.io/origin"
+	SubsUnique string = "subscription.naonao.io/%06d"
+	SubsVerify string = "subscription.naonao.io/verify"
 )

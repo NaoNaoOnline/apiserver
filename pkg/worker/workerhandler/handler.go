@@ -14,18 +14,26 @@ import (
 	"github.com/NaoNaoOnline/apiserver/pkg/worker/workerhandler/policybufferhandler"
 	"github.com/NaoNaoOnline/apiserver/pkg/worker/workerhandler/policyscrapehandler"
 	"github.com/NaoNaoOnline/apiserver/pkg/worker/workerhandler/policyupdatehandler"
+	"github.com/NaoNaoOnline/apiserver/pkg/worker/workerhandler/subscriptionscrapehandler"
+	"github.com/NaoNaoOnline/apiserver/pkg/worker/workerhandler/subscriptionupdatehandler"
 	"github.com/NaoNaoOnline/apiserver/pkg/worker/workerhandler/twittercreatehandler"
+	"github.com/xh3b4sd/locker"
 	"github.com/xh3b4sd/logger"
 	"github.com/xh3b4sd/tracer"
 )
 
 type Config struct {
+	// Cid are the chain IDs for all deployed chains.
 	Cid []int64
 	Emi *emitter.Emitter
+	Loc locker.Interface
 	Log logger.Interface
+	// Pcn are the policy contract addresses for all deployed chains.
 	Pcn []string
 	Prm permission.Interface
+	// Rpc are the RPC endpoints for all deployed chains.
 	Rpc []string
+	// Scn are the subscription contract addresses for all deployed chains.
 	Scn []string
 	Sto *storage.Storage
 	Twi twitterclient.Interface
@@ -38,6 +46,9 @@ type Handler struct {
 func New(c Config) *Handler {
 	if c.Emi == nil {
 		tracer.Panic(tracer.Mask(fmt.Errorf("%T.Emi must not be empty", c)))
+	}
+	if c.Loc == nil {
+		tracer.Panic(tracer.Mask(fmt.Errorf("%T.Loc must not be empty", c)))
 	}
 	if c.Log == nil {
 		tracer.Panic(tracer.Mask(fmt.Errorf("%T.Log must not be empty", c)))
@@ -101,7 +112,7 @@ func New(c Config) *Handler {
 		}))
 	}
 
-	for i := range c.Rpc {
+	for i := range c.Cid {
 		han = append(han, policyscrapehandler.NewScrapeHandler(policyscrapehandler.ScrapeHandlerConfig{
 			Cid: c.Cid[i],
 			Cnt: c.Pcn[i],
@@ -117,6 +128,23 @@ func New(c Config) *Handler {
 			Emi: c.Emi.Plcy(),
 			Log: c.Log,
 			Prm: c.Prm,
+		}))
+	}
+
+	for i := range c.Cid {
+		han = append(han, subscriptionscrapehandler.NewScrapeHandler(subscriptionscrapehandler.ScrapeHandlerConfig{
+			Cid: c.Cid[i],
+			Cnt: c.Scn[i],
+			Log: c.Log,
+			Rpc: c.Rpc[i],
+		}))
+	}
+
+	{
+		han = append(han, subscriptionupdatehandler.NewUpdateHandler(subscriptionupdatehandler.UpdateHandlerConfig{
+			Cid: c.Cid,
+			Loc: c.Loc,
+			Log: c.Log,
 		}))
 	}
 

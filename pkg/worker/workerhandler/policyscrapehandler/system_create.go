@@ -17,6 +17,9 @@ import (
 // defined by the Policy smart contracts on all deployed chains.
 func (h *ScrapeHandler) Create() *task.Task {
 	return &task.Task{
+		Gate: &task.Gate{
+			fmt.Sprintf(objectlabel.PlcyUnique, h.cid): task.Trigger,
+		},
 		Cron: &task.Cron{
 			task.Aevery: "6 hours",
 		},
@@ -26,9 +29,6 @@ func (h *ScrapeHandler) Create() *task.Task {
 			objectlabel.PlcyCntrct: h.cnt,
 			objectlabel.PlcyOrigin: objectlabel.OriginSystem,
 			objectlabel.PlcyRpcUrl: h.rpc,
-		},
-		Gate: &task.Gate{
-			fmt.Sprintf(objectlabel.PlcyUnique, h.cid): task.Trigger,
 		},
 	}
 }

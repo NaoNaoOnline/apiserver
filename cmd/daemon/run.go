@@ -232,6 +232,7 @@ func (r *run) runE(cmd *cobra.Command, args []string) error {
 		whn = workerhandler.New(workerhandler.Config{
 			Cid: cid,
 			Emi: emi,
+			Loc: loc,
 			Log: log,
 			Pcn: pcn,
 			Prm: prm,
