@@ -6,6 +6,7 @@ import (
 
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectid"
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectlabel"
+	"github.com/NaoNaoOnline/apiserver/pkg/object/objectstate"
 	"github.com/NaoNaoOnline/apiserver/pkg/runtime"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/subscriptionstorage"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/userstorage"
@@ -40,44 +41,54 @@ func (h *UpdateHandler) Ensure(tas *task.Task, bud *budget.Budget) error {
 		}
 	}
 
-	var uid []objectid.ID
-	{
-		uid, err = h.wal.SearchAddr([]string{sob[0].Recv})
-		if err != nil {
-			return tracer.Mask(err)
-		}
-	}
-
-	if len(uid) != 1 {
+	if len(sob) != 1 {
 		return tracer.Mask(runtime.ExecutionFailedError)
 	}
 
-	var uob []*userstorage.Object
-	{
-		uob, err = h.use.SearchUser(uid)
-		if err != nil {
-			return tracer.Mask(err)
+	// Only if the verification process was successful we can mark the respective
+	// user objects to have a valid premium subscription. If the subscription at
+	// hand was found to be invalid, then we skip the user modification and go
+	// straight to deleting the distributed lock.
+	if sob[0].Stts == objectstate.Success {
+		var uid []objectid.ID
+		{
+			uid, err = h.wal.SearchAddr([]string{sob[0].Recv})
+			if err != nil {
+				return tracer.Mask(err)
+			}
 		}
-	}
 
-	if len(uob) != 1 {
-		return tracer.Mask(runtime.ExecutionFailedError)
-	}
+		if len(uid) != 1 {
+			return tracer.Mask(runtime.ExecutionFailedError)
+		}
 
-	// We update the user who represents the subscription receiver with the
-	// timestamp until they have a valid premium subscription. That timestamp is
-	// the subscription timestamp plus one month. The subscription timestamp
-	// defines the beginning of the subscription period, which is the beginning of
-	// any given month. And since the premium subscription is for a whole month,
-	// it is valid until that month is over.
-	{
-		uob[0].Prem = sob[0].Unix.AddDate(0, 1, 0)
-	}
+		var uob []*userstorage.Object
+		{
+			uob, err = h.use.SearchUser(uid)
+			if err != nil {
+				return tracer.Mask(err)
+			}
+		}
 
-	{
-		_, err = h.use.UpdateObct(uob)
-		if err != nil {
-			return tracer.Mask(err)
+		if len(uob) != 1 {
+			return tracer.Mask(runtime.ExecutionFailedError)
+		}
+
+		// We update the user who represents the subscription receiver with the
+		// timestamp until they have a valid premium subscription. That timestamp is
+		// the subscription timestamp plus one month. The subscription timestamp
+		// defines the beginning of the subscription period, which is the beginning of
+		// any given month. And since the premium subscription is for a whole month,
+		// it is valid until that month is over.
+		{
+			uob[0].Prem = sob[0].Unix.AddDate(0, 1, 0)
+		}
+
+		{
+			_, err = h.use.UpdateObct(uob)
+			if err != nil {
+				return tracer.Mask(err)
+			}
 		}
 	}
 
