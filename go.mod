@@ -5,7 +5,7 @@ go 1.21.1
 require (
 	github.com/NaoNaoOnline/apigocode v0.8.13
 	github.com/auth0/go-jwt-middleware/v2 v2.1.0
-	github.com/brianvoe/gofakeit/v6 v6.24.0
+	github.com/brianvoe/gofakeit/v6 v6.25.0
 	github.com/ethereum/go-ethereum v1.13.5
 	github.com/evanphx/json-patch/v5 v5.7.0
 	github.com/google/go-cmp v0.6.0
@@ -50,7 +50,7 @@ require (
 	github.com/gorilla/websocket v1.5.1 // indirect
 	github.com/hashicorp/errwrap v1.1.0 // indirect
 	github.com/hashicorp/go-multierror v1.1.1 // indirect
-	github.com/holiman/uint256 v1.2.3 // indirect
+	github.com/holiman/uint256 v1.2.4 // indirect
 	github.com/inconshreveable/mousetrap v1.1.0 // indirect
 	github.com/matttproud/golang_protobuf_extensions/v2 v2.0.0 // indirect
 	github.com/mmcloughlin/addchain v0.4.0 // indirect
