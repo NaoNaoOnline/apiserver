@@ -137,6 +137,7 @@ func New(c Config) *Handler {
 			Cnt: c.Scn[i],
 			Log: c.Log,
 			Rpc: c.Rpc[i],
+			Sub: c.Sto.Subs(),
 		}))
 	}
 

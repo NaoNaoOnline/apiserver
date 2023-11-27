@@ -86,6 +86,10 @@ Generating smart contract bindings using [abigen].
 abigen --abi pkg/contract/policycontract/Policy.ABI.json --pkg policycontract --type Policy --out pkg/contract/policycontract/policy_contract.go
 ```
 
+```
+abigen --abi pkg/contract/subscriptioncontract/Subscription.ABI.json --pkg subscriptioncontract --type Subscription --out pkg/contract/subscriptioncontract/subscription_contract.go
+```
+
 
 
 [abigen]: https://geth.ethereum.org/docs/tools/abigen

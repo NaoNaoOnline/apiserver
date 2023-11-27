@@ -69,3 +69,11 @@ func inpUni(str string) time.Time {
 
 	return time.Unix(sec, 0).UTC()
 }
+
+func outPoi(str string) *string {
+	if str == "" {
+		return nil
+	}
+
+	return &str
+}

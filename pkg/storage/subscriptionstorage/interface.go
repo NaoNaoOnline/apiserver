@@ -30,6 +30,14 @@ type Interface interface {
 	//
 	SearchLtst(objectid.ID) (*Object, error)
 
+	// SearchSubs returns the subscription objects matching the given subscription
+	// IDs.
+	//
+	//     @inp[0] the subscription IDs to search for
+	//     @out[0] the list of subscription objects matching the given subscription IDs
+	//
+	SearchSubs([]objectid.ID) ([]*Object, error)
+
 	// SearchUser returns the subscription objects created by the given user IDs.
 	//
 	//     @inp[0] the user IDs that created the subscriptions

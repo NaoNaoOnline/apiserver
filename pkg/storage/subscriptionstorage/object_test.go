@@ -17,7 +17,7 @@ func Test_Storage_Subscription_Object_Verify_Unix(t *testing.T) {
 		// case 000
 		{
 			uni: "2023-10-01T00:00:00Z",
-			err: nil,
+			err: subscriptionUnixInvalidError,
 		},
 		// case 001
 		{
@@ -44,6 +44,16 @@ func Test_Storage_Subscription_Object_Verify_Unix(t *testing.T) {
 			uni: "2023-11-01T15:34:03Z",
 			err: subscriptionUnixInvalidError,
 		},
+		// case 006
+		{
+			uni: "2023-10-21T05:30:47Z",
+			err: subscriptionUnixInvalidError,
+		},
+		// case 007
+		{
+			uni: "2023-11-21T05:30:47Z",
+			err: subscriptionUnixInvalidError,
+		},
 	}
 
 	for i, tc := range testCases {
@@ -63,6 +73,10 @@ func witUni(uni string) *Object {
 		Sbsc: "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
 		Unix: musTim(uni),
 		User: objectid.ID("1234"),
+
+		time: &faker{
+			tim: musTim("2023-11-01T15:34:03Z"),
+		},
 	}
 }
 
