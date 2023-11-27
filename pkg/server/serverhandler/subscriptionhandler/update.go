@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/NaoNaoOnline/apigocode/pkg/subscription"
+	"github.com/NaoNaoOnline/apiserver/pkg/object/objectid"
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectlabel"
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectstate"
 	"github.com/NaoNaoOnline/apiserver/pkg/server/context/userid"
@@ -19,12 +20,21 @@ func (h *Handler) Update(ctx context.Context, req *subscription.UpdateI) (*subsc
 	// Emit scrape tasks.
 	//
 
-	var lat *subscriptionstorage.Object
+	var sob []*subscriptionstorage.Object
 	{
-		lat, err = h.sub.SearchLtst(userid.FromContext(ctx))
+		sob, err = h.sub.SearchRecv([]objectid.ID{userid.FromContext(ctx)}, subscriptionstorage.PagLat())
 		if err != nil {
 			return nil, tracer.Mask(err)
 		}
+	}
+
+	if sob[0].Stts == objectstate.Success {
+		return nil, tracer.Mask(updateStatusSuccessError)
+	}
+
+	var key string
+	{
+		key = fmt.Sprintf(objectlabel.SubsLocker, sob[0].Subs.String())
 	}
 
 	var cur string
@@ -37,7 +47,7 @@ func (h *Handler) Update(ctx context.Context, req *subscription.UpdateI) (*subsc
 	var des string
 	var exi bool
 	{
-		des, exi, err = h.loc.Exists(fmt.Sprintf(objectlabel.SubsLocker, lat.Subs.String()))
+		des, exi, err = h.loc.Exists(key)
 		if err != nil {
 			return nil, tracer.Mask(err)
 		}
@@ -51,14 +61,14 @@ func (h *Handler) Update(ctx context.Context, req *subscription.UpdateI) (*subsc
 
 		if cur == "" && !exi {
 			{
-				des, err = h.loc.Create(fmt.Sprintf(objectlabel.SubsLocker, lat.Subs.String()))
+				des, err = h.loc.Create(key)
 				if err != nil {
 					return nil, tracer.Mask(err)
 				}
 			}
 
 			{
-				err = h.emi.Scrape(lat.Subs)
+				err = h.emi.Scrape(sob[0].Subs)
 				if err != nil {
 					return nil, tracer.Mask(err)
 				}

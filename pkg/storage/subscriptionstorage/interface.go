@@ -23,12 +23,27 @@ type Interface interface {
 	//
 	CreateWrkr(inp []*Object) ([]objectstate.String, error)
 
-	// SearchLtst returns the most recent subscription object for the given user.
+	// SearchPayr returns the subscription objects created by the given user IDs.
+	// That is, the users who paid for the subscriptions being searched. All
+	// subscriptions can be fetched using pagination range [0 -1]. The latest
+	// subscription can be fetched using pagination range [-1 -1].
 	//
-	//     @inp[0] the user ID to search for
-	//     @out[0] the most recent subscription object for the given user
+	//     @inp[0] the user IDs that paid for the subscriptions
+	//     @inp[1] the pagination range defining lower and upper inclusive boundaries
+	//     @out[0] the list of subscription objects paid by the given user IDs
 	//
-	SearchLtst(objectid.ID) (*Object, error)
+	SearchPayr([]objectid.ID, [2]int) ([]*Object, error)
+
+	// SearchRecv returns the subscription objects received by the given user IDs.
+	// That is, the users who received the subscriptions being searched. All
+	// subscriptions can be fetched using pagination range [0 -1]. The latest
+	// subscription can be fetched using pagination range [-1 -1].
+	//
+	//     @inp[0] the user IDs that received the subscriptions
+	//     @inp[1] the pagination range defining lower and upper inclusive boundaries
+	//     @out[0] the list of subscription objects received by the given user IDs
+	//
+	SearchRecv([]objectid.ID, [2]int) ([]*Object, error)
 
 	// SearchSubs returns the subscription objects matching the given subscription
 	// IDs.
@@ -37,11 +52,4 @@ type Interface interface {
 	//     @out[0] the list of subscription objects matching the given subscription IDs
 	//
 	SearchSubs([]objectid.ID) ([]*Object, error)
-
-	// SearchUser returns the subscription objects created by the given user IDs.
-	//
-	//     @inp[0] the user IDs that created the subscriptions
-	//     @out[0] the list of subscription objects created by the given user IDs
-	//
-	SearchUser([]objectid.ID) ([]*Object, error)
 }

@@ -42,16 +42,16 @@ func NewRedis(c RedisConfig) *Redis {
 	}
 }
 
-func subAdd(add string) string {
-	return fmt.Sprintf(keyfmt.SubscriptionAddress, add)
+func subRec(use objectid.ID) string {
+	return fmt.Sprintf(keyfmt.SubscriptionReceiver, use)
 }
 
 func subObj(use objectid.ID) string {
 	return fmt.Sprintf(keyfmt.SubscriptionObject, use)
 }
 
-func subUse(use objectid.ID) string {
-	return fmt.Sprintf(keyfmt.SubscriptionUser, use)
+func subPay(use objectid.ID) string {
+	return fmt.Sprintf(keyfmt.SubscriptionPayer, use)
 }
 
 func musStr(obj *Object) string {
