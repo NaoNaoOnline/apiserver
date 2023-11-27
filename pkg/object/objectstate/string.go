@@ -14,17 +14,28 @@ const (
 	// of itself is legitimate, we return without any underlying modification.
 	Dropped String = "dropped"
 
+	// Failure is the status used when an update operation failed to complete as
+	// intended. The update operation here intended to reconcile a complex task,
+	// potentially resulting in a multitude of outcomes. Failure is then one
+	// possible final state.
+	Failure String = "failure"
+
 	// Started is the status used when an update operation was initiated for
 	// thorough bachground processing.
 	Started String = "started"
 
-	// Updated is the status used when an update operation was successful.
+	// Success is the status used when an update operation was successful. The
+	// update operation here intended to reconcile a complex task, potentially
+	// resulting in a multitude of outcomes. Success is then one possible final
+	// state.
+	Success String = "success"
+
+	// Updated is the status used when an update operation was successful. The
+	// update operation here intended to update a resource and succeeded doing so.
 	Updated String = "updated"
 
 	// Waiting is the status used when an update operation is still in progress.
 	Waiting String = "waiting"
-
-	// TODO success and failure
 )
 
 type String string

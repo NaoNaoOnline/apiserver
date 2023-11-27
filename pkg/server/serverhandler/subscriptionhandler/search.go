@@ -34,7 +34,7 @@ func (h *Handler) Search(ctx context.Context, req *subscription.SearchI) (*subsc
 				return nil, tracer.Mask(runtime.UserNotOwnerError)
 			}
 
-			lis, err := h.sub.SearchUser([]objectid.ID{use})
+			lis, err := h.sub.SearchPayr([]objectid.ID{use}, subscriptionstorage.PagAll())
 			if err != nil {
 				return nil, tracer.Mask(err)
 			}

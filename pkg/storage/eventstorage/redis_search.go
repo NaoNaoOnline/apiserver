@@ -180,54 +180,6 @@ func (r *Redis) SearchLink(eve objectid.ID) ([]objectid.ID, error) {
 	return objectid.IDs(val), nil
 }
 
-func (r *Redis) SearchRule(eve objectid.ID) ([]objectid.ID, error) {
-	var err error
-
-	// val will result in a list of all rule IDs explicitely defining the given
-	// event ID, if any.
-	var val []string
-	{
-		val, err = r.red.Sorted().Search().Order(rulEve(eve), 0, -1)
-		if err != nil {
-			return nil, tracer.Mask(err)
-		}
-	}
-
-	// There might not be any values, and so we do not proceed, but instead
-	// return nothing.
-	if len(val) == 0 {
-		return nil, nil
-	}
-
-	return objectid.IDs(val), nil
-}
-
-func (r *Redis) SearchUpcm() ([]*Object, error) {
-	var err error
-
-	var now time.Time
-	{
-		now = time.Now().UTC()
-	}
-
-	var min time.Time
-	var max time.Time
-	{
-		min = now
-		max = now.Add(+oneWeek)
-	}
-
-	var out []*Object
-	{
-		out, err = r.SearchTime(min, max)
-		if err != nil {
-			return nil, tracer.Mask(err)
-		}
-	}
-
-	return out, nil
-}
-
 func (r *Redis) SearchList(rul []*rulestorage.Object) ([]*Object, error) {
 	var err error
 
@@ -306,6 +258,28 @@ func (r *Redis) SearchList(rul []*rulestorage.Object) ([]*Object, error) {
 	return out, nil
 }
 
+func (r *Redis) SearchRule(eve objectid.ID) ([]objectid.ID, error) {
+	var err error
+
+	// val will result in a list of all rule IDs explicitely defining the given
+	// event ID, if any.
+	var val []string
+	{
+		val, err = r.red.Sorted().Search().Order(rulEve(eve), 0, -1)
+		if err != nil {
+			return nil, tracer.Mask(err)
+		}
+	}
+
+	// There might not be any values, and so we do not proceed, but instead
+	// return nothing.
+	if len(val) == 0 {
+		return nil, nil
+	}
+
+	return objectid.IDs(val), nil
+}
+
 func (r *Redis) SearchTime(min time.Time, max time.Time) ([]*Object, error) {
 	var err error
 
@@ -328,6 +302,32 @@ func (r *Redis) SearchTime(min time.Time, max time.Time) ([]*Object, error) {
 	var out []*Object
 	{
 		out, err = r.SearchEvnt("", objectid.IDs(val))
+		if err != nil {
+			return nil, tracer.Mask(err)
+		}
+	}
+
+	return out, nil
+}
+
+func (r *Redis) SearchUpcm() ([]*Object, error) {
+	var err error
+
+	var now time.Time
+	{
+		now = time.Now().UTC()
+	}
+
+	var min time.Time
+	var max time.Time
+	{
+		min = now
+		max = now.Add(+oneWeek)
+	}
+
+	var out []*Object
+	{
+		out, err = r.SearchTime(min, max)
 		if err != nil {
 			return nil, tracer.Mask(err)
 		}
