@@ -5,7 +5,7 @@ import (
 	"github.com/xh3b4sd/tracer"
 )
 
-func (r *Redis) Update(inp []*Object) ([]objectstate.String, error) {
+func (r *Redis) UpdateObct(inp []*Object) ([]objectstate.String, error) {
 	var err error
 
 	var sta []objectstate.String
