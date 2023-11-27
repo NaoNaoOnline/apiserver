@@ -18,7 +18,7 @@ func (h *Handler) Create(ctx context.Context, req *subscription.CreateI) (*subsc
 		if x.Public != nil {
 			inp = append(inp, &subscriptionstorage.Object{
 				Crtr: inpCrt(x.Public.Crtr),
-				Sbsc: x.Public.Sbsc,
+				Recv: x.Public.Sbsc, // TODO change apischema and contracts terminology
 				Unix: inpUni(x.Public.Unix),
 				User: userid.FromContext(ctx),
 			})

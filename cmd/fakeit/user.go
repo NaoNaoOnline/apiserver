@@ -54,7 +54,7 @@ func (r *run) randomUser(sto *storage.Storage, fak *gofakeit.Faker) *userstorage
 			Name: objectfield.String{
 				Data: fak.Username(),
 			},
-			Subj: []string{
+			Sclm: []string{
 				fmt.Sprintf("google-oauth2|%06d", fak.Number(0, 99999)),
 			},
 		}

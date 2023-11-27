@@ -146,6 +146,9 @@ func New(c Config) *Handler {
 			Cid: c.Cid,
 			Loc: c.Loc,
 			Log: c.Log,
+			Sub: c.Sto.Subs(),
+			Use: c.Sto.User(),
+			Wal: c.Sto.Wllt(),
 		}))
 	}
 

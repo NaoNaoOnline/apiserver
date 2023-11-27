@@ -70,7 +70,7 @@ func witUni(uni string) *Object {
 	return &Object{
 		ChID: 1,
 		Crtr: []string{"0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"},
-		Sbsc: "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+		Recv: "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
 		Unix: musTim(uni),
 		User: objectid.ID("1234"),
 

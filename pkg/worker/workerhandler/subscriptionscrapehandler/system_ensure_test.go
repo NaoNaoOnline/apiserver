@@ -9,7 +9,7 @@ import (
 	"github.com/google/go-cmp/cmp"
 )
 
-func Test_Worker_Handler_Subscription_Scrape_addStr(t *testing.T) {
+func Test_Worker_Handler_Subscription_Scrape_filAdd(t *testing.T) {
 	testCases := []struct {
 		add [3]common.Address
 		str []string
@@ -117,7 +117,7 @@ func Test_Worker_Handler_Subscription_Scrape_addStr(t *testing.T) {
 
 	for i, tc := range testCases {
 		t.Run(fmt.Sprintf("%03d", i), func(t *testing.T) {
-			str := addStr(tc.add)
+			str := filAdd(tc.add)
 			if !reflect.DeepEqual(str, tc.str) {
 				t.Fatalf("\n\n%s\n", cmp.Diff(tc.str, str))
 			}

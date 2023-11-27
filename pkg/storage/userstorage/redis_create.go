@@ -26,7 +26,7 @@ func (r *Redis) Create(inp *Object) (*Object, error) {
 
 	var out *Object
 	{
-		out, err = r.SearchSubj(inp.Subj[0])
+		out, err = r.SearchSubj(inp.Sclm[0])
 		if IsSubjectClaimMapping(err) {
 			// The user does not appear to exist. So we initialize the user object.
 			{
@@ -38,7 +38,7 @@ func (r *Redis) Create(inp *Object) (*Object, error) {
 			// Here we create the mapping between external subject claim and internal
 			// user ID.
 			{
-				err = r.red.Simple().Create().Element(useCla(inp.Subj[0]), inp.User.String())
+				err = r.red.Simple().Create().Element(useCla(inp.Sclm[0]), inp.User.String())
 				if err != nil {
 					return nil, tracer.Mask(err)
 				}

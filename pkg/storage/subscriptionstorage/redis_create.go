@@ -26,7 +26,7 @@ func (r *Redis) CreateSubs(inp []*Object) ([]*Object, error) {
 		// should be exactly one user ID for any given address.
 		var rec []objectid.ID
 		{
-			rec, err = r.searchAddr([]string{inp[i].Sbsc})
+			rec, err = r.searchAddr([]string{inp[i].Recv})
 			if err != nil {
 				return nil, tracer.Mask(err)
 			}
@@ -36,9 +36,11 @@ func (r *Redis) CreateSubs(inp []*Object) ([]*Object, error) {
 			return nil, tracer.Mask(runtime.ExecutionFailedError)
 		}
 
-		// TODO users/receivers with valid/active subscriptions or those that are in
-		// the process of being verified should not be able to create another
-		// subscription for the month
+		// TODO validate/search for the latest subscription
+		//
+		//    if it is for this month and has status created, then return error
+		//    if it is for this month and has status success, then return error
+		//
 
 		var now time.Time
 		{
