@@ -22,11 +22,25 @@ func (r *Redis) CreateSubs(inp []*Object) ([]*Object, error) {
 			}
 		}
 
+		// Ensure the given creator addresses meet our criteria of legitimate
+		// content creators.
+		var vld []bool
+		{
+			vld, err = r.VerifyAddr(inp[i].Crtr)
+			if err != nil {
+				return nil, tracer.Mask(err)
+			}
+		}
+
+		if !vldAdd(vld) {
+			return nil, tracer.Mask(subscriptionCrtrInvalidError)
+		}
+
 		// Lookup the user ID of the recipient using the subscriber address. There
 		// should be exactly one user ID for any given address.
 		var rec []objectid.ID
 		{
-			rec, err = r.searchAddr([]string{inp[i].Recv})
+			rec, err = r.wal.SearchAddr([]string{inp[i].Recv})
 			if err != nil {
 				return nil, tracer.Mask(err)
 			}
@@ -99,4 +113,14 @@ func (r *Redis) CreateWrkr(inp []*Object) ([]objectstate.String, error) {
 	}
 
 	return out, nil
+}
+
+func vldAdd(vld []bool) bool {
+	for _, x := range vld {
+		if !x {
+			return false
+		}
+	}
+
+	return true
 }

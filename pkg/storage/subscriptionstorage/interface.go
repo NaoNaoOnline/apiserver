@@ -23,6 +23,15 @@ type Interface interface {
 	//
 	CreateWrkr(inp []*Object) ([]objectstate.String, error)
 
+	// SearchCrtr returns a list of user IDs representing a set of legitimate
+	// content creators that the given user IDs have consumed content from, in the
+	// form of event link clicks.
+	//
+	//     @inp[0] the list of user IDs having clicked on event links
+	//     @out[0] the list of user IDs having created those event objects
+	//
+	SearchCrtr([]objectid.ID) ([]objectid.ID, error)
+
 	// SearchPayr returns the subscription objects created by the given user IDs.
 	// That is, the users who paid for the subscriptions being searched. All
 	// subscriptions can be fetched using pagination range [0 -1]. The latest
@@ -53,10 +62,18 @@ type Interface interface {
 	//
 	SearchSubs([]objectid.ID) ([]*Object, error)
 
-	// Update modifies the existing subscription objects.
+	// UpdateObct modifies the existing subscription objects.
 	//
 	//     @inp[0] the list of subscription objects to modify
 	//     @out[0] the list of operation states related to the modified subscription objects
 	//
-	Update([]*Object) ([]objectstate.String, error)
+	UpdateObct([]*Object) ([]objectstate.String, error)
+
+	// VerifyAddr expresses whether the given wallet addresses are owned by what
+	// is being considered legitimate content creators.
+	//
+	//     @inp[0] the list of wallet addresses to verify
+	//     @out[0] the list of validity states related to the verified wallet addresses
+	//
+	VerifyAddr([]string) ([]bool, error)
 }

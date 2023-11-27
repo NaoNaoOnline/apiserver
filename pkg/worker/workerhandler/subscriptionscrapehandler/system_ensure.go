@@ -22,6 +22,7 @@ import (
 const (
 	crefmt = "onchain state for creator addresses %v does not match offchain state %v"
 	unifmt = "onchain state for subscription timestamp %d does not match offchain state %d"
+	vldfmt = "creator addresses %v do not match criteria of legitimate content creators"
 )
 
 func (h *ScrapeHandler) Ensure(tas *task.Task, bud *budget.Budget) error {
@@ -120,10 +121,18 @@ func (h *ScrapeHandler) Ensure(tas *task.Task, bud *budget.Budget) error {
 		sob[0].Stts = objectstate.Failure
 	}
 
-	// TODO validate whether creator addresses represent valid content creators.
-	//
-	//     https://github.com/NaoNaoOnline/issues/issues/6
-	//
+	var vld []bool
+	{
+		vld, err = h.sub.VerifyAddr(cre)
+		if err != nil {
+			return tracer.Mask(err)
+		}
+	}
+
+	if !vldAdd(vld) {
+		sob[0].Fail = fmt.Sprintf(vldfmt, cre)
+		sob[0].Stts = objectstate.Failure
+	}
 
 	// Mark the subscription object in redis as valid since all checks passed.
 	// Note that all code branches from above flow down here, so it is important
@@ -133,7 +142,7 @@ func (h *ScrapeHandler) Ensure(tas *task.Task, bud *budget.Budget) error {
 	}
 
 	{
-		_, err = h.sub.Update([]*subscriptionstorage.Object{sob[0]})
+		_, err = h.sub.UpdateObct([]*subscriptionstorage.Object{sob[0]})
 		if err != nil {
 			return tracer.Mask(err)
 		}
@@ -157,4 +166,14 @@ func filAdd(add [3]common.Address) []string {
 	}
 
 	return str
+}
+
+func vldAdd(vld []bool) bool {
+	for _, x := range vld {
+		if !x {
+			return false
+		}
+	}
+
+	return true
 }

@@ -9,6 +9,21 @@ import (
 	"github.com/xh3b4sd/tracer"
 )
 
+func (r *Redis) SearchCrtr([]objectid.ID) ([]objectid.ID, error) {
+	// TODO SearchCrtr
+	//
+	//     1. start with a given user ID
+	//     2. use user storage to search for event objects that the given user ID reacted to in the form of a link click
+	//     3. reduce the sorted list of events to a list of unique user IDs
+	//     4. sort the event objects by link clicks, from high to low
+	//     5. use wallet storage to search for wallet objects using list of unique user IDs
+	//     6. reduce the list of wallet objects by removing those that are not labelled for accounting
+	//     8. collect the user IDs of the remaining wallet objects
+	//     7. success
+	//
+	return nil, nil
+}
+
 func (r *Redis) SearchPayr(use []objectid.ID, pag [2]int) ([]*Object, error) {
 	var err error
 
@@ -110,20 +125,4 @@ func (r *Redis) SearchSubs(inp []objectid.ID) ([]*Object, error) {
 	}
 
 	return out, nil
-}
-
-func (r *Redis) searchAddr(add []string) ([]objectid.ID, error) {
-	var err error
-
-	var val []string
-	{
-		val, err = r.red.Simple().Search().Multi(objectid.Fmt(add, keyfmt.WalletAddress)...)
-		if simple.IsNotFound(err) {
-			return nil, tracer.Maskf(walletObjectNotFoundError, "%v", add)
-		} else if err != nil {
-			return nil, tracer.Mask(err)
-		}
-	}
-
-	return objectid.IDs(val), nil
 }
