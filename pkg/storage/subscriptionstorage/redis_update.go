@@ -11,7 +11,7 @@ func (r *Redis) Update(inp []*Object) ([]objectstate.String, error) {
 	var sta []objectstate.String
 	for i := range inp {
 		// At first we need to validate the given input object and, amongst others,
-		// whether the subscription addresses comply with the expected format.
+		// whether the creator addresses comply with the expected format.
 		{
 			err := inp[i].Verify()
 			if err != nil {
