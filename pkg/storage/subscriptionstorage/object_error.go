@@ -10,6 +10,11 @@ var subscriptionChIDEmptyError = &tracer.Error{
 	Desc: "The request expects the subscription chain ID not to be empty. The subscription chain ID was found to be empty. Therefore the request failed.",
 }
 
+var subscriptionCrtrDuplicateError = &tracer.Error{
+	Kind: "subscriptionCrtrDuplicateError",
+	Desc: "The request expects the creator addresses not to be duplicated. The creator addresses were found to be duplicated. Therefore the request failed.",
+}
+
 var subscriptionCrtrEmptyError = &tracer.Error{
 	Kind: "subscriptionCrtrEmptyError",
 	Desc: "The request expects the subscription creator not to be empty. The subscription creator was found to be empty. Therefore the request failed.",
@@ -46,5 +51,5 @@ var subscriptionUnixEmptyError = &tracer.Error{
 
 var subscriptionUnixInvalidError = &tracer.Error{
 	Kind: "subscriptionUnixInvalidError",
-	Desc: "The request expects the subscription timestamp to define the first day of any given month. The subscription timestamp was not found to define the first day of any given month. Therefore the request failed.",
+	Desc: "The request expects the subscription timestamp to define the first day of the current month. The subscription timestamp was not found to define the first day of the current month. Therefore the request failed.",
 }

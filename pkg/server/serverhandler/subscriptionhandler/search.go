@@ -3,6 +3,7 @@ package subscriptionhandler
 import (
 	"context"
 	"strconv"
+	"strings"
 
 	"github.com/NaoNaoOnline/apigocode/pkg/subscription"
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectid"
@@ -62,14 +63,18 @@ func (h *Handler) Search(ctx context.Context, req *subscription.SearchI) (*subsc
 		)
 	}
 
-	// TODO complete fields
 	for _, x := range out[:limiter.Len(len(out))] {
 		res.Object = append(res.Object, &subscription.SearchO_Object{
 			Intern: &subscription.SearchO_Object_Intern{
 				Crtd: strconv.FormatInt(x.Crtd.Unix(), 10),
+				Fail: outPoi(x.Fail),
+				Stts: x.Stts.String(),
+				Subs: x.Subs.String(),
 				User: x.User.String(),
 			},
 			Public: &subscription.SearchO_Object_Public{
+				Crtr: strings.Join(x.Crtr, ","),
+				Sbsc: x.Sbsc,
 				Unix: strconv.FormatInt(x.Unix.Unix(), 10),
 			},
 		})

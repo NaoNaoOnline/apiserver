@@ -4,7 +4,9 @@ import (
 	"time"
 
 	"github.com/NaoNaoOnline/apiserver/pkg/format/hexformat"
+	"github.com/NaoNaoOnline/apiserver/pkg/generic"
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectid"
+	"github.com/NaoNaoOnline/apiserver/pkg/object/objectstate"
 	"github.com/NaoNaoOnline/apiserver/pkg/runtime"
 	"github.com/xh3b4sd/tracer"
 )
@@ -19,9 +21,23 @@ type Object struct {
 	// of accounting. These are the addresses getting paid peer-to-peer by users
 	// subscribing for accessing premium features.
 	Crtr []string `json:"crtr"`
+	// Fail is the description explaining why a subscription could not be verified
+	// successfully. Most subscriptions should not be accompanied by a failure
+	// message.
+	Fail string `json:"fail,omitempty"`
 	// Sbsc is the wallet address of the user getting access to premium features
 	// upon asynchronous subscription verification.
 	Sbsc string `json:"sbsc"`
+	// Stts is the resource status expressing whether this subscription is active.
+	// An active subscription is verified by comparing its offchain and onchain
+	// state. Subscriptions found to be invalid will not be marked as active, but
+	// will instead be accompanied by
+	//
+	//	created for a newly registered subscriptions
+	//	failure for successfully processed subscriptions
+	//	success for processed subscriptions found to be invalid
+	//
+	Stts objectstate.String `json:"stts"`
 	// Subs is the ID of the subscription being created.
 	Subs objectid.ID `json:"evnt"`
 	// Unix is the timestamp of the subscription period. This timestamp must be
@@ -31,6 +47,10 @@ type Object struct {
 	Unix time.Time `json:"unix"`
 	// User is the user ID creating this subscription.
 	User objectid.ID `json:"user"`
+
+	//
+
+	time Timer `json:"-"`
 }
 
 func (r *Object) Verify() error {
@@ -46,6 +66,9 @@ func (r *Object) Verify() error {
 		}
 		if len(r.Crtr) > 3 {
 			return tracer.Mask(subscriptionCrtrLimitError)
+		}
+		if generic.Dup(r.Crtr) {
+			return tracer.Mask(subscriptionCrtrDuplicateError)
 		}
 		for _, x := range r.Crtr {
 			if x == "" {
@@ -73,10 +96,13 @@ func (r *Object) Verify() error {
 	}
 
 	{
+		if r.time == nil {
+			r.time = &timer{}
+		}
 		if r.Unix.IsZero() {
 			return tracer.Mask(subscriptionUnixEmptyError)
 		}
-		if !r.Unix.Equal(timMon(r.Unix)) {
+		if !r.Unix.Equal(timMon(r.time.Now())) {
 			return tracer.Mask(subscriptionUnixInvalidError)
 		}
 	}
@@ -90,7 +116,6 @@ func (r *Object) Verify() error {
 	return nil
 }
 
-// TODO ensure only current month is allowed
 func timMon(tim time.Time) time.Time {
 	return time.Date(tim.Year(), tim.Month(), 1, 0, 0, 0, 0, time.UTC)
 }

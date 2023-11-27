@@ -118,9 +118,9 @@ func Test_Generic_Any_string(t *testing.T) {
 		// Case 006
 		{
 			all: []string{
+				"66",
 				"44",
 				"22",
-				"66",
 			},
 			sub: []string{
 				"44",
@@ -254,9 +254,9 @@ func Test_Generic_Any_int64(t *testing.T) {
 		// Case 006
 		{
 			all: []int64{
+				66,
 				44,
 				22,
-				66,
 			},
 			sub: []int64{
 				44,

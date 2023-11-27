@@ -28,6 +28,7 @@ func (r *Redis) CreateSubs(inp []*Object) ([]*Object, error) {
 
 		{
 			inp[i].Crtd = now
+			inp[i].Stts = objectstate.Created
 			inp[i].Subs = objectid.Random(objectid.Time(now))
 		}
 
