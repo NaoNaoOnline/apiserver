@@ -80,7 +80,7 @@ func (h *ScrapeHandler) Ensure(tas *task.Task, bud *budget.Budget) error {
 
 	var add [3]common.Address
 	{
-		add, err = scn.GetSubAdd(nil, common.HexToAddress(sob[0].Recv))
+		add, err = scn.GetSubRec(nil, common.HexToAddress(sob[0].Recv))
 		if err != nil {
 			return tracer.Mask(err)
 		}

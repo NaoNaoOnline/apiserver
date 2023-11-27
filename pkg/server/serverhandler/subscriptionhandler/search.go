@@ -74,7 +74,7 @@ func (h *Handler) Search(ctx context.Context, req *subscription.SearchI) (*subsc
 			},
 			Public: &subscription.SearchO_Object_Public{
 				Crtr: strings.Join(x.Crtr, ","),
-				Sbsc: x.Recv,
+				Recv: x.Recv,
 				Unix: strconv.FormatInt(x.Unix.Unix(), 10),
 			},
 		})

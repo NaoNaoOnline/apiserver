@@ -121,25 +121,6 @@
     "type": "function"
   },
   {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "subadd",
-        "type": "address"
-      }
-    ],
-    "name": "getSubAdd",
-    "outputs": [
-      {
-        "internalType": "address[3]",
-        "name": "",
-        "type": "address[3]"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
     "inputs": [],
     "name": "getSubAmn",
     "outputs": [
@@ -156,7 +137,26 @@
     "inputs": [
       {
         "internalType": "address",
-        "name": "subadd",
+        "name": "subrec",
+        "type": "address"
+      }
+    ],
+    "name": "getSubRec",
+    "outputs": [
+      {
+        "internalType": "address[3]",
+        "name": "",
+        "type": "address[3]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "subrec",
         "type": "address"
       }
     ],
@@ -234,12 +234,12 @@
     "inputs": [
       {
         "internalType": "address",
-        "name": "subadd",
+        "name": "subrec",
         "type": "address"
       },
       {
         "internalType": "address",
-        "name": "creator",
+        "name": "creaone",
         "type": "address"
       },
       {
@@ -257,7 +257,7 @@
     "inputs": [
       {
         "internalType": "address",
-        "name": "subadd",
+        "name": "subrec",
         "type": "address"
       },
       {
@@ -305,7 +305,7 @@
     "inputs": [
       {
         "internalType": "address",
-        "name": "subadd",
+        "name": "subrec",
         "type": "address"
       },
       {

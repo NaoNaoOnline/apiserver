@@ -36,12 +36,6 @@ func (r *Redis) CreateSubs(inp []*Object) ([]*Object, error) {
 			return nil, tracer.Mask(runtime.ExecutionFailedError)
 		}
 
-		// TODO validate/search for the latest subscription
-		//
-		//    if it is for this month and has status created, then return error
-		//    if it is for this month and has status success, then return error
-		//
-
 		var now time.Time
 		{
 			now = time.Now().UTC()
