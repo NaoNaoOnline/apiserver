@@ -5,7 +5,7 @@ go 1.21.1
 require (
 	github.com/NaoNaoOnline/apigocode v0.8.13
 	github.com/auth0/go-jwt-middleware/v2 v2.1.0
-	github.com/brianvoe/gofakeit/v6 v6.24.0
+	github.com/brianvoe/gofakeit/v6 v6.25.0
 	github.com/ethereum/go-ethereum v1.13.5
 	github.com/evanphx/json-patch/v5 v5.7.0
 	github.com/google/go-cmp v0.6.0
