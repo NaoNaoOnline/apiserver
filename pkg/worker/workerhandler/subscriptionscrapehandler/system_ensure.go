@@ -1,15 +1,16 @@
 package subscriptionscrapehandler
 
 import (
+	"context"
 	"fmt"
 	"math/big"
-	"strconv"
 	"strings"
 
 	"github.com/NaoNaoOnline/apiserver/pkg/contract/subscriptioncontract"
 	"github.com/NaoNaoOnline/apiserver/pkg/generic"
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectid"
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectlabel"
+	"github.com/NaoNaoOnline/apiserver/pkg/object/objectstate"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/subscriptionstorage"
 	"github.com/NaoNaoOnline/apiserver/pkg/worker/budget"
 	"github.com/ethereum/go-ethereum/common"
@@ -18,30 +19,39 @@ import (
 	"github.com/xh3b4sd/tracer"
 )
 
+const (
+	crefmt = "onchain state for creator addresses %v does not match offchain state %v"
+	unifmt = "onchain state for subscription timestamp %d does not match offchain state %d"
+)
+
 func (h *ScrapeHandler) Ensure(tas *task.Task, bud *budget.Budget) error {
 	var err error
 
-	var sid string
-	{
-		sid = tas.Meta.Get(objectlabel.SubsObject)
-	}
-
-	var sub []*subscriptionstorage.Object
-	{
-		sub, err = h.sub.SearchSubs([]objectid.ID{objectid.ID(sid)})
-		// TODO stop processing if sub not found, otherwise the task gets stuck forever
-		if err != nil {
-			return tracer.Mask(err)
-		}
-	}
-
-	var cid string
 	var cnt string
+	var sid string
 	var rpc string
 	{
-		cid = tas.Meta.Get(objectlabel.SubsChanid)
 		cnt = tas.Meta.Get(objectlabel.SubsCntrct)
+		sid = tas.Meta.Get(objectlabel.SubsObject)
 		rpc = tas.Meta.Get(objectlabel.SubsRpcUrl)
+	}
+
+	var sob []*subscriptionstorage.Object
+	{
+		sob, err = h.sub.SearchSubs([]objectid.ID{objectid.ID(sid)})
+		if subscriptionstorage.IsSubscriptionObjectNotFound(err) {
+			h.log.Log(
+				context.Background(),
+				"level", "warning",
+				"message", "stopped processing task",
+				"object", sid,
+				"reason", "subscription object not found",
+			)
+
+			return nil
+		} else if err != nil {
+			return tracer.Mask(err)
+		}
 	}
 
 	var eth *ethclient.Client
@@ -62,7 +72,7 @@ func (h *ScrapeHandler) Ensure(tas *task.Task, bud *budget.Budget) error {
 
 	var unx *big.Int
 	{
-		unx, err = scn.GetSubUnx(nil, common.HexToAddress(sub[0].Sbsc))
+		unx, err = scn.GetSubUnx(nil, common.HexToAddress(sob[0].Recv))
 		if err != nil {
 			return tracer.Mask(err)
 		}
@@ -70,7 +80,7 @@ func (h *ScrapeHandler) Ensure(tas *task.Task, bud *budget.Budget) error {
 
 	var add [3]common.Address
 	{
-		add, err = scn.GetSubAdd(nil, common.HexToAddress(sub[0].Sbsc))
+		add, err = scn.GetSubAdd(nil, common.HexToAddress(sob[0].Recv))
 		if err != nil {
 			return tracer.Mask(err)
 		}
@@ -83,7 +93,7 @@ func (h *ScrapeHandler) Ensure(tas *task.Task, bud *budget.Budget) error {
 
 	var cre []string
 	{
-		cre = addStr(add)
+		cre = filAdd(add)
 	}
 
 	// There are potentially multiple tasks for multiple blockchain networks.
@@ -95,24 +105,19 @@ func (h *ScrapeHandler) Ensure(tas *task.Task, bud *budget.Budget) error {
 		return nil
 	}
 
-	if cid != fmt.Sprintf("%d", sub[0].ChID) {
-		// TODO update subscription object valid flag with failure reason
-		return nil
+	// Ensure the onchain and offchain state of subscription timestamps match. And
+	// if they don't, then finalize the subscription at hand with a failure
+	// reason.
+	if uni != sob[0].Unix.Unix() {
+		sob[0].Fail = fmt.Sprintf(unifmt, uni, sob[0].Unix.Unix())
+		sob[0].Stts = objectstate.Failure
 	}
 
-	if uni != sub[0].Unix.Unix() {
-		// TODO update subscription object valid flag with failure reason
-		return nil
-	}
-
-	if len(add) != len(sub[0].Crtr) {
-		// TODO update subscription object valid flag with failure reason
-		return nil
-	}
-
-	if !generic.All(cre, sub[0].Crtr) {
-		// TODO update subscription object valid flag with failure reason
-		return nil
+	// Ensure the onchain and offchain state of creator addresses match. And if
+	// they don't, then finalize the subscription at hand with a failure reason.
+	if len(cre) != len(sob[0].Crtr) || !generic.All(cre, sob[0].Crtr) {
+		sob[0].Fail = fmt.Sprintf(crefmt, cre, sob[0].Crtr)
+		sob[0].Stts = objectstate.Failure
 	}
 
 	// TODO validate whether creator addresses represent valid content creators.
@@ -120,16 +125,27 @@ func (h *ScrapeHandler) Ensure(tas *task.Task, bud *budget.Budget) error {
 	//     https://github.com/NaoNaoOnline/issues/issues/6
 	//
 
-	// We modify the data in Task.Sync to forward the validity of the current
-	// subscription we are processing.
+	// Mark the subscription object in redis as valid since all checks passed.
+	// Note that all code branches from above flow down here, so it is important
+	// to not overwrite any failure state assigned.
+	if sob[0].Stts != objectstate.Failure {
+		sob[0].Stts = objectstate.Success
+	}
+
 	{
-		tas.Sync.Set(objectlabel.SubsVerify, strconv.FormatBool(true))
+		_, err = h.sub.Update([]*subscriptionstorage.Object{sob[0]})
+		if err != nil {
+			return tracer.Mask(err)
+		}
 	}
 
 	return nil
 }
 
-func addStr(add [3]common.Address) []string {
+// filAdd takes a list of 3 address types representing the onchain state of the
+// subscription contract, and returns a list of strings representing the valid
+// addresses from the given set.
+func filAdd(add [3]common.Address) []string {
 	var str []string
 
 	for _, x := range add {

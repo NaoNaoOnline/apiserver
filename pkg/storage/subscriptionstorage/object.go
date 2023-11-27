@@ -25,9 +25,9 @@ type Object struct {
 	// successfully. Most subscriptions should not be accompanied by a failure
 	// message.
 	Fail string `json:"fail,omitempty"`
-	// Sbsc is the wallet address of the user getting access to premium features
+	// Recv is the wallet address of the user getting access to premium features
 	// upon asynchronous subscription verification.
-	Sbsc string `json:"sbsc"`
+	Recv string `json:"recv"`
 	// Stts is the resource status expressing whether this subscription is active.
 	// An active subscription is verified by comparing its offchain and onchain
 	// state. Subscriptions found to be invalid will not be marked as active, but
@@ -84,14 +84,14 @@ func (r *Object) Verify() error {
 	}
 
 	{
-		if r.Sbsc == "" {
-			return tracer.Mask(subscriptionSbcbEmptyError)
+		if r.Recv == "" {
+			return tracer.Mask(subscriptionRecvEmptyError)
 		}
-		if len(r.Sbsc) != 42 {
-			return tracer.Maskf(subscriptionSbcbLengthError, "%d", len(r.Sbsc))
+		if len(r.Recv) != 42 {
+			return tracer.Maskf(subscriptionRecvLengthError, "%d", len(r.Recv))
 		}
-		if !hexformat.Verify(r.Sbsc) {
-			return tracer.Mask(subscriptionSbcbFormatError)
+		if !hexformat.Verify(r.Recv) {
+			return tracer.Mask(subscriptionRecvFormatError)
 		}
 	}
 

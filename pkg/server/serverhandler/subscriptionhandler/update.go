@@ -28,8 +28,15 @@ func (h *Handler) Update(ctx context.Context, req *subscription.UpdateI) (*subsc
 		}
 	}
 
-	if sob[0].Stts == objectstate.Success {
-		return nil, tracer.Mask(updateStatusSuccessError)
+	{
+		err = sob[0].Verify()
+		if err != nil {
+			return nil, tracer.Mask(err)
+		}
+
+		if sob[0].Stts == objectstate.Success {
+			return nil, tracer.Mask(updateStatusSuccessError)
+		}
 	}
 
 	var key string

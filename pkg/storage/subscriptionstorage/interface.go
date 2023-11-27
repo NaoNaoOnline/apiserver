@@ -52,4 +52,11 @@ type Interface interface {
 	//     @out[0] the list of subscription objects matching the given subscription IDs
 	//
 	SearchSubs([]objectid.ID) ([]*Object, error)
+
+	// Update modifies the existing subscription objects.
+	//
+	//     @inp[0] the list of subscription objects to modify
+	//     @out[0] the list of operation states related to the modified subscription objects
+	//
+	Update([]*Object) ([]objectstate.String, error)
 }

@@ -11,8 +11,7 @@ import (
 // of specific subscription objects. The workflow here intends to wait for all
 // scrape tasks to complete, which are emitted by the ScrapeHandler. Then, the
 // task template defined here triggers a task that, given the verification
-// process was successful, marks the given subscription to be valid and deletes
-// the subscription specific distributed lock.
+// process was successful, deletes the subscription specific distributed lock.
 //
 // Note that the update task here is triggered on demand when a subscription is
 // created, and optionally, when a user wants to verify their subscription
@@ -26,7 +25,6 @@ func (h *UpdateHandler) Create() *task.Task {
 		},
 		Sync: &task.Sync{
 			objectlabel.SubsObject: "n/a",
-			objectlabel.SubsVerify: "n/a",
 		},
 	}
 }

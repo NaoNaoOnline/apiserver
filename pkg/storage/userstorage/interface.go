@@ -53,6 +53,13 @@ type Interface interface {
 	//
 	SearchUser([]objectid.ID) ([]*Object, error)
 
+	// UpdateObct modifies the existing user objects.
+	//
+	//     @inp[0] the list of user objects to modify
+	//     @out[0] the list of operation states related to the modified user objects
+	//
+	UpdateObct([]*Object) ([]objectstate.String, error)
+
 	// UpdatePtch modifies the existing user objects by applying the given RFC6902
 	// JSON-Patches to the underlying JSON documents. The list items are used
 	// according to their respective indices, e.g. the second patch is applied to

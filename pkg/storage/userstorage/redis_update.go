@@ -9,6 +9,37 @@ import (
 	"github.com/xh3b4sd/tracer"
 )
 
+func (r *Redis) UpdateObct(inp []*Object) ([]objectstate.String, error) {
+	var err error
+
+	var sta []objectstate.String
+	for i := range inp {
+		// At first we need to validate the given input object and, amongst others,
+		// whether the user name complies with the expected format.
+		{
+			err := inp[i].Verify()
+			if err != nil {
+				return nil, tracer.Mask(err)
+			}
+		}
+
+		// Once we know the user object is valid, we update the normalized key-value
+		// pair so that we can reflect the user object's internal change.
+		{
+			err = r.red.Simple().Create().Element(useObj(inp[i].User), musStr(inp[i]))
+			if err != nil {
+				return nil, tracer.Mask(err)
+			}
+		}
+
+		{
+			sta = append(sta, objectstate.Updated)
+		}
+	}
+
+	return sta, nil
+}
+
 func (r *Redis) UpdatePtch(obj []*Object, pat PatchSlicer) ([]objectstate.String, error) {
 	var err error
 

@@ -26,9 +26,11 @@ type Object struct {
 	Imag string `json:"imag"`
 	// Name is the user name.
 	Name objectfield.String `json:"name"`
-	// Subj is the list of external subject claims mapped to the user being
+	// Prem is the time until the user got a valid premium subscription, if any.
+	Prem time.Time `json:"prem,omitempty"`
+	// Sclm is the list of external subject claims mapped to the user being
 	// created.
-	Subj []string `json:"subj"`
+	Sclm []string `json:"sclm"`
 	// User is the internal ID of the user being created.
 	User objectid.ID `json:"user"`
 }
@@ -60,7 +62,7 @@ func (o *Object) Verify() error {
 	}
 
 	{
-		if len(o.Subj) != 1 || o.Subj[0] == "" {
+		if len(o.Sclm) != 1 || o.Sclm[0] == "" {
 			return tracer.Mask(userSubjectEmptyError)
 		}
 	}

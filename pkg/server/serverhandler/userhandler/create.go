@@ -17,11 +17,11 @@ func (h *Handler) Create(ctx context.Context, req *user.CreateI) (*user.CreateO,
 	var inp *userstorage.Object
 	{
 		inp = &userstorage.Object{
-			Subj: []string{subjectclaim.FromContext(ctx)},
 			Imag: req.Object[0].Public.Imag,
 			Name: objectfield.String{
 				Data: req.Object[0].Public.Name,
 			},
+			Sclm: []string{subjectclaim.FromContext(ctx)},
 		}
 	}
 
