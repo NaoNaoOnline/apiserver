@@ -16,8 +16,11 @@ import (
 )
 
 const (
-	// TODO
+	// minEve is the minimum amount of event objects created, that are required
+	// for users to be considered a legitimate content creator.
 	minEve = 3
+	// minLin is the minimum amount of link clicks generated, that are required
+	// for users to be considered a legitimate content creator.
 	minLin = 3
 )
 

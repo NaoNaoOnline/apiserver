@@ -53,3 +53,8 @@ var subscriptionUnixInvalidError = &tracer.Error{
 	Kind: "subscriptionUnixInvalidError",
 	Desc: "The request expects the subscription timestamp to define the first day of the current month. The subscription timestamp was not found to define the first day of the current month. Therefore the request failed.",
 }
+
+var subscriptionUnixRenewalError = &tracer.Error{
+	Kind: "subscriptionUnixRenewalError",
+	Desc: "The request expects the subscription to be renewed up to 7 days before the new subscription period. The subscription was tried to be renewed outside the 7 days before the new subscription period. Therefore the request failed.",
+}

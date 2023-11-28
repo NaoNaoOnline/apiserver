@@ -3,6 +3,7 @@ package subscriptionhandler
 import (
 	"context"
 	"fmt"
+	"time"
 
 	"github.com/NaoNaoOnline/apigocode/pkg/subscription"
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectid"
@@ -29,7 +30,7 @@ func (h *Handler) Update(ctx context.Context, req *subscription.UpdateI) (*subsc
 	}
 
 	{
-		err = sob[0].Verify()
+		err = sob[0].VerifyUnix(subscriptionstorage.VerifyOnce(time.Now().UTC()))
 		if err != nil {
 			return nil, tracer.Mask(err)
 		}
