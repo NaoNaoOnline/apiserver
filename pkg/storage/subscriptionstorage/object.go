@@ -133,12 +133,15 @@ func VerifyOnce(now time.Time) func(time.Time) error {
 // VerifyRenw is used to validate the subscription timestamp for subscriptions
 // that are effectively renewals of already active subscriptions. While
 // subscriptions can only be created for the current month, renewals can be
-// created up to 7 days before the new month starts.
+// created up to 7 days before the new subscription period starts.
 func VerifyRenw(now time.Time) func(time.Time) error {
 	return func(uni time.Time) error {
-		mon := timMon(now)
-		sta := mon.AddDate(0, 1, -7)
-		end := mon.AddDate(0, 1, 0)
+		var sta time.Time
+		var end time.Time
+		{
+			sta = timMon(now).AddDate(0, 1, -7)
+			end = timMon(now).AddDate(0, 1, 0)
+		}
 
 		if now.Before(sta) || now.After(end) {
 			return tracer.Mask(subscriptionUnixRenewalError)
