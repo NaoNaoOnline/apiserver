@@ -10,6 +10,7 @@ import (
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectfield"
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectid"
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectlabel"
+	"github.com/NaoNaoOnline/apiserver/pkg/runtime"
 	"github.com/ethereum/go-ethereum/accounts"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/common/hexutil"
@@ -128,6 +129,12 @@ func (o *Object) VerifyObct() error {
 	{
 		if o.Kind != "eth" {
 			return tracer.Maskf(walletKindInvalidError, o.Kind)
+		}
+	}
+
+	{
+		if o.User == "" {
+			return tracer.Mask(runtime.UserIDEmptyError)
 		}
 	}
 

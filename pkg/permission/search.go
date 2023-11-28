@@ -24,9 +24,9 @@ func (p *Permission) SearchActv() ([]*policystorage.Object, error) {
 		return nil, nil
 	}
 
-	var use []objectid.ID
+	var uid []objectid.ID
 	{
-		use, err = p.wal.SearchAddr(sli.Memb())
+		uid, _, err = p.wal.SearchAddr(sli.Memb())
 		if walletstorage.IsWalletObjectNotFound(err) {
 			// It may happen, especially during development or first platform
 			// deployment, that there is only one policy record without an associated
@@ -41,7 +41,7 @@ func (p *Permission) SearchActv() ([]*policystorage.Object, error) {
 	}
 
 	for i := range sli {
-		sli[i].User = use[i]
+		sli[i].User = uid[i]
 	}
 
 	return sli, nil

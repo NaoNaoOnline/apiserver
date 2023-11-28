@@ -53,24 +53,24 @@ type Object struct {
 	time Timer `json:"-"`
 }
 
-func (r *Object) Verify() error {
+func (o *Object) Verify() error {
 	{
-		if r.ChID == 0 {
+		if o.ChID == 0 {
 			return tracer.Mask(subscriptionChIDEmptyError)
 		}
 	}
 
 	{
-		if len(r.Crtr) == 0 {
+		if len(o.Crtr) == 0 {
 			return tracer.Mask(subscriptionCrtrEmptyError)
 		}
-		if len(r.Crtr) > 3 {
+		if len(o.Crtr) > 3 {
 			return tracer.Mask(subscriptionCrtrLimitError)
 		}
-		if generic.Dup(r.Crtr) {
+		if generic.Dup(o.Crtr) {
 			return tracer.Mask(subscriptionCrtrDuplicateError)
 		}
-		for _, x := range r.Crtr {
+		for _, x := range o.Crtr {
 			if x == "" {
 				return tracer.Mask(subscriptionCrtrEmptyError)
 			}
@@ -84,31 +84,31 @@ func (r *Object) Verify() error {
 	}
 
 	{
-		if r.Recv == "" {
+		if o.Recv == "" {
 			return tracer.Mask(subscriptionRecvEmptyError)
 		}
-		if len(r.Recv) != 42 {
-			return tracer.Maskf(subscriptionRecvLengthError, "%d", len(r.Recv))
+		if len(o.Recv) != 42 {
+			return tracer.Maskf(subscriptionRecvLengthError, "%d", len(o.Recv))
 		}
-		if !hexformat.Verify(r.Recv) {
+		if !hexformat.Verify(o.Recv) {
 			return tracer.Mask(subscriptionRecvFormatError)
 		}
 	}
 
 	{
-		if r.time == nil {
-			r.time = &timer{}
+		if o.time == nil {
+			o.time = &timer{}
 		}
-		if r.Unix.IsZero() {
+		if o.Unix.IsZero() {
 			return tracer.Mask(subscriptionUnixEmptyError)
 		}
-		if !r.Unix.Equal(timMon(r.time.Now())) {
+		if !o.Unix.Equal(timMon(o.time.Now())) {
 			return tracer.Mask(subscriptionUnixInvalidError)
 		}
 	}
 
 	{
-		if r.User == "" {
+		if o.User == "" {
 			return tracer.Mask(runtime.UserIDEmptyError)
 		}
 	}

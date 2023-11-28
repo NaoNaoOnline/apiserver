@@ -40,7 +40,7 @@ func (r *Redis) CreateSubs(inp []*Object) ([]*Object, error) {
 		// should be exactly one user ID for any given address.
 		var rec []objectid.ID
 		{
-			rec, err = r.wal.SearchAddr([]string{inp[i].Recv})
+			rec, _, err = r.wal.SearchAddr([]string{inp[i].Recv})
 			if err != nil {
 				return nil, tracer.Mask(err)
 			}

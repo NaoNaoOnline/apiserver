@@ -6,24 +6,39 @@ import (
 
 	"github.com/NaoNaoOnline/apiserver/pkg/keyfmt"
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectid"
+	"github.com/NaoNaoOnline/apiserver/pkg/runtime"
 	"github.com/xh3b4sd/redigo/simple"
 	"github.com/xh3b4sd/tracer"
 )
 
-func (r *Redis) SearchAddr(add []string) ([]objectid.ID, error) {
+func (r *Redis) SearchAddr(add []string) ([]objectid.ID, []objectid.ID, error) {
 	var err error
 
 	var val []string
 	{
 		val, err = r.red.Simple().Search().Multi(objectid.Fmt(add, keyfmt.WalletAddress)...)
 		if simple.IsNotFound(err) {
-			return nil, tracer.Maskf(walletObjectNotFoundError, "%v", add)
+			return nil, nil, tracer.Maskf(walletObjectNotFoundError, "%v", add)
 		} else if err != nil {
-			return nil, tracer.Mask(err)
+			return nil, nil, tracer.Mask(err)
 		}
 	}
 
-	return objectid.IDs(val), nil
+	var uid []objectid.ID
+	{
+		uid = objectid.Frst(val)
+	}
+
+	var wid []objectid.ID
+	{
+		wid = objectid.Scnd(val)
+	}
+
+	if len(uid) != len(wid) {
+		return nil, nil, tracer.Maskf(runtime.ExecutionFailedError, "%v", add)
+	}
+
+	return uid, wid, nil
 }
 
 func (r *Redis) SearchKind(use objectid.ID, kin []string) ([]*Object, error) {

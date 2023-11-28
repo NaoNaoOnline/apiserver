@@ -21,12 +21,13 @@ type Interface interface {
 	//
 	Delete([]*Object) ([]objectstate.String, error)
 
-	// SearchAddr returns the user IDs for the given addresses.
+	// SearchAddr returns the user and wallet IDs for the given addresses.
 	//
 	//     @inp[0] the wallet addresses to search users
 	//     @out[0] the list of user IDs matching the given wallet addresses
+	//     @out[0] the list of wallet IDs matching the given wallet addresses
 	//
-	SearchAddr([]string) ([]objectid.ID, error)
+	SearchAddr([]string) ([]objectid.ID, []objectid.ID, error)
 
 	// SearchKind returns the wallet objects for the given user, matching the
 	// given wallet kinds, e.g. eth.

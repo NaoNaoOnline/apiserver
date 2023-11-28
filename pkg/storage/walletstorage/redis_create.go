@@ -75,8 +75,9 @@ func (r *Redis) CreateXtrn(inp []*Object) ([]*Object, error) {
 		}
 
 		// Create the wallet address mappings for wallet address search queries.
+		// With that we can lookup user and wallet IDs given a wallet address.
 		{
-			err = r.red.Simple().Create().Element(walAdd(inp[i].Addr.Data), inp[i].User.String())
+			err = r.red.Simple().Create().Element(walAdd(inp[i].Addr.Data), objectid.Pair(inp[i].User, inp[i].Wllt))
 			if err != nil {
 				return nil, tracer.Mask(err)
 			}

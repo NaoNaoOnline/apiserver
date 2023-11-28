@@ -10,6 +10,18 @@ func (s Slicer) Fltr() Filter {
 	return Filter(s)
 }
 
+// Clck returns the cumulative amount of link clicks for the underling list of
+// event objects.
+func (s Slicer) Clck() int64 {
+	var clk int64
+
+	for _, x := range s {
+		clk += x.Clck.Data
+	}
+
+	return clk
+}
+
 // Evnt returns all the event IDs for the underling list of event objects.
 func (s Slicer) Evnt() []objectid.ID {
 	var ids []objectid.ID
