@@ -15,6 +15,12 @@ import (
 	"github.com/xh3b4sd/tracer"
 )
 
+const (
+	// TODO
+	minEve = 3
+	minLin = 3
+)
+
 type RedisConfig struct {
 	Emi subscriptionemitter.Interface
 	Eve eventstorage.Interface

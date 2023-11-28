@@ -2,26 +2,120 @@ package subscriptionstorage
 
 import (
 	"encoding/json"
+	"sort"
 
+	"github.com/NaoNaoOnline/apiserver/pkg/generic"
 	"github.com/NaoNaoOnline/apiserver/pkg/keyfmt"
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectid"
+	"github.com/NaoNaoOnline/apiserver/pkg/object/objectlabel"
+	"github.com/NaoNaoOnline/apiserver/pkg/storage/eventstorage"
+	"github.com/NaoNaoOnline/apiserver/pkg/storage/walletstorage"
 	"github.com/xh3b4sd/redigo/simple"
 	"github.com/xh3b4sd/tracer"
 )
 
-func (r *Redis) SearchCrtr([]objectid.ID) ([]objectid.ID, error) {
-	// TODO SearchCrtr
-	//
-	//     1. start with a given user ID
-	//     2. use user storage to search for event objects that the given user ID reacted to in the form of a link click
-	//     3. reduce the sorted list of events to a list of unique user IDs
-	//     4. sort the event objects by link clicks, from high to low
-	//     5. use wallet storage to search for wallet objects using list of unique user IDs
-	//     6. reduce the list of wallet objects by removing those that are not labelled for accounting
-	//     8. collect the user IDs of the remaining wallet objects
-	//     7. success
-	//
-	return nil, nil
+func (r *Redis) SearchCrtr(uid []objectid.ID) ([]objectid.ID, error) {
+	var err error
+
+	var wob walletstorage.Slicer
+	for i := range uid {
+		// Use the user storage to search for event IDs that the given user ID
+		// reacted to in the form of a link click.
+		var eid []objectid.ID
+		{
+			eid, err = r.use.SearchLink([]objectid.ID{uid[i]})
+			if err != nil {
+				return nil, tracer.Mask(err)
+			}
+		}
+
+		// There might not be any event IDs, and so we do not proceed, but instead
+		// continue with the next user ID, if any.
+		if len(eid) == 0 {
+			continue
+		}
+
+		// Find all event objects for the respective event IDs.
+		var eob eventstorage.Slicer
+		{
+			eob, err = r.eve.SearchEvnt("", eid)
+			if err != nil {
+				return nil, tracer.Mask(err)
+			}
+		}
+
+		// Filter the given event objects and only keep those matching our
+		// requirements.
+		var fil eventstorage.Slicer
+		{
+			// First, group the event objects by the users who created them.
+			dic := map[objectid.ID]eventstorage.Slicer{}
+			for _, x := range eob {
+				dic[x.User] = append(dic[x.User], x)
+			}
+
+			for _, x := range dic {
+				// If a user created more than X events, then continue. Otherwise the
+				// respective user is not considered a legitimate content creator.
+				if len(x) < minEve {
+					continue
+				}
+
+				// If the user generated more than Y link clicks, then continue.
+				// Otherwise the respective user is not considered a legitimate content
+				// creator.
+				if x.Clck() < minLin {
+					continue
+				}
+
+				// At this point all our criteria are met for the given user to be
+				// considered a legitimate content creator.
+				{
+					fil = append(fil, x...)
+				}
+			}
+		}
+
+		// There might not be any event objects, and so we do not proceed, but
+		// instead continue with the next user ID, if any.
+		if len(fil) == 0 {
+			continue
+		}
+
+		// Sort the filtered list of events by link clicks in order to promote
+		// content creators that generate engagement.
+		sort.SliceStable(fil, func(i, j int) bool {
+			return fil[i].Clck.Data > fil[j].Clck.Data
+		})
+
+		// For the remaining content creators, lookup their accounting wallets.
+		for _, x := range generic.Uni(fil.User()) {
+			var lis []*walletstorage.Object
+			{
+				lis, err = r.wal.SearchKind(x, []string{"eth"})
+				if err != nil {
+					return nil, tracer.Mask(err)
+				}
+			}
+
+			for _, y := range lis {
+				if y.HasLab(objectlabel.WalletAccounting) {
+					// Track the accounting wallet of each content creator.
+					{
+						wob = append(wob, y)
+					}
+
+					// We can break here since there should only ever be a single
+					// accounting wallet.
+					{
+						break
+					}
+				}
+			}
+		}
+	}
+
+	return wob.Wllt(), nil
 }
 
 func (r *Redis) SearchPayr(use []objectid.ID, pag [2]int) ([]*Object, error) {

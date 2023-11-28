@@ -65,3 +65,14 @@ func (s Slicer) Upcm() Slicer {
 
 	return obj
 }
+
+// User returns all the user IDs for the underling list of event objects.
+func (s Slicer) User() []objectid.ID {
+	var ids []objectid.ID
+
+	for _, x := range s {
+		ids = append(ids, x.User)
+	}
+
+	return ids
+}

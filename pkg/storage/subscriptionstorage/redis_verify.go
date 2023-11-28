@@ -9,11 +9,6 @@ import (
 	"github.com/xh3b4sd/tracer"
 )
 
-const (
-	minEve = 3
-	minLin = 3
-)
-
 func (r *Redis) VerifyAddr(add []string) ([]bool, error) {
 	var err error
 
