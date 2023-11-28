@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectfield"
+	"github.com/NaoNaoOnline/apiserver/pkg/object/objectid"
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectlabel"
 	"github.com/rafaeljusto/redigomock/v3"
 	"github.com/xh3b4sd/logger"
@@ -70,6 +71,7 @@ func Test_Storage_Wallet_UpdatePtch(t *testing.T) {
 					objectlabel.WalletAccounting,
 				},
 			},
+			User: objectid.ID("1234"),
 		}
 	}
 

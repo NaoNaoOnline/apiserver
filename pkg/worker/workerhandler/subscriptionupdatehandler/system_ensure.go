@@ -52,7 +52,7 @@ func (h *UpdateHandler) Ensure(tas *task.Task, bud *budget.Budget) error {
 	if sob[0].Stts == objectstate.Success {
 		var uid []objectid.ID
 		{
-			uid, err = h.wal.SearchAddr([]string{sob[0].Recv})
+			uid, _, err = h.wal.SearchAddr([]string{sob[0].Recv})
 			if err != nil {
 				return tracer.Mask(err)
 			}

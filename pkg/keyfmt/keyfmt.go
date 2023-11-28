@@ -302,11 +302,13 @@ const (
 	UserObject = "use/obj/%s"
 
 	// WalletAddress is used to store wallet mappings between wallet address and
-	// internal user representations.
+	// internal user representations. Note that the value here is an object ID
+	// pair. The first element is the user ID. The second element is the wallet
+	// ID.
 	//
-	//     wallet address          user ID
+	//     wallet address          user ID / wallet ID
 	//                       ->
-	//     wal/add/0x5678          1234
+	//     wal/add/0x5678          1234,5678
 	//
 	WalletAddress = "wal/add/%s"
 
