@@ -3,11 +3,13 @@ package subscriptionhandler
 import (
 	"context"
 	"fmt"
+	"time"
 
 	"github.com/NaoNaoOnline/apigocode/pkg/subscription"
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectid"
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectlabel"
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectstate"
+	"github.com/NaoNaoOnline/apiserver/pkg/runtime"
 	"github.com/NaoNaoOnline/apiserver/pkg/server/context/userid"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/subscriptionstorage"
 	"github.com/xh3b4sd/tracer"
@@ -29,7 +31,15 @@ func (h *Handler) Update(ctx context.Context, req *subscription.UpdateI) (*subsc
 	}
 
 	{
-		err = sob[0].Verify()
+		if len(sob) != 1 {
+			return nil, tracer.Mask(runtime.ExecutionFailedError)
+		}
+
+		// Ensure that only the latest subscription for the current month can be
+		// verified again. VerifyUnix together with VerifyOnce will fail if the
+		// subscription timestamp does not refer to the first day of the current
+		// month.
+		err = sob[0].VerifyUnix(subscriptionstorage.VerifyOnce(time.Now().UTC()))
 		if err != nil {
 			return nil, tracer.Mask(err)
 		}

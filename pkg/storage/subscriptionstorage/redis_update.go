@@ -13,7 +13,7 @@ func (r *Redis) UpdateObct(inp []*Object) ([]objectstate.String, error) {
 		// At first we need to validate the given input object and, amongst others,
 		// whether the creator addresses comply with the expected format.
 		{
-			err := inp[i].Verify()
+			err := inp[i].VerifyObct()
 			if err != nil {
 				return nil, tracer.Mask(err)
 			}

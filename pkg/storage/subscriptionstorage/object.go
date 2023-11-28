@@ -47,13 +47,9 @@ type Object struct {
 	Unix time.Time `json:"unix"`
 	// User is the user ID creating this subscription.
 	User objectid.ID `json:"user"`
-
-	//
-
-	time Timer `json:"-"`
 }
 
-func (o *Object) Verify() error {
+func (o *Object) VerifyObct() error {
 	{
 		if o.ChID == 0 {
 			return tracer.Mask(subscriptionChIDEmptyError)
@@ -96,14 +92,8 @@ func (o *Object) Verify() error {
 	}
 
 	{
-		if o.time == nil {
-			o.time = &timer{}
-		}
 		if o.Unix.IsZero() {
 			return tracer.Mask(subscriptionUnixEmptyError)
-		}
-		if !o.Unix.Equal(timMon(o.time.Now())) {
-			return tracer.Mask(subscriptionUnixInvalidError)
 		}
 	}
 
@@ -114,6 +104,55 @@ func (o *Object) Verify() error {
 	}
 
 	return nil
+}
+
+func (o *Object) VerifyUnix(vld func(time.Time) error) error {
+	{
+		err := vld(o.Unix)
+		if err != nil {
+			return tracer.Mask(err)
+		}
+	}
+
+	return nil
+}
+
+// VerifyOnce is used to validate the subscription timestamp for subscriptions
+// that are created the first time, or without prior active subscription. New
+// subscriptions can only be created for the current month.
+func VerifyOnce(now time.Time) func(time.Time) error {
+	return func(uni time.Time) error {
+		if !uni.Equal(timMon(now)) {
+			return tracer.Mask(subscriptionUnixInvalidError)
+		}
+
+		return nil
+	}
+}
+
+// VerifyRenw is used to validate the subscription timestamp for subscriptions
+// that are effectively renewals of already active subscriptions. While
+// subscriptions can only be created for the current month, renewals can be
+// created up to 7 days before the new subscription period starts.
+func VerifyRenw(now time.Time) func(time.Time) error {
+	return func(uni time.Time) error {
+		var sta time.Time
+		var end time.Time
+		{
+			sta = timMon(now).AddDate(0, 1, -7)
+			end = timMon(now).AddDate(0, 1, 0)
+		}
+
+		if now.Before(sta) || now.After(end) {
+			return tracer.Mask(subscriptionUnixRenewalError)
+		}
+
+		if !uni.Equal(end) {
+			return tracer.Mask(subscriptionUnixInvalidError)
+		}
+
+		return nil
+	}
 }
 
 func timMon(tim time.Time) time.Time {

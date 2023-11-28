@@ -16,7 +16,43 @@ func (r *Redis) CreateSubs(inp []*Object) ([]*Object, error) {
 		// At first we need to validate the given input object and, amongst others,
 		// whether the creator addresses comply with the expected format.
 		{
-			err := inp[i].Verify()
+			err := inp[i].VerifyObct()
+			if err != nil {
+				return nil, tracer.Mask(err)
+			}
+		}
+
+		// Lookup the user ID of the recipient using the subscriber address. There
+		// should be exactly one user ID for any given address.
+		var rec []objectid.ID
+		{
+			rec, _, err = r.wal.SearchAddr([]string{inp[i].Recv})
+			if err != nil {
+				return nil, tracer.Mask(err)
+			}
+		}
+
+		if len(rec) != 1 {
+			return nil, tracer.Mask(runtime.ExecutionFailedError)
+		}
+
+		var exi []*Object
+		{
+			exi, err = r.SearchRecv(rec, PagAll())
+			if err != nil {
+				return nil, tracer.Mask(err)
+			}
+		}
+
+		// Check whether the created subscription for the given receiver is
+		// effectively a renewal.
+		if subRen(exi, inp[i]) {
+			err = inp[i].VerifyUnix(VerifyRenw(time.Now().UTC()))
+			if err != nil {
+				return nil, tracer.Mask(err)
+			}
+		} else {
+			err = inp[i].VerifyUnix(VerifyOnce(time.Now().UTC()))
 			if err != nil {
 				return nil, tracer.Mask(err)
 			}
@@ -34,20 +70,6 @@ func (r *Redis) CreateSubs(inp []*Object) ([]*Object, error) {
 
 		if !vldAdd(vld) {
 			return nil, tracer.Mask(subscriptionCrtrInvalidError)
-		}
-
-		// Lookup the user ID of the recipient using the subscriber address. There
-		// should be exactly one user ID for any given address.
-		var rec []objectid.ID
-		{
-			rec, _, err = r.wal.SearchAddr([]string{inp[i].Recv})
-			if err != nil {
-				return nil, tracer.Mask(err)
-			}
-		}
-
-		if len(rec) != 1 {
-			return nil, tracer.Mask(runtime.ExecutionFailedError)
 		}
 
 		var now time.Time
@@ -113,6 +135,29 @@ func (r *Redis) CreateWrkr(inp []*Object) ([]objectstate.String, error) {
 	}
 
 	return out, nil
+}
+
+// subRen expresses whether the current subscription object is effectively a
+// renewal based on the existing subscriptions for the given receiver, if any.
+// Essentially a subscription for the immediate prior month must exist for the
+// current subscription to be classified as renewal.
+func subRen(exi []*Object, cur *Object) bool {
+	if len(exi) == 0 {
+		return false
+	}
+
+	var des time.Time
+	{
+		des = cur.Unix.AddDate(0, -1, 0)
+	}
+
+	for _, x := range exi {
+		if x.Unix.Equal(des) {
+			return true
+		}
+	}
+
+	return false
 }
 
 func vldAdd(vld []bool) bool {
