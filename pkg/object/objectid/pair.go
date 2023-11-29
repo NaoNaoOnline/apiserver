@@ -27,6 +27,8 @@ func Scnd(key []string) []ID {
 		spl := strings.Split(x, ",")
 		if len(spl) == 2 {
 			ids = append(ids, ID(spl[1]))
+		} else {
+			ids = append(ids, "")
 		}
 	}
 
