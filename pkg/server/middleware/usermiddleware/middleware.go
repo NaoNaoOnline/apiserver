@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"strconv"
 
+	"github.com/NaoNaoOnline/apiserver/pkg/server/context/isprem"
 	"github.com/NaoNaoOnline/apiserver/pkg/server/context/subjectclaim"
 	"github.com/NaoNaoOnline/apiserver/pkg/server/context/userid"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/userstorage"
@@ -70,10 +71,14 @@ func (m *Middleware) Handler(h http.Handler) http.Handler {
 			}
 		}
 
-		// Finally we looked up our internal user ID and add it to the request
-		// context for further use.
+		// Add relevant user internals to the request context for further use.
 		{
-			r = r.Clone(userid.NewContext(ctx, obj.User))
+			ctx = userid.NewContext(ctx, obj.User)
+			ctx = isprem.NewContext(ctx, obj.Prem)
+		}
+
+		{
+			r = r.Clone(ctx)
 		}
 
 		// Continue processing the request. The next handler may execute another

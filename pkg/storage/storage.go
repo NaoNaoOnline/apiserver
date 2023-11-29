@@ -2,8 +2,10 @@ package storage
 
 import (
 	"fmt"
+	"time"
 
 	"github.com/NaoNaoOnline/apiserver/pkg/emitter"
+	"github.com/NaoNaoOnline/apiserver/pkg/envvar"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/descriptionstorage"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/eventstorage"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/labelstorage"
@@ -20,6 +22,7 @@ import (
 
 type Config struct {
 	Emi *emitter.Emitter
+	Env envvar.Env
 	Log logger.Interface
 	Red redigo.Interface
 }
@@ -47,6 +50,11 @@ func New(c Config) *Storage {
 		tracer.Panic(tracer.Mask(fmt.Errorf("%T.Red must not be empty", c)))
 	}
 
+	var pso time.Time
+	if c.Env.UpremTim != "" {
+		pso = musTim(c.Env.UpremTim)
+	}
+
 	var s *Storage
 	{
 		s = &Storage{
@@ -56,7 +64,7 @@ func New(c Config) *Storage {
 			lis: liststorage.NewRedis(liststorage.RedisConfig{Emi: c.Emi.List(), Log: c.Log, Red: c.Red}),
 			pol: policystorage.NewRedis(policystorage.RedisConfig{Log: c.Log, Red: c.Red}),
 			rul: rulestorage.NewRedis(rulestorage.RedisConfig{Log: c.Log, Red: c.Red}),
-			use: userstorage.NewRedis(userstorage.RedisConfig{Log: c.Log, Red: c.Red}),
+			use: userstorage.NewRedis(userstorage.RedisConfig{Log: c.Log, PSO: pso, Red: c.Red}),
 			wal: walletstorage.NewRedis(walletstorage.RedisConfig{Log: c.Log, Red: c.Red}),
 		}
 	}
@@ -109,4 +117,13 @@ func (s *Storage) User() userstorage.Interface {
 
 func (s *Storage) Wllt() walletstorage.Interface {
 	return s.wal
+}
+
+func musTim(str string) time.Time {
+	tim, err := time.Parse("2006-01-02T15:04:05.999999Z", str)
+	if err != nil {
+		panic(err)
+	}
+
+	return tim
 }

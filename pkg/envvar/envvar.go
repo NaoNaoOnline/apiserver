@@ -15,6 +15,7 @@ type Env struct {
 	HttpPort string `split_words:"true" default:"7777"`
 	OauthAud string `split_words:"true" required:"true"`
 	OauthIss string `split_words:"true" required:"true"`
+	UpremTim string `split_words:"true" required:"false"`
 }
 
 func Load() Env {
