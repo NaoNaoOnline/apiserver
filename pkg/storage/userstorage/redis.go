@@ -3,6 +3,7 @@ package userstorage
 import (
 	"encoding/json"
 	"fmt"
+	"time"
 
 	"github.com/NaoNaoOnline/apiserver/pkg/keyfmt"
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectid"
@@ -13,11 +14,18 @@ import (
 
 type RedisConfig struct {
 	Log logger.Interface
+	// PSO is a global premium subscription overwrite. Setting this value provides
+	// every user returned by the user storage with a premium subscription until
+	// the timestamp provided here has expired. That is, if PSO were set to the
+	// 1st of November and today would be the 3rd of October then every user on
+	// the platform would have a premium subscription for the rest of the month.
+	PSO time.Time
 	Red redigo.Interface
 }
 
 type Redis struct {
 	log logger.Interface
+	pso time.Time
 	red redigo.Interface
 }
 
@@ -31,6 +39,7 @@ func NewRedis(c RedisConfig) *Redis {
 
 	return &Redis{
 		log: c.Log,
+		pso: c.PSO,
 		red: c.Red,
 	}
 }

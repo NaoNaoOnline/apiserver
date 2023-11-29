@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"strings"
+	"time"
 
 	"github.com/NaoNaoOnline/apiserver/pkg/keyfmt"
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectid"
@@ -122,9 +123,9 @@ func (r *Redis) SearchSubj(sub string) (*Object, error) {
 		return nil, tracer.Mask(userSubjectEmptyError)
 	}
 
-	var use []string
+	var val []string
 	{
-		use, err = r.red.Simple().Search().Multi(useCla(sub))
+		val, err = r.red.Simple().Search().Multi(useCla(sub))
 		if simple.IsNotFound(err) {
 			return nil, tracer.Mask(subjectClaimMappingError)
 		} else if err != nil {
@@ -132,25 +133,21 @@ func (r *Redis) SearchSubj(sub string) (*Object, error) {
 		}
 	}
 
-	var jsn []string
-	{
-		jsn, err = r.red.Simple().Search().Multi(useObj(objectid.ID(use[0])))
-		if simple.IsNotFound(err) {
-			return nil, tracer.Maskf(userNotFoundError, use[0])
-		} else if err != nil {
-			return nil, tracer.Mask(err)
-		}
+	// There might not be any values, and so we do not proceed, but instead
+	// return nothing.
+	if len(val) == 0 {
+		return nil, nil
 	}
 
-	var out Object
+	var out []*Object
 	{
-		err = json.Unmarshal([]byte(jsn[0]), &out)
+		out, err = r.SearchUser(objectid.IDs(val))
 		if err != nil {
 			return nil, tracer.Mask(err)
 		}
 	}
 
-	return &out, nil
+	return out[0], nil
 }
 
 func (r *Redis) SearchUser(use []objectid.ID) ([]*Object, error) {
@@ -180,8 +177,18 @@ func (r *Redis) SearchUser(use []objectid.ID) ([]*Object, error) {
 			}
 		}
 
+		// Overwrite the user's premium subscription to give everyone access to
+		// premium features until the override expires.
+		if ovrPrm(r.pso, time.Now().UTC()) {
+			obj.Prem = r.pso
+		}
+
 		out = append(out, obj)
 	}
 
 	return out, nil
+}
+
+func ovrPrm(pso time.Time, now time.Time) bool {
+	return now.Before(pso)
 }

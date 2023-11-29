@@ -145,6 +145,7 @@ func (r *run) runE(cmd *cobra.Command, args []string) error {
 	{
 		sto = storage.New(storage.Config{
 			Emi: emi,
+			Env: env,
 			Log: log,
 			Red: red,
 		})
