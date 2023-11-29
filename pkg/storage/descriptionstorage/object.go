@@ -7,6 +7,7 @@ import (
 	"github.com/NaoNaoOnline/apiserver/pkg/format/descriptionformat"
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectfield"
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectid"
+	"github.com/NaoNaoOnline/apiserver/pkg/runtime"
 	"github.com/xh3b4sd/tracer"
 	"mvdan.cc/xurls/v2"
 )
@@ -62,6 +63,12 @@ func (o *Object) Verify() error {
 		}
 		if relxed.FindString(o.Text.Data) != "" {
 			return tracer.Mask(descriptionTextURLError)
+		}
+	}
+
+	{
+		if o.User == "" {
+			return tracer.Mask(runtime.UserIDEmptyError)
 		}
 	}
 

@@ -6,6 +6,7 @@ import (
 	"testing"
 
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectfield"
+	"github.com/NaoNaoOnline/apiserver/pkg/object/objectid"
 )
 
 func Test_Storage_Description_Object_Verify_Text(t *testing.T) {
@@ -56,5 +57,6 @@ func witTxt(txt string) *Object {
 		Text: objectfield.String{
 			Data: txt,
 		},
+		User: objectid.ID("1234"),
 	}
 }

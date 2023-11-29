@@ -6,6 +6,7 @@ import (
 
 	"github.com/NaoNaoOnline/apiserver/pkg/keyfmt"
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectid"
+	"github.com/NaoNaoOnline/apiserver/pkg/runtime"
 	"github.com/xh3b4sd/tracer"
 )
 
@@ -88,6 +89,12 @@ func (o *Object) Verify() error {
 	{
 		if o.List == "" {
 			return tracer.Mask(ruleListEmptyError)
+		}
+	}
+
+	{
+		if o.User == "" {
+			return tracer.Mask(runtime.UserIDEmptyError)
 		}
 	}
 
