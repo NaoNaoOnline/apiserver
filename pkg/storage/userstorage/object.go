@@ -5,7 +5,6 @@ import (
 
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectfield"
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectid"
-	"github.com/NaoNaoOnline/apiserver/pkg/runtime"
 	"github.com/xh3b4sd/tracer"
 )
 
@@ -68,11 +67,10 @@ func (o *Object) Verify() error {
 		}
 	}
 
-	{
-		if o.User == "" {
-			return tracer.Mask(runtime.UserIDEmptyError)
-		}
-	}
+	// Note that Object.User is not validated here like for the other resources,
+	// because the user ID is the resource ID for the user object. The user ID is
+	// set in UserStorage.Create, as opposed to being injected from the outside
+	// like most of the other storage implementations work.
 
 	return nil
 }
