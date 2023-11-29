@@ -9,6 +9,7 @@ import (
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectfield"
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectid"
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectlabel"
+	"github.com/NaoNaoOnline/apiserver/pkg/runtime"
 	"github.com/xh3b4sd/tracer"
 )
 
@@ -90,6 +91,12 @@ func (o *Object) Verify() error {
 			if !nameformat.Verify(v) {
 				return tracer.Maskf(labelPrflFormatError, v)
 			}
+		}
+	}
+
+	{
+		if o.User.Data == "" {
+			return tracer.Mask(runtime.UserIDEmptyError)
 		}
 	}
 

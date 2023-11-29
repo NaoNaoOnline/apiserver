@@ -6,6 +6,7 @@ import (
 	"github.com/NaoNaoOnline/apiserver/pkg/format/descriptionformat"
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectfield"
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectid"
+	"github.com/NaoNaoOnline/apiserver/pkg/runtime"
 	"github.com/xh3b4sd/tracer"
 )
 
@@ -35,6 +36,12 @@ func (o *Object) Verify() error {
 		}
 		if len(o.Desc.Data) > 40 {
 			return tracer.Maskf(listDescLengthError, "%d", len(o.Desc.Data))
+		}
+	}
+
+	{
+		if o.User == "" {
+			return tracer.Mask(runtime.UserIDEmptyError)
 		}
 	}
 

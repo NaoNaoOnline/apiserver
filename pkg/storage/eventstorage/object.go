@@ -9,6 +9,7 @@ import (
 	"github.com/NaoNaoOnline/apiserver/pkg/generic"
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectfield"
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectid"
+	"github.com/NaoNaoOnline/apiserver/pkg/runtime"
 	"github.com/xh3b4sd/tracer"
 )
 
@@ -159,6 +160,12 @@ func (o *Object) Verify() error {
 		// only useful during event creation.
 		if o.Evnt == "" && o.Time.Compare(time.Now().UTC()) != +1 {
 			return tracer.Mask(eventTimePastError)
+		}
+	}
+
+	{
+		if o.User == "" {
+			return tracer.Mask(runtime.UserIDEmptyError)
 		}
 	}
 

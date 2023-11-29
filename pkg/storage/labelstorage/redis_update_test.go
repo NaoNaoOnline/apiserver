@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectfield"
+	"github.com/NaoNaoOnline/apiserver/pkg/object/objectid"
 	"github.com/rafaeljusto/redigomock/v3"
 	"github.com/xh3b4sd/logger"
 	"github.com/xh3b4sd/redigo"
@@ -71,6 +72,9 @@ func Test_Storage_Label_UpdatePtch(t *testing.T) {
 				Data: "Vivek Ramaswamy",
 			},
 			Prfl: objectfield.Map{},
+			User: objectfield.ID{
+				Data: objectid.ID("1234"),
+			},
 		}
 	}
 
