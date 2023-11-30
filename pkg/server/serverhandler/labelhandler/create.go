@@ -2,7 +2,6 @@ package labelhandler
 
 import (
 	"context"
-	"strconv"
 
 	"github.com/NaoNaoOnline/apigocode/pkg/label"
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectfield"
@@ -49,7 +48,7 @@ func (h *Handler) Create(ctx context.Context, req *label.CreateI) (*label.Create
 	for _, x := range out {
 		res.Object = append(res.Object, &label.CreateO_Object{
 			Intern: &label.CreateO_Object_Intern{
-				Crtd: strconv.FormatInt(x.Crtd.Unix(), 10),
+				Crtd: outTim(x.Crtd),
 				Labl: x.Labl.String(),
 			},
 		})

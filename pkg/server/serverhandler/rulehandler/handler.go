@@ -2,7 +2,9 @@ package rulehandler
 
 import (
 	"fmt"
+	"strconv"
 	"strings"
+	"time"
 
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectid"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/liststorage"
@@ -61,4 +63,12 @@ func outIDs(ids []objectid.ID) string {
 	}
 
 	return strings.Join(str, ",")
+}
+
+func outTim(tim time.Time) string {
+	if !tim.IsZero() {
+		return strconv.FormatInt(tim.Unix(), 10)
+	}
+
+	return ""
 }

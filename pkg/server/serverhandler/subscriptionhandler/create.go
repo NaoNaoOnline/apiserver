@@ -2,7 +2,6 @@ package subscriptionhandler
 
 import (
 	"context"
-	"strconv"
 
 	"github.com/NaoNaoOnline/apigocode/pkg/subscription"
 	"github.com/NaoNaoOnline/apiserver/pkg/server/context/userid"
@@ -60,7 +59,7 @@ func (h *Handler) Create(ctx context.Context, req *subscription.CreateI) (*subsc
 	for _, x := range out {
 		res.Object = append(res.Object, &subscription.CreateO_Object{
 			Intern: &subscription.CreateO_Object_Intern{
-				Crtd: strconv.FormatInt(x.Crtd.Unix(), 10),
+				Crtd: outTim(x.Crtd),
 				Subs: x.Subs.String(),
 			},
 		})

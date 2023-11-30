@@ -2,7 +2,6 @@ package userhandler
 
 import (
 	"context"
-	"strconv"
 
 	"github.com/NaoNaoOnline/apigocode/pkg/user"
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectfield"
@@ -43,7 +42,7 @@ func (h *Handler) Create(ctx context.Context, req *user.CreateI) (*user.CreateO,
 			Object: []*user.CreateO_Object{
 				{
 					Intern: &user.CreateO_Object_Intern{
-						Crtd: strconv.FormatInt(out.Crtd.Unix(), 10),
+						Crtd: outTim(out.Crtd),
 						User: out.User.String(),
 					},
 				},

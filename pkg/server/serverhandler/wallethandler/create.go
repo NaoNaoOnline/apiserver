@@ -2,7 +2,6 @@ package wallethandler
 
 import (
 	"context"
-	"strconv"
 
 	"github.com/NaoNaoOnline/apigocode/pkg/wallet"
 	"github.com/NaoNaoOnline/apiserver/pkg/server/context/userid"
@@ -46,7 +45,7 @@ func (h *Handler) Create(ctx context.Context, req *wallet.CreateI) (*wallet.Crea
 	for _, x := range out {
 		res.Object = append(res.Object, &wallet.CreateO_Object{
 			Intern: &wallet.CreateO_Object_Intern{
-				Crtd: strconv.FormatInt(x.Crtd.Unix(), 10),
+				Crtd: outTim(x.Crtd),
 				Wllt: x.Wllt.String(),
 			},
 		})

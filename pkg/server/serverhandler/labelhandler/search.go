@@ -132,7 +132,7 @@ func (h *Handler) Search(ctx context.Context, req *label.SearchI) (*label.Search
 
 		res.Object = append(res.Object, &label.SearchO_Object{
 			Intern: &label.SearchO_Object_Intern{
-				Crtd: strconv.FormatInt(x.Crtd.Unix(), 10),
+				Crtd: outTim(x.Crtd),
 				Labl: x.Labl.String(),
 				User: x.User.Data.String(),
 			},

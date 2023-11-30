@@ -70,10 +70,10 @@ func inpUni(str string) time.Time {
 	return time.Unix(sec, 0).UTC()
 }
 
-func outPoi(str string) *string {
-	if str == "" {
-		return nil
+func outTim(tim time.Time) string {
+	if !tim.IsZero() {
+		return strconv.FormatInt(tim.Unix(), 10)
 	}
 
-	return &str
+	return ""
 }

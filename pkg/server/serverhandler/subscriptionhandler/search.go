@@ -66,8 +66,8 @@ func (h *Handler) Search(ctx context.Context, req *subscription.SearchI) (*subsc
 	for _, x := range out[:limiter.Len(len(out))] {
 		res.Object = append(res.Object, &subscription.SearchO_Object{
 			Intern: &subscription.SearchO_Object_Intern{
-				Crtd: strconv.FormatInt(x.Crtd.Unix(), 10),
-				Fail: outPoi(x.Fail),
+				Crtd: outTim(x.Crtd),
+				Fail: x.Fail,
 				Stts: x.Stts.String(),
 				Subs: x.Subs.String(),
 				User: x.User.String(),
@@ -75,7 +75,7 @@ func (h *Handler) Search(ctx context.Context, req *subscription.SearchI) (*subsc
 			Public: &subscription.SearchO_Object_Public{
 				Crtr: strings.Join(x.Crtr, ","),
 				Recv: x.Recv,
-				Unix: strconv.FormatInt(x.Unix.Unix(), 10),
+				Unix: outTim(x.Unix),
 			},
 		})
 	}

@@ -75,7 +75,7 @@ func (h *Handler) Search(ctx context.Context, req *description.SearchI) (*descri
 				},
 			},
 			Intern: &description.SearchO_Object_Intern{
-				Crtd: strconv.FormatInt(x.Crtd.Unix(), 10),
+				Crtd: outTim(x.Crtd),
 				Desc: x.Desc.String(),
 				User: x.User.String(),
 			},

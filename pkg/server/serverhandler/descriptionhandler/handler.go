@@ -2,6 +2,8 @@ package descriptionhandler
 
 import (
 	"fmt"
+	"strconv"
+	"time"
 
 	"github.com/NaoNaoOnline/apigocode/pkg/description"
 	"github.com/NaoNaoOnline/apiserver/pkg/permission"
@@ -51,20 +53,21 @@ func inpPat(upd []*description.UpdateI_Object_Update) []*descriptionstorage.Patc
 	var lis []*descriptionstorage.Patch
 
 	for _, x := range upd {
-		var p *descriptionstorage.Patch
-		{
-			p = &descriptionstorage.Patch{
-				Ope: x.Ope,
-				Pat: x.Pat,
-			}
-		}
-
-		if x.Val != nil {
-			p.Val = *x.Val
-		}
-
-		lis = append(lis, p)
+		lis = append(lis, &descriptionstorage.Patch{
+			Frm: x.Frm,
+			Ope: x.Ope,
+			Pat: x.Pat,
+			Val: x.Val,
+		})
 	}
 
 	return lis
+}
+
+func outTim(tim time.Time) string {
+	if !tim.IsZero() {
+		return strconv.FormatInt(tim.Unix(), 10)
+	}
+
+	return ""
 }

@@ -95,7 +95,11 @@ func outLab(sco []objectid.ID) string {
 }
 
 func outTim(tim time.Time) string {
-	return strconv.FormatInt(tim.Unix(), 10)
+	if !tim.IsZero() {
+		return strconv.FormatInt(tim.Unix(), 10)
+	}
+
+	return ""
 }
 
 func musNum(str string) int64 {

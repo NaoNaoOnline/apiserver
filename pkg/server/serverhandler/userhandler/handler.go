@@ -2,6 +2,8 @@ package userhandler
 
 import (
 	"fmt"
+	"strconv"
+	"time"
 
 	"github.com/NaoNaoOnline/apigocode/pkg/user"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/userstorage"
@@ -37,20 +39,21 @@ func inpPat(upd []*user.UpdateI_Object_Update) []*userstorage.Patch {
 	var lis []*userstorage.Patch
 
 	for _, x := range upd {
-		var p *userstorage.Patch
-		{
-			p = &userstorage.Patch{
-				Ope: x.Ope,
-				Pat: x.Pat,
-			}
-		}
-
-		if x.Val != nil {
-			p.Val = *x.Val
-		}
-
-		lis = append(lis, p)
+		lis = append(lis, &userstorage.Patch{
+			Frm: x.Frm,
+			Ope: x.Ope,
+			Pat: x.Pat,
+			Val: x.Val,
+		})
 	}
 
 	return lis
+}
+
+func outTim(tim time.Time) string {
+	if !tim.IsZero() {
+		return strconv.FormatInt(tim.Unix(), 10)
+	}
+
+	return ""
 }
