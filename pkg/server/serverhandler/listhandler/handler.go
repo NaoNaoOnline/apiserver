@@ -2,6 +2,8 @@ package listhandler
 
 import (
 	"fmt"
+	"strconv"
+	"time"
 
 	"github.com/NaoNaoOnline/apigocode/pkg/list"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/liststorage"
@@ -37,20 +39,21 @@ func inpPat(upd []*list.UpdateI_Object_Update) []*liststorage.Patch {
 	var lis []*liststorage.Patch
 
 	for _, x := range upd {
-		var p *liststorage.Patch
-		{
-			p = &liststorage.Patch{
-				Ope: x.Ope,
-				Pat: x.Pat,
-			}
-		}
-
-		if x.Val != nil {
-			p.Val = *x.Val
-		}
-
-		lis = append(lis, p)
+		lis = append(lis, &liststorage.Patch{
+			Frm: x.Frm,
+			Ope: x.Ope,
+			Pat: x.Pat,
+			Val: x.Val,
+		})
 	}
 
 	return lis
+}
+
+func outTim(tim time.Time) string {
+	if !tim.IsZero() {
+		return strconv.FormatInt(tim.Unix(), 10)
+	}
+
+	return ""
 }

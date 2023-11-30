@@ -4,6 +4,11 @@ import (
 	"github.com/xh3b4sd/tracer"
 )
 
+var jsonPatchFromInvalidError = &tracer.Error{
+	Kind: "jsonPatchFromInvalidError",
+	Desc: "The request expects the JSON-Patch from to be empty. The JSON-Patch from was not found to be empty. Therefore the request failed.",
+}
+
 var jsonPatchOperationEmptyError = &tracer.Error{
 	Kind: "jsonPatchOperationEmptyError",
 	Desc: "The request expects the JSON-Patch operation not to be empty. The JSON-Patch operation was found to be empty. Therefore the request failed.",

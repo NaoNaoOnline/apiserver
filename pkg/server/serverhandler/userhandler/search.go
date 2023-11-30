@@ -106,7 +106,8 @@ func (h *Handler) Search(ctx context.Context, req *user.SearchI) (*user.SearchO,
 
 		res.Object = append(res.Object, &user.SearchO_Object{
 			Intern: &user.SearchO_Object_Intern{
-				Crtd: strconv.FormatInt(x.Crtd.Unix(), 10),
+				Crtd: outTim(x.Crtd),
+				Prem: outTim(x.Prem),
 				User: x.User.String(),
 			},
 			Public: &user.SearchO_Object_Public{

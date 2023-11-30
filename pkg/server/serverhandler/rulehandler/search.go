@@ -76,7 +76,7 @@ func (h *Handler) Search(ctx context.Context, req *rule.SearchI) (*rule.SearchO,
 
 		res.Object = append(res.Object, &rule.SearchO_Object{
 			Intern: &rule.SearchO_Object_Intern{
-				Crtd: strconv.FormatInt(x.Crtd.Unix(), 10),
+				Crtd: outTim(x.Crtd),
 				Rule: x.Rule.String(),
 				User: x.User.String(),
 			},

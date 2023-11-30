@@ -2,7 +2,6 @@ package eventhandler
 
 import (
 	"context"
-	"strconv"
 
 	"github.com/NaoNaoOnline/apigocode/pkg/event"
 	"github.com/NaoNaoOnline/apiserver/pkg/server/context/userid"
@@ -62,7 +61,7 @@ func (h *Handler) Create(ctx context.Context, req *event.CreateI) (*event.Create
 	for _, x := range out {
 		res.Object = append(res.Object, &event.CreateO_Object{
 			Intern: &event.CreateO_Object_Intern{
-				Crtd: strconv.FormatInt(x.Crtd.Unix(), 10),
+				Crtd: outTim(x.Crtd),
 				Evnt: x.Evnt.String(),
 			},
 		})

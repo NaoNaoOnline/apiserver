@@ -2,7 +2,6 @@ package rulehandler
 
 import (
 	"context"
-	"strconv"
 
 	"github.com/NaoNaoOnline/apigocode/pkg/rule"
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectid"
@@ -68,7 +67,7 @@ func (h *Handler) Create(ctx context.Context, req *rule.CreateI) (*rule.CreateO,
 	for _, x := range out {
 		res.Object = append(res.Object, &rule.CreateO_Object{
 			Intern: &rule.CreateO_Object_Intern{
-				Crtd: strconv.FormatInt(x.Crtd.Unix(), 10),
+				Crtd: outTim(x.Crtd),
 				Rule: x.Rule.String(),
 			},
 		})

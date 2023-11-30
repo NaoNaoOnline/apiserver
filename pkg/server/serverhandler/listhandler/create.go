@@ -2,7 +2,6 @@ package listhandler
 
 import (
 	"context"
-	"strconv"
 
 	"github.com/NaoNaoOnline/apigocode/pkg/list"
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectfield"
@@ -46,7 +45,7 @@ func (h *Handler) Create(ctx context.Context, req *list.CreateI) (*list.CreateO,
 	for _, x := range out {
 		res.Object = append(res.Object, &list.CreateO_Object{
 			Intern: &list.CreateO_Object_Intern{
-				Crtd: strconv.FormatInt(x.Crtd.Unix(), 10),
+				Crtd: outTim(x.Crtd),
 				List: x.List.String(),
 			},
 		})

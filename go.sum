@@ -4,8 +4,8 @@ github.com/FZambia/sentinel v1.1.1 h1:0ovTimlR7Ldm+wR15GgO+8C2dt7kkn+tm3PQS+Qk3E
 github.com/FZambia/sentinel v1.1.1/go.mod h1:ytL1Am/RLlAoAXG6Kj5LNuw/TRRQrv2rt2FT26vP5gI=
 github.com/Microsoft/go-winio v0.6.1 h1:9/kr64B9VUZrLm5YYwbGtUJnMgqWVOdUAXu6Migciow=
 github.com/Microsoft/go-winio v0.6.1/go.mod h1:LRdKpFKfdobln8UmuiYcKPot9D2v6svN5+sAH+4kjUM=
-github.com/NaoNaoOnline/apigocode v0.8.14 h1:Hha9rZZUbjEIiIRCgu3viGGC7z463xrgEGrNwahMjS0=
-github.com/NaoNaoOnline/apigocode v0.8.14/go.mod h1:gEIhGtjAQm05l9JkDaMmIgM34rkgUCYn2Q3WmowWcE0=
+github.com/NaoNaoOnline/apigocode v0.8.15 h1:9uS6haSOjtLfNBsLVZuv1oBBf4yPzzgWNTB+1DnB7jY=
+github.com/NaoNaoOnline/apigocode v0.8.15/go.mod h1:gEIhGtjAQm05l9JkDaMmIgM34rkgUCYn2Q3WmowWcE0=
 github.com/VictoriaMetrics/fastcache v1.12.1 h1:i0mICQuojGDL3KblA7wUNlY5lOK6a4bwt3uRKnkZU40=
 github.com/VictoriaMetrics/fastcache v1.12.1/go.mod h1:tX04vaqcNoQeGLD+ra5pU5sWkuxnzWhEzLwhP9w653o=
 github.com/auth0/go-jwt-middleware/v2 v2.1.0 h1:VU4LsC3aFPoqXVyEp8EixU6FNM+ZNIjECszRTvtGQI8=

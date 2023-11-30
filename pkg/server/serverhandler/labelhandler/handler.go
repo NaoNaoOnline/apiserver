@@ -2,6 +2,8 @@ package labelhandler
 
 import (
 	"fmt"
+	"strconv"
+	"time"
 
 	"github.com/NaoNaoOnline/apigocode/pkg/label"
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectfield"
@@ -38,19 +40,12 @@ func inpPat(upd []*label.UpdateI_Object_Update) []*labelstorage.Patch {
 	var lis []*labelstorage.Patch
 
 	for _, x := range upd {
-		var p *labelstorage.Patch
-		{
-			p = &labelstorage.Patch{
-				Ope: x.Ope,
-				Pat: x.Pat,
-			}
-		}
-
-		if x.Val != nil {
-			p.Val = *x.Val
-		}
-
-		lis = append(lis, p)
+		lis = append(lis, &labelstorage.Patch{
+			Frm: x.Frm,
+			Ope: x.Ope,
+			Pat: x.Pat,
+			Val: x.Val,
+		})
 	}
 
 	return lis
@@ -64,4 +59,12 @@ func outMap(inp objectfield.Map) map[string]string {
 	}
 
 	return out
+}
+
+func outTim(tim time.Time) string {
+	if !tim.IsZero() {
+		return strconv.FormatInt(tim.Unix(), 10)
+	}
+
+	return ""
 }

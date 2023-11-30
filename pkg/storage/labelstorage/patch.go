@@ -7,6 +7,8 @@ import (
 )
 
 type Patch struct {
+	// Frm is the RFC6902 compliant from for this JSON-Patch.
+	Frm string `json:"from"`
 	// Ope is the RFC6902 compliant operation for this JSON-Patch.
 	Ope string `json:"op"`
 	// Pat is the RFC6902 compliant path for this JSON-Patch.
@@ -16,18 +18,28 @@ type Patch struct {
 }
 
 func (p *Patch) Verify() error {
-	if p.Ope == "" {
-		return tracer.Mask(jsonPatchOperationEmptyError)
-	}
-	if p.Ope != "add" && p.Ope != "remove" {
-		return tracer.Maskf(jsonPatchOperationInvalidError, p.Ope)
+	{
+		if p.Frm != "" {
+			return tracer.Mask(jsonPatchFromInvalidError)
+		}
 	}
 
-	if p.Pat == "" {
-		return tracer.Maskf(jsonPatchPathEmptyError, p.Pat)
+	{
+		if p.Ope == "" {
+			return tracer.Mask(jsonPatchOperationEmptyError)
+		}
+		if p.Ope != "add" && p.Ope != "remove" {
+			return tracer.Maskf(jsonPatchOperationInvalidError, p.Ope)
+		}
 	}
-	if !strings.HasPrefix(p.Pat, "/prfl/data/") {
-		return tracer.Maskf(jsonPatchPathInvalidError, p.Pat)
+
+	{
+		if p.Pat == "" {
+			return tracer.Maskf(jsonPatchPathEmptyError, p.Pat)
+		}
+		if !strings.HasPrefix(p.Pat, "/prfl/data/") {
+			return tracer.Maskf(jsonPatchPathInvalidError, p.Pat)
+		}
 	}
 
 	return nil

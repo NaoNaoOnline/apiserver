@@ -39,19 +39,12 @@ func inpPat(upd []*wallet.UpdateI_Object_Update) []*walletstorage.Patch {
 	var lis []*walletstorage.Patch
 
 	for _, x := range upd {
-		var p *walletstorage.Patch
-		{
-			p = &walletstorage.Patch{
-				Ope: x.Ope,
-				Pat: x.Pat,
-			}
-		}
-
-		if x.Val != nil {
-			p.Val = *x.Val
-		}
-
-		lis = append(lis, p)
+		lis = append(lis, &walletstorage.Patch{
+			Frm: x.Frm,
+			Ope: x.Ope,
+			Pat: x.Pat,
+			Val: x.Val,
+		})
 	}
 
 	return lis
