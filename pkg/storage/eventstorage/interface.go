@@ -99,7 +99,7 @@ type Interface interface {
 	SearchLike(objectid.ID, int, int) ([]*Object, error)
 
 	// SearchLink returns the user IDs that visited the given event ID in the form
-	// of a link. This function is mainly used for cleaning up internal user
+	// of a link click. This function is mainly used for cleaning up internal user
 	// related data structures in a background process.
 	//
 	//     @inp[0] the event ID to search users for

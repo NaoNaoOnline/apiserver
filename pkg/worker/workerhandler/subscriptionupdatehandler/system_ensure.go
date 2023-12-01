@@ -50,21 +50,9 @@ func (h *UpdateHandler) Ensure(tas *task.Task, bud *budget.Budget) error {
 	// hand was found to be invalid, then we skip the user modification and go
 	// straight to deleting the distributed lock.
 	if sob[0].Stts == objectstate.Success {
-		var uid []objectid.ID
-		{
-			uid, _, err = h.wal.SearchAddr([]string{sob[0].Recv})
-			if err != nil {
-				return tracer.Mask(err)
-			}
-		}
-
-		if len(uid) != 1 {
-			return tracer.Mask(runtime.ExecutionFailedError)
-		}
-
 		var uob []*userstorage.Object
 		{
-			uob, err = h.use.SearchUser(uid)
+			uob, err = h.use.SearchUser([]objectid.ID{sob[0].Rcvr})
 			if err != nil {
 				return tracer.Mask(err)
 			}

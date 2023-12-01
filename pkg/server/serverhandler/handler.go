@@ -119,6 +119,7 @@ func New(c Config) *Handler {
 	{
 		han = append(han, wallethandler.NewHandler(wallethandler.HandlerConfig{
 			Log: c.Log,
+			Sub: c.Sto.Subs(),
 			Wal: c.Sto.Wllt(),
 		}))
 	}

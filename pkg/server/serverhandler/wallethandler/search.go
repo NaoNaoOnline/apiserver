@@ -18,43 +18,69 @@ func (h *Handler) Search(ctx context.Context, req *wallet.SearchI) (*wallet.Sear
 	var out []*walletstorage.Object
 
 	//
-	// Search wallets by kind.
+	// Search wallets by creator.
 	//
 
-	var kin []string
-	for _, x := range req.Object {
-		if x.Public != nil && x.Public.Kind != "" {
-			kin = append(kin, x.Public.Kind)
+	{
+		var cre bool
+		for _, x := range req.Object {
+			if x.Symbol != nil && x.Symbol.Crtr == "default" {
+				cre = true
+			}
+		}
+
+		if cre {
+			lis, err := h.sub.SearchCrtr([]objectid.ID{userid.FromContext(ctx)})
+			if err != nil {
+				return nil, tracer.Mask(err)
+			}
+
+			out = append(out, lis...)
 		}
 	}
 
-	if len(kin) != 0 {
-		lis, err := h.wal.SearchKind(userid.FromContext(ctx), generic.Uni(kin))
-		if err != nil {
-			return nil, tracer.Mask(err)
+	//
+	// Search wallets by kind.
+	//
+
+	{
+		var kin []string
+		for _, x := range req.Object {
+			if x.Public != nil && x.Public.Kind != "" {
+				kin = append(kin, x.Public.Kind)
+			}
 		}
 
-		out = append(out, lis...)
+		if len(kin) != 0 {
+			lis, err := h.wal.SearchKind(userid.FromContext(ctx), generic.Uni(kin))
+			if err != nil {
+				return nil, tracer.Mask(err)
+			}
+
+			out = append(out, lis...)
+		}
 	}
 
 	//
 	// Search wallets by ID.
 	//
 
-	var wal []objectid.ID
-	for _, x := range req.Object {
-		if x.Intern != nil && x.Intern.Wllt != "" {
-			wal = append(wal, objectid.ID(x.Intern.Wllt))
-		}
-	}
-
-	if len(wal) != 0 {
-		lis, err := h.wal.SearchWllt(userid.FromContext(ctx), wal)
-		if err != nil {
-			return nil, tracer.Mask(err)
+	{
+		var wal []objectid.ID
+		for _, x := range req.Object {
+			if x.Intern != nil && x.Intern.Wllt != "" {
+				wal = append(wal, objectid.ID(x.Intern.Wllt))
+			}
 		}
 
-		out = append(out, lis...)
+		if len(wal) != 0 {
+			lis, err := h.wal.SearchWllt(userid.FromContext(ctx), wal)
+			if err != nil {
+				return nil, tracer.Mask(err)
+			}
+
+			out = append(out, lis...)
+		}
 	}
 
 	//

@@ -59,6 +59,8 @@ func (r *Redis) SearchLink(use []objectid.ID) ([]objectid.ID, error) {
 
 	var out []objectid.ID
 	for i := range use {
+		// val will result in a list of all event IDs that the given user IDs have
+		// visited, if any.
 		var val []string
 		{
 			val, err = r.red.Sorted().Search().Order(linUse(use[i]), 0, -1)

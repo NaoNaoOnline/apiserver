@@ -239,18 +239,6 @@ const (
 	//
 	RuleUser = "rul/use/%s"
 
-	// SubscriptionReceiver is used to store all the IDs of subscriptions a
-	// specific user received. The user IDs here are pointing to the subscription
-	// IDs that they themselves received. Note that receiving a subscription and
-	// paying for it may not be the same things, since subscriptions can be
-	// gifted.
-	//
-	//     user ID               subscription IDs
-	//                     ->
-	//     sub/rec/5678          1234,5678
-	//
-	SubscriptionReceiver = "sub/rec/%s"
-
 	// SubscriptionObject is used to store our internal representation of a
 	// Subscription object.
 	//
@@ -260,17 +248,36 @@ const (
 	//
 	SubscriptionObject = "sub/obj/%s"
 
-	// SubscriptionPayer is used to store all the IDs of subscriptions created by
-	// a specific user. The user IDs here are pointing to the subscription IDs
-	// that they themselves paid for. Note that receiving a subscription and
-	// paying for it may not be the same things, since subscriptions can be
-	// gifted.
+	// SubscriptionPayer is used to store all the IDs of subscriptions payed by a
+	// specific user. The user IDs here are pointing to the subscription IDs that
+	// they themselves paid for. Note that receiving a subscription and paying for
+	// it may not be the same thing, since subscriptions can be gifted.
 	//
 	//     user ID               subscription IDs
 	//                     ->
 	//     sub/pay/5678          1234,5678
 	//
 	SubscriptionPayer = "sub/pay/%s"
+
+	// SubscriptionReceiver is used to store all the IDs of subscriptions received
+	// by a specific user. The user IDs here are pointing to the subscription IDs
+	// that they themselves received. Note that receiving a subscription and
+	// paying for it may not be the same thing, since subscriptions can be gifted.
+	//
+	//     user ID               subscription IDs
+	//                     ->
+	//     sub/rec/5678          1234,5678
+	//
+	SubscriptionReceiver = "sub/rec/%s"
+
+	// SubscriptionUser is used to store all the IDs of subscriptions created by a
+	// specific user.
+	//
+	//     user ID               subscription IDs
+	//                     ->
+	//     sub/use/5678          1234,5678
+	//
+	SubscriptionUser = "sub/use/%s"
 
 	// UserClaim is used to store user mappings between external and internal user
 	// representations. An external representation might be an OAuth subject claim

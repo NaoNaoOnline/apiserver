@@ -5,7 +5,7 @@ import (
 
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectid"
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectstate"
-	"github.com/NaoNaoOnline/apiserver/pkg/runtime"
+	"github.com/NaoNaoOnline/apiserver/pkg/storage/userstorage"
 	"github.com/xh3b4sd/tracer"
 )
 
@@ -22,23 +22,23 @@ func (r *Redis) CreateSubs(inp []*Object) ([]*Object, error) {
 			}
 		}
 
-		// Lookup the user ID of the recipient using the subscriber address. There
-		// should be exactly one user ID for any given address.
-		var rec []objectid.ID
+		// Ensure the user IDs of the subscription payer and receiver do in fact
+		// exist.
+		var use []*userstorage.Object
 		{
-			rec, _, err = r.wal.SearchAddr([]string{inp[i].Recv})
+			use, err = r.use.SearchUser([]objectid.ID{inp[i].Payr, inp[i].Rcvr})
 			if err != nil {
 				return nil, tracer.Mask(err)
 			}
 		}
 
-		if len(rec) != 1 {
-			return nil, tracer.Mask(runtime.ExecutionFailedError)
+		if len(use) != 2 {
+			return nil, tracer.Mask(userNotFoundError)
 		}
 
 		var exi []*Object
 		{
-			exi, err = r.SearchRecv(rec, PagAll())
+			exi, err = r.SearchRcvr([]objectid.ID{inp[i].Rcvr}, PagAll())
 			if err != nil {
 				return nil, tracer.Mask(err)
 			}
@@ -93,21 +93,29 @@ func (r *Redis) CreateSubs(inp []*Object) ([]*Object, error) {
 			}
 		}
 
-		// Create the receiver specific mappings for receiver specific search
-		// queries. With that we can show the user all subscriptions they received.
-		// That is, the subscriptions they use to access premium features.
+		// Create the payer specific mappings for payer specific search queries.
+		// With that we can show the user all subscriptions they paid for.
 		{
-			err = r.red.Sorted().Create().Score(subRec(rec[0]), inp[i].Subs.String(), inp[i].Subs.Float())
+			err = r.red.Sorted().Create().Score(subPay(inp[i].Payr), inp[i].Subs.String(), inp[i].Subs.Float())
 			if err != nil {
 				return nil, tracer.Mask(err)
 			}
 		}
 
-		// Create the payer specific mappings for payer specific search queries.
-		// With that we can show the user all subscriptions they created. That is,
+		// Create the receiver specific mappings for receiver specific search
+		// queries. With that we can show the user all subscriptions they received.
+		{
+			err = r.red.Sorted().Create().Score(subRec(inp[i].Rcvr), inp[i].Subs.String(), inp[i].Subs.Float())
+			if err != nil {
+				return nil, tracer.Mask(err)
+			}
+		}
+
+		// Create the user specific mappings for user specific search queries. With
+		// that we can show the user all subscriptions they created. That is usually
 		// the subscriptions they paid for.
 		{
-			err = r.red.Sorted().Create().Score(subPay(inp[i].User), inp[i].Subs.String(), inp[i].Subs.Float())
+			err = r.red.Sorted().Create().Score(subUse(inp[i].User), inp[i].Subs.String(), inp[i].Subs.Float())
 			if err != nil {
 				return nil, tracer.Mask(err)
 			}

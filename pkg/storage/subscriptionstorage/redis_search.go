@@ -14,7 +14,7 @@ import (
 	"github.com/xh3b4sd/tracer"
 )
 
-func (r *Redis) SearchCrtr(uid []objectid.ID) ([]objectid.ID, error) {
+func (r *Redis) SearchCrtr(uid []objectid.ID) ([]*walletstorage.Object, error) {
 	var err error
 
 	var wob walletstorage.Slicer
@@ -115,7 +115,7 @@ func (r *Redis) SearchCrtr(uid []objectid.ID) ([]objectid.ID, error) {
 		}
 	}
 
-	return wob.Wllt(), nil
+	return wob, nil
 }
 
 func (r *Redis) SearchPayr(use []objectid.ID, pag [2]int) ([]*Object, error) {
@@ -123,7 +123,7 @@ func (r *Redis) SearchPayr(use []objectid.ID, pag [2]int) ([]*Object, error) {
 
 	var out []*Object
 	for _, x := range use {
-		// val will result in a list of all subscription IDs created by the given
+		// val will result in a list of all subscription IDs paid for by the given
 		// user, if any.
 		var val []string
 		{
@@ -152,12 +152,12 @@ func (r *Redis) SearchPayr(use []objectid.ID, pag [2]int) ([]*Object, error) {
 	return out, nil
 }
 
-func (r *Redis) SearchRecv(use []objectid.ID, pag [2]int) ([]*Object, error) {
+func (r *Redis) SearchRcvr(use []objectid.ID, pag [2]int) ([]*Object, error) {
 	var err error
 
 	var out []*Object
 	for _, x := range use {
-		// val will result in a list of all subscription IDs created by the given
+		// val will result in a list of all subscription IDs received by the given
 		// user, if any.
 		var val []string
 		{

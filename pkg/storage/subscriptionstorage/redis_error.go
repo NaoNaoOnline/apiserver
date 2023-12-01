@@ -19,3 +19,8 @@ var subscriptionObjectNotFoundError = &tracer.Error{
 func IsSubscriptionObjectNotFound(err error) bool {
 	return errors.Is(err, subscriptionObjectNotFoundError)
 }
+
+var userNotFoundError = &tracer.Error{
+	Kind: "userNotFoundError",
+	Desc: "The request expected user objects to be found for the subscription payer and subscription receiver. The user objects for subscription payer and subscription receiver could not be found. Therefore the request failed.",
+}

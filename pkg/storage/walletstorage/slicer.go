@@ -18,14 +18,18 @@ func (s Slicer) Wllt() []objectid.ID {
 	return ids
 }
 
-func (s Slicer) Labl(lab string) bool {
+// Labl returns all wallet objects defining the given label within the
+// underlying list of wallet objects.
+func (s Slicer) Labl(lab string) []*Object {
+	var lis []*Object
+
 	for _, x := range s {
 		if x.HasLab(lab) {
-			return true
+			lis = append(lis, x)
 		}
 	}
 
-	return false
+	return lis
 }
 
 func (s Slicer) Obct() []*Object {

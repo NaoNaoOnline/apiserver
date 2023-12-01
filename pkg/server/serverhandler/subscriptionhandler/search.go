@@ -18,23 +18,49 @@ func (h *Handler) Search(ctx context.Context, req *subscription.SearchI) (*subsc
 	var out []*subscriptionstorage.Object
 
 	//
-	// Search subscriptions by user, created.
+	// Search subscriptions by user, payer.
 	//
 
 	{
-		var use objectid.ID
+		var pay objectid.ID
 		for _, x := range req.Object {
-			if x.Intern != nil && x.Intern.User != "" {
-				use = objectid.ID(x.Intern.User)
+			if x.Public != nil && x.Public.Payr != "" {
+				pay = objectid.ID(x.Public.Payr)
 			}
 		}
 
-		if use != "" {
-			if use != userid.FromContext(ctx) {
+		if pay != "" {
+			if pay != userid.FromContext(ctx) {
 				return nil, tracer.Mask(runtime.UserNotOwnerError)
 			}
 
-			lis, err := h.sub.SearchPayr([]objectid.ID{use}, subscriptionstorage.PagAll())
+			lis, err := h.sub.SearchPayr([]objectid.ID{pay}, subscriptionstorage.PagAll())
+			if err != nil {
+				return nil, tracer.Mask(err)
+			}
+
+			out = append(out, lis...)
+		}
+	}
+
+	//
+	// Search subscriptions by user, receiver.
+	//
+
+	{
+		var rec objectid.ID
+		for _, x := range req.Object {
+			if x.Public != nil && x.Public.Rcvr != "" {
+				rec = objectid.ID(x.Public.Rcvr)
+			}
+		}
+
+		if rec != "" {
+			if rec != userid.FromContext(ctx) {
+				return nil, tracer.Mask(runtime.UserNotOwnerError)
+			}
+
+			lis, err := h.sub.SearchRcvr([]objectid.ID{rec}, subscriptionstorage.PagAll())
 			if err != nil {
 				return nil, tracer.Mask(err)
 			}
@@ -74,7 +100,8 @@ func (h *Handler) Search(ctx context.Context, req *subscription.SearchI) (*subsc
 			},
 			Public: &subscription.SearchO_Object_Public{
 				Crtr: strings.Join(x.Crtr, ","),
-				Recv: x.Recv,
+				Payr: x.Payr.String(),
+				Rcvr: x.Rcvr.String(),
 				Unix: outTim(x.Unix),
 			},
 		})
