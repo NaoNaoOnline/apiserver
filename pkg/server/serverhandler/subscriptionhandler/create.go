@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/NaoNaoOnline/apigocode/pkg/subscription"
+	"github.com/NaoNaoOnline/apiserver/pkg/object/objectid"
 	"github.com/NaoNaoOnline/apiserver/pkg/server/context/userid"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/subscriptionstorage"
 	"github.com/xh3b4sd/tracer"
@@ -17,7 +18,8 @@ func (h *Handler) Create(ctx context.Context, req *subscription.CreateI) (*subsc
 		if x.Public != nil {
 			inp = append(inp, &subscriptionstorage.Object{
 				Crtr: inpCrt(x.Public.Crtr),
-				Recv: x.Public.Recv,
+				Payr: objectid.ID(x.Public.Payr),
+				Rcvr: objectid.ID(x.Public.Rcvr),
 				Unix: inpUni(x.Public.Unix),
 				User: userid.FromContext(ctx),
 			})

@@ -136,9 +136,9 @@
   {
     "inputs": [
       {
-        "internalType": "address",
-        "name": "subrec",
-        "type": "address"
+        "internalType": "uint256",
+        "name": "subrcvr",
+        "type": "uint256"
       }
     ],
     "name": "getSubRec",
@@ -155,12 +155,12 @@
   {
     "inputs": [
       {
-        "internalType": "address",
-        "name": "subrec",
-        "type": "address"
+        "internalType": "uint256",
+        "name": "subrcvr",
+        "type": "uint256"
       }
     ],
-    "name": "getSubUnx",
+    "name": "getSubUni",
     "outputs": [
       {
         "internalType": "uint256",
@@ -233,9 +233,9 @@
   {
     "inputs": [
       {
-        "internalType": "address",
-        "name": "subrec",
-        "type": "address"
+        "internalType": "uint256",
+        "name": "subrcvr",
+        "type": "uint256"
       },
       {
         "internalType": "address",
@@ -256,9 +256,9 @@
   {
     "inputs": [
       {
-        "internalType": "address",
-        "name": "subrec",
-        "type": "address"
+        "internalType": "uint256",
+        "name": "subrcvr",
+        "type": "uint256"
       },
       {
         "internalType": "address",
@@ -304,9 +304,9 @@
   {
     "inputs": [
       {
-        "internalType": "address",
-        "name": "subrec",
-        "type": "address"
+        "internalType": "uint256",
+        "name": "subrcvr",
+        "type": "uint256"
       },
       {
         "internalType": "address",

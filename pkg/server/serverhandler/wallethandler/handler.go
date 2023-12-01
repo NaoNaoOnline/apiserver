@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/NaoNaoOnline/apigocode/pkg/wallet"
+	"github.com/NaoNaoOnline/apiserver/pkg/storage/subscriptionstorage"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/walletstorage"
 	"github.com/xh3b4sd/logger"
 	"github.com/xh3b4sd/tracer"
@@ -13,17 +14,22 @@ import (
 
 type HandlerConfig struct {
 	Log logger.Interface
+	Sub subscriptionstorage.Interface
 	Wal walletstorage.Interface
 }
 
 type Handler struct {
 	log logger.Interface
 	wal walletstorage.Interface
+	sub subscriptionstorage.Interface
 }
 
 func NewHandler(c HandlerConfig) *Handler {
 	if c.Log == nil {
 		tracer.Panic(tracer.Mask(fmt.Errorf("%T.Log must not be empty", c)))
+	}
+	if c.Sub == nil {
+		tracer.Panic(tracer.Mask(fmt.Errorf("%T.Sub must not be empty", c)))
 	}
 	if c.Wal == nil {
 		tracer.Panic(tracer.Mask(fmt.Errorf("%T.Wal must not be empty", c)))
@@ -31,6 +37,7 @@ func NewHandler(c HandlerConfig) *Handler {
 
 	return &Handler{
 		log: c.Log,
+		sub: c.Sub,
 		wal: c.Wal,
 	}
 }

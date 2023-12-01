@@ -3,7 +3,6 @@ package subscriptionstorage
 import (
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectid"
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectlabel"
-	"github.com/NaoNaoOnline/apiserver/pkg/runtime"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/eventstorage"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/walletstorage"
 	"github.com/xh3b4sd/tracer"
@@ -12,49 +11,46 @@ import (
 func (r *Redis) VerifyAddr(add []string) ([]bool, error) {
 	var err error
 
-	// Use the wallet storage to search for the respective user and wallet IDs,
-	// given a list of wallet addresses.
+	// Use the wallet storage to search for the respective user IDs, given a list
+	// of wallet addresses.
 	var uid []objectid.ID
-	var wid []objectid.ID
 	{
-		uid, wid, err = r.wal.SearchAddr(add)
+		uid, _, err = r.wal.SearchAddr(add)
 		if err != nil {
 			return nil, tracer.Mask(err)
 		}
 	}
 
-	// Some validation to be super defensive.
+	// Just verify using VerifyUser, given our user IDs.
+	var vld []bool
 	{
-		if len(uid) != len(add) {
-			return nil, tracer.Maskf(runtime.ExecutionFailedError, "%v", add)
+		vld, err = r.VerifyUser(uid)
+		if err != nil {
+			return nil, tracer.Mask(err)
 		}
 	}
+
+	return vld, nil
+}
+
+func (r *Redis) VerifyUser(uid []objectid.ID) ([]bool, error) {
+	var err error
 
 	var vld []bool
 	for i := range uid {
 		// Use the paird user ID and wallet ID to lookup the matching wallet object.
-		var wob []*walletstorage.Object
+		var wob walletstorage.Slicer
 		{
-			wob, err = r.wal.SearchWllt(uid[i], []objectid.ID{wid[i]})
+			wob, err = r.wal.SearchKind(uid[i], []string{"eth"})
 			if err != nil {
 				return nil, tracer.Mask(err)
 			}
 		}
 
-		// Some validation to be super defensive.
-		{
-			if len(wob) != 1 {
-				return nil, tracer.Maskf(runtime.ExecutionFailedError, "%d", len(wob))
-			}
-			if wob[0].Addr.Data != add[i] {
-				return nil, tracer.Maskf(runtime.ExecutionFailedError, "%s != %s", wob[0].Addr.Data, add[i])
-			}
-		}
-
-		// If the wallet object is labelled to be used for accounting, then
-		// continue. Otherwise the respective wallet address is not considered a
-		// legitimate content creator.
-		if !wob[0].HasLab(objectlabel.WalletAccounting) {
+		// If the given user owns a wallet object designated for accounting, then
+		// continue. Otherwise the respective user ID is not considered a legitimate
+		// content creator.
+		if len(wob.Labl(objectlabel.WalletAccounting)) == 0 {
 			vld = append(vld, false)
 			continue
 		}

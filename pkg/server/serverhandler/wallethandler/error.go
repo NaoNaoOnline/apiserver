@@ -9,19 +9,19 @@ var searchInternConflictError = &tracer.Error{
 	Desc: "The request expects intern.wllt to be the only field provided within the given query object. Fields other than intern.wllt were found to be set within the given query object. Therefore the request failed.",
 }
 
-var searchInternEmptyError = &tracer.Error{
-	Kind: "searchInternEmptyError",
-	Desc: "The request expects intern.wllt not to be empty. intern.wllt was found to be empty. Therefore the request failed.",
-}
-
 var searchPublicConflictError = &tracer.Error{
 	Kind: "searchPublicConflictError",
 	Desc: "The request expects public.kind to be the only field provided within the given query object. Fields other than public.kind were found to be set within the given query object. Therefore the request failed.",
 }
 
-var searchPublicEmptyError = &tracer.Error{
-	Kind: "searchPublicEmptyError",
-	Desc: "The request expects public.kind not to be empty. public.kind was found to be empty. Therefore the request failed.",
+var searchSymbolConflictError = &tracer.Error{
+	Kind: "searchSymbolConflictError",
+	Desc: "The request expects symbol.crtr to be the only field provided within the given query object. Fields other than symbol.crtr were found to be set within the given query object. Therefore the request failed.",
+}
+
+var searchSymbolInvalidError = &tracer.Error{
+	Kind: "searchSymbolInvalidError",
+	Desc: `The request expects symbol.crtr to be set to "default". symbol.crtr was not found to be set to "default". Therefore the request failed.`,
 }
 
 var updateEmptyError = &tracer.Error{

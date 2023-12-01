@@ -24,7 +24,7 @@ func (h *Handler) Update(ctx context.Context, req *subscription.UpdateI) (*subsc
 
 	var sob []*subscriptionstorage.Object
 	{
-		sob, err = h.sub.SearchRecv([]objectid.ID{userid.FromContext(ctx)}, subscriptionstorage.PagLat())
+		sob, err = h.sub.SearchRcvr([]objectid.ID{userid.FromContext(ctx)}, subscriptionstorage.PagLat())
 		if err != nil {
 			return nil, tracer.Mask(err)
 		}

@@ -32,16 +32,14 @@ var subscriptionCrtrLimitError = &tracer.Error{
 	Desc: "The request expects an upper limit of 3 creator addresses per subscription. More than 3 creator addresses per subscription were found. Therefore the request failed.",
 }
 
-var subscriptionRecvEmptyError = &tracer.Error{
-	Kind: "subscriptionRecvEmptyError",
-	Desc: "The request expects the subscription receiver not to be empty. The subscription receiver was found to be empty. Therefore the request failed.",
+var subscriptionPayrEmptyError = &tracer.Error{
+	Kind: "subscriptionPayrEmptyError",
+	Desc: "The request expects the subscription payer not to be empty. The subscription payer was found to be empty. Therefore the request failed.",
 }
 
-var subscriptionRecvFormatError = hexformat.Errorf("subscription", "recv")
-
-var subscriptionRecvLengthError = &tracer.Error{
-	Kind: "subscriptionRecvLengthError",
-	Desc: "The request expects the subscription receiver to have 42 characters. The subscription receiver was not found to have 42 characters. Therefore the request failed.",
+var subscriptionRcvrEmptyError = &tracer.Error{
+	Kind: "subscriptionRcvrEmptyError",
+	Desc: "The request expects the subscription receiver not to be empty. The subscription receiver was found to be empty. Therefore the request failed.",
 }
 
 var subscriptionUnixEmptyError = &tracer.Error{

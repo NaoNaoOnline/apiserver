@@ -172,7 +172,7 @@ func (h *Handler) updateVrfyPtch(
 	// Here we iterate through all existing user wallets in order to find out
 	// whether the user does already have an accounting wallet, while trying to
 	// designate another one.
-	if sli.Labl(objectlabel.WalletAccounting) {
+	if len(sli.Labl(objectlabel.WalletAccounting)) != 0 {
 		for i := range sli.Slct(wal...) {
 			if pat.AddLab(i, objectlabel.WalletAccounting) {
 				return tracer.Mask(walletLabelAccountingError)

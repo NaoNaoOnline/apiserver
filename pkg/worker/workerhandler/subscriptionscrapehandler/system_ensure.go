@@ -71,9 +71,9 @@ func (h *ScrapeHandler) Ensure(tas *task.Task, bud *budget.Budget) error {
 		}
 	}
 
-	var unx *big.Int
+	var sec *big.Int
 	{
-		unx, err = scn.GetSubUnx(nil, common.HexToAddress(sob[0].Recv))
+		sec, err = scn.GetSubUni(nil, big.NewInt(sob[0].Rcvr.Int()))
 		if err != nil {
 			return tracer.Mask(err)
 		}
@@ -81,7 +81,7 @@ func (h *ScrapeHandler) Ensure(tas *task.Task, bud *budget.Budget) error {
 
 	var add [3]common.Address
 	{
-		add, err = scn.GetSubRec(nil, common.HexToAddress(sob[0].Recv))
+		add, err = scn.GetSubRec(nil, big.NewInt(sob[0].Rcvr.Int()))
 		if err != nil {
 			return tracer.Mask(err)
 		}
@@ -89,7 +89,7 @@ func (h *ScrapeHandler) Ensure(tas *task.Task, bud *budget.Budget) error {
 
 	var uni int64
 	{
-		uni = int64(unx.Uint64())
+		uni = int64(sec.Uint64())
 	}
 
 	var cre []string

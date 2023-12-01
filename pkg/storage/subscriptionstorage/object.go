@@ -25,9 +25,12 @@ type Object struct {
 	// successfully. Most subscriptions should not be accompanied by a failure
 	// message.
 	Fail string `json:"fail,omitempty"`
-	// Recv is the wallet address of the user getting access to premium features
-	// upon asynchronous subscription verification.
-	Recv string `json:"recv"`
+	// payr is the user ID of the user paying for the premium subscription. This
+	// is usually the same user ID as rcvr, but it does not have to be the same.
+	// The idea here is that subscriptions can be gifted to other users.
+	Payr objectid.ID `json:"payr"`
+	// Rcvr is the user ID of the user receiving the premium subscription.
+	Rcvr objectid.ID `json:"recv"`
 	// Stts is the resource status expressing whether this subscription is active.
 	// An active subscription is verified by comparing its offchain and onchain
 	// state. Subscriptions found to be invalid will not be marked as active, but
@@ -80,14 +83,14 @@ func (o *Object) VerifyObct() error {
 	}
 
 	{
-		if o.Recv == "" {
-			return tracer.Mask(subscriptionRecvEmptyError)
+		if o.Payr == "" {
+			return tracer.Mask(subscriptionPayrEmptyError)
 		}
-		if len(o.Recv) != 42 {
-			return tracer.Maskf(subscriptionRecvLengthError, "%d", len(o.Recv))
-		}
-		if !hexformat.Verify(o.Recv) {
-			return tracer.Mask(subscriptionRecvFormatError)
+	}
+
+	{
+		if o.Rcvr == "" {
+			return tracer.Mask(subscriptionRcvrEmptyError)
 		}
 	}
 
