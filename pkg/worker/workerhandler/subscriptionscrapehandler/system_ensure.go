@@ -28,12 +28,15 @@ const (
 func (h *ScrapeHandler) Ensure(tas *task.Task, bud *budget.Budget) error {
 	var err error
 
-	var cnt string
 	var sid string
+	{
+		sid = tas.Sync.Get(objectlabel.SubsObject)
+	}
+
+	var cnt string
 	var rpc string
 	{
 		cnt = tas.Meta.Get(objectlabel.SubsCntrct)
-		sid = tas.Meta.Get(objectlabel.SubsObject)
 		rpc = tas.Meta.Get(objectlabel.SubsRpcUrl)
 	}
 

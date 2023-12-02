@@ -27,22 +27,35 @@ func (h *Handler) Create(ctx context.Context, req *subscription.CreateI) (*subsc
 	}
 
 	//
-	// Create the given resources.
+	// Search for existing subscription for the current month.
 	//
 
-	var out []*subscriptionstorage.Object
+	var cur *subscriptionstorage.Object
 	{
-		out, err = h.sub.CreateSubs(inp)
+		cur, err = h.sub.SearchCurr(userid.FromContext(ctx))
 		if err != nil {
 			return nil, tracer.Mask(err)
 		}
 	}
 
-	//
-	// Create background tasks for the created resources.
-	//
+	// Create the given resources and create the background tasks for the created
+	// resources, if they do not already exist. The logic below makes the
+	// subscription.API/Create endpoint idempotent. We want this particular
+	// behaviour for the creation process of subscriptions because there are
+	// multiple onchain and offchain steps the user has to go through. In case of
+	// failure and retry, an already existing subscription object should not
+	// produce an error. Further, we do not want to create multiple subscription
+	// objects for the same month.
 
-	{
+	var out []*subscriptionstorage.Object
+	if cur != nil {
+		out = append(out, cur)
+	} else {
+		out, err = h.sub.CreateSubs(inp)
+		if err != nil {
+			return nil, tracer.Mask(err)
+		}
+
 		_, err = h.sub.CreateWrkr(inp)
 		if err != nil {
 			return nil, tracer.Mask(err)

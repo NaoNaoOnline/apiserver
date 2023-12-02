@@ -198,6 +198,14 @@ func (w *Worker) search() {
 		}
 
 		{
+			w.log.Log(
+				logctx(tas),
+				"level", "info",
+				"message", "processing worker task",
+			)
+		}
+
+		{
 			err := h.Ensure(tas, bud)
 			if err != nil {
 				w.lerror(tracer.Mask(err))
