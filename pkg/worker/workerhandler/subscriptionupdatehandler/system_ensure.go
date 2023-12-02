@@ -20,7 +20,7 @@ func (h *UpdateHandler) Ensure(tas *task.Task, bud *budget.Budget) error {
 
 	var sid string
 	{
-		sid = tas.Meta.Get(objectlabel.SubsObject)
+		sid = tas.Sync.Get(objectlabel.SubsObject)
 	}
 
 	var sob []*subscriptionstorage.Object

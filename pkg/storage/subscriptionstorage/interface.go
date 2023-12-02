@@ -33,6 +33,14 @@ type Interface interface {
 	//
 	SearchCrtr([]objectid.ID) ([]*walletstorage.Object, error)
 
+	// SearchCurr returns the subscription object for the given receiver for the
+	// current month, if any.
+	//
+	//     @inp[0] the user ID of the receiver to search for
+	//     @out[0] the subscription object for the current month, or nil
+	//
+	SearchCurr(objectid.ID) (*Object, error)
+
 	// SearchPayr returns the subscription objects paid for by the given user IDs.
 	// All subscriptions can be fetched using pagination range [0 -1]. The latest
 	// subscription can be fetched using pagination range [-1 -1].

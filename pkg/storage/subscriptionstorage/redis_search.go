@@ -3,11 +3,13 @@ package subscriptionstorage
 import (
 	"encoding/json"
 	"sort"
+	"time"
 
 	"github.com/NaoNaoOnline/apiserver/pkg/generic"
 	"github.com/NaoNaoOnline/apiserver/pkg/keyfmt"
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectid"
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectlabel"
+	"github.com/NaoNaoOnline/apiserver/pkg/runtime"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/eventstorage"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/walletstorage"
 	"github.com/xh3b4sd/redigo/simple"
@@ -116,6 +118,49 @@ func (r *Redis) SearchCrtr(uid []objectid.ID) ([]*walletstorage.Object, error) {
 	}
 
 	return wob, nil
+}
+
+func (r *Redis) SearchCurr(uid objectid.ID) (*Object, error) {
+	var err error
+
+	// Search for the latest subscription object for the given user ID, which is
+	// expected to be the receiver of the subscription to search for.
+	var sob []*Object
+	{
+		sob, err = r.SearchRcvr([]objectid.ID{uid}, PagLat())
+		if err != nil {
+			return nil, tracer.Mask(err)
+		}
+	}
+
+	// It might very well be that there is no subscription for any given user. In
+	// that case we return nil.
+	if len(sob) == 0 {
+		return nil, nil
+	}
+
+	// Protect against some critical internal errors.
+	if len(sob) > 1 {
+		return nil, tracer.Mask(runtime.ExecutionFailedError)
+	}
+
+	// Verify whether the latest subscription for the given user is in fact for
+	// the current month. VerifyUnix together with VerifyOnce will fail if the
+	// subscription timestamp does not refer to the first day of the current
+	// month. So if that specific error is returned, we did not find a
+	// subscription for the current month. In that case we simply return nil.
+	{
+		err = sob[0].VerifyUnix(VerifyOnce(time.Now().UTC()))
+		if IsSubscriptionUnixInvalid(err) {
+			return nil, nil
+		} else if err != nil {
+			return nil, tracer.Mask(err)
+		}
+	}
+
+	// The validation above worked out, which means for us that we have found a
+	// subscription for the current month.
+	return sob[0], nil
 }
 
 func (r *Redis) SearchPayr(use []objectid.ID, pag [2]int) ([]*Object, error) {

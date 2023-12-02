@@ -12,9 +12,6 @@ import (
 )
 
 type Object struct {
-	// ChID is the chain ID, the unique identifier representing the blockchain
-	// network on which this subscription is located.
-	ChID int64 `json:"chid"`
 	// Crtd is the time at which the subscription got created.
 	Crtd time.Time `json:"crtd"`
 	// Crtr is the wallet address of a content creator designated for the purpose
@@ -30,7 +27,7 @@ type Object struct {
 	// The idea here is that subscriptions can be gifted to other users.
 	Payr objectid.ID `json:"payr"`
 	// Rcvr is the user ID of the user receiving the premium subscription.
-	Rcvr objectid.ID `json:"recv"`
+	Rcvr objectid.ID `json:"rcvr"`
 	// Stts is the resource status expressing whether this subscription is active.
 	// An active subscription is verified by comparing its offchain and onchain
 	// state. Subscriptions found to be invalid will not be marked as active, but
@@ -42,7 +39,7 @@ type Object struct {
 	//
 	Stts objectstate.String `json:"stts"`
 	// Subs is the ID of the subscription being created.
-	Subs objectid.ID `json:"evnt"`
+	Subs objectid.ID `json:"subs"`
 	// Unix is the timestamp of the subscription period. This timestamp must be
 	// represented in unix seconds, that is in UTC, pointing to the start of any
 	// given month. For instance, 1698793200 is Wed Nov 01 2023 00:00:00 UTC,
@@ -53,12 +50,6 @@ type Object struct {
 }
 
 func (o *Object) VerifyObct() error {
-	{
-		if o.ChID == 0 {
-			return tracer.Mask(subscriptionChIDEmptyError)
-		}
-	}
-
 	{
 		if len(o.Crtr) == 0 {
 			return tracer.Mask(subscriptionCrtrEmptyError)

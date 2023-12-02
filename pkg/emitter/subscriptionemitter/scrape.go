@@ -18,12 +18,14 @@ func (e *Emitter) Scrape(sid objectid.ID) error {
 					objectlabel.SubsAction: objectlabel.ActionScrape,
 					objectlabel.SubsChanid: fmt.Sprintf("%d", e.cid[i]),
 					objectlabel.SubsCntrct: e.cnt[i],
-					objectlabel.SubsObject: sid.String(),
 					objectlabel.SubsOrigin: objectlabel.OriginCustom,
 					objectlabel.SubsRpcUrl: e.rpc[i],
 				},
 				Gate: &task.Gate{
 					fmt.Sprintf(objectlabel.SubsUnique, e.cid[i]): task.Trigger,
+				},
+				Sync: &task.Sync{
+					objectlabel.SubsObject: sid.String(),
 				},
 			}
 		}

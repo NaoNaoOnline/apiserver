@@ -1,14 +1,11 @@
 package subscriptionstorage
 
 import (
+	"errors"
+
 	"github.com/NaoNaoOnline/apiserver/pkg/format/hexformat"
 	"github.com/xh3b4sd/tracer"
 )
-
-var subscriptionChIDEmptyError = &tracer.Error{
-	Kind: "subscriptionChIDEmptyError",
-	Desc: "The request expects the subscription chain ID not to be empty. The subscription chain ID was found to be empty. Therefore the request failed.",
-}
 
 var subscriptionCrtrDuplicateError = &tracer.Error{
 	Kind: "subscriptionCrtrDuplicateError",
@@ -50,6 +47,10 @@ var subscriptionUnixEmptyError = &tracer.Error{
 var subscriptionUnixInvalidError = &tracer.Error{
 	Kind: "subscriptionUnixInvalidError",
 	Desc: "The request expects the subscription timestamp to define the first day of the current month. The subscription timestamp was not found to define the first day of the current month. Therefore the request failed.",
+}
+
+func IsSubscriptionUnixInvalid(err error) bool {
+	return errors.Is(err, subscriptionUnixInvalidError)
 }
 
 var subscriptionUnixRenewalError = &tracer.Error{

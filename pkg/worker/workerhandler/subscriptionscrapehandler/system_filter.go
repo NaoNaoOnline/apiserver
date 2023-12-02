@@ -12,7 +12,6 @@ func (h *ScrapeHandler) Filter(tas *task.Task) bool {
 		objectlabel.SubsAction: objectlabel.ActionScrape,
 		objectlabel.SubsChanid: fmt.Sprintf("%d", h.cid),
 		objectlabel.SubsCntrct: h.cnt,
-		objectlabel.SubsObject: "*",
 		objectlabel.SubsOrigin: "*",
 		objectlabel.SubsRpcUrl: h.rpc,
 	})
