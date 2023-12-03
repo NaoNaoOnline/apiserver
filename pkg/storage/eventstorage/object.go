@@ -14,6 +14,8 @@ import (
 )
 
 type Object struct {
+	// Bltn is the list of label IDs under which the event is categorized.
+	Bltn []objectid.ID `json:"bltn"`
 	// Cate is the list of label IDs under which the event is categorized.
 	Cate []objectid.ID `json:"cate"`
 	// Clck is the number of link clicks this description received.
@@ -101,7 +103,7 @@ func (o *Object) Verify() error {
 			return tracer.Maskf(eventLabelEmptyError, "cate")
 		}
 		if len(o.Cate) > 5 {
-			return tracer.Maskf(eventLabelLimitError, "cate")
+			return tracer.Maskf(eventLabelLimitError, "%v", o.Cate)
 		}
 	}
 
@@ -128,7 +130,7 @@ func (o *Object) Verify() error {
 			return tracer.Maskf(eventLabelEmptyError, "host")
 		}
 		if len(o.Host) > 5 {
-			return tracer.Maskf(eventLabelLimitError, "host")
+			return tracer.Maskf(eventLabelLimitError, "%v", o.Host)
 		}
 	}
 

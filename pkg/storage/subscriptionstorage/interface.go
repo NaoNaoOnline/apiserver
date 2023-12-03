@@ -14,16 +14,6 @@ type Interface interface {
 	//
 	CreateSubs([]*Object) ([]*Object, error)
 
-	// CreateWrkr emits the respective worker tasks that will be processed in the
-	// background for the given subscription objects that have just been created.
-	// Workers can e.g. verify subscriptions asynchronously between onchain and
-	// offchain state.
-	//
-	//     @inp[0] the subscription objects that have been created
-	//     @out[0] the list of operation states related to the initialized subscription objects
-	//
-	CreateWrkr(inp []*Object) ([]objectstate.String, error)
-
 	// SearchCrtr returns a list of wallet objects representing a set of
 	// legitimate content creators that the given user IDs have consumed content
 	// from, in the form of event link clicks.

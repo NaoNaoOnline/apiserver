@@ -41,8 +41,8 @@ func (r *Redis) CreateEvnt(inp []*Object) ([]*Object, error) {
 			}
 		}
 
-		// Check whether we can assign the natively supported category label for the
-		// platform referenced in the event link.
+		// Check whether we can assign the natively supported platform label based
+		// on the event link.
 		{
 			key, err := r.red.Sorted().Search().Index(keyfmt.LabelSystem, keyfmt.Indx(inp[i].Pltfrm()))
 			if sorted.IsNotFound(err) {
@@ -50,7 +50,7 @@ func (r *Redis) CreateEvnt(inp []*Object) ([]*Object, error) {
 			} else if err != nil {
 				return nil, tracer.Mask(err)
 			} else {
-				inp[i].Cate = append(inp[i].Cate, objectid.ID(key))
+				inp[i].Bltn = append(inp[i].Bltn, objectid.ID(key))
 			}
 		}
 

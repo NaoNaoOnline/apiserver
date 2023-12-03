@@ -251,7 +251,7 @@ func (h *Handler) Search(ctx context.Context, req *event.SearchI) (*event.Search
 				User: x.User.String(),
 			},
 			Public: &event.SearchO_Object_Public{
-				Cate: outLab(x.Cate),
+				Cate: outLab(append(x.Cate, x.Bltn...)),
 				Dura: outDur(x.Dura),
 				Host: outLab(x.Host),
 				Link: x.Link,
