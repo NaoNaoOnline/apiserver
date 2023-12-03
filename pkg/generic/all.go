@@ -1,8 +1,10 @@
 package generic
 
+import "github.com/NaoNaoOnline/apiserver/pkg/object/objectid"
+
 // All expresses whether the given list contains all of the given subset. So if
 // any item of sub cannot be found inside all, then All returns false.
-func All[T string | int64](all []T, sub []T) bool {
+func All[T string | objectid.ID | int64](all []T, sub []T) bool {
 	if len(all) == 0 || len(sub) == 0 {
 		return false
 	}

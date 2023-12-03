@@ -30,9 +30,9 @@ func (h *Handler) Create(ctx context.Context, req *subscription.CreateI) (*subsc
 	// Search for existing subscription for the current month.
 	//
 
-	var cur *subscriptionstorage.Object
+	var sub *subscriptionstorage.Object
 	{
-		cur, err = h.sub.SearchCurr(userid.FromContext(ctx))
+		sub, err = h.sub.SearchCurr(userid.FromContext(ctx))
 		if err != nil {
 			return nil, tracer.Mask(err)
 		}
@@ -48,18 +48,13 @@ func (h *Handler) Create(ctx context.Context, req *subscription.CreateI) (*subsc
 	// objects for the same month.
 
 	var out []*subscriptionstorage.Object
-	if cur != nil {
-		out = append(out, cur)
-	} else {
+	if sub == nil {
 		out, err = h.sub.CreateSubs(inp)
 		if err != nil {
 			return nil, tracer.Mask(err)
 		}
-
-		_, err = h.sub.CreateWrkr(inp)
-		if err != nil {
-			return nil, tracer.Mask(err)
-		}
+	} else {
+		out = append(out, sub)
 	}
 
 	//

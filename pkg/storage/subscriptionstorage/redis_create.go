@@ -125,26 +125,6 @@ func (r *Redis) CreateSubs(inp []*Object) ([]*Object, error) {
 	return inp, nil
 }
 
-func (r *Redis) CreateWrkr(inp []*Object) ([]objectstate.String, error) {
-	var err error
-
-	var out []objectstate.String
-	for i := range inp {
-		{
-			err = r.emi.Scrape(inp[i].Subs)
-			if err != nil {
-				return nil, tracer.Mask(err)
-			}
-		}
-
-		{
-			out = append(out, objectstate.Started)
-		}
-	}
-
-	return out, nil
-}
-
 // subRen expresses whether the current subscription object is effectively a
 // renewal based on the existing subscriptions for the given receiver, if any.
 // Essentially a subscription for the immediate prior month must exist for the

@@ -3,10 +3,8 @@ package subscriptionhandler
 import (
 	"context"
 	"fmt"
-	"time"
 
 	"github.com/NaoNaoOnline/apigocode/pkg/subscription"
-	"github.com/NaoNaoOnline/apiserver/pkg/object/objectid"
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectlabel"
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectstate"
 	"github.com/NaoNaoOnline/apiserver/pkg/runtime"
@@ -19,88 +17,80 @@ func (h *Handler) Update(ctx context.Context, req *subscription.UpdateI) (*subsc
 	var err error
 
 	//
-	// Emit scrape tasks.
+	// Search for existing subscription for the current month.
 	//
 
-	var sob []*subscriptionstorage.Object
+	var sub *subscriptionstorage.Object
 	{
-		sob, err = h.sub.SearchRcvr([]objectid.ID{userid.FromContext(ctx)}, subscriptionstorage.PagLat())
+		sub, err = h.sub.SearchCurr(userid.FromContext(ctx))
 		if err != nil {
 			return nil, tracer.Mask(err)
 		}
 	}
 
-	{
-		if len(sob) != 1 {
-			return nil, tracer.Mask(runtime.ExecutionFailedError)
-		}
-
-		// Ensure that only the latest subscription for the current month can be
-		// verified again. VerifyUnix together with VerifyOnce will fail if the
-		// subscription timestamp does not refer to the first day of the current
-		// month.
-		err = sob[0].VerifyUnix(subscriptionstorage.VerifyOnce(time.Now().UTC()))
-		if err != nil {
-			return nil, tracer.Mask(err)
-		}
-
-		if sob[0].Stts == objectstate.Success {
-			return nil, tracer.Mask(updateStatusSuccessError)
-		}
-	}
-
-	var key string
-	{
-		key = fmt.Sprintf(objectlabel.SubsLocker, sob[0].Subs.String())
-	}
-
-	var cur string
-	for _, x := range req.Object {
-		if x.Symbol != nil && x.Symbol.Pntr != "" {
-			cur = x.Symbol.Pntr
-		}
-	}
-
-	var des string
-	var exi bool
-	{
-		des, exi, err = h.loc.Exists(key)
-		if err != nil {
-			return nil, tracer.Mask(err)
-		}
+	if sub == nil {
+		return nil, tracer.Mask(runtime.ExecutionFailedError)
 	}
 
 	var sta objectstate.String
-	{
-		if cur == "" && exi {
-			return nil, tracer.Mask(updateSyncLockError)
+	var des string
+	if sub.Stts == objectstate.Success {
+		des = ""
+		sta = sub.Stts
+	} else {
+		var key string
+		{
+			key = fmt.Sprintf(objectlabel.SubsLocker, sub.Subs.String())
 		}
 
-		if cur == "" && !exi {
-			{
-				des, err = h.loc.Create(key)
-				if err != nil {
-					return nil, tracer.Mask(err)
-				}
+		var cur string
+		for _, x := range req.Object {
+			if x.Symbol != nil && x.Symbol.Pntr != "" {
+				cur = x.Symbol.Pntr
+			}
+		}
+
+		var exi bool
+		{
+			des, exi, err = h.loc.Exists(key)
+			if err != nil {
+				return nil, tracer.Mask(err)
+			}
+		}
+
+		{
+			if cur == "" && exi {
+				return nil, tracer.Mask(updateSyncLockError)
 			}
 
-			{
-				err = h.emi.Scrape(sob[0].Subs)
-				if err != nil {
-					return nil, tracer.Mask(err)
+			if cur == "" && !exi {
+				// Create distributed lock.
+				{
+					des, err = h.loc.Create(key)
+					if err != nil {
+						return nil, tracer.Mask(err)
+					}
 				}
+
+				// Emit scrape tasks.
+				{
+					err = h.emi.Scrape(sub.Subs)
+					if err != nil {
+						return nil, tracer.Mask(err)
+					}
+				}
+
+				sta = objectstate.Started
 			}
 
-			sta = objectstate.Started
-		}
+			if cur != "" && cur == des {
+				sta = objectstate.Waiting
+			}
 
-		if cur != "" && cur == des {
-			sta = objectstate.Waiting
-		}
-
-		if cur != "" && cur != des {
-			des = ""
-			sta = objectstate.Updated
+			if cur != "" && cur != des {
+				des = ""
+				sta = objectstate.Updated
+			}
 		}
 	}
 
