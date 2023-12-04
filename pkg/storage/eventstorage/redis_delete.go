@@ -51,7 +51,7 @@ func (r *Redis) DeleteEvnt(inp []*Object) ([]objectstate.String, error) {
 		// our specified rolling time window. Note that we need to round the floats
 		// given by Redis to make sure our comparison with full numbers works in any
 		// case.
-		if round.RoundP(amn, 1) < 3 {
+		if round.RoundP(amn, 0) < 3 {
 			err = r.red.Sorted().Delete().Value(keyfmt.EventCreator, inp[i].User.String())
 			if err != nil {
 				return nil, tracer.Mask(err)

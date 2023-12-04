@@ -141,7 +141,7 @@ func (r *Redis) CreateEvnt(inp []*Object) ([]*Object, error) {
 		}
 
 		if (amn + 1) > 3 {
-			_, err = r.red.Sorted().Floats().Score(keyfmt.EventCreator, inp[i].User.String(), 1.0)
+			_, err = r.red.Sorted().Floats().Score(keyfmt.EventCreator, inp[i].User.String(), +1.0)
 			if err != nil {
 				return nil, tracer.Mask(err)
 			}
