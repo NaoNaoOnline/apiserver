@@ -16,7 +16,9 @@ import (
 )
 
 const (
-	paglmt = 10
+	// paglmt is the amount of users that we process at a time during a single
+	// cycle of task execution.
+	paglmt = 5
 )
 
 func (h *SystemHandler) Ensure(tas *task.Task, bud *budget.Budget) error {
@@ -31,7 +33,7 @@ func (h *SystemHandler) Ensure(tas *task.Task, bud *budget.Budget) error {
 	var max int
 	{
 		min = pnt
-		max = pnt + bud.Claim(int(paglmt))
+		max = pnt + bud.Claim(paglmt)
 	}
 
 	// It may happen, for whatever reason, that the given budget is exhausted and
