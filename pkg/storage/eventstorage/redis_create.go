@@ -130,10 +130,18 @@ func (r *Redis) CreateEvnt(inp []*Object) ([]*Object, error) {
 		// meet certain criteria of what we consider legitimate content creators. It
 		// is important to only maintain users in this particular sorted set that
 		// have created a minimum amount of events within our specified rolling time
-		// window. Note that we need to add 1 manually here since we are processing
-		// the additional event that is being added.
-		if (amn + 1) >= 3 {
-			_, err = r.red.Sorted().Floats().Score(keyfmt.EventCreator, inp[i].User.String(), float64(amn+1))
+		// window. Note that we need to add 1 to our check manually here since we
+		// are processing the additional event that is being added right now.
+
+		if (amn + 1) == 3 {
+			err = r.red.Sorted().Create().Score(keyfmt.EventCreator, inp[i].User.String(), 3.0)
+			if err != nil {
+				return nil, tracer.Mask(err)
+			}
+		}
+
+		if (amn + 1) > 3 {
+			_, err = r.red.Sorted().Floats().Score(keyfmt.EventCreator, inp[i].User.String(), 1.0)
 			if err != nil {
 				return nil, tracer.Mask(err)
 			}
