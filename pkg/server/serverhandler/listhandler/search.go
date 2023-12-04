@@ -32,6 +32,11 @@ func (h *Handler) Search(ctx context.Context, req *list.SearchI) (*list.SearchO,
 			}
 		}
 
+		// Since creating multiple lists is a premium feature it is important to
+		// only return the first list for users that created multiple lists in the
+		// past as a premium subscriber and have now been downgraded. So users with
+		// an expired premium subscription should only see their first list as
+		// incentive to upgrade again.
 		var pag [2]int
 		if !prm {
 			pag = liststorage.PagFir()
