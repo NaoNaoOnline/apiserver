@@ -16,7 +16,7 @@ import (
 // Note that the update task here is triggered on demand when a subscription is
 // created, and optionally, when a user wants to verify their subscription
 // status in case the creation process failed to reconcile intermittendly.
-func (h *UpdateHandler) Create() *task.Task {
+func (h *SystemHandler) Create() *task.Task {
 	return &task.Task{
 		Gate: cidGat(h.cid),
 		Meta: &task.Meta{

@@ -9,21 +9,21 @@ import (
 	"github.com/xh3b4sd/tracer"
 )
 
-type UpdateHandlerConfig struct {
+type SystemHandlerConfig struct {
 	Cid []int64
 	Emi policyemitter.Interface
 	Log logger.Interface
 	Prm permission.Interface
 }
 
-type UpdateHandler struct {
+type SystemHandler struct {
 	cid []int64
 	emi policyemitter.Interface
 	log logger.Interface
 	prm permission.Interface
 }
 
-func NewUpdateHandler(c UpdateHandlerConfig) *UpdateHandler {
+func NewSystemHandler(c SystemHandlerConfig) *SystemHandler {
 	if len(c.Cid) == 0 {
 		tracer.Panic(tracer.Mask(fmt.Errorf("%T.Cid must not be empty", c)))
 	}
@@ -37,9 +37,9 @@ func NewUpdateHandler(c UpdateHandlerConfig) *UpdateHandler {
 		tracer.Panic(tracer.Mask(fmt.Errorf("%T.Prm must not be empty", c)))
 	}
 
-	var han *UpdateHandler
+	var han *SystemHandler
 	{
-		han = &UpdateHandler{
+		han = &SystemHandler{
 			cid: c.Cid,
 			emi: c.Emi,
 			log: c.Log,

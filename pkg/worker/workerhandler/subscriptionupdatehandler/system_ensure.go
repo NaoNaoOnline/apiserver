@@ -15,7 +15,7 @@ import (
 	"github.com/xh3b4sd/tracer"
 )
 
-func (h *UpdateHandler) Ensure(tas *task.Task, bud *budget.Budget) error {
+func (h *SystemHandler) Ensure(tas *task.Task, bud *budget.Budget) error {
 	var err error
 
 	var sid string

@@ -8,7 +8,7 @@ import (
 	"github.com/xh3b4sd/tracer"
 )
 
-type ScrapeHandlerConfig struct {
+type SystemHandlerConfig struct {
 	Cid int64
 	Cnt string
 	Log logger.Interface
@@ -16,7 +16,7 @@ type ScrapeHandlerConfig struct {
 	Rpc string
 }
 
-type ScrapeHandler struct {
+type SystemHandler struct {
 	cid int64
 	cnt string
 	log logger.Interface
@@ -24,7 +24,7 @@ type ScrapeHandler struct {
 	rpc string
 }
 
-func NewScrapeHandler(c ScrapeHandlerConfig) *ScrapeHandler {
+func NewSystemHandler(c SystemHandlerConfig) *SystemHandler {
 	if c.Cid == 0 {
 		tracer.Panic(tracer.Mask(fmt.Errorf("%T.Cid must not be empty", c)))
 	}
@@ -41,9 +41,9 @@ func NewScrapeHandler(c ScrapeHandlerConfig) *ScrapeHandler {
 		tracer.Panic(tracer.Mask(fmt.Errorf("%T.Rpc must not be empty", c)))
 	}
 
-	var han *ScrapeHandler
+	var han *SystemHandler
 	{
-		han = &ScrapeHandler{
+		han = &SystemHandler{
 			cid: c.Cid,
 			cnt: c.Cnt,
 			log: c.Log,

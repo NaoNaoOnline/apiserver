@@ -7,7 +7,7 @@ import (
 	"github.com/xh3b4sd/rescue/task"
 )
 
-func (h *ScrapeHandler) Filter(tas *task.Task) bool {
+func (h *SystemHandler) Filter(tas *task.Task) bool {
 	return tas.Meta.Has(map[string]string{
 		objectlabel.SubsAction: objectlabel.ActionScrape,
 		objectlabel.SubsChanid: fmt.Sprintf("%d", h.cid),

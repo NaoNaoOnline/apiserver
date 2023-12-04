@@ -1,4 +1,4 @@
-package policyupdatehandler
+package subscriptiondonatehandler
 
 import (
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectlabel"
@@ -7,7 +7,7 @@ import (
 
 func (h *SystemHandler) Filter(tas *task.Task) bool {
 	return tas.Meta.Has(map[string]string{
-		objectlabel.PlcyAction: objectlabel.ActionUpdate,
-		objectlabel.PlcyOrigin: objectlabel.OriginSystem,
+		objectlabel.SubsAction: objectlabel.ActionDonate,
+		objectlabel.SubsOrigin: objectlabel.OriginSystem,
 	})
 }

@@ -14,6 +14,7 @@ import (
 	"github.com/NaoNaoOnline/apiserver/pkg/worker/workerhandler/policybufferhandler"
 	"github.com/NaoNaoOnline/apiserver/pkg/worker/workerhandler/policyscrapehandler"
 	"github.com/NaoNaoOnline/apiserver/pkg/worker/workerhandler/policyupdatehandler"
+	"github.com/NaoNaoOnline/apiserver/pkg/worker/workerhandler/subscriptiondonatehandler"
 	"github.com/NaoNaoOnline/apiserver/pkg/worker/workerhandler/subscriptionscrapehandler"
 	"github.com/NaoNaoOnline/apiserver/pkg/worker/workerhandler/subscriptionupdatehandler"
 	"github.com/NaoNaoOnline/apiserver/pkg/worker/workerhandler/twittercreatehandler"
@@ -106,14 +107,14 @@ func New(c Config) *Handler {
 	}
 
 	{
-		han = append(han, policybufferhandler.NewBufferHandler(policybufferhandler.BufferHandlerConfig{
+		han = append(han, policybufferhandler.NewSystemHandler(policybufferhandler.SystemHandlerConfig{
 			Log: c.Log,
 			Prm: c.Prm,
 		}))
 	}
 
 	for i := range c.Cid {
-		han = append(han, policyscrapehandler.NewScrapeHandler(policyscrapehandler.ScrapeHandlerConfig{
+		han = append(han, policyscrapehandler.NewSystemHandler(policyscrapehandler.SystemHandlerConfig{
 			Cid: c.Cid[i],
 			Cnt: c.Pcn[i],
 			Log: c.Log,
@@ -123,7 +124,7 @@ func New(c Config) *Handler {
 	}
 
 	{
-		han = append(han, policyupdatehandler.NewUpdateHandler(policyupdatehandler.UpdateHandlerConfig{
+		han = append(han, policyupdatehandler.NewSystemHandler(policyupdatehandler.SystemHandlerConfig{
 			Cid: c.Cid,
 			Emi: c.Emi.Plcy(),
 			Log: c.Log,
@@ -131,8 +132,17 @@ func New(c Config) *Handler {
 		}))
 	}
 
+	{
+		han = append(han, subscriptiondonatehandler.NewSystemHandler(subscriptiondonatehandler.SystemHandlerConfig{
+			Eve: c.Sto.Evnt(),
+			Log: c.Log,
+			Sub: c.Sto.Subs(),
+			Use: c.Sto.User(),
+		}))
+	}
+
 	for i := range c.Cid {
-		han = append(han, subscriptionscrapehandler.NewScrapeHandler(subscriptionscrapehandler.ScrapeHandlerConfig{
+		han = append(han, subscriptionscrapehandler.NewSystemHandler(subscriptionscrapehandler.SystemHandlerConfig{
 			Cid: c.Cid[i],
 			Cnt: c.Scn[i],
 			Log: c.Log,
@@ -142,7 +152,7 @@ func New(c Config) *Handler {
 	}
 
 	{
-		han = append(han, subscriptionupdatehandler.NewUpdateHandler(subscriptionupdatehandler.UpdateHandlerConfig{
+		han = append(han, subscriptionupdatehandler.NewSystemHandler(subscriptionupdatehandler.SystemHandlerConfig{
 			Cid: c.Cid,
 			Loc: c.Loc,
 			Log: c.Log,

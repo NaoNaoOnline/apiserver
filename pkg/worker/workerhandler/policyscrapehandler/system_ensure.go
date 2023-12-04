@@ -6,7 +6,7 @@ import (
 	"github.com/xh3b4sd/tracer"
 )
 
-func (h *ScrapeHandler) Ensure(tas *task.Task, bud *budget.Budget) error {
+func (h *SystemHandler) Ensure(tas *task.Task, bud *budget.Budget) error {
 	{
 		err := h.prm.ScrapeRcrd(tas, bud)
 		if err != nil {

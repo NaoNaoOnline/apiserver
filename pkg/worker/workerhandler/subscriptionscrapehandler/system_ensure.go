@@ -25,7 +25,7 @@ const (
 	vldfmt = "creator addresses %v do not match criteria of legitimate content creators"
 )
 
-func (h *ScrapeHandler) Ensure(tas *task.Task, bud *budget.Budget) error {
+func (h *SystemHandler) Ensure(tas *task.Task, bud *budget.Budget) error {
 	var err error
 
 	var sid string

@@ -199,10 +199,15 @@ func (h *Handler) Search(ctx context.Context, req *event.SearchI) (*event.Search
 		}
 
 		if lik != "" {
-			min := musNum(req.Filter.Paging.Strt)
-			max := musNum(req.Filter.Paging.Stop)
+			var pag [2]int
+			{
+				pag = [2]int{
+					int(musNum(req.Filter.Paging.Strt)),
+					int(musNum(req.Filter.Paging.Stop)),
+				}
+			}
 
-			lis, err := h.eve.SearchLike(objectid.ID(lik), int(min), int(max))
+			lis, err := h.eve.SearchLike(objectid.ID(lik), pag)
 			if err != nil {
 				return nil, tracer.Mask(err)
 			}

@@ -116,6 +116,37 @@ func (r *Redis) CreateEvnt(inp []*Object) ([]*Object, error) {
 			}
 		}
 
+		var amn int64
+		{
+			amn, err = r.red.Sorted().Metric().Count(eveUse(inp[i].User))
+			if err != nil {
+				return nil, tracer.Mask(err)
+			}
+		}
+
+		// Track the given user as content creator by incrementing the amount of
+		// events added by 1. With this globally maintained sorted set we can search
+		// for all content creators and donate premium subscriptions to those that
+		// meet certain criteria of what we consider legitimate content creators. It
+		// is important to only maintain users in this particular sorted set that
+		// have created a minimum amount of events within our specified rolling time
+		// window. Note that we need to add 1 to our check manually here since we
+		// are processing the additional event that is being added right now.
+
+		if (amn + 1) == 3 {
+			err = r.red.Sorted().Create().Score(keyfmt.EventCreator, inp[i].User.String(), 3.0)
+			if err != nil {
+				return nil, tracer.Mask(err)
+			}
+		}
+
+		if (amn + 1) > 3 {
+			_, err = r.red.Sorted().Floats().Score(keyfmt.EventCreator, inp[i].User.String(), +1.0)
+			if err != nil {
+				return nil, tracer.Mask(err)
+			}
+		}
+
 		// Create the time specific mappings for time specific search queries. With
 		// that we can search for events that are happening right now. For event
 		// time indexing, we use the event time as score. There might be many events

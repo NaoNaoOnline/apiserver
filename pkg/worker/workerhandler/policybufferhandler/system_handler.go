@@ -8,17 +8,17 @@ import (
 	"github.com/xh3b4sd/tracer"
 )
 
-type BufferHandlerConfig struct {
+type SystemHandlerConfig struct {
 	Log logger.Interface
 	Prm permission.Interface
 }
 
-type BufferHandler struct {
+type SystemHandler struct {
 	log logger.Interface
 	prm permission.Interface
 }
 
-func NewBufferHandler(c BufferHandlerConfig) *BufferHandler {
+func NewSystemHandler(c SystemHandlerConfig) *SystemHandler {
 	if c.Log == nil {
 		tracer.Panic(tracer.Mask(fmt.Errorf("%T.Log must not be empty", c)))
 	}
@@ -26,9 +26,9 @@ func NewBufferHandler(c BufferHandlerConfig) *BufferHandler {
 		tracer.Panic(tracer.Mask(fmt.Errorf("%T.Prm must not be empty", c)))
 	}
 
-	var han *BufferHandler
+	var han *SystemHandler
 	{
-		han = &BufferHandler{
+		han = &SystemHandler{
 			log: c.Log,
 			prm: c.Prm,
 		}

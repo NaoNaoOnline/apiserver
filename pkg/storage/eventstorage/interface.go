@@ -66,6 +66,15 @@ type Interface interface {
 	//
 	DeleteWrkr([]*Object) ([]objectstate.String, error)
 
+	// SearchCrtr returns the user IDs of all users who are recorded to have added
+	// events to the platform. All user IDs can be fetched using pagination range
+	// [0 -1]. The first 10 user IDs can be fetched using pagination range [0 9].
+	//
+	//     @inp[0] the pagination range defining lower and upper inclusive boundaries
+	//     @out[0] the list of event objects created by the given user IDs
+	//
+	SearchCrtr([2]int) ([]objectid.ID, error)
+
 	// SearchEvnt returns the event objects matching the given event IDs.
 	//
 	//     @inp[0] the calling user
@@ -96,7 +105,7 @@ type Interface interface {
 	//     @inp[2] the upper inclusive boundary of the pagination range
 	//     @out[0] the list of event objects the given user ID reacted to
 	//
-	SearchLike(objectid.ID, int, int) ([]*Object, error)
+	SearchLike(objectid.ID, [2]int) ([]*Object, error)
 
 	// SearchLink returns the user IDs that visited the given event ID in the form
 	// of a link click. This function is mainly used for cleaning up internal user

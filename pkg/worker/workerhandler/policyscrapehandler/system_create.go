@@ -15,7 +15,7 @@ import (
 // of the policy cache, and once all chains have been scraped, merge and update
 // the policy cache in order for permission states to take full affect as
 // defined by the Policy smart contracts on all deployed chains.
-func (h *ScrapeHandler) Create() *task.Task {
+func (h *SystemHandler) Create() *task.Task {
 	return &task.Task{
 		Gate: &task.Gate{
 			fmt.Sprintf(objectlabel.PlcyUnique, h.cid): task.Trigger,
