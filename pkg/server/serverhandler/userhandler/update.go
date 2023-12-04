@@ -7,6 +7,7 @@ import (
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectid"
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectstate"
 	"github.com/NaoNaoOnline/apiserver/pkg/runtime"
+	"github.com/NaoNaoOnline/apiserver/pkg/server/context/isprem"
 	"github.com/NaoNaoOnline/apiserver/pkg/server/context/userid"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/userstorage"
 	"github.com/xh3b4sd/tracer"
@@ -77,6 +78,11 @@ func (h *Handler) Update(ctx context.Context, req *user.UpdateI) (*user.UpdateO,
 }
 
 func (h *Handler) updateVrfyPtch(ctx context.Context, inp []*userstorage.Object, pat userstorage.PatchSlicer) error {
+	var prm bool
+	{
+		prm = isprem.FromContext(ctx)
+	}
+
 	var use objectid.ID
 	{
 		use = userid.FromContext(ctx)
@@ -87,9 +93,20 @@ func (h *Handler) updateVrfyPtch(ctx context.Context, inp []*userstorage.Object,
 			return tracer.Mask(runtime.UserNotOwnerError)
 		}
 
-		// Ensure user names can only be updated once within the past 7 days.
-		if pat.RepNam(i) && !x.UpdNam() {
-			return tracer.Mask(nameUpdatePeriodError)
+		// Ensure home feeds can only be updated by users having a premium
+		// subscription. So if the given patches define the home feed to be
+		// replaced, and if the user does not have a premium subscription, then
+		// return an error.
+		if pat.RplHom(i) && !prm {
+			return tracer.Mask(updateHomePremiumError)
+		}
+
+		// Ensure user names can only be updated once within the past 7 days. So if
+		// the given patches define the user name to be replaced, and if the user
+		// name is not allowed to be updated based on the latest update timestamp,
+		// then return an error.
+		if pat.RplNam(i) && !x.UpdNam() {
+			return tracer.Mask(updateNamePeriodError)
 		}
 	}
 

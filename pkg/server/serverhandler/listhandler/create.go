@@ -5,6 +5,7 @@ import (
 
 	"github.com/NaoNaoOnline/apigocode/pkg/list"
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectfield"
+	"github.com/NaoNaoOnline/apiserver/pkg/server/context/isprem"
 	"github.com/NaoNaoOnline/apiserver/pkg/server/context/userid"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/liststorage"
 	"github.com/xh3b4sd/tracer"
@@ -24,6 +25,21 @@ func (h *Handler) Create(ctx context.Context, req *list.CreateI) (*list.CreateO,
 			})
 		}
 	}
+
+	//
+	// Verify the given input.
+	//
+
+	{
+		err = h.createVrfy(ctx, inp)
+		if err != nil {
+			return nil, tracer.Mask(err)
+		}
+	}
+
+	//
+	// Create the given resources.
+	//
 
 	var out []*liststorage.Object
 	{
@@ -52,4 +68,34 @@ func (h *Handler) Create(ctx context.Context, req *list.CreateI) (*list.CreateO,
 	}
 
 	return res, nil
+}
+
+func (h *Handler) createVrfy(ctx context.Context, obj liststorage.Slicer) error {
+	var err error
+
+	var prm bool
+	{
+		prm = isprem.FromContext(ctx)
+	}
+
+	for _, x := range obj {
+		var amn int64
+		{
+			amn, err = h.lis.SearchAmnt(x.User)
+			if err != nil {
+				return tracer.Mask(err)
+			}
+		}
+
+		{
+			if !prm && amn >= 1 {
+				return tracer.Mask(createListPremiumError)
+			}
+			if prm && amn >= 50 {
+				return tracer.Mask(createListLimitError)
+			}
+		}
+	}
+
+	return nil
 }

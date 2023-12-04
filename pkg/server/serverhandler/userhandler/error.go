@@ -44,7 +44,12 @@ var updateEmptyError = &tracer.Error{
 	Desc: "The request expects the query object to contain all of [intern update]. The query object was not found to contain all of [intern update]. Therefore the request failed.",
 }
 
-var nameUpdatePeriodError = &tracer.Error{
-	Kind: "descriptionUpdatePeriodError",
+var updateNamePeriodError = &tracer.Error{
+	Kind: "updateNamePeriodError",
 	Desc: "The request expects the user name to be updated once within the past 7 days. The user name was tried to be updated more than once within the past 7 days. Therefore the request failed.",
+}
+
+var updateHomePremiumError = &tracer.Error{
+	Kind: "updateHomePremiumError",
+	Desc: "The request expects the user to have a premium subscription in order to set a custom home feed. The user was not found to have a premium subscription. Therefore the request failed.",
 }
