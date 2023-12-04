@@ -31,6 +31,13 @@ type Interface interface {
 	//
 	DeleteWrkr([]*Object) ([]objectstate.String, error)
 
+	// SearchAmnt returns the number of list objects created by the given user ID.
+	//
+	//     @inp[0] the user ID to search for
+	//     @out[0] the number of list objects created the given user ID
+	//
+	SearchAmnt(objectid.ID) (int64, error)
+
 	// SearchFake returns all list objects. This is used to create fake test data
 	// during development. DO NOT USE IN PRODUCTION.
 	//
@@ -45,12 +52,15 @@ type Interface interface {
 	//
 	SearchList([]objectid.ID) ([]*Object, error)
 
-	// SearchUser returns the list objects created by the given user.
+	// SearchUser returns the list objects created by the given user. All lists
+	// can be fetched using pagination range [0 -1]. The first list can be fetched
+	// using pagination range [0 0].
 	//
 	//     @inp[0] the user ID used to search lists
+	//     @inp[1] the pagination range defining lower and upper inclusive boundaries
 	//     @out[0] the list of list objects for the given user
 	//
-	SearchUser(objectid.ID) ([]*Object, error)
+	SearchUser(objectid.ID, [2]int) ([]*Object, error)
 
 	// UpdatePtch modifies the existing list objects by applying the given RFC6902
 	// JSON-Patches to the underlying JSON documents. The list items are used

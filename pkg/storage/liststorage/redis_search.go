@@ -11,6 +11,20 @@ import (
 	"github.com/xh3b4sd/tracer"
 )
 
+func (r *Redis) SearchAmnt(uid objectid.ID) (int64, error) {
+	var err error
+
+	var amn int64
+	{
+		amn, err = r.red.Sorted().Metric().Count(lisUse(uid))
+		if err != nil {
+			return 0, tracer.Mask(err)
+		}
+	}
+
+	return amn, nil
+}
+
 func (r *Redis) SearchFake() ([]*Object, error) {
 	var err error
 
@@ -86,7 +100,7 @@ func (r *Redis) SearchList(inp []objectid.ID) ([]*Object, error) {
 	return out, nil
 }
 
-func (r *Redis) SearchUser(use objectid.ID) ([]*Object, error) {
+func (r *Redis) SearchUser(use objectid.ID, pag [2]int) ([]*Object, error) {
 	var err error
 
 	var out []*Object
@@ -95,7 +109,7 @@ func (r *Redis) SearchUser(use objectid.ID) ([]*Object, error) {
 		// any.
 		var val []string
 		{
-			val, err = r.red.Sorted().Search().Order(lisUse(use), 0, -1)
+			val, err = r.red.Sorted().Search().Order(lisUse(use), pag[0], pag[1])
 			if err != nil {
 				return nil, tracer.Mask(err)
 			}

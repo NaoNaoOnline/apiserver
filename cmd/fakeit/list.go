@@ -19,9 +19,7 @@ func (r *run) createList(sto *storage.Storage, obj ...*liststorage.Object) error
 
 	{
 		_, err := sto.List().Create(obj)
-		if liststorage.IsListUserLimit(err) {
-			// fall through
-		} else if liststorage.IsListDescLength(err) {
+		if liststorage.IsListDescLength(err) {
 			// fall through
 		} else if err != nil {
 			tracer.Panic(tracer.Mask(err))

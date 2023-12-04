@@ -21,18 +21,6 @@ func (r *Redis) Create(inp []*Object) ([]*Object, error) {
 			}
 		}
 
-		// Ensure the maximum allowed amount of lists per user.
-		{
-			cou, err := r.red.Sorted().Metric().Count(lisUse(inp[i].User))
-			if err != nil {
-				return nil, tracer.Mask(err)
-			}
-
-			if cou >= 50 {
-				return nil, tracer.Mask(listUserLimitError)
-			}
-		}
-
 		var now time.Time
 		{
 			now = time.Now().UTC()
