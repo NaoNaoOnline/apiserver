@@ -11,7 +11,7 @@ import (
 	"github.com/xh3b4sd/tracer"
 )
 
-type UpdateHandlerConfig struct {
+type SystemHandlerConfig struct {
 	Cid []int64
 	Loc locker.Interface
 	Log logger.Interface
@@ -20,7 +20,7 @@ type UpdateHandlerConfig struct {
 	Wal walletstorage.Interface
 }
 
-type UpdateHandler struct {
+type SystemHandler struct {
 	cid []int64
 	loc locker.Interface
 	log logger.Interface
@@ -29,7 +29,7 @@ type UpdateHandler struct {
 	wal walletstorage.Interface
 }
 
-func NewUpdateHandler(c UpdateHandlerConfig) *UpdateHandler {
+func NewSystemHandler(c SystemHandlerConfig) *SystemHandler {
 	if len(c.Cid) == 0 {
 		tracer.Panic(tracer.Mask(fmt.Errorf("%T.Cid must not be empty", c)))
 	}
@@ -49,9 +49,9 @@ func NewUpdateHandler(c UpdateHandlerConfig) *UpdateHandler {
 		tracer.Panic(tracer.Mask(fmt.Errorf("%T.Wal must not be empty", c)))
 	}
 
-	var han *UpdateHandler
+	var han *SystemHandler
 	{
-		han = &UpdateHandler{
+		han = &SystemHandler{
 			cid: c.Cid,
 			loc: c.Loc,
 			log: c.Log,

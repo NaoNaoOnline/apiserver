@@ -1,56 +1,47 @@
-package subscriptionscrapehandler
+package subscriptiondonatehandler
 
 import (
 	"fmt"
 
+	"github.com/NaoNaoOnline/apiserver/pkg/storage/eventstorage"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/subscriptionstorage"
+	"github.com/NaoNaoOnline/apiserver/pkg/storage/userstorage"
 	"github.com/xh3b4sd/logger"
 	"github.com/xh3b4sd/tracer"
 )
 
 type SystemHandlerConfig struct {
-	Cid int64
-	Cnt string
+	Eve eventstorage.Interface
 	Log logger.Interface
-	Rpc string
 	Sub subscriptionstorage.Interface
+	Use userstorage.Interface
 }
 
 type SystemHandler struct {
-	cid int64
-	cnt string
+	eve eventstorage.Interface
 	log logger.Interface
-	rpc string
 	sub subscriptionstorage.Interface
+	use userstorage.Interface
 }
 
 func NewSystemHandler(c SystemHandlerConfig) *SystemHandler {
-	if c.Cid == 0 {
-		tracer.Panic(tracer.Mask(fmt.Errorf("%T.Cid must not be empty", c)))
-	}
-	if c.Cnt == "" {
-		tracer.Panic(tracer.Mask(fmt.Errorf("%T.Cnt must not be empty", c)))
+	if c.Eve == nil {
+		tracer.Panic(tracer.Mask(fmt.Errorf("%T.Eve must not be empty", c)))
 	}
 	if c.Log == nil {
 		tracer.Panic(tracer.Mask(fmt.Errorf("%T.Log must not be empty", c)))
 	}
-	if c.Rpc == "" {
-		tracer.Panic(tracer.Mask(fmt.Errorf("%T.Rpc must not be empty", c)))
-	}
 	if c.Sub == nil {
 		tracer.Panic(tracer.Mask(fmt.Errorf("%T.Sub must not be empty", c)))
 	}
-
-	var han *SystemHandler
-	{
-		han = &SystemHandler{
-			cid: c.Cid,
-			cnt: c.Cnt,
-			log: c.Log,
-			rpc: c.Rpc,
-			sub: c.Sub,
-		}
+	if c.Use == nil {
+		tracer.Panic(tracer.Mask(fmt.Errorf("%T.Use must not be empty", c)))
 	}
 
-	return han
+	return &SystemHandler{
+		eve: c.Eve,
+		log: c.Log,
+		sub: c.Sub,
+		use: c.Use,
+	}
 }

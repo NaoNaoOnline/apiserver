@@ -28,6 +28,14 @@ const (
 	//
 	DescriptionUser = "des/use/%s"
 
+	// EventCreator is used to store all the IDs of users who create events.
+	//
+	//     event creator          user IDs
+	//                      ->
+	//     eve/sym/use            1234,5678
+	//
+	EventCreator = "eve/sym/use"
+
 	// EventLabel is used to store all the IDs of events mapped to a specific
 	// label.
 	//
@@ -61,9 +69,9 @@ const (
 	//
 	//     event time           event IDs
 	//                    ->
-	//     eve/eve/tim          1234,5678
+	//     eve/sym/tim          1234,5678
 	//
-	EventTime = "eve/eve/tim"
+	EventTime = "eve/sym/tim"
 
 	// EventUser is used to store all the IDs of events created by a specific
 	// user.

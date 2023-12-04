@@ -23,7 +23,7 @@ import (
 // network, and the policy.API/Update RPC handler, which emits all scrape tasks
 // upon an authorized request, causing the policy records to be synchronized on
 // demand.
-func (h *UpdateHandler) Create() *task.Task {
+func (h *SystemHandler) Create() *task.Task {
 	return &task.Task{
 		Gate: cidGat(h.cid),
 		Meta: &task.Meta{

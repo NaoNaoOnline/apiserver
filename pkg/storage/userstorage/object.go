@@ -35,6 +35,10 @@ type Object struct {
 	User objectid.ID `json:"user"`
 }
 
+func (o *Object) HasPre() bool {
+	return !o.Prem.IsZero() && time.Now().UTC().Before(o.Prem)
+}
+
 // UpdNam expresses whether the user name of this user object is allowed to be
 // updated, based on the current time. User names are only allowed to be updated
 // once within a time window of 7 days.

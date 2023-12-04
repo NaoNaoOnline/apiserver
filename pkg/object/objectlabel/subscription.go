@@ -11,6 +11,7 @@ const (
 	SubsCntrct string = "subscription.naonao.io/cntrct"
 	SubsObject string = "subscription.naonao.io/object"
 	SubsOrigin string = "subscription.naonao.io/origin"
+	SubsPaging string = "subscription.naonao.io/paging"
 	SubsRpcUrl string = "subscription.naonao.io/rpcurl"
 	SubsUnique string = "subscription.naonao.io/%06d"
 )

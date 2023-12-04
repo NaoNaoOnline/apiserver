@@ -6,6 +6,7 @@ import (
 	"github.com/NaoNaoOnline/apiserver/pkg/keyfmt"
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectid"
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectstate"
+	"github.com/NaoNaoOnline/apiserver/pkg/round"
 	"github.com/xh3b4sd/tracer"
 )
 
@@ -25,6 +26,33 @@ func (r *Redis) DeleteEvnt(inp []*Object) ([]objectstate.String, error) {
 		// Delete the label specific mappings for label specific search queries.
 		for _, x := range append(inp[i].Cate, inp[i].Host...) {
 			err = r.red.Sorted().Delete().Score(eveLab(x), inp[i].Evnt.Float())
+			if err != nil {
+				return nil, tracer.Mask(err)
+			}
+		}
+
+		// Update the given user's contribution as content creator by decrementing
+		// the amount of events added by 1. With this globally maintained sorted set
+		// we can search for all content creators and donate premium subscriptions
+		// to those that meet certain criteria of what we consider legitimate
+		// content creators.
+		var amn float64
+		{
+			amn, err = r.red.Sorted().Floats().Score(keyfmt.EventCreator, inp[i].User.String(), -1.0)
+			if err != nil {
+				return nil, tracer.Mask(err)
+			}
+		}
+
+		// In case the current event deletion caused the given user to not have any
+		// events added recorded anymore, we remove the user from our globally
+		// managed sorted set. It is important to only maintain users in this
+		// particular sorted set that have created a minimum amount of events within
+		// our specified rolling time window. Note that we need to round the floats
+		// given by Redis to make sure our comparison with full numbers works in any
+		// case.
+		if round.RoundP(amn, 1) < 3 {
+			err = r.red.Sorted().Delete().Value(keyfmt.EventCreator, inp[i].User.String())
 			if err != nil {
 				return nil, tracer.Mask(err)
 			}
