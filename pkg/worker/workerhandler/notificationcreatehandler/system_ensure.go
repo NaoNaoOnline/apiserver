@@ -21,7 +21,7 @@ const (
 	paglmt = 5
 )
 
-func (h *SystemCateHandler) Ensure(tas *task.Task, bud *budget.Budget) error {
+func (h *SystemHandler) Ensure(tas *task.Task, bud *budget.Budget) error {
 	var err error
 
 	var cid objectid.ID

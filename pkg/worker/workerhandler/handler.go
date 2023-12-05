@@ -109,7 +109,7 @@ func New(c Config) *Handler {
 	}
 
 	{
-		han = append(han, notificationcreatehandler.NewSystemCateHandler(notificationcreatehandler.SystemCateHandlerConfig{
+		han = append(han, notificationcreatehandler.NewSystemHandler(notificationcreatehandler.SystemHandlerConfig{
 			Log: c.Log,
 			Not: c.Sto.Noti(),
 		}))

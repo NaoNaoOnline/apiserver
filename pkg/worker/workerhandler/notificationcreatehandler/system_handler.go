@@ -8,17 +8,17 @@ import (
 	"github.com/xh3b4sd/tracer"
 )
 
-type SystemCateHandlerConfig struct {
+type SystemHandlerConfig struct {
 	Log logger.Interface
 	Not notificationstorage.Interface
 }
 
-type SystemCateHandler struct {
+type SystemHandler struct {
 	log logger.Interface
 	not notificationstorage.Interface
 }
 
-func NewSystemCateHandler(c SystemCateHandlerConfig) *SystemCateHandler {
+func NewSystemHandler(c SystemHandlerConfig) *SystemHandler {
 	if c.Log == nil {
 		tracer.Panic(tracer.Mask(fmt.Errorf("%T.Log must not be empty", c)))
 	}
@@ -26,7 +26,7 @@ func NewSystemCateHandler(c SystemCateHandlerConfig) *SystemCateHandler {
 		tracer.Panic(tracer.Mask(fmt.Errorf("%T.Not must not be empty", c)))
 	}
 
-	return &SystemCateHandler{
+	return &SystemHandler{
 		log: c.Log,
 		not: c.Not,
 	}
