@@ -7,7 +7,6 @@ import (
 	"time"
 
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectid"
-	"github.com/NaoNaoOnline/apiserver/pkg/object/objectlabel"
 	"github.com/NaoNaoOnline/apiserver/pkg/runtime"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/userstorage"
 	"github.com/NaoNaoOnline/apiserver/pkg/worker/budget"
@@ -26,7 +25,7 @@ func (h *SystemHandler) Ensure(tas *task.Task, bud *budget.Budget) error {
 
 	var pnt int
 	{
-		pnt = int(musNum(tas.Sync.Get(objectlabel.SubsPaging)))
+		pnt = int(musNum(tas.Sync.Get(task.Paging)))
 	}
 
 	var min int
@@ -72,7 +71,7 @@ func (h *SystemHandler) Ensure(tas *task.Task, bud *budget.Budget) error {
 	// setting the synced paging pointer to zero and return, for the next cycle to
 	// begin with the next task execution.
 	if len(uid) == 0 {
-		tas.Sync.Set(objectlabel.SubsPaging, "0")
+		tas.Sync.Set(task.Paging, "0")
 		return nil
 	}
 
@@ -146,15 +145,15 @@ func (h *SystemHandler) Ensure(tas *task.Task, bud *budget.Budget) error {
 	// If the amount of user IDs we received matches the amount of user IDs we
 	// asked for, then we can set the synced paging pointer to the upper end of
 	// our current boundary, so that it can become the lower end of the boundary
-	// in the next execution of the task. Note that if the current and desired
-	// amounts of content creators does not match, then we received less than we
+	// during the next execution cycle of the task. Note that if the current and
+	// desired amounts of user IDs does not match, then we received less than we
 	// asked for, with the reason being that we reached the end of the line of all
-	// iterable user IDs. And with that we can set our synced paging pointer back
-	// to zero.
+	// iterable user IDs. And with that we can then set our synced paging pointer
+	// back to zero.
 	if len(uid) == int(max-min) {
-		tas.Sync.Set(objectlabel.SubsPaging, fmt.Sprintf("%d", max))
+		tas.Sync.Set(task.Paging, fmt.Sprintf("%d", max))
 	} else {
-		tas.Sync.Set(objectlabel.SubsPaging, "0")
+		tas.Sync.Set(task.Paging, "0")
 	}
 
 	return nil

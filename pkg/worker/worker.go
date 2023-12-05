@@ -223,7 +223,23 @@ func (w *Worker) search() {
 						"level", "warning",
 						"message", "task budget exhausted",
 					)
-				} else {
+				}
+
+				// We want to requeue a task that carries a paging pointer that is not
+				// empty. So if the given task carries a paging pointer that indicates
+				// to continue processing at a certain stage of the process itself, then
+				// we do not want to increment the current amount of handlers that
+				// completed their work. Because, this handler here has still work to
+				// do. And so the task will simply expire and picked up again ASAP.
+				if tas.Pag() {
+					w.log.Log(
+						logctx(tas),
+						"level", "info",
+						"message", "task being requeued",
+					)
+				}
+
+				if !bud.Break() && !tas.Pag() {
 					cur++
 				}
 			}

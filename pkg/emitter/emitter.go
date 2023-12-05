@@ -6,6 +6,7 @@ import (
 	"github.com/NaoNaoOnline/apiserver/pkg/emitter/descriptionemitter"
 	"github.com/NaoNaoOnline/apiserver/pkg/emitter/eventemitter"
 	"github.com/NaoNaoOnline/apiserver/pkg/emitter/listemitter"
+	"github.com/NaoNaoOnline/apiserver/pkg/emitter/notificationemitter"
 	"github.com/NaoNaoOnline/apiserver/pkg/emitter/policyemitter"
 	"github.com/NaoNaoOnline/apiserver/pkg/emitter/subscriptionemitter"
 	"github.com/xh3b4sd/logger"
@@ -26,6 +27,7 @@ type Emitter struct {
 	des descriptionemitter.Interface
 	eve eventemitter.Interface
 	lis listemitter.Interface
+	not notificationemitter.Interface
 	pol policyemitter.Interface
 	sub subscriptionemitter.Interface
 }
@@ -44,6 +46,7 @@ func New(c Config) *Emitter {
 			des: descriptionemitter.NewEmitter(descriptionemitter.EmitterConfig{Log: c.Log, Res: c.Res}),
 			eve: eventemitter.NewEmitter(eventemitter.EmitterConfig{Log: c.Log, Res: c.Res}),
 			lis: listemitter.NewEmitter(listemitter.EmitterConfig{Log: c.Log, Res: c.Res}),
+			not: notificationemitter.NewEmitter(notificationemitter.EmitterConfig{Log: c.Log, Res: c.Res}),
 			pol: policyemitter.NewEmitter(policyemitter.EmitterConfig{Cid: c.Cid, Cnt: c.Pcn, Log: c.Log, Res: c.Res, Rpc: c.Rpc}),
 			sub: subscriptionemitter.NewEmitter(subscriptionemitter.EmitterConfig{Cid: c.Cid, Cnt: c.Scn, Log: c.Log, Res: c.Res, Rpc: c.Rpc}),
 		}
@@ -62,6 +65,10 @@ func (e *Emitter) Evnt() eventemitter.Interface {
 
 func (e *Emitter) List() listemitter.Interface {
 	return e.lis
+}
+
+func (e *Emitter) Noti() notificationemitter.Interface {
+	return e.not
 }
 
 func (e *Emitter) Plcy() policyemitter.Interface {

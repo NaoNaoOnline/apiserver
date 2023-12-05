@@ -11,6 +11,7 @@ import (
 	"github.com/NaoNaoOnline/apiserver/pkg/worker/workerhandler/eventcreatehandler"
 	"github.com/NaoNaoOnline/apiserver/pkg/worker/workerhandler/eventdeletehandler"
 	"github.com/NaoNaoOnline/apiserver/pkg/worker/workerhandler/listdeletehandler"
+	"github.com/NaoNaoOnline/apiserver/pkg/worker/workerhandler/notificationcreatehandler"
 	"github.com/NaoNaoOnline/apiserver/pkg/worker/workerhandler/policybufferhandler"
 	"github.com/NaoNaoOnline/apiserver/pkg/worker/workerhandler/policyscrapehandler"
 	"github.com/NaoNaoOnline/apiserver/pkg/worker/workerhandler/policyupdatehandler"
@@ -75,7 +76,8 @@ func New(c Config) *Handler {
 
 	{
 		han = append(han, eventcreatehandler.NewSystemHandler(eventcreatehandler.SystemHandlerConfig{
-			Emi: c.Emi.Evnt(),
+			Emi: c.Emi,
+			Eve: c.Sto.Evnt(),
 			Log: c.Log,
 			Twi: c.Twi,
 		}))
@@ -103,6 +105,13 @@ func New(c Config) *Handler {
 			Lis: c.Sto.List(),
 			Log: c.Log,
 			Rul: c.Sto.Rule(),
+		}))
+	}
+
+	{
+		han = append(han, notificationcreatehandler.NewSystemCateHandler(notificationcreatehandler.SystemCateHandlerConfig{
+			Log: c.Log,
+			Not: c.Sto.Noti(),
 		}))
 	}
 
