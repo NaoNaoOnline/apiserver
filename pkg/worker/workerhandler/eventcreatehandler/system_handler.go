@@ -3,20 +3,23 @@ package eventcreatehandler
 import (
 	"fmt"
 
-	"github.com/NaoNaoOnline/apiserver/pkg/emitter/eventemitter"
+	"github.com/NaoNaoOnline/apiserver/pkg/emitter"
+	"github.com/NaoNaoOnline/apiserver/pkg/storage/eventstorage"
 	"github.com/NaoNaoOnline/apiserver/pkg/worker/client/twitterclient"
 	"github.com/xh3b4sd/logger"
 	"github.com/xh3b4sd/tracer"
 )
 
 type SystemHandlerConfig struct {
-	Emi eventemitter.Interface
+	Emi *emitter.Emitter
+	Eve eventstorage.Interface
 	Log logger.Interface
 	Twi twitterclient.Interface
 }
 
 type SystemHandler struct {
-	emi eventemitter.Interface
+	emi *emitter.Emitter
+	eve eventstorage.Interface
 	log logger.Interface
 	twi twitterclient.Interface
 }
@@ -24,6 +27,9 @@ type SystemHandler struct {
 func NewSystemHandler(c SystemHandlerConfig) *SystemHandler {
 	if c.Emi == nil {
 		tracer.Panic(tracer.Mask(fmt.Errorf("%T.Emi must not be empty", c)))
+	}
+	if c.Eve == nil {
+		tracer.Panic(tracer.Mask(fmt.Errorf("%T.Eve must not be empty", c)))
 	}
 	if c.Log == nil {
 		tracer.Panic(tracer.Mask(fmt.Errorf("%T.Log must not be empty", c)))
@@ -34,6 +40,7 @@ func NewSystemHandler(c SystemHandlerConfig) *SystemHandler {
 
 	return &SystemHandler{
 		emi: c.Emi,
+		eve: c.Eve,
 		log: c.Log,
 		twi: c.Twi,
 	}

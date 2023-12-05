@@ -1,7 +1,7 @@
 package objectlabel
 
 const (
-	DescAction string = "description.naonao.io/action"
-	DescObject string = "description.naonao.io/object"
-	DescOrigin string = "description.naonao.io/origin"
+	DescAction string = "desc.naonao.io/action"
+	DescObject string = "desc.naonao.io/object"
+	DescOrigin string = "desc.naonao.io/origin"
 )

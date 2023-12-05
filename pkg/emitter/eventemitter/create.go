@@ -7,13 +7,13 @@ import (
 	"github.com/xh3b4sd/tracer"
 )
 
-func (e *Emitter) CreateEvnt(eve objectid.ID) error {
+func (e *Emitter) CreateEvnt(eid objectid.ID) error {
 	var tas *task.Task
 	{
 		tas = &task.Task{
 			Meta: &task.Meta{
 				objectlabel.EvntAction: objectlabel.ActionCreate,
-				objectlabel.EvntObject: eve.String(),
+				objectlabel.EvntObject: eid.String(),
 				objectlabel.EvntOrigin: objectlabel.OriginSystem,
 			},
 		}
@@ -29,12 +29,12 @@ func (e *Emitter) CreateEvnt(eve objectid.ID) error {
 	return nil
 }
 
-func (e *Emitter) CreateTwtr(eve objectid.ID) error {
+func (e *Emitter) CreateTwtr(eid objectid.ID) error {
 	var tas *task.Task
 	{
 		tas = &task.Task{
 			Meta: &task.Meta{
-				objectlabel.EvntObject: eve.String(),
+				objectlabel.EvntObject: eid.String(),
 				objectlabel.TwtrAction: objectlabel.ActionCreate,
 				objectlabel.TwtrOrigin: objectlabel.OriginSystem,
 			},

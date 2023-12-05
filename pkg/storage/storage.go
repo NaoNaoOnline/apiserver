@@ -10,6 +10,7 @@ import (
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/eventstorage"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/labelstorage"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/liststorage"
+	"github.com/NaoNaoOnline/apiserver/pkg/storage/notificationstorage"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/policystorage"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/rulestorage"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/subscriptionstorage"
@@ -32,6 +33,7 @@ type Storage struct {
 	eve eventstorage.Interface
 	lab labelstorage.Interface
 	lis liststorage.Interface
+	not notificationstorage.Interface
 	pol policystorage.Interface
 	rul rulestorage.Interface
 	sub subscriptionstorage.Interface
@@ -62,6 +64,7 @@ func New(c Config) *Storage {
 			eve: eventstorage.NewRedis(eventstorage.RedisConfig{Emi: c.Emi.Evnt(), Log: c.Log, Red: c.Red}),
 			lab: labelstorage.NewRedis(labelstorage.RedisConfig{Log: c.Log, Red: c.Red}),
 			lis: liststorage.NewRedis(liststorage.RedisConfig{Emi: c.Emi.List(), Log: c.Log, Red: c.Red}),
+			not: notificationstorage.NewRedis(notificationstorage.RedisConfig{Log: c.Log, Red: c.Red}),
 			pol: policystorage.NewRedis(policystorage.RedisConfig{Log: c.Log, Red: c.Red}),
 			rul: rulestorage.NewRedis(rulestorage.RedisConfig{Log: c.Log, Red: c.Red}),
 			use: userstorage.NewRedis(userstorage.RedisConfig{Log: c.Log, PSO: pso, Red: c.Red}),
@@ -97,6 +100,10 @@ func (s *Storage) Labl() labelstorage.Interface {
 
 func (s *Storage) List() liststorage.Interface {
 	return s.lis
+}
+
+func (s *Storage) Noti() notificationstorage.Interface {
+	return s.not
 }
 
 func (s *Storage) Plcy() policystorage.Interface {

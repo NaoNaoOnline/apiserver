@@ -194,6 +194,42 @@ const (
 	//
 	ListUser = "lis/use/%s"
 
+	// NotificationCategory is used to store all the IDs of users who want
+	// notifications about events created matching a certain category label.
+	//
+	//     category ID                   user IDs
+	//                             ->
+	//     not/eve/kin/cat/5678          1234,5678
+	//
+	NotificationCategory = "not/eve/kin/cat/%s"
+
+	// NotificationHost is used to store all the IDs of users who want
+	// notifications about events created matching a certain host label.
+	//
+	//     host ID                       user IDs
+	//                             ->
+	//     not/eve/kin/hos/5678          1234,5678
+	//
+	NotificationHost = "not/eve/kin/hos/%s"
+
+	// NotificationUser is used to store all the IDs of users who want
+	// notifications about events created by certain users.
+	//
+	//     user ID                       user IDs
+	//                             ->
+	//     not/eve/kin/use/5678          1234,5678
+	//
+	NotificationUser = "not/eve/kin/use/%s"
+
+	// NotificationObject is used to store all of our internal representations of
+	// a Notification object scoped to a specific user.
+	//
+	//     user ID                   notification objects
+	//                         ->
+	//     not/use/1234/obj          {"key": "val"},{"key": "val"}
+	//
+	NotificationObject = "not/use/%s/obj"
+
 	// PolicyBuffer is used to store all chain specific policy records
 	// intermittendly in a sorted set. The values here are policy records. The
 	// scores here are chain IDs.

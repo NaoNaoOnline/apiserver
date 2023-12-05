@@ -1,7 +1,7 @@
 package objectlabel
 
 const (
-	EvntAction string = "event.naonao.io/action"
-	EvntObject string = "event.naonao.io/object"
-	EvntOrigin string = "event.naonao.io/origin"
+	EvntAction string = "evnt.naonao.io/action"
+	EvntObject string = "evnt.naonao.io/object"
+	EvntOrigin string = "evnt.naonao.io/origin"
 )

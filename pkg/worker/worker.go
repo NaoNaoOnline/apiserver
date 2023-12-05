@@ -226,6 +226,20 @@ func (w *Worker) search() {
 				} else {
 					cur++
 				}
+
+				// We want to requeue a task that carries a paging pointer that is not
+				// empty. So if the given task carries a paging pointer that indicates
+				// to continue processing at a certain stage of the process itself, then
+				// the rescue engine will expire it immediately and update the synced
+				// paging state so that we can pick it up ASAP. Below we simply emit an
+				// info log for visibility.
+				if tas.Pag() {
+					w.log.Log(
+						logctx(tas),
+						"level", "info",
+						"message", "task being requeued",
+					)
+				}
 			}
 		}
 	}

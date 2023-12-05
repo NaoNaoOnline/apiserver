@@ -1,4 +1,4 @@
-package subscriptiondonatehandler
+package notificationcreatehandler
 
 import (
 	"context"
@@ -7,8 +7,9 @@ import (
 	"time"
 
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectid"
+	"github.com/NaoNaoOnline/apiserver/pkg/object/objectlabel"
 	"github.com/NaoNaoOnline/apiserver/pkg/runtime"
-	"github.com/NaoNaoOnline/apiserver/pkg/storage/userstorage"
+	"github.com/NaoNaoOnline/apiserver/pkg/storage/notificationstorage"
 	"github.com/NaoNaoOnline/apiserver/pkg/worker/budget"
 	"github.com/xh3b4sd/rescue/task"
 	"github.com/xh3b4sd/tracer"
@@ -22,6 +23,13 @@ const (
 
 func (h *SystemHandler) Ensure(tas *task.Task, bud *budget.Budget) error {
 	var err error
+
+	var cid objectid.ID
+	var eid objectid.ID
+	{
+		cid = objectid.ID(tas.Meta.Get(objectlabel.CateObject))
+		eid = objectid.ID(tas.Meta.Get(objectlabel.EvntObject))
+	}
 
 	var pnt int
 	{
@@ -59,87 +67,56 @@ func (h *SystemHandler) Ensure(tas *task.Task, bud *budget.Budget) error {
 
 	var uid []objectid.ID
 	{
-		uid, err = h.eve.SearchCrtr(pag)
+		uid, err = h.not.SearchUser("cate", cid, pag)
 		if err != nil {
 			return tracer.Mask(err)
 		}
 	}
 
-	// We searched for the next page of event creators and did not receive any.
-	// That may happen if we processed the full amount of content creators already
-	// in the prior cycle of task execution. In that case we end the cycle here by
-	// setting the synced paging pointer to zero and return, for the next cycle to
-	// begin with the next task execution.
+	// We searched for the next page of user IDs and may did not receive any. That
+	// may happen if we processed the full amount of user IDs already in the prior
+	// cycle of task execution. In that case we end the cycle here by setting the
+	// synced paging pointer to zero and return, for the next cycle to begin with
+	// the next task execution.
 	if len(uid) == 0 {
 		tas.Sync.Set(task.Paging, "0")
 		return nil
 	}
 
-	var uob []*userstorage.Object
+	var kin string
 	{
-		uob, err = h.use.SearchUser(uid)
+		kin, err = objKin(tas)
 		if err != nil {
 			return tracer.Mask(err)
 		}
 	}
 
-	var vld []bool
+	var now time.Time
 	{
-		vld, err = h.sub.VerifyUser(uid)
+		now = time.Now().UTC()
+	}
+
+	var nid objectid.ID
+	{
+		nid = objectid.Random(objectid.Time(now))
+	}
+
+	var obj *notificationstorage.Object
+	{
+		obj = &notificationstorage.Object{
+			Crtd: now,
+			Evnt: eid,
+			Kind: kin,
+			Noti: nid,
+			Obct: cid,
+		}
+	}
+
+	{
+		err = h.not.CreateNoti(uid, obj)
 		if err != nil {
 			return tracer.Mask(err)
 		}
-	}
-
-	if len(uob) != len(vld) {
-		return tracer.Maskf(runtime.ExecutionFailedError, "%d != %d", len(uob), len(vld))
-	}
-
-	var pre time.Time
-	{
-		pre = timPre(time.Now().UTC())
-	}
-
-	for i := range uob {
-		// Any user that has already a premium subscription does not need to be
-		// processed anymore. And so we continue with the next user object, if any.
-		{
-			if uob[i].HasPre() {
-				continue
-			}
-		}
-
-		// Any user that is not recognized as a legitmate content creator is not
-		// allowed to receive a donated premium subscription. And so we continue
-		// with the next user object, if any.
-		{
-			if !vld[i] {
-				continue
-			}
-		}
-
-		// We update the user who represents the content creator that did not have a
-		// premium subscription before, by setting the up-to-date timestamp until
-		// they have now a valid premium subscription. That timestamp is the end of
-		// the current month.
-		{
-			uob[i].Prem = pre
-		}
-
-		// Update the current user object with the new premium subscription expiry.
-		{
-			_, err = h.use.UpdateObct([]*userstorage.Object{uob[i]})
-			if err != nil {
-				return tracer.Mask(err)
-			}
-		}
-
-		h.log.Log(
-			context.Background(),
-			"level", "info",
-			"message", "donated premium subscription",
-			"user", uob[i].User.String(),
-		)
 	}
 
 	// If the amount of user IDs we received matches the amount of user IDs we
@@ -168,6 +145,18 @@ func musNum(str string) int64 {
 	return num
 }
 
-func timPre(tim time.Time) time.Time {
-	return time.Date(tim.Year(), tim.Month(), 1, 0, 0, 0, 0, time.UTC).AddDate(0, 1, 0)
+func objKin(tas *task.Task) (string, error) {
+	if tas.Meta.Exi(objectlabel.CateObject) {
+		return "cate", nil
+	}
+
+	if tas.Meta.Exi(objectlabel.HostObject) {
+		return "host", nil
+	}
+
+	if tas.Meta.Exi(objectlabel.UserObject) {
+		return "user", nil
+	}
+
+	return "", tracer.Maskf(runtime.ExecutionFailedError, "object label must not be empty")
 }

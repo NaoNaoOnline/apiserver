@@ -15,7 +15,7 @@ func (h *SystemHandler) Create() *task.Task {
 			objectlabel.SubsOrigin: objectlabel.OriginSystem,
 		},
 		Sync: &task.Sync{
-			objectlabel.SubsPaging: "0",
+			task.Paging: "0",
 		},
 	}
 }

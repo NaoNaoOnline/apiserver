@@ -67,5 +67,10 @@ func (r *Object) Verify() error {
 		}
 	}
 
+	// Note that Object.User is not validated here like for the other resources,
+	// because policy records are external objects only synced internally. That
+	// means there is no user owning or having created this policy record. Any
+	// policy/user relationship will be augmented on the fly, if possible.
+
 	return nil
 }

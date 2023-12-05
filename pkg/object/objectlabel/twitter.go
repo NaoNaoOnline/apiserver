@@ -1,6 +1,6 @@
 package objectlabel
 
 const (
-	TwtrAction string = "twitter.naonao.io/action"
-	TwtrOrigin string = "twitter.naonao.io/origin"
+	TwtrAction string = "twtr.naonao.io/action"
+	TwtrOrigin string = "twtr.naonao.io/origin"
 )
