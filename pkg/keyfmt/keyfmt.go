@@ -213,7 +213,7 @@ const (
 	NotificationHost = "not/eve/kin/hos/%s"
 
 	// NotificationUser is used to store all the IDs of users who want
-	// notifications about events created created by certain users.
+	// notifications about events created by certain users.
 	//
 	//     user ID                       user IDs
 	//                             ->
