@@ -4,7 +4,7 @@ go 1.21.1
 
 require (
 	github.com/NaoNaoOnline/apigocode v0.8.17
-	github.com/auth0/go-jwt-middleware/v2 v2.1.0
+	github.com/auth0/go-jwt-middleware/v2 v2.2.0
 	github.com/brianvoe/gofakeit/v6 v6.25.0
 	github.com/ethereum/go-ethereum v1.13.5
 	github.com/evanphx/json-patch/v5 v5.7.0
@@ -73,6 +73,6 @@ require (
 	golang.org/x/sys v0.14.0 // indirect
 	golang.org/x/tools v0.15.0 // indirect
 	google.golang.org/protobuf v1.31.0 // indirect
-	gopkg.in/square/go-jose.v2 v2.6.0 // indirect
+	gopkg.in/go-jose/go-jose.v2 v2.6.1 // indirect
 	rsc.io/tmplfunc v0.0.3 // indirect
 )
