@@ -106,6 +106,17 @@ func (r *Redis) Create(inp []*Object) ([]*Object, error) {
 				}
 			}
 		}
+
+		// Add the rule owner to the notification feed for the resources specified
+		// by the given rules.
+		if inp[i].Kind == "cate" || inp[i].Kind == "host" || inp[i].Kind == "user" {
+			for _, y := range inp[i].Incl {
+				err = r.red.Sorted().Create().Score(notKin(inp[i].Kind, y), objectid.Pair(inp[i].User, inp[i].List), inp[i].User.Float())
+				if err != nil {
+					return nil, tracer.Mask(err)
+				}
+			}
+		}
 	}
 
 	return inp, nil

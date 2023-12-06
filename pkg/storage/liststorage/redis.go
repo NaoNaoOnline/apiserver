@@ -50,6 +50,10 @@ func lisUse(use objectid.ID) string {
 	return fmt.Sprintf(keyfmt.ListUser, use)
 }
 
+func notObj(uid objectid.ID, lid objectid.ID) string {
+	return fmt.Sprintf(keyfmt.NotificationObject, uid, lid)
+}
+
 func musByt(pat []*Patch) []byte {
 	byt, err := json.Marshal(pat)
 	if err != nil {

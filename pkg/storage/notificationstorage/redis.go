@@ -51,8 +51,8 @@ func notKin(kin string, oid objectid.ID) string {
 	panic(fmt.Sprintf("kin must be cate, host or user, got %s", kin))
 }
 
-func notObj(uid objectid.ID) string {
-	return fmt.Sprintf(keyfmt.NotificationObject, uid)
+func notObj(uid objectid.ID, lid objectid.ID) string {
+	return fmt.Sprintf(keyfmt.NotificationObject, uid, lid)
 }
 
 func musStr(obj *Object) string {
