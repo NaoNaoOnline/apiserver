@@ -21,6 +21,10 @@ func (h *CustomHandler) Ensure(tas *task.Task, bud *budget.Budget) error {
 		if err != nil {
 			return tracer.Mask(err)
 		}
+
+		if bud.Break() {
+			return nil
+		}
 	}
 
 	{

@@ -222,13 +222,13 @@ const (
 	NotificationUser = "not/eve/kin/use/%s"
 
 	// NotificationObject is used to store all of our internal representations of
-	// a Notification object scoped to a specific user.
+	// notification objects scoped to a specific user / list combination.
 	//
-	//     user ID                   notification objects
-	//                         ->
-	//     not/use/1234/obj          {"key": "val"},{"key": "val"}
+	//     user ID / list ID                  notification objects
+	//                                  ->
+	//     not/use/1234/lis/5678/obj          {"key": "val"},{"key": "val"}
 	//
-	NotificationObject = "not/use/%s/obj"
+	NotificationObject = "not/use/%s/lis/%s/obj"
 
 	// PolicyBuffer is used to store all chain specific policy records
 	// intermittendly in a sorted set. The values here are policy records. The

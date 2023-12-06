@@ -10,6 +10,17 @@ func (r *Redis) Delete(inp []*Object) ([]objectstate.String, error) {
 
 	var out []objectstate.String
 	for i := range inp {
+		// Remove the rule owner from the notification feed for the resources
+		// specified by the given rules.
+		if inp[i].Kind == "cate" || inp[i].Kind == "host" || inp[i].Kind == "user" {
+			for _, y := range inp[i].Incl {
+				err = r.red.Sorted().Delete().Score(notKin(inp[i].Kind, y), inp[i].User.Float())
+				if err != nil {
+					return nil, tracer.Mask(err)
+				}
+			}
+		}
+
 		// Delete the event specific mappings for event specific search queries.
 		if inp[i].Kind == "evnt" {
 			for _, y := range append(inp[i].Incl, inp[i].Excl...) {

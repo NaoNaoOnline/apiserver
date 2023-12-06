@@ -39,6 +39,22 @@ func lisObj(lis objectid.ID) string {
 	return fmt.Sprintf(keyfmt.ListObject, lis)
 }
 
+func notKin(kin string, oid objectid.ID) string {
+	if kin == "cate" {
+		return fmt.Sprintf(keyfmt.NotificationCategory, oid)
+	}
+
+	if kin == "host" {
+		return fmt.Sprintf(keyfmt.NotificationHost, oid)
+	}
+
+	if kin == "user" {
+		return fmt.Sprintf(keyfmt.NotificationUser, oid)
+	}
+
+	panic(fmt.Sprintf("kin must be cate, host or user, got %s", kin))
+}
+
 func rulEve(eve objectid.ID) string {
 	return fmt.Sprintf(keyfmt.RuleEvent, eve)
 }

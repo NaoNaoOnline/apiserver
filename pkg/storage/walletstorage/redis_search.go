@@ -24,6 +24,12 @@ func (r *Redis) SearchAddr(add []string) ([]objectid.ID, []objectid.ID, error) {
 		}
 	}
 
+	// There might not be any values, and so we do not proceed, but instead return
+	// nothing.
+	if len(val) == 0 {
+		return nil, nil, nil
+	}
+
 	var uid []objectid.ID
 	{
 		uid = objectid.Frst(val)

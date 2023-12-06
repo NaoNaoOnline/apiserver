@@ -19,6 +19,9 @@ type Object struct {
 	Desc objectfield.String `json:"desc"`
 	// List is the ID of the list being created.
 	List objectid.ID `json:"list"`
+	// Noti is the time until the list's notifications got consumed. If this
+	// timestamp is zero, it means the list notifications are disabled.
+	Noti time.Time `json:"noti,omitempty"`
 	// User is the user ID creating this list.
 	User objectid.ID `json:"user"`
 }

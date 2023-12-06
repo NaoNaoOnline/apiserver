@@ -24,11 +24,25 @@ const (
 func (h *SystemHandler) Ensure(tas *task.Task, bud *budget.Budget) error {
 	var err error
 
-	var cid objectid.ID
 	var eid objectid.ID
 	{
-		cid = objectid.ID(tas.Meta.Get(objectlabel.CateObject))
 		eid = objectid.ID(tas.Meta.Get(objectlabel.EvntObject))
+	}
+
+	var kin string
+	{
+		kin, err = objKin(tas)
+		if err != nil {
+			return tracer.Mask(err)
+		}
+	}
+
+	var oid objectid.ID
+	{
+		oid, err = objVal(tas)
+		if err != nil {
+			return tracer.Mask(err)
+		}
 	}
 
 	var pnt int
@@ -66,8 +80,9 @@ func (h *SystemHandler) Ensure(tas *task.Task, bud *budget.Budget) error {
 	}
 
 	var uid []objectid.ID
+	var lid []objectid.ID
 	{
-		uid, err = h.not.SearchUser("cate", cid, pag)
+		uid, lid, err = h.not.SearchUser(kin, oid, pag)
 		if err != nil {
 			return tracer.Mask(err)
 		}
@@ -83,14 +98,6 @@ func (h *SystemHandler) Ensure(tas *task.Task, bud *budget.Budget) error {
 		return nil
 	}
 
-	var kin string
-	{
-		kin, err = objKin(tas)
-		if err != nil {
-			return tracer.Mask(err)
-		}
-	}
-
 	var now time.Time
 	{
 		now = time.Now().UTC()
@@ -101,19 +108,21 @@ func (h *SystemHandler) Ensure(tas *task.Task, bud *budget.Budget) error {
 		nid = objectid.Random(objectid.Time(now))
 	}
 
-	var obj *notificationstorage.Object
-	{
-		obj = &notificationstorage.Object{
+	var obj []*notificationstorage.Object
+	for i := range uid {
+		obj = append(obj, &notificationstorage.Object{
 			Crtd: now,
 			Evnt: eid,
 			Kind: kin,
+			List: lid[i],
 			Noti: nid,
-			Obct: cid,
-		}
+			Obct: oid,
+			User: uid[i],
+		})
 	}
 
 	{
-		err = h.not.CreateNoti(uid, obj)
+		err = h.not.CreateNoti(obj)
 		if err != nil {
 			return tracer.Mask(err)
 		}
@@ -156,6 +165,22 @@ func objKin(tas *task.Task) (string, error) {
 
 	if tas.Meta.Exi(objectlabel.UserObject) {
 		return "user", nil
+	}
+
+	return "", tracer.Maskf(runtime.ExecutionFailedError, "object label must not be empty")
+}
+
+func objVal(tas *task.Task) (objectid.ID, error) {
+	if tas.Meta.Exi(objectlabel.CateObject) {
+		return objectid.ID(tas.Meta.Get(objectlabel.CateObject)), nil
+	}
+
+	if tas.Meta.Exi(objectlabel.HostObject) {
+		return objectid.ID(tas.Meta.Get(objectlabel.HostObject)), nil
+	}
+
+	if tas.Meta.Exi(objectlabel.UserObject) {
+		return objectid.ID(tas.Meta.Get(objectlabel.UserObject)), nil
 	}
 
 	return "", tracer.Maskf(runtime.ExecutionFailedError, "object label must not be empty")
