@@ -29,17 +29,10 @@ func (h *SystemHandler) Ensure(tas *task.Task, bud *budget.Budget) error {
 		eid = objectid.ID(tas.Meta.Get(objectlabel.EvntObject))
 	}
 
+	var oid objectid.ID
 	var kin string
 	{
-		kin, err = objKin(tas)
-		if err != nil {
-			return tracer.Mask(err)
-		}
-	}
-
-	var oid objectid.ID
-	{
-		oid, err = objVal(tas)
+		oid, kin, err = objKin(tas)
 		if err != nil {
 			return tracer.Mask(err)
 		}
@@ -154,34 +147,18 @@ func musNum(str string) int64 {
 	return num
 }
 
-func objKin(tas *task.Task) (string, error) {
+func objKin(tas *task.Task) (objectid.ID, string, error) {
 	if tas.Meta.Exi(objectlabel.CateObject) {
-		return "cate", nil
+		return objectid.ID(tas.Meta.Get(objectlabel.CateObject)), "cate", nil
 	}
 
 	if tas.Meta.Exi(objectlabel.HostObject) {
-		return "host", nil
+		return objectid.ID(tas.Meta.Get(objectlabel.HostObject)), "host", nil
 	}
 
 	if tas.Meta.Exi(objectlabel.UserObject) {
-		return "user", nil
+		return objectid.ID(tas.Meta.Get(objectlabel.UserObject)), "user", nil
 	}
 
-	return "", tracer.Maskf(runtime.ExecutionFailedError, "object label must not be empty")
-}
-
-func objVal(tas *task.Task) (objectid.ID, error) {
-	if tas.Meta.Exi(objectlabel.CateObject) {
-		return objectid.ID(tas.Meta.Get(objectlabel.CateObject)), nil
-	}
-
-	if tas.Meta.Exi(objectlabel.HostObject) {
-		return objectid.ID(tas.Meta.Get(objectlabel.HostObject)), nil
-	}
-
-	if tas.Meta.Exi(objectlabel.UserObject) {
-		return objectid.ID(tas.Meta.Get(objectlabel.UserObject)), nil
-	}
-
-	return "", tracer.Maskf(runtime.ExecutionFailedError, "object label must not be empty")
+	return "", "", tracer.Maskf(runtime.ExecutionFailedError, "object label must not be empty")
 }
