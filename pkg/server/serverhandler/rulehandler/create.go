@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/NaoNaoOnline/apigocode/pkg/rule"
+	"github.com/NaoNaoOnline/apiserver/pkg/generic"
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectid"
 	"github.com/NaoNaoOnline/apiserver/pkg/runtime"
 	"github.com/NaoNaoOnline/apiserver/pkg/server/context/userid"
@@ -28,24 +29,20 @@ func (h *Handler) Create(ctx context.Context, req *rule.CreateI) (*rule.CreateO,
 		}
 	}
 
-	for _, x := range inp {
-		var lis []*liststorage.Object
-		{
-			lis, err = h.lis.SearchList([]objectid.ID{x.List})
-			if err != nil {
-				return nil, tracer.Mask(err)
-			}
-		}
+	//
+	// Verify the given input.
+	//
 
-		if len(lis) != 1 {
-			return nil, tracer.Mask(runtime.ExecutionFailedError)
-		}
-
-		// Ensure rules cannot be added to lists that have already been deleted.
-		if !lis[0].Dltd.IsZero() {
-			return nil, tracer.Mask(listDeletedError)
+	{
+		err = h.createVrfy(ctx, inp)
+		if err != nil {
+			return nil, tracer.Mask(err)
 		}
 	}
+
+	//
+	// Create the given resources.
+	//
 
 	var out []*rulestorage.Object
 	{
@@ -74,4 +71,88 @@ func (h *Handler) Create(ctx context.Context, req *rule.CreateI) (*rule.CreateO,
 	}
 
 	return res, nil
+}
+
+func (h *Handler) createVrfy(ctx context.Context, obj rulestorage.Slicer) error {
+	var err error
+
+	for _, x := range obj {
+		var lis []*liststorage.Object
+		{
+			lis, err = h.lis.SearchList([]objectid.ID{x.List})
+			if err != nil {
+				return tracer.Mask(err)
+			}
+		}
+
+		if len(lis) != 1 {
+			return tracer.Mask(runtime.ExecutionFailedError)
+		}
+
+		// Ensure rules cannot be added to lists that have already been deleted.
+		if !lis[0].Dltd.IsZero() {
+			return tracer.Mask(listDeletedError)
+		}
+
+		// Prevent exludes from being added to static lists. Excluding something
+		// that you add manually does not make any sense. If you want to exclude
+		// something from a static list, then do not add it to that list in the
+		// first place.
+		if x.Kind == "evnt" && len(x.Excl) != 0 {
+			return tracer.Mask(ruleStaticExclError)
+		}
+	}
+
+	for _, x := range obj {
+		var rul rulestorage.Slicer
+		{
+			rul, err = h.rul.SearchList([]objectid.ID{x.List}, rulestorage.PagAll())
+			if err != nil {
+				return tracer.Mask(err)
+			}
+		}
+
+		// At this point a list might just have been created and the first rule is
+		// being added. Then the rule kind can be freely choosen without constraint.
+		if len(rul) == 0 {
+			continue
+		}
+
+		// Ensure dynamic rules cannot be added to static lists. If the first rule
+		// kind of the list that we want to add a new rule to defines kind "evnt",
+		// then all other rules added to this very list must also be of kind "evnt".
+		// That is to guarantee list type consistency. Dynamic lists contain dynamic
+		// rules. Static lists contain static rules.
+		if rul[0].Kind == "evnt" && x.Kind != "evnt" {
+			return tracer.Mask(ruleStaticListError)
+		}
+
+		// Repeat the same check from above but for dynamic lists. If the current
+		// list is found to be dynamic due to a dynamic rule, then it is not allowed
+		// to add a static rule to the dynamic list.
+		if rul[0].Kind != "evnt" && x.Kind == "evnt" {
+			return tracer.Mask(ruleDynamicListError)
+		}
+
+		// Verify that no duplicated rules can be added to lists.
+		for _, y := range rul {
+			// If the rule kind of the item that we want to add to the list does not
+			// match the rule that we are checking against, then we move on to the
+			// next existing rule, if any, because the current rule is not a duplicate
+			// due to its different rule kind.
+			if x.Kind != y.Kind {
+				continue
+			}
+
+			// If there is no overlap across includes and excludes the current rule is
+			// not a duplicate. If there is any conflict between the rule the caller
+			// wants to add and the existing rule we are verifying against, then we
+			// return an error.
+			if generic.Any(x.Incl, y.Incl) || generic.Any(x.Excl, y.Excl) {
+				return tracer.Mask(listRuleDuplicateError)
+			}
+		}
+	}
+
+	return nil
 }

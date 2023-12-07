@@ -3,13 +3,17 @@ package notificationcreatehandler
 import (
 	"context"
 	"fmt"
+	"slices"
 	"strconv"
 	"time"
 
+	"github.com/NaoNaoOnline/apiserver/pkg/generic"
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectid"
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectlabel"
 	"github.com/NaoNaoOnline/apiserver/pkg/runtime"
+	"github.com/NaoNaoOnline/apiserver/pkg/storage/eventstorage"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/notificationstorage"
+	"github.com/NaoNaoOnline/apiserver/pkg/storage/rulestorage"
 	"github.com/NaoNaoOnline/apiserver/pkg/worker/budget"
 	"github.com/xh3b4sd/rescue/task"
 	"github.com/xh3b4sd/tracer"
@@ -27,6 +31,26 @@ func (h *SystemHandler) Ensure(tas *task.Task, bud *budget.Budget) error {
 	var eid objectid.ID
 	{
 		eid = objectid.ID(tas.Meta.Get(objectlabel.EvntObject))
+	}
+
+	// Fetch the event object that got created and for which we want to process
+	// all relevant notifications. If the relevant event has been deleted
+	// intermittendly, we stop processing here.
+	var eob []*eventstorage.Object
+	{
+		eob, err = h.eve.SearchEvnt("", []objectid.ID{eid})
+		if eventstorage.IsEventObjectNotFound(err) {
+			h.log.Log(
+				context.Background(),
+				"level", "warning",
+				"message", "stopped processing task",
+				"reason", "event object could not be found",
+			)
+
+			return nil
+		} else if err != nil {
+			return tracer.Mask(err)
+		}
 	}
 
 	var oid objectid.ID
@@ -72,6 +96,9 @@ func (h *SystemHandler) Ensure(tas *task.Task, bud *budget.Budget) error {
 		}
 	}
 
+	// Search for the relevant user and list IDs. We store these as ID pairs. The
+	// returned lists are synchronized in a way so that each pair shares the same
+	// index between both lists.
 	var uid []objectid.ID
 	var lid []objectid.ID
 	{
@@ -89,6 +116,22 @@ func (h *SystemHandler) Ensure(tas *task.Task, bud *budget.Budget) error {
 	if len(uid) == 0 {
 		tas.Sync.Set(task.Paging, "0")
 		return nil
+	}
+
+	// Search for all rules for all of the given list IDs. The resulting rules
+	// will be grouped together by list ID in order to find out which list should
+	// actually receive the current event notification based on their exclusion
+	// rules.
+	var sli rulestorage.Slicer
+	{
+		sli, err = h.rul.SearchList(lid, rulestorage.PagAll())
+		if err != nil {
+			return tracer.Mask(err)
+		}
+	}
+
+	{
+		uid, lid = slcIDs(uid, lid, filIDs(eob[0], sli))
 	}
 
 	var now time.Time
@@ -147,6 +190,45 @@ func musNum(str string) int64 {
 	return num
 }
 
+func filIDs(eob *eventstorage.Object, sli rulestorage.Slicer) []objectid.ID {
+	var fil []objectid.ID
+
+	for k, v := range sli.List() {
+		var cat []objectid.ID
+		var hos []objectid.ID
+		var use []objectid.ID
+		{
+			cat = eob.Cate
+			hos = eob.Host
+			use = []objectid.ID{eob.User}
+		}
+
+		// Filter out lists that exclude category IDs specified in the given event
+		// object.
+		if generic.Any(cat, v.Fltr().Cate()) {
+			continue
+		}
+
+		// Filter out lists that exclude host IDs specified in the given event
+		// object.
+		if generic.Any(hos, v.Fltr().Host()) {
+			continue
+		}
+
+		// Filter out lists that exclude user IDs specified in the given event
+		// object.
+		if generic.Any(use, v.Fltr().User()) {
+			continue
+		}
+
+		{
+			fil = append(fil, k)
+		}
+	}
+
+	return fil
+}
+
 func objKin(tas *task.Task) (objectid.ID, string, error) {
 	if tas.Meta.Exi(objectlabel.CateObject) {
 		return objectid.ID(tas.Meta.Get(objectlabel.CateObject)), "cate", nil
@@ -161,4 +243,23 @@ func objKin(tas *task.Task) (objectid.ID, string, error) {
 	}
 
 	return "", "", tracer.Maskf(runtime.ExecutionFailedError, "object label must not be empty")
+}
+
+func slcIDs(uid []objectid.ID, lid []objectid.ID, slc []objectid.ID) ([]objectid.ID, []objectid.ID) {
+	var use []objectid.ID
+	var lis []objectid.ID
+
+	for _, x := range slc {
+		var ind int
+		{
+			ind = slices.Index(lid, x)
+		}
+
+		{
+			use = append(use, uid[ind])
+			lis = append(lis, lid[ind])
+		}
+	}
+
+	return use, lis
 }

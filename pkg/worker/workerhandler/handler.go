@@ -110,8 +110,10 @@ func New(c Config) *Handler {
 
 	{
 		han = append(han, notificationcreatehandler.NewSystemHandler(notificationcreatehandler.SystemHandlerConfig{
+			Eve: c.Sto.Evnt(),
 			Log: c.Log,
 			Not: c.Sto.Noti(),
+			Rul: c.Sto.Rule(),
 		}))
 	}
 

@@ -4,12 +4,6 @@ import "github.com/NaoNaoOnline/apiserver/pkg/object/objectid"
 
 type Slicer []*Object
 
-// Fltr returns a slicer implementation to remove certain objects from this
-// list.
-func (s Slicer) Fltr() Filter {
-	return Filter(s)
-}
-
 // Clck returns the cumulative amount of link clicks for the underling list of
 // event objects.
 func (s Slicer) Clck() int64 {

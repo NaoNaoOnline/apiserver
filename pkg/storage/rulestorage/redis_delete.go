@@ -2,6 +2,7 @@ package rulestorage
 
 import (
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectstate"
+	"github.com/NaoNaoOnline/apiserver/pkg/storage/notificationstorage"
 	"github.com/xh3b4sd/tracer"
 )
 
@@ -21,12 +22,31 @@ func (r *Redis) Delete(inp []*Object) ([]objectstate.String, error) {
 			}
 		}
 
-		// Delete the event specific mappings for event specific search queries.
 		if inp[i].Kind == "evnt" {
-			for _, y := range append(inp[i].Incl, inp[i].Excl...) {
-				err = r.red.Sorted().Delete().Score(rulEve(y), inp[i].Rule.Float())
-				if err != nil {
-					return nil, tracer.Mask(err)
+			for _, y := range inp[i].Incl {
+				// Delete the event specific mappings for event specific search queries.
+				{
+					err = r.red.Sorted().Delete().Score(rulEve(y), inp[i].Rule.Float())
+					if err != nil {
+						return nil, tracer.Mask(err)
+					}
+				}
+
+				// Remove the event from the static list.
+				var obj []*notificationstorage.Object
+				{
+					obj = append(obj, &notificationstorage.Object{
+						Evnt: y,
+						List: inp[i].List,
+						User: inp[i].User,
+					})
+				}
+
+				{
+					err = r.not.DeleteNoti(obj)
+					if err != nil {
+						return nil, tracer.Mask(err)
+					}
 				}
 			}
 		}

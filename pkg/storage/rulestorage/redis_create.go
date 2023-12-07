@@ -4,6 +4,7 @@ import (
 	"time"
 
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectid"
+	"github.com/NaoNaoOnline/apiserver/pkg/storage/notificationstorage"
 	"github.com/xh3b4sd/tracer"
 )
 
@@ -88,21 +89,44 @@ func (r *Redis) Create(inp []*Object) ([]*Object, error) {
 			}
 		}
 
-		// Create the event specific mappings for event specific search queries. We
-		// use a sorted set for all the events that a user explicitely added to a
-		// list. This internal data structure is used to cleanup in background
-		// processes. If any event explicitely added to a rule is deleted
-		// eventually, then
-		//
-		//     the event has to be removed from any rule referencing it
-		//     any resulting empty rule has to be deleted
-		//     any deleted rule has to be removed from its list
-		//
 		if inp[i].Kind == "evnt" {
-			for _, y := range append(inp[i].Incl, inp[i].Excl...) {
-				err = r.red.Sorted().Create().Score(rulEve(y), inp[i].Rule.String(), inp[i].Rule.Float())
-				if err != nil {
-					return nil, tracer.Mask(err)
+			for _, y := range inp[i].Incl {
+				// Create the event specific mappings for event specific search queries.
+				// We use a sorted set for all the events that a user explicitely added
+				// to a static list. This internal data structure is used to cleanup in
+				// background processes. If any event explicitely added to a rule is
+				// deleted eventually, then
+				//
+				//     the event has to be removed from any rule referencing it
+				//     any resulting empty rule has to be deleted
+				//     any deleted rule has to be removed from its list
+				//
+				{
+					err = r.red.Sorted().Create().Score(rulEve(y), inp[i].Rule.String(), inp[i].Rule.Float())
+					if err != nil {
+						return nil, tracer.Mask(err)
+					}
+				}
+
+				// Add the event to the static list.
+				var obj []*notificationstorage.Object
+				{
+					obj = append(obj, &notificationstorage.Object{
+						Crtd: now,
+						Evnt: y,
+						Kind: inp[i].Kind,
+						List: inp[i].List,
+						Noti: objectid.Random(objectid.Time(now)),
+						Obct: y,
+						User: inp[i].User,
+					})
+				}
+
+				{
+					err = r.not.CreateNoti(obj)
+					if err != nil {
+						return nil, tracer.Mask(err)
+					}
 				}
 			}
 		}

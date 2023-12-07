@@ -66,10 +66,17 @@ func New(c Config) *Storage {
 			lis: liststorage.NewRedis(liststorage.RedisConfig{Emi: c.Emi.List(), Log: c.Log, Red: c.Red}),
 			not: notificationstorage.NewRedis(notificationstorage.RedisConfig{Log: c.Log, Red: c.Red}),
 			pol: policystorage.NewRedis(policystorage.RedisConfig{Log: c.Log, Red: c.Red}),
-			rul: rulestorage.NewRedis(rulestorage.RedisConfig{Log: c.Log, Red: c.Red}),
 			use: userstorage.NewRedis(userstorage.RedisConfig{Log: c.Log, PSO: pso, Red: c.Red}),
 			wal: walletstorage.NewRedis(walletstorage.RedisConfig{Log: c.Log, Red: c.Red}),
 		}
+	}
+
+	{
+		s.rul = rulestorage.NewRedis(rulestorage.RedisConfig{
+			Log: c.Log,
+			Not: s.not,
+			Red: c.Red,
+		})
 	}
 
 	{

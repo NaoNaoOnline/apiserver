@@ -63,7 +63,7 @@ func (h *CustomHandler) deleteRule(inp objectid.ID, bud *budget.Budget) error {
 
 	var rul []*rulestorage.Object
 	{
-		rul, err = h.rul.SearchList([]objectid.ID{inp})
+		rul, err = h.rul.SearchList([]objectid.ID{inp}, rulestorage.PagAll())
 		if err != nil {
 			return tracer.Mask(err)
 		}
