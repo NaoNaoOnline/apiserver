@@ -16,7 +16,6 @@ type Object struct {
 	// Dltd is the time at which the rule got deleted.
 	Dltd time.Time `json:"dltd,omitempty"`
 	// Excl is the rule's object ID to remove from the associated list, if any.
-	// TODO validate excludes for kind evnt does not make sense
 	Excl []objectid.ID `json:"excl"`
 	// Incl is the rule's object ID to add to the associated list, if any.
 	Incl []objectid.ID `json:"incl"`
