@@ -17,12 +17,13 @@ func (r *Redis) CreateNoti(obj []*Object) error {
 		}
 
 		// The event objects given to us here represent a collection of desired
-		// state. It might happen that an event got already happened to the list
-		// that we are dealing with during any given iteration. In that case we
-		// acknowledge the already exists error and continue with the next
-		// notification object, if any. This is also the reason why the notification
-		// objects are indexed with the event object score. So that we can ensure
-		// unique
+		// state. It might happen that an event got already added to the list that
+		// we are dealing with during any given iteration. In that case we continue
+		// with the next notification object, if any. The existence check is also
+		// the reason why the notification objects are indexed with the event object
+		// score. Because multiple dynamic rules may cause the same event ID to be
+		// added to any given notification feed, read custom list. And we want to
+		// prevent that.
 		{
 			exi, err := r.red.Sorted().Exists().Score(notObj(obj[i].User, obj[i].List), obj[i].Evnt.Float())
 			if err != nil {
