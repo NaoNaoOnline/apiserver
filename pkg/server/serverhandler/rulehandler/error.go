@@ -29,6 +29,11 @@ var ruleDynamicListError = &tracer.Error{
 	Desc: "The request expects dynamic rules to be added to dynamic lists. The rule to be added was found to be static. Therefore the request failed.",
 }
 
+var ruleStaticExclError = &tracer.Error{
+	Kind: "ruleStaticExclError",
+	Desc: "The request expects static rules not to define any excludes. The rule to be added was found to define excludes. Therefore the request failed.",
+}
+
 var ruleStaticListError = &tracer.Error{
 	Kind: "ruleStaticListError",
 	Desc: "The request expects static rules to be added to static lists. The rule to be added was found to be dynamic. Therefore the request failed.",

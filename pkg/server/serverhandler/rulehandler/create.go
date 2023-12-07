@@ -93,6 +93,14 @@ func (h *Handler) createVrfy(ctx context.Context, obj rulestorage.Slicer) error 
 		if !lis[0].Dltd.IsZero() {
 			return tracer.Mask(listDeletedError)
 		}
+
+		// Prevent exludes from being added to static lists. Excluding something
+		// that you add manually does not make any sense. If you want to exclude
+		// something from a static list, then do not add it to that list in the
+		// first place.
+		if x.Kind == "evnt" && len(x.Excl) != 0 {
+			return tracer.Mask(ruleStaticExclError)
+		}
 	}
 
 	for _, x := range obj {
