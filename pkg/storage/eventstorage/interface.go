@@ -5,7 +5,6 @@ import (
 
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectid"
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectstate"
-	"github.com/NaoNaoOnline/apiserver/pkg/storage/rulestorage"
 )
 
 type Interface interface {
@@ -98,11 +97,12 @@ type Interface interface {
 	SearchLabl([]objectid.ID) ([]*Object, error)
 
 	// SearchLike returns the event objects the given user ID reacted to in the
-	// form of description likes.
+	// form of description likes. All event objects can be fetched using
+	// pagination range [0 -1]. The first 10 event objects can be fetched using
+	// pagination range [0 9].
 	//
 	//     @inp[0] the user ID that reacted to events
-	//     @inp[1] the lower inclusive boundary of the pagination range
-	//     @inp[2] the upper inclusive boundary of the pagination range
+	//     @inp[1] the pagination range defining lower and upper inclusive boundaries
 	//     @out[0] the list of event objects the given user ID reacted to
 	//
 	SearchLike(objectid.ID, [2]int) ([]*Object, error)
@@ -115,14 +115,6 @@ type Interface interface {
 	//     @out[0] the list of user IDs that visited the given event ID
 	//
 	SearchLink(objectid.ID) ([]objectid.ID, error)
-
-	// SearchList returns the event objects matching all the criteria specified by
-	// the given rule objects.
-	//
-	//     @inp[0] the rule objects of a certain list
-	//     @out[0] the list of event objects matching all the criteria of the given list
-	//
-	SearchList([]*rulestorage.Object) ([]*Object, error)
 
 	// SearchRule returns the rule IDs that explicitely define the given event ID
 	// in the form of an include or exclude reference. This function is mainly used

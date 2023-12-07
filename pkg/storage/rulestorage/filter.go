@@ -20,20 +20,6 @@ func (f Filter) Cate() []objectid.ID {
 	return cat
 }
 
-// Evnt returns the event IDs to be excluded from the list of events that the
-// given rule set describes.
-func (f Filter) Evnt() []objectid.ID {
-	var cat []objectid.ID
-
-	for _, x := range f {
-		if x.Kind == "evnt" {
-			cat = append(cat, x.Excl...)
-		}
-	}
-
-	return cat
-}
-
 // Host returns the host label IDs to be excluded from the list of events that
 // the given rule set describes.
 func (f Filter) Host() []objectid.ID {
@@ -46,20 +32,6 @@ func (f Filter) Host() []objectid.ID {
 	}
 
 	return hos
-}
-
-// Like returns the user IDs to be excluded from the list of events that the
-// given rule set describes.
-func (f Filter) Like() []objectid.ID {
-	var use []objectid.ID
-
-	for _, x := range f {
-		if x.Kind == "like" {
-			use = append(use, x.Excl...)
-		}
-	}
-
-	return use
 }
 
 // User returns the user IDs to be excluded from the list of events that the

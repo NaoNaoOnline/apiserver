@@ -9,7 +9,7 @@ import (
 	"github.com/xh3b4sd/tracer"
 )
 
-func (r *Redis) SearchList(lis []objectid.ID) ([]*Object, error) {
+func (r *Redis) SearchList(lis []objectid.ID, pag [2]int) ([]*Object, error) {
 	var err error
 
 	var out []*Object
@@ -22,7 +22,7 @@ func (r *Redis) SearchList(lis []objectid.ID) ([]*Object, error) {
 		// if any.
 		var val []string
 		{
-			val, err = r.red.Sorted().Search().Order(rulLis(x), 0, -1)
+			val, err = r.red.Sorted().Search().Order(rulLis(x), pag[0], pag[1])
 			if err != nil {
 				return nil, tracer.Mask(err)
 			}

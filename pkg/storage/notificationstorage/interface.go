@@ -11,6 +11,12 @@ type Interface interface {
 	//
 	CreateNoti([]*Object) error
 
+	// DeleteNoti purges the given notification objects.
+	//
+	//     @inp[0] the notification objects to delete
+	//
+	DeleteNoti([]*Object) error
+
 	// SearchNoti returns the paginated list of notification objects for the given
 	// user / list combination. All notification objects can be fetched using
 	// pagination range [0 -1]. The latest 10 notification objects can be fetched

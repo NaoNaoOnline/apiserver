@@ -40,7 +40,7 @@ func (h *Handler) Search(ctx context.Context, req *rule.SearchI) (*rule.SearchO,
 
 	var out []*rulestorage.Object
 	{
-		lis, err := h.rul.SearchList(ids)
+		lis, err := h.rul.SearchList(ids, rulestorage.PagAll())
 		if err != nil {
 			return nil, tracer.Mask(err)
 		}

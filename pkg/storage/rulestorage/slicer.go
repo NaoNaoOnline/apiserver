@@ -22,6 +22,17 @@ func (s Slicer) Incl() []string {
 	return inc
 }
 
+// List returns all the rule objects grouped by their common list ID.
+func (s Slicer) List() map[objectid.ID]Slicer {
+	dic := map[objectid.ID]Slicer{}
+
+	for _, x := range s {
+		dic[x.List] = append(dic[x.List], x)
+	}
+
+	return dic
+}
+
 // Rule returns all the rule IDs for the underling list of rule objects.
 func (s Slicer) Rule() []objectid.ID {
 	var ids []objectid.ID

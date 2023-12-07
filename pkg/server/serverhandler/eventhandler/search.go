@@ -10,6 +10,7 @@ import (
 	"github.com/NaoNaoOnline/apiserver/pkg/server/context/userid"
 	"github.com/NaoNaoOnline/apiserver/pkg/server/limiter"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/eventstorage"
+	"github.com/NaoNaoOnline/apiserver/pkg/storage/notificationstorage"
 	"github.com/xh3b4sd/tracer"
 )
 
@@ -103,17 +104,28 @@ func (h *Handler) Search(ctx context.Context, req *event.SearchI) (*event.Search
 		}
 
 		if lis != "" {
-			rul, err := h.rul.SearchList([]objectid.ID{lis})
+			var pag [2]int
+			{
+				pag = [2]int{
+					int(musNum(req.Filter.Paging.Strt)),
+					int(musNum(req.Filter.Paging.Stop)),
+				}
+			}
+
+			not, err := h.not.SearchNoti(use, lis, pag)
 			if err != nil {
 				return nil, tracer.Mask(err)
 			}
 
-			eve, err := h.eve.SearchList(rul)
-			if err != nil {
-				return nil, tracer.Mask(err)
+			var eob eventstorage.Slicer
+			{
+				eob, err = h.eve.SearchEvnt("", notificationstorage.Slicer(not).Evnt())
+				if err != nil {
+					return nil, tracer.Mask(err)
+				}
 			}
 
-			out = append(out, eve...)
+			out = append(out, eob...)
 		}
 	}
 

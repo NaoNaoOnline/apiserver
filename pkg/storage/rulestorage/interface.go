@@ -20,12 +20,15 @@ type Interface interface {
 	//
 	Delete([]*Object) ([]objectstate.String, error)
 
-	// SearchList returns the rule objects belonging to the given list IDs.
+	// SearchList returns the rule objects belonging to the given list IDs. All
+	// rule objects can be fetched using pagination range [0 -1]. The first rule
+	// object can be fetched using pagination range [0 0].
 	//
 	//     @inp[0] the list IDs to search rules for
+	//     @inp[1] the pagination range defining lower and upper inclusive boundaries
 	//     @out[0] the list of rule objects belonging to the given list IDs
 	//
-	SearchList([]objectid.ID) ([]*Object, error)
+	SearchList([]objectid.ID, [2]int) ([]*Object, error)
 
 	// SearchRule returns the rule objects matching the given rule IDs.
 	//

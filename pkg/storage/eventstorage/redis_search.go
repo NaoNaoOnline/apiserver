@@ -8,7 +8,6 @@ import (
 	"github.com/NaoNaoOnline/apiserver/pkg/generic"
 	"github.com/NaoNaoOnline/apiserver/pkg/keyfmt"
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectid"
-	"github.com/NaoNaoOnline/apiserver/pkg/storage/rulestorage"
 	"github.com/xh3b4sd/redigo/simple"
 	"github.com/xh3b4sd/tracer"
 )
@@ -201,84 +200,6 @@ func (r *Redis) SearchLink(eve objectid.ID) ([]objectid.ID, error) {
 	}
 
 	return objectid.IDs(val), nil
-}
-
-func (r *Redis) SearchList(rul []*rulestorage.Object) ([]*Object, error) {
-	var err error
-
-	var sli rulestorage.Slicer
-	{
-		sli = rulestorage.Slicer(rul)
-	}
-
-	var inc []string
-	{
-		inc = sli.Incl()
-	}
-
-	// There might not be any rules to begin with, and so we do not proceed, but
-	// instead return nothing. Note that we check for the included items and not
-	// the whole list of rules, because it may be that all rules only defines
-	// excludes. While a list containing only of excludes does not make sense, it
-	// may happen that we face such a situation.
-	if len(inc) == 0 {
-		return nil, nil
-	}
-
-	// val will result in a list of all event IDs to be included in the given
-	// list.
-	var val []string
-	{
-		val, err = r.red.Sorted().Search().Union(inc...)
-		if simple.IsNotFound(err) {
-			return nil, tracer.Maskf(eventObjectNotFoundError, "%v", inc)
-		} else if err != nil {
-			return nil, tracer.Mask(err)
-		}
-	}
-
-	// There might not be any keys, and so we do not proceed, but instead return
-	// nothing.
-	if len(val) == 0 {
-		return nil, nil
-	}
-
-	var out Slicer
-	{
-		out, err = r.SearchEvnt("", generic.Uni(objectid.Frst(val)))
-		if err != nil {
-			return nil, tracer.Mask(err)
-		}
-	}
-
-	// Remove the event objects that match all the rule's exclude definitions.
-	{
-		out = out.Fltr().Cate(sli.Fltr().Cate()...)
-		out = out.Fltr().Evnt(sli.Fltr().Evnt()...)
-		out = out.Fltr().Host(sli.Fltr().Host()...)
-		out = out.Fltr().User(sli.Fltr().User()...)
-	}
-
-	// Remove the event objects that the given user IDs reacted to in the form of
-	// a description like.
-	if len(sli.Fltr().Like()) != 0 {
-		// val will result in a list of all event IDs that the given users reacted
-		// to in the form of a description like.
-		var val []string
-		{
-			val, err = r.red.Sorted().Search().Union(objectid.Fmt(sli.Fltr().Like(), keyfmt.LikeUser)...)
-			if err != nil {
-				return nil, tracer.Mask(err)
-			}
-		}
-
-		// Filter event IDs against event IDs.
-		{
-			out = out.Fltr().Evnt(generic.Uni(objectid.Frst(val))...)
-		}
-	}
-
-	return out, nil
 }
 
 func (r *Redis) SearchRule(eve objectid.ID) ([]objectid.ID, error) {
