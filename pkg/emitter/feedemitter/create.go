@@ -1,4 +1,4 @@
-package notificationemitter
+package feedemitter
 
 import (
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectid"
@@ -13,8 +13,8 @@ func (e *Emitter) Create(eid objectid.ID, oid objectid.ID, kin string) error {
 		tas = &task.Task{
 			Meta: &task.Meta{
 				objectlabel.EvntObject: eid.String(),
-				objectlabel.NotiAction: objectlabel.ActionCreate,
-				objectlabel.NotiOrigin: objectlabel.OriginSystem,
+				objectlabel.FeedAction: objectlabel.ActionCreate,
+				objectlabel.FeedOrigin: objectlabel.OriginSystem,
 			},
 			Sync: &task.Sync{
 				task.Paging: "0",

@@ -82,6 +82,42 @@ const (
 	//
 	EventUser = "eve/use/%s"
 
+	// FeedCategory is used to store all the IDs of users who want feeds about
+	// events created matching a certain category label.
+	//
+	//     category ID                   user IDs
+	//                             ->
+	//     fee/eve/kin/cat/5678          1234,5678
+	//
+	FeedCategory = "fee/eve/kin/cat/%s"
+
+	// FeedHost is used to store all the IDs of users who want feeds about events
+	// created matching a certain host label.
+	//
+	//     host ID                       user IDs
+	//                             ->
+	//     fee/eve/kin/hos/5678          1234,5678
+	//
+	FeedHost = "fee/eve/kin/hos/%s"
+
+	// FeedUser is used to store all the IDs of users who want feeds about events
+	// created by certain users.
+	//
+	//     user ID                       user IDs
+	//                             ->
+	//     fee/eve/kin/use/5678          1234,5678
+	//
+	FeedUser = "fee/eve/kin/use/%s"
+
+	// FeedObject is used to store all of our internal representations of feed
+	// objects scoped to a specific user / list combination.
+	//
+	//     user ID / list ID                  feed objects
+	//                                  ->
+	//     fee/use/1234/lis/5678/obj          {"key": "val"},{"key": "val"}
+	//
+	FeedObject = "fee/use/%s/lis/%s/obj"
+
 	// LabelSystem is used to store all the IDs of system labels.
 	//
 	//     kind system            label IDs
@@ -193,42 +229,6 @@ const (
 	//     lis/use/5678          1234,5678
 	//
 	ListUser = "lis/use/%s"
-
-	// NotificationCategory is used to store all the IDs of users who want
-	// notifications about events created matching a certain category label.
-	//
-	//     category ID                   user IDs
-	//                             ->
-	//     not/eve/kin/cat/5678          1234,5678
-	//
-	NotificationCategory = "not/eve/kin/cat/%s"
-
-	// NotificationHost is used to store all the IDs of users who want
-	// notifications about events created matching a certain host label.
-	//
-	//     host ID                       user IDs
-	//                             ->
-	//     not/eve/kin/hos/5678          1234,5678
-	//
-	NotificationHost = "not/eve/kin/hos/%s"
-
-	// NotificationUser is used to store all the IDs of users who want
-	// notifications about events created by certain users.
-	//
-	//     user ID                       user IDs
-	//                             ->
-	//     not/eve/kin/use/5678          1234,5678
-	//
-	NotificationUser = "not/eve/kin/use/%s"
-
-	// NotificationObject is used to store all of our internal representations of
-	// notification objects scoped to a specific user / list combination.
-	//
-	//     user ID / list ID                  notification objects
-	//                                  ->
-	//     not/use/1234/lis/5678/obj          {"key": "val"},{"key": "val"}
-	//
-	NotificationObject = "not/use/%s/lis/%s/obj"
 
 	// PolicyBuffer is used to store all chain specific policy records
 	// intermittendly in a sorted set. The values here are policy records. The

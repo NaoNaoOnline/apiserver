@@ -51,7 +51,7 @@ func lisUse(use objectid.ID) string {
 }
 
 func notObj(uid objectid.ID, lid objectid.ID) string {
-	return fmt.Sprintf(keyfmt.NotificationObject, uid, lid)
+	return fmt.Sprintf(keyfmt.FeedObject, uid, lid)
 }
 
 func musByt(pat []*Patch) []byte {

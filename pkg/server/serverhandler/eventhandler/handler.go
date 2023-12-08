@@ -9,7 +9,7 @@ import (
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectid"
 	"github.com/NaoNaoOnline/apiserver/pkg/permission"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/eventstorage"
-	"github.com/NaoNaoOnline/apiserver/pkg/storage/notificationstorage"
+	"github.com/NaoNaoOnline/apiserver/pkg/storage/feedstorage"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/rulestorage"
 	"github.com/xh3b4sd/logger"
 	"github.com/xh3b4sd/tracer"
@@ -17,16 +17,16 @@ import (
 
 type HandlerConfig struct {
 	Eve eventstorage.Interface
+	Fee feedstorage.Interface
 	Log logger.Interface
-	Not notificationstorage.Interface
 	Prm permission.Interface
 	Rul rulestorage.Interface
 }
 
 type Handler struct {
 	eve eventstorage.Interface
+	fee feedstorage.Interface
 	log logger.Interface
-	not notificationstorage.Interface
 	prm permission.Interface
 	rul rulestorage.Interface
 }
@@ -35,11 +35,11 @@ func NewHandler(c HandlerConfig) *Handler {
 	if c.Eve == nil {
 		tracer.Panic(tracer.Mask(fmt.Errorf("%T.Eve must not be empty", c)))
 	}
+	if c.Fee == nil {
+		tracer.Panic(tracer.Mask(fmt.Errorf("%T.Fee must not be empty", c)))
+	}
 	if c.Log == nil {
 		tracer.Panic(tracer.Mask(fmt.Errorf("%T.Log must not be empty", c)))
-	}
-	if c.Not == nil {
-		tracer.Panic(tracer.Mask(fmt.Errorf("%T.Not must not be empty", c)))
 	}
 	if c.Prm == nil {
 		tracer.Panic(tracer.Mask(fmt.Errorf("%T.Prm must not be empty", c)))
@@ -50,8 +50,8 @@ func NewHandler(c HandlerConfig) *Handler {
 
 	return &Handler{
 		eve: c.Eve,
+		fee: c.Fee,
 		log: c.Log,
-		not: c.Not,
 		prm: c.Prm,
 		rul: c.Rul,
 	}

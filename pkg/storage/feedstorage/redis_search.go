@@ -1,4 +1,4 @@
-package notificationstorage
+package feedstorage
 
 import (
 	"encoding/json"
@@ -8,11 +8,11 @@ import (
 	"github.com/xh3b4sd/tracer"
 )
 
-func (r *Redis) SearchNoti(uid objectid.ID, lid objectid.ID, pag [2]int) ([]*Object, error) {
+func (r *Redis) SearchFeed(uid objectid.ID, lid objectid.ID, pag [2]int) ([]*Object, error) {
 	var err error
 
-	// val will result in a list of all notification objects recorded to notifiy
-	// the given user ID, if any.
+	// val will result in a list of all feed objects recorded to notifiy the given
+	// user ID, if any.
 	var jsn []string
 	{
 		jsn, err = r.red.Sorted().Search().Order(notObj(uid, lid), pag[0], pag[1])
@@ -46,8 +46,8 @@ func (r *Redis) SearchNoti(uid objectid.ID, lid objectid.ID, pag [2]int) ([]*Obj
 func (r *Redis) SearchUser(kin string, oid objectid.ID, pag [2]int) ([]objectid.ID, []objectid.ID, error) {
 	var err error
 
-	// val will result in a list of all user IDs opted-in to receive notifications
-	// for the given resource kind/ID combination, if any.
+	// val will result in a list of all user IDs opted-in to receive feeds for the
+	// given resource kind/ID combination, if any.
 	var val []string
 	{
 		val, err = r.red.Sorted().Search().Order(notKin(kin, oid), pag[0], pag[1])

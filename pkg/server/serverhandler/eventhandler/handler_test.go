@@ -8,7 +8,7 @@ import (
 	"github.com/NaoNaoOnline/apiserver/pkg/permission"
 	"github.com/NaoNaoOnline/apiserver/pkg/server/context/userid"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/eventstorage"
-	"github.com/NaoNaoOnline/apiserver/pkg/storage/notificationstorage"
+	"github.com/NaoNaoOnline/apiserver/pkg/storage/feedstorage"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/rulestorage"
 	fuzz "github.com/google/gofuzz"
 	"github.com/xh3b4sd/logger"
@@ -25,7 +25,7 @@ func tesHan() event.API {
 		han: NewHandler(HandlerConfig{
 			Eve: eventstorage.Fake(),
 			Log: logger.Fake(),
-			Not: notificationstorage.Fake(),
+			Fee: feedstorage.Fake(),
 			Prm: permission.Fake(),
 			Rul: rulestorage.Fake(),
 		}),

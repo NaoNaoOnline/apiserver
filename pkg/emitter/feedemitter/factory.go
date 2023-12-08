@@ -1,4 +1,4 @@
-package notificationemitter
+package feedemitter
 
 import (
 	"github.com/xh3b4sd/logger"

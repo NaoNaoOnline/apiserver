@@ -2,7 +2,7 @@ package rulestorage
 
 import (
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectstate"
-	"github.com/NaoNaoOnline/apiserver/pkg/storage/notificationstorage"
+	"github.com/NaoNaoOnline/apiserver/pkg/storage/feedstorage"
 	"github.com/xh3b4sd/tracer"
 )
 
@@ -11,8 +11,8 @@ func (r *Redis) Delete(inp []*Object) ([]objectstate.String, error) {
 
 	var out []objectstate.String
 	for i := range inp {
-		// Remove the rule owner from the notification feed for the resources
-		// specified by the given rules.
+		// Remove the rule owner from the feed for the resources specified by the
+		// given rules.
 		if inp[i].Kind == "cate" || inp[i].Kind == "host" || inp[i].Kind == "user" {
 			for _, y := range inp[i].Incl {
 				err = r.red.Sorted().Delete().Score(notKin(inp[i].Kind, y), inp[i].User.Float())
@@ -33,9 +33,9 @@ func (r *Redis) Delete(inp []*Object) ([]objectstate.String, error) {
 				}
 
 				// Remove the event from the static list.
-				var obj []*notificationstorage.Object
+				var obj []*feedstorage.Object
 				{
-					obj = append(obj, &notificationstorage.Object{
+					obj = append(obj, &feedstorage.Object{
 						Evnt: y,
 						List: inp[i].List,
 						User: inp[i].User,
@@ -43,7 +43,7 @@ func (r *Redis) Delete(inp []*Object) ([]objectstate.String, error) {
 				}
 
 				{
-					err = r.not.DeleteNoti(obj)
+					err = r.fee.DeleteFeed(obj)
 					if err != nil {
 						return nil, tracer.Mask(err)
 					}

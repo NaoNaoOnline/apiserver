@@ -22,8 +22,8 @@ func (r *Redis) DeleteList(inp []*Object) ([]objectstate.String, error) {
 
 		// Since the deletion process starts with the normalized key-value pair in
 		// the handler, we delete it as the very last step, so the operation can
-		// eventually be retried. Note that we also delete the per list notification
-		// feed when the respective list is being deleted.
+		// eventually be retried. Note that we also delete the per list feed when
+		// the respective list is being deleted.
 		{
 			obj := lisObj(inp[i].List)
 			not := notObj(inp[i].User, inp[i].List)

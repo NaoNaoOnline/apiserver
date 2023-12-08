@@ -35,21 +35,21 @@ func (h *SystemHandler) Ensure(tas *task.Task, bud *budget.Budget) error {
 	}
 
 	for _, x := range append(eob[0].Bltn, eob[0].Cate...) {
-		err = h.emi.Noti().Create(eid, x, "cate")
+		err = h.emi.Feed().Create(eid, x, "cate")
 		if err != nil {
 			return tracer.Mask(err)
 		}
 	}
 
 	for _, x := range eob[0].Host {
-		err = h.emi.Noti().Create(eid, x, "host")
+		err = h.emi.Feed().Create(eid, x, "host")
 		if err != nil {
 			return tracer.Mask(err)
 		}
 	}
 
 	{
-		err = h.emi.Noti().Create(eid, eob[0].User, "user")
+		err = h.emi.Feed().Create(eid, eob[0].User, "user")
 		if err != nil {
 			return tracer.Mask(err)
 		}

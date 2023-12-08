@@ -1,4 +1,4 @@
-package notificationcreatehandler
+package feedcreatehandler
 
 import (
 	"fmt"
@@ -11,7 +11,7 @@ import (
 	"github.com/google/go-cmp/cmp"
 )
 
-func Test_Worker_Handler_Notification_filIDs(t *testing.T) {
+func Test_Worker_Handler_Feed_filIDs(t *testing.T) {
 	testCases := []struct {
 		eob *eventstorage.Object
 		sli rulestorage.Slicer
@@ -244,7 +244,7 @@ func Test_Worker_Handler_Notification_filIDs(t *testing.T) {
 	}
 }
 
-func Test_Worker_Handler_Notification_slcIDs(t *testing.T) {
+func Test_Worker_Handler_Feed_slcIDs(t *testing.T) {
 	testCases := []struct {
 		uid []objectid.ID
 		lid []objectid.ID

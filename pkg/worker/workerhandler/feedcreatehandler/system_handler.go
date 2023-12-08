@@ -1,10 +1,10 @@
-package notificationcreatehandler
+package feedcreatehandler
 
 import (
 	"fmt"
 
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/eventstorage"
-	"github.com/NaoNaoOnline/apiserver/pkg/storage/notificationstorage"
+	"github.com/NaoNaoOnline/apiserver/pkg/storage/feedstorage"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/rulestorage"
 	"github.com/xh3b4sd/logger"
 	"github.com/xh3b4sd/tracer"
@@ -12,15 +12,15 @@ import (
 
 type SystemHandlerConfig struct {
 	Eve eventstorage.Interface
+	Fee feedstorage.Interface
 	Log logger.Interface
-	Not notificationstorage.Interface
 	Rul rulestorage.Interface
 }
 
 type SystemHandler struct {
 	eve eventstorage.Interface
+	fee feedstorage.Interface
 	log logger.Interface
-	not notificationstorage.Interface
 	rul rulestorage.Interface
 }
 
@@ -28,11 +28,11 @@ func NewSystemHandler(c SystemHandlerConfig) *SystemHandler {
 	if c.Eve == nil {
 		tracer.Panic(tracer.Mask(fmt.Errorf("%T.Eve must not be empty", c)))
 	}
+	if c.Fee == nil {
+		tracer.Panic(tracer.Mask(fmt.Errorf("%T.Fee must not be empty", c)))
+	}
 	if c.Log == nil {
 		tracer.Panic(tracer.Mask(fmt.Errorf("%T.Log must not be empty", c)))
-	}
-	if c.Not == nil {
-		tracer.Panic(tracer.Mask(fmt.Errorf("%T.Not must not be empty", c)))
 	}
 	if c.Rul == nil {
 		tracer.Panic(tracer.Mask(fmt.Errorf("%T.Rul must not be empty", c)))
@@ -40,8 +40,8 @@ func NewSystemHandler(c SystemHandlerConfig) *SystemHandler {
 
 	return &SystemHandler{
 		eve: c.Eve,
+		fee: c.Fee,
 		log: c.Log,
-		not: c.Not,
 		rul: c.Rul,
 	}
 }

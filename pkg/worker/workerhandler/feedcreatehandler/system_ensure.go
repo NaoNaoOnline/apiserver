@@ -1,4 +1,4 @@
-package notificationcreatehandler
+package feedcreatehandler
 
 import (
 	"context"
@@ -12,7 +12,7 @@ import (
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectlabel"
 	"github.com/NaoNaoOnline/apiserver/pkg/runtime"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/eventstorage"
-	"github.com/NaoNaoOnline/apiserver/pkg/storage/notificationstorage"
+	"github.com/NaoNaoOnline/apiserver/pkg/storage/feedstorage"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/rulestorage"
 	"github.com/NaoNaoOnline/apiserver/pkg/worker/budget"
 	"github.com/xh3b4sd/rescue/task"
@@ -34,8 +34,8 @@ func (h *SystemHandler) Ensure(tas *task.Task, bud *budget.Budget) error {
 	}
 
 	// Fetch the event object that got created and for which we want to process
-	// all relevant notifications. If the relevant event has been deleted
-	// intermittendly, we stop processing here.
+	// all relevant feeds. If the relevant event has been deleted intermittendly,
+	// we stop processing here.
 	var eob []*eventstorage.Object
 	{
 		eob, err = h.eve.SearchEvnt("", []objectid.ID{eid})
@@ -102,7 +102,7 @@ func (h *SystemHandler) Ensure(tas *task.Task, bud *budget.Budget) error {
 	var uid []objectid.ID
 	var lid []objectid.ID
 	{
-		uid, lid, err = h.not.SearchUser(kin, oid, pag)
+		uid, lid, err = h.fee.SearchUser(kin, oid, pag)
 		if err != nil {
 			return tracer.Mask(err)
 		}
@@ -120,8 +120,7 @@ func (h *SystemHandler) Ensure(tas *task.Task, bud *budget.Budget) error {
 
 	// Search for all rules for all of the given list IDs. The resulting rules
 	// will be grouped together by list ID in order to find out which list should
-	// actually receive the current event notification based on their exclusion
-	// rules.
+	// actually receive the current event feed based on their exclusion rules.
 	var sli rulestorage.Slicer
 	{
 		sli, err = h.rul.SearchList(lid, rulestorage.PagAll())
@@ -144,21 +143,21 @@ func (h *SystemHandler) Ensure(tas *task.Task, bud *budget.Budget) error {
 		nid = objectid.Random(objectid.Time(now))
 	}
 
-	var obj []*notificationstorage.Object
+	var obj []*feedstorage.Object
 	for i := range uid {
-		obj = append(obj, &notificationstorage.Object{
+		obj = append(obj, &feedstorage.Object{
 			Crtd: now,
 			Evnt: eid,
+			Feed: nid,
 			Kind: kin,
 			List: lid[i],
-			Noti: nid,
 			Obct: oid,
 			User: uid[i],
 		})
 	}
 
 	{
-		err = h.not.CreateNoti(obj)
+		err = h.fee.CreateFeed(obj)
 		if err != nil {
 			return tracer.Mask(err)
 		}

@@ -6,7 +6,7 @@ import (
 
 var createKindInvalidError = &tracer.Error{
 	Kind: "createKindInvalidError",
-	Desc: "The request expects the rule kind to be one of [cate evnt host like user]. The rule kind was not found to be one of [cate evnt host like user]. Therefore the request failed.",
+	Desc: "The request expects the rule kind to be one of [cate evnt host user]. The rule kind was not found to be one of [cate evnt host user]. Therefore the request failed.",
 }
 
 var listDeletedError = &tracer.Error{

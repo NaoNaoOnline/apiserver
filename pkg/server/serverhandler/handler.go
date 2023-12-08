@@ -63,8 +63,8 @@ func New(c Config) *Handler {
 	{
 		han = append(han, eventhandler.NewHandler(eventhandler.HandlerConfig{
 			Eve: c.Sto.Evnt(),
+			Fee: c.Sto.Feed(),
 			Log: c.Log,
-			Not: c.Sto.Noti(),
 			Prm: c.Prm,
 			Rul: c.Sto.Rule(),
 		}))
