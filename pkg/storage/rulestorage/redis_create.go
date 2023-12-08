@@ -4,7 +4,7 @@ import (
 	"time"
 
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectid"
-	"github.com/NaoNaoOnline/apiserver/pkg/storage/notificationstorage"
+	"github.com/NaoNaoOnline/apiserver/pkg/storage/feedstorage"
 	"github.com/xh3b4sd/tracer"
 )
 
@@ -109,21 +109,21 @@ func (r *Redis) Create(inp []*Object) ([]*Object, error) {
 				}
 
 				// Add the event to the static list.
-				var obj []*notificationstorage.Object
+				var obj []*feedstorage.Object
 				{
-					obj = append(obj, &notificationstorage.Object{
+					obj = append(obj, &feedstorage.Object{
 						Crtd: now,
 						Evnt: y,
+						Feed: objectid.Random(objectid.Time(now)),
 						Kind: inp[i].Kind,
 						List: inp[i].List,
-						Noti: objectid.Random(objectid.Time(now)),
 						Obct: y,
 						User: inp[i].User,
 					})
 				}
 
 				{
-					err = r.not.CreateNoti(obj)
+					err = r.fee.CreateFeed(obj)
 					if err != nil {
 						return nil, tracer.Mask(err)
 					}
@@ -131,8 +131,8 @@ func (r *Redis) Create(inp []*Object) ([]*Object, error) {
 			}
 		}
 
-		// Add the rule owner to the notification feed for the resources specified
-		// by the given rules.
+		// Add the rule owner to the feed for the resources specified by the given
+		// rules.
 		if inp[i].Kind == "cate" || inp[i].Kind == "host" || inp[i].Kind == "user" {
 			for _, y := range inp[i].Incl {
 				err = r.red.Sorted().Create().Score(notKin(inp[i].Kind, y), objectid.Pair(inp[i].User, inp[i].List), inp[i].User.Float())

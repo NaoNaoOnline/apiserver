@@ -1,4 +1,4 @@
-package notificationemitter
+package feedemitter
 
 import "github.com/NaoNaoOnline/apiserver/pkg/object/objectid"
 

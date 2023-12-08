@@ -10,7 +10,7 @@ import (
 	"github.com/NaoNaoOnline/apiserver/pkg/server/context/userid"
 	"github.com/NaoNaoOnline/apiserver/pkg/server/limiter"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/eventstorage"
-	"github.com/NaoNaoOnline/apiserver/pkg/storage/notificationstorage"
+	"github.com/NaoNaoOnline/apiserver/pkg/storage/feedstorage"
 	"github.com/xh3b4sd/tracer"
 )
 
@@ -112,20 +112,23 @@ func (h *Handler) Search(ctx context.Context, req *event.SearchI) (*event.Search
 				}
 			}
 
-			not, err := h.not.SearchNoti(use, lis, pag)
+			// TODO restrict feed length for non-premium users
+			not, err := h.fee.SearchFeed(use, lis, pag)
 			if err != nil {
 				return nil, tracer.Mask(err)
 			}
 
-			var eob eventstorage.Slicer
-			{
-				eob, err = h.eve.SearchEvnt("", notificationstorage.Slicer(not).Evnt())
-				if err != nil {
-					return nil, tracer.Mask(err)
+			if len(not) != 0 {
+				var eob eventstorage.Slicer
+				{
+					eob, err = h.eve.SearchEvnt("", feedstorage.Slicer(not).Evnt())
+					if err != nil {
+						return nil, tracer.Mask(err)
+					}
 				}
-			}
 
-			out = append(out, eob...)
+				out = append(out, eob...)
+			}
 		}
 	}
 

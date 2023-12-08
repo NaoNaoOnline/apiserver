@@ -1,4 +1,4 @@
-package notificationstorage
+package feedstorage
 
 import (
 	"encoding/json"
@@ -37,22 +37,22 @@ func NewRedis(c RedisConfig) *Redis {
 
 func notKin(kin string, oid objectid.ID) string {
 	if kin == "cate" {
-		return fmt.Sprintf(keyfmt.NotificationCategory, oid)
+		return fmt.Sprintf(keyfmt.FeedCategory, oid)
 	}
 
 	if kin == "host" {
-		return fmt.Sprintf(keyfmt.NotificationHost, oid)
+		return fmt.Sprintf(keyfmt.FeedHost, oid)
 	}
 
 	if kin == "user" {
-		return fmt.Sprintf(keyfmt.NotificationUser, oid)
+		return fmt.Sprintf(keyfmt.FeedUser, oid)
 	}
 
 	panic(fmt.Sprintf("kin must be cate, host or user, got %s", kin))
 }
 
 func notObj(uid objectid.ID, lid objectid.ID) string {
-	return fmt.Sprintf(keyfmt.NotificationObject, uid, lid)
+	return fmt.Sprintf(keyfmt.FeedObject, uid, lid)
 }
 
 func musStr(obj *Object) string {

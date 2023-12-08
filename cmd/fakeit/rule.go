@@ -91,33 +91,8 @@ func (r *run) randomRule(sto *storage.Storage, fak *gofakeit.Faker) *rulestorage
 		kin = fak.RandomString([]string{
 			"cate",
 			"host",
-			"like",
 			"user",
 		})
-	}
-
-	var exc []objectid.ID
-	var inc []objectid.ID
-	if fak.Number(0, 9) == 0 {
-		if kin == "cate" || kin == "host" {
-			exc = use.User()
-			inc = use.User()
-		}
-
-		if kin == "like" || kin == "user" {
-			exc = lab.Labl()
-			inc = lab.Labl()
-		}
-	} else {
-		if kin == "cate" || kin == "host" {
-			exc = lab.Labl()
-			inc = lab.Labl()
-		}
-
-		if kin == "like" || kin == "user" {
-			exc = use.User()
-			inc = use.User()
-		}
 	}
 
 	var min func() int
@@ -140,11 +115,39 @@ func (r *run) randomRule(sto *storage.Storage, fak *gofakeit.Faker) *rulestorage
 		}
 	}
 
+	var exc []objectid.ID
+	var inc []objectid.ID
+	{
+		if kin == "cate" || kin == "host" {
+			if fak.Number(0, 9) == 0 {
+				exc = lab.Labl()
+			} else {
+				inc = lab.Labl()
+			}
+		}
+
+		if kin == "user" {
+			if fak.Number(0, 9) == 0 {
+				exc = use.User()
+			} else {
+				inc = use.User()
+			}
+		}
+
+		if len(exc) != 0 {
+			exc = exc[min():max()]
+		}
+
+		if len(inc) != 0 {
+			inc = inc[min():max()]
+		}
+	}
+
 	var obj *rulestorage.Object
 	{
 		obj = &rulestorage.Object{
-			Excl: exc[min():max()],
-			Incl: inc[min():max()],
+			Excl: exc,
+			Incl: inc,
 			Kind: kin,
 			List: lid,
 			User: uid,

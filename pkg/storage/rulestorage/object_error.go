@@ -22,7 +22,7 @@ func IsResourceIDEmpty(err error) bool {
 
 var ruleKindInvalidError = &tracer.Error{
 	Kind: "ruleKindInvalidError",
-	Desc: "The request expects the rule kind to be one of [cate evnt host user]. The rule kind was not found to be one of [cate evnt host like user]. Therefore the request failed.",
+	Desc: "The request expects the rule kind to be one of [cate evnt host user]. The rule kind was not found to be one of [cate evnt host user]. Therefore the request failed.",
 }
 
 var ruleListEmptyError = &tracer.Error{

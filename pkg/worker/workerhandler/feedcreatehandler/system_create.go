@@ -1,4 +1,4 @@
-package notificationcreatehandler
+package feedcreatehandler
 
 import (
 	"github.com/xh3b4sd/rescue/task"

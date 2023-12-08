@@ -10,8 +10,8 @@ import (
 	"github.com/NaoNaoOnline/apiserver/pkg/worker/workerhandler/descriptiondeletehandler"
 	"github.com/NaoNaoOnline/apiserver/pkg/worker/workerhandler/eventcreatehandler"
 	"github.com/NaoNaoOnline/apiserver/pkg/worker/workerhandler/eventdeletehandler"
+	"github.com/NaoNaoOnline/apiserver/pkg/worker/workerhandler/feedcreatehandler"
 	"github.com/NaoNaoOnline/apiserver/pkg/worker/workerhandler/listdeletehandler"
-	"github.com/NaoNaoOnline/apiserver/pkg/worker/workerhandler/notificationcreatehandler"
 	"github.com/NaoNaoOnline/apiserver/pkg/worker/workerhandler/policybufferhandler"
 	"github.com/NaoNaoOnline/apiserver/pkg/worker/workerhandler/policyscrapehandler"
 	"github.com/NaoNaoOnline/apiserver/pkg/worker/workerhandler/policyupdatehandler"
@@ -101,18 +101,18 @@ func New(c Config) *Handler {
 	}
 
 	{
-		han = append(han, listdeletehandler.NewCustomHandler(listdeletehandler.CustomHandlerConfig{
-			Lis: c.Sto.List(),
+		han = append(han, feedcreatehandler.NewSystemHandler(feedcreatehandler.SystemHandlerConfig{
+			Eve: c.Sto.Evnt(),
+			Fee: c.Sto.Feed(),
 			Log: c.Log,
 			Rul: c.Sto.Rule(),
 		}))
 	}
 
 	{
-		han = append(han, notificationcreatehandler.NewSystemHandler(notificationcreatehandler.SystemHandlerConfig{
-			Eve: c.Sto.Evnt(),
+		han = append(han, listdeletehandler.NewCustomHandler(listdeletehandler.CustomHandlerConfig{
+			Lis: c.Sto.List(),
 			Log: c.Log,
-			Not: c.Sto.Noti(),
 			Rul: c.Sto.Rule(),
 		}))
 	}

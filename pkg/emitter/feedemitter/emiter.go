@@ -1,4 +1,4 @@
-package notificationemitter
+package feedemitter
 
 import (
 	"fmt"

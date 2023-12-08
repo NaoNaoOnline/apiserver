@@ -1,4 +1,4 @@
-package notificationstorage
+package feedstorage
 
 import (
 	"github.com/xh3b4sd/logger"

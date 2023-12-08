@@ -1,4 +1,4 @@
-package notificationstorage
+package feedstorage
 
 import "github.com/NaoNaoOnline/apiserver/pkg/object/objectid"
 
@@ -14,11 +14,11 @@ func (s Slicer) Evnt() []objectid.ID {
 	return ids
 }
 
-func (s Slicer) Noti() []objectid.ID {
+func (s Slicer) Feed() []objectid.ID {
 	var ids []objectid.ID
 
 	for _, x := range s {
-		ids = append(ids, x.Noti)
+		ids = append(ids, x.Feed)
 	}
 
 	return ids
