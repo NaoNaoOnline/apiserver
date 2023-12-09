@@ -1,6 +1,7 @@
 package eventdeletehandler
 
 import (
+	"github.com/NaoNaoOnline/apiserver/pkg/feed"
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectid"
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectlabel"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/descriptionstorage"
@@ -21,14 +22,14 @@ import (
 func (h *CustomHandler) Ensure(tas *task.Task, bud *budget.Budget) error {
 	var err error
 
-	var eve objectid.ID
+	var eid objectid.ID
 	{
-		eve = objectid.ID(tas.Meta.Get(objectlabel.EvntObject))
+		eid = objectid.ID(tas.Meta.Get(objectlabel.EvntObject))
 	}
 
 	var des []*descriptionstorage.Object
 	{
-		des, err = h.des.SearchEvnt("", []objectid.ID{eve})
+		des, err = h.des.SearchEvnt("", []objectid.ID{eid})
 		if err != nil {
 			return tracer.Mask(err)
 		}
@@ -36,7 +37,7 @@ func (h *CustomHandler) Ensure(tas *task.Task, bud *budget.Budget) error {
 
 	for _, x := range des {
 		{
-			err := h.deleteLike(x.Desc, bud)
+			err = h.deleteLike(x.Desc, bud)
 			if err != nil {
 				return tracer.Mask(err)
 			}
@@ -47,7 +48,7 @@ func (h *CustomHandler) Ensure(tas *task.Task, bud *budget.Budget) error {
 		}
 
 		{
-			err := h.deleteDesc(x.Desc, bud)
+			err = h.deleteDesc(x.Desc, bud)
 			if err != nil {
 				return tracer.Mask(err)
 			}
@@ -59,7 +60,7 @@ func (h *CustomHandler) Ensure(tas *task.Task, bud *budget.Budget) error {
 	}
 
 	{
-		err := h.deleteRule(eve, bud)
+		err = h.deleteRule(eid, bud)
 		if err != nil {
 			return tracer.Mask(err)
 		}
@@ -70,7 +71,7 @@ func (h *CustomHandler) Ensure(tas *task.Task, bud *budget.Budget) error {
 	}
 
 	{
-		err := h.deleteLink(eve, bud)
+		err = h.deleteLink(eid, bud)
 		if err != nil {
 			return tracer.Mask(err)
 		}
@@ -80,10 +81,44 @@ func (h *CustomHandler) Ensure(tas *task.Task, bud *budget.Budget) error {
 		}
 	}
 
+	var eob []*eventstorage.Object
 	{
-		err := h.deleteEvnt(eve, bud)
+		eob, err = h.eve.SearchEvnt("", []objectid.ID{eid})
 		if err != nil {
 			return tracer.Mask(err)
+		}
+	}
+
+	var lid []objectid.ID
+	{
+		lid, err = h.fee.SearchList(eob[0].Evnt, feed.PagAll())
+		if err != nil {
+			return tracer.Mask(err)
+		}
+	}
+
+	{
+		err = h.fee.DeleteEvnt(eob[0])
+		if err != nil {
+			return tracer.Mask(err)
+		}
+	}
+
+	for _, x := range lid {
+		err = h.fee.CreateFeed(x)
+		if err != nil {
+			return tracer.Mask(err)
+		}
+	}
+
+	{
+		_, err = h.eve.DeleteEvnt(eob[:bud.Claim(len(eob))])
+		if err != nil {
+			return tracer.Mask(err)
+		}
+
+		if bud.Break() {
+			return nil
 		}
 	}
 
@@ -103,27 +138,6 @@ func (h *CustomHandler) deleteDesc(inp objectid.ID, bud *budget.Budget) error {
 
 	{
 		_, err := h.des.DeleteDesc(des[:bud.Claim(len(des))])
-		if err != nil {
-			return tracer.Mask(err)
-		}
-	}
-
-	return nil
-}
-
-func (h *CustomHandler) deleteEvnt(inp objectid.ID, bud *budget.Budget) error {
-	var err error
-
-	var eve []*eventstorage.Object
-	{
-		eve, err = h.eve.SearchEvnt("", []objectid.ID{inp})
-		if err != nil {
-			return tracer.Mask(err)
-		}
-	}
-
-	{
-		_, err := h.eve.DeleteEvnt(eve[:bud.Claim(len(eve))])
 		if err != nil {
 			return tracer.Mask(err)
 		}
@@ -218,7 +232,7 @@ func (h *CustomHandler) deleteRule(inp objectid.ID, bud *budget.Budget) error {
 	// If there are rules that are empty after we cleaned them up, then delete
 	// those rule objects from storage.
 	if len(del) != 0 {
-		_, err = h.rul.Delete(del)
+		_, err = h.rul.DeleteRule(del)
 		if err != nil {
 			return tracer.Mask(err)
 		}

@@ -6,10 +6,10 @@ import (
 	"strings"
 	"time"
 
+	"github.com/NaoNaoOnline/apiserver/pkg/feed"
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectid"
 	"github.com/NaoNaoOnline/apiserver/pkg/permission"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/eventstorage"
-	"github.com/NaoNaoOnline/apiserver/pkg/storage/feedstorage"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/rulestorage"
 	"github.com/xh3b4sd/logger"
 	"github.com/xh3b4sd/tracer"
@@ -17,7 +17,7 @@ import (
 
 type HandlerConfig struct {
 	Eve eventstorage.Interface
-	Fee feedstorage.Interface
+	Fee feed.Interface
 	Log logger.Interface
 	Prm permission.Interface
 	Rul rulestorage.Interface
@@ -25,7 +25,7 @@ type HandlerConfig struct {
 
 type Handler struct {
 	eve eventstorage.Interface
-	fee feedstorage.Interface
+	fee feed.Interface
 	log logger.Interface
 	prm permission.Interface
 	rul rulestorage.Interface

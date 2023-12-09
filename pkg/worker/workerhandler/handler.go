@@ -4,17 +4,19 @@ import (
 	"fmt"
 
 	"github.com/NaoNaoOnline/apiserver/pkg/emitter"
+	"github.com/NaoNaoOnline/apiserver/pkg/feed"
 	"github.com/NaoNaoOnline/apiserver/pkg/permission"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage"
 	"github.com/NaoNaoOnline/apiserver/pkg/worker/client/twitterclient"
 	"github.com/NaoNaoOnline/apiserver/pkg/worker/workerhandler/descriptiondeletehandler"
 	"github.com/NaoNaoOnline/apiserver/pkg/worker/workerhandler/eventcreatehandler"
 	"github.com/NaoNaoOnline/apiserver/pkg/worker/workerhandler/eventdeletehandler"
-	"github.com/NaoNaoOnline/apiserver/pkg/worker/workerhandler/feedcreatehandler"
 	"github.com/NaoNaoOnline/apiserver/pkg/worker/workerhandler/listdeletehandler"
 	"github.com/NaoNaoOnline/apiserver/pkg/worker/workerhandler/policybufferhandler"
 	"github.com/NaoNaoOnline/apiserver/pkg/worker/workerhandler/policyscrapehandler"
 	"github.com/NaoNaoOnline/apiserver/pkg/worker/workerhandler/policyupdatehandler"
+	"github.com/NaoNaoOnline/apiserver/pkg/worker/workerhandler/rulecreatehandler"
+	"github.com/NaoNaoOnline/apiserver/pkg/worker/workerhandler/ruledeletehandler"
 	"github.com/NaoNaoOnline/apiserver/pkg/worker/workerhandler/subscriptiondonatehandler"
 	"github.com/NaoNaoOnline/apiserver/pkg/worker/workerhandler/subscriptionscrapehandler"
 	"github.com/NaoNaoOnline/apiserver/pkg/worker/workerhandler/subscriptionupdatehandler"
@@ -28,6 +30,7 @@ type Config struct {
 	// Cid are the chain IDs for all deployed chains.
 	Cid []int64
 	Emi *emitter.Emitter
+	Fee feed.Interface
 	Loc locker.Interface
 	Log logger.Interface
 	// Pcn are the policy contract addresses for all deployed chains.
@@ -48,6 +51,9 @@ type Handler struct {
 func New(c Config) *Handler {
 	if c.Emi == nil {
 		tracer.Panic(tracer.Mask(fmt.Errorf("%T.Emi must not be empty", c)))
+	}
+	if c.Fee == nil {
+		tracer.Panic(tracer.Mask(fmt.Errorf("%T.Fee must not be empty", c)))
 	}
 	if c.Loc == nil {
 		tracer.Panic(tracer.Mask(fmt.Errorf("%T.Loc must not be empty", c)))
@@ -78,6 +84,7 @@ func New(c Config) *Handler {
 		han = append(han, eventcreatehandler.NewSystemHandler(eventcreatehandler.SystemHandlerConfig{
 			Emi: c.Emi,
 			Eve: c.Sto.Evnt(),
+			Fee: c.Fee,
 			Log: c.Log,
 			Twi: c.Twi,
 		}))
@@ -85,8 +92,9 @@ func New(c Config) *Handler {
 
 	{
 		han = append(han, eventdeletehandler.NewCustomHandler(eventdeletehandler.CustomHandlerConfig{
-			Eve: c.Sto.Evnt(),
 			Des: c.Sto.Desc(),
+			Eve: c.Sto.Evnt(),
+			Fee: c.Fee,
 			Lis: c.Sto.List(),
 			Log: c.Log,
 			Rul: c.Sto.Rule(),
@@ -101,16 +109,8 @@ func New(c Config) *Handler {
 	}
 
 	{
-		han = append(han, feedcreatehandler.NewSystemHandler(feedcreatehandler.SystemHandlerConfig{
-			Eve: c.Sto.Evnt(),
-			Fee: c.Sto.Feed(),
-			Log: c.Log,
-			Rul: c.Sto.Rule(),
-		}))
-	}
-
-	{
 		han = append(han, listdeletehandler.NewCustomHandler(listdeletehandler.CustomHandlerConfig{
+			Fee: c.Fee,
 			Lis: c.Sto.List(),
 			Log: c.Log,
 			Rul: c.Sto.Rule(),
@@ -140,6 +140,22 @@ func New(c Config) *Handler {
 			Emi: c.Emi.Plcy(),
 			Log: c.Log,
 			Prm: c.Prm,
+		}))
+	}
+
+	{
+		han = append(han, rulecreatehandler.NewCustomHandler(rulecreatehandler.CustomHandlerConfig{
+			Fee: c.Fee,
+			Log: c.Log,
+			Rul: c.Sto.Rule(),
+		}))
+	}
+
+	{
+		han = append(han, ruledeletehandler.NewCustomHandler(ruledeletehandler.CustomHandlerConfig{
+			Fee: c.Fee,
+			Log: c.Log,
+			Rul: c.Sto.Rule(),
 		}))
 	}
 

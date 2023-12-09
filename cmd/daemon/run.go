@@ -13,6 +13,7 @@ import (
 	"github.com/NaoNaoOnline/apiserver/pkg/cache/policycache"
 	"github.com/NaoNaoOnline/apiserver/pkg/emitter"
 	"github.com/NaoNaoOnline/apiserver/pkg/envvar"
+	"github.com/NaoNaoOnline/apiserver/pkg/feed"
 	"github.com/NaoNaoOnline/apiserver/pkg/permission"
 	"github.com/NaoNaoOnline/apiserver/pkg/server"
 	"github.com/NaoNaoOnline/apiserver/pkg/server/interceptor/failedinterceptor"
@@ -171,6 +172,14 @@ func (r *run) runE(cmd *cobra.Command, args []string) error {
 		})
 	}
 
+	var fee feed.Interface
+	{
+		fee = feed.New(feed.Config{
+			Log: log,
+			Red: red,
+		})
+	}
+
 	var prm permission.Interface
 	{
 		prm = permission.New(permission.Config{
@@ -196,6 +205,7 @@ func (r *run) runE(cmd *cobra.Command, args []string) error {
 	{
 		shn = serverhandler.New(serverhandler.Config{
 			Emi: emi,
+			Fee: fee,
 			Loc: loc,
 			Log: log,
 			Prm: prm,
@@ -233,6 +243,7 @@ func (r *run) runE(cmd *cobra.Command, args []string) error {
 		whn = workerhandler.New(workerhandler.Config{
 			Cid: cid,
 			Emi: emi,
+			Fee: fee,
 			Loc: loc,
 			Log: log,
 			Pcn: pcn,

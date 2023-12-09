@@ -31,6 +31,10 @@ func (h *Handler) Delete(ctx context.Context, req *rule.DeleteI) (*rule.DeleteO,
 		}
 	}
 
+	//
+	// Verify the given input.
+	//
+
 	for _, x := range inp {
 		if userid.FromContext(ctx) != x.User {
 			return nil, tracer.Mask(runtime.UserNotOwnerError)
@@ -54,9 +58,13 @@ func (h *Handler) Delete(ctx context.Context, req *rule.DeleteI) (*rule.DeleteO,
 		}
 	}
 
+	//
+	// Delete the given resources.
+	//
+
 	var out []objectstate.String
 	{
-		out, err = h.rul.Delete(inp)
+		out, err = h.rul.DeleteWrkr(inp)
 		if err != nil {
 			return nil, tracer.Mask(err)
 		}

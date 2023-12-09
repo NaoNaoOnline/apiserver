@@ -22,7 +22,7 @@ func (r *Redis) SearchList(lis []objectid.ID, pag [2]int) ([]*Object, error) {
 		// if any.
 		var val []string
 		{
-			val, err = r.red.Sorted().Search().Order(rulLis(x), pag[0], pag[1])
+			val, err = r.red.Sorted().Search().Order(keyfmt.RulLis(x), pag[0], pag[1])
 			if err != nil {
 				return nil, tracer.Mask(err)
 			}

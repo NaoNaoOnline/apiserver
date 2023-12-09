@@ -11,13 +11,13 @@ import (
 )
 
 func (h *CustomHandler) Ensure(tas *task.Task, bud *budget.Budget) error {
-	var lis objectid.ID
+	var lid objectid.ID
 	{
-		lis = objectid.ID(tas.Meta.Get(objectlabel.ListObject))
+		lid = objectid.ID(tas.Meta.Get(objectlabel.ListObject))
 	}
 
 	{
-		err := h.deleteRule(lis, bud)
+		err := h.deleteRule(lid, bud)
 		if err != nil {
 			return tracer.Mask(err)
 		}
@@ -28,7 +28,7 @@ func (h *CustomHandler) Ensure(tas *task.Task, bud *budget.Budget) error {
 	}
 
 	{
-		err := h.deleteList(lis, bud)
+		err := h.deleteList(lid, bud)
 		if err != nil {
 			return tracer.Mask(err)
 		}
@@ -37,19 +37,26 @@ func (h *CustomHandler) Ensure(tas *task.Task, bud *budget.Budget) error {
 	return nil
 }
 
-func (h *CustomHandler) deleteList(inp objectid.ID, bud *budget.Budget) error {
+func (h *CustomHandler) deleteList(lid objectid.ID, bud *budget.Budget) error {
 	var err error
 
-	var lis []*liststorage.Object
+	var lob []*liststorage.Object
 	{
-		lis, err = h.lis.SearchList([]objectid.ID{inp})
+		lob, err = h.lis.SearchList([]objectid.ID{lid})
 		if err != nil {
 			return tracer.Mask(err)
 		}
 	}
 
 	{
-		_, err := h.lis.DeleteList(lis[:bud.Claim(len(lis))])
+		err = h.fee.DeleteFeed(lid)
+		if err != nil {
+			return tracer.Mask(err)
+		}
+	}
+
+	{
+		_, err := h.lis.DeleteList(lob[:bud.Claim(len(lob))])
 		if err != nil {
 			return tracer.Mask(err)
 		}
@@ -58,19 +65,26 @@ func (h *CustomHandler) deleteList(inp objectid.ID, bud *budget.Budget) error {
 	return nil
 }
 
-func (h *CustomHandler) deleteRule(inp objectid.ID, bud *budget.Budget) error {
+func (h *CustomHandler) deleteRule(lid objectid.ID, bud *budget.Budget) error {
 	var err error
 
-	var rul []*rulestorage.Object
+	var rob []*rulestorage.Object
 	{
-		rul, err = h.rul.SearchList([]objectid.ID{inp}, rulestorage.PagAll())
+		rob, err = h.rul.SearchList([]objectid.ID{lid}, rulestorage.PagAll())
+		if err != nil {
+			return tracer.Mask(err)
+		}
+	}
+
+	for _, x := range rob {
+		err = h.fee.DeleteRule(x)
 		if err != nil {
 			return tracer.Mask(err)
 		}
 	}
 
 	{
-		_, err := h.rul.Delete(rul[:bud.Claim(len(rul))])
+		_, err := h.rul.DeleteRule(rob[:bud.Claim(len(rob))])
 		if err != nil {
 			return tracer.Mask(err)
 		}

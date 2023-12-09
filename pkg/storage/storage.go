@@ -8,7 +8,6 @@ import (
 	"github.com/NaoNaoOnline/apiserver/pkg/envvar"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/descriptionstorage"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/eventstorage"
-	"github.com/NaoNaoOnline/apiserver/pkg/storage/feedstorage"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/labelstorage"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/liststorage"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/policystorage"
@@ -31,7 +30,6 @@ type Config struct {
 type Storage struct {
 	des descriptionstorage.Interface
 	eve eventstorage.Interface
-	fee feedstorage.Interface
 	lab labelstorage.Interface
 	lis liststorage.Interface
 	pol policystorage.Interface
@@ -62,7 +60,6 @@ func New(c Config) *Storage {
 		s = &Storage{
 			des: descriptionstorage.NewRedis(descriptionstorage.RedisConfig{Emi: c.Emi.Desc(), Log: c.Log, Red: c.Red}),
 			eve: eventstorage.NewRedis(eventstorage.RedisConfig{Emi: c.Emi.Evnt(), Log: c.Log, Red: c.Red}),
-			fee: feedstorage.NewRedis(feedstorage.RedisConfig{Log: c.Log, Red: c.Red}),
 			lab: labelstorage.NewRedis(labelstorage.RedisConfig{Log: c.Log, Red: c.Red}),
 			lis: liststorage.NewRedis(liststorage.RedisConfig{Emi: c.Emi.List(), Log: c.Log, Red: c.Red}),
 			pol: policystorage.NewRedis(policystorage.RedisConfig{Log: c.Log, Red: c.Red}),
@@ -73,7 +70,7 @@ func New(c Config) *Storage {
 
 	{
 		s.rul = rulestorage.NewRedis(rulestorage.RedisConfig{
-			Fee: s.fee,
+			Emi: c.Emi.Rule(),
 			Log: c.Log,
 			Red: c.Red,
 		})
@@ -99,10 +96,6 @@ func (s *Storage) Desc() descriptionstorage.Interface {
 
 func (s *Storage) Evnt() eventstorage.Interface {
 	return s.eve
-}
-
-func (s *Storage) Feed() feedstorage.Interface {
-	return s.fee
 }
 
 func (s *Storage) Labl() labelstorage.Interface {

@@ -47,14 +47,14 @@ func (p *Permission) SearchActv() ([]*policystorage.Object, error) {
 	return sli, nil
 }
 
-func (p *Permission) SearchUser(use objectid.ID) ([]string, error) {
+func (p *Permission) SearchUser(uid objectid.ID) ([]string, error) {
 	var err error
 
 	// wal will result in a list of all wallet objects owned by the given user, if
 	// any.
 	var wal []*walletstorage.Object
 	{
-		wal, err = p.wal.SearchKind(use, []string{"eth"})
+		wal, err = p.wal.SearchKind(uid, []string{"eth"})
 		if err != nil {
 			return nil, tracer.Mask(err)
 		}

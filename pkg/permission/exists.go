@@ -5,12 +5,12 @@ import (
 	"github.com/xh3b4sd/tracer"
 )
 
-func (p *Permission) ExistsAcce(sys int64, use objectid.ID, acc int64) (bool, error) {
+func (p *Permission) ExistsAcce(sys int64, uid objectid.ID, acc int64) (bool, error) {
 	var err error
 
 	var mem []string
 	{
-		mem, err = p.SearchUser(use)
+		mem, err = p.SearchUser(uid)
 		if err != nil {
 			return false, tracer.Mask(err)
 		}
@@ -25,12 +25,12 @@ func (p *Permission) ExistsAcce(sys int64, use objectid.ID, acc int64) (bool, er
 	return false, nil
 }
 
-func (p *Permission) ExistsMemb(use objectid.ID) (bool, error) {
+func (p *Permission) ExistsMemb(uid objectid.ID) (bool, error) {
 	var err error
 
 	var mem []string
 	{
-		mem, err = p.SearchUser(use)
+		mem, err = p.SearchUser(uid)
 		if err != nil {
 			return false, tracer.Mask(err)
 		}
@@ -41,12 +41,12 @@ func (p *Permission) ExistsMemb(use objectid.ID) (bool, error) {
 	return len(mem) != 0, nil
 }
 
-func (p *Permission) ExistsSyst(sys int64, use objectid.ID) (bool, error) {
+func (p *Permission) ExistsSyst(sys int64, uid objectid.ID) (bool, error) {
 	var err error
 
 	var mem []string
 	{
-		mem, err = p.SearchUser(use)
+		mem, err = p.SearchUser(uid)
 		if err != nil {
 			return false, tracer.Mask(err)
 		}

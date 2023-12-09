@@ -3,6 +3,7 @@ package eventdeletehandler
 import (
 	"fmt"
 
+	"github.com/NaoNaoOnline/apiserver/pkg/feed"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/descriptionstorage"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/eventstorage"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/liststorage"
@@ -14,6 +15,7 @@ import (
 type CustomHandlerConfig struct {
 	Des descriptionstorage.Interface
 	Eve eventstorage.Interface
+	Fee feed.Interface
 	Lis liststorage.Interface
 	Log logger.Interface
 	Rul rulestorage.Interface
@@ -22,6 +24,7 @@ type CustomHandlerConfig struct {
 type CustomHandler struct {
 	des descriptionstorage.Interface
 	eve eventstorage.Interface
+	fee feed.Interface
 	lis liststorage.Interface
 	log logger.Interface
 	rul rulestorage.Interface
@@ -33,6 +36,9 @@ func NewCustomHandler(c CustomHandlerConfig) *CustomHandler {
 	}
 	if c.Eve == nil {
 		tracer.Panic(tracer.Mask(fmt.Errorf("%T.Eve must not be empty", c)))
+	}
+	if c.Fee == nil {
+		tracer.Panic(tracer.Mask(fmt.Errorf("%T.Fee must not be empty", c)))
 	}
 	if c.Lis == nil {
 		tracer.Panic(tracer.Mask(fmt.Errorf("%T.Lis must not be empty", c)))
@@ -47,6 +53,7 @@ func NewCustomHandler(c CustomHandlerConfig) *CustomHandler {
 	return &CustomHandler{
 		des: c.Des,
 		eve: c.Eve,
+		fee: c.Fee,
 		lis: c.Lis,
 		log: c.Log,
 		rul: c.Rul,

@@ -1,5 +1,11 @@
 package keyfmt
 
+import (
+	"fmt"
+
+	"github.com/NaoNaoOnline/apiserver/pkg/object/objectid"
+)
+
 const (
 	// DescriptionEvent is used to store all the IDs of descriptions mapped to a
 	// specific event.
@@ -259,14 +265,6 @@ const (
 	//
 	RuleEvent = "rul/eve/%s"
 
-	// RuleList is used to store all the IDs of rules mapped to a specific list.
-	//
-	//     list ID               rule IDs
-	//                     ->
-	//     rul/lis/5678          1234,5678
-	//
-	RuleList = "rul/lis/%s"
-
 	// RuleObject is used to store our internal representation of a rule object.
 	//
 	//     rule ID               rule object
@@ -389,3 +387,63 @@ const (
 	//
 	WalletUser = "wal/use/%s"
 )
+
+// EveCat maps category label IDs to event IDs.
+func EveCat(cid objectid.ID) string {
+	return fmt.Sprintf("eve/cat/%s", cid)
+}
+
+// EveEve maps event IDs to event IDs.
+func EveEve(eid objectid.ID) string {
+	return fmt.Sprintf("eve/eve/%s", eid)
+}
+
+// EveHos maps host label IDs to event IDs.
+func EveHos(hid objectid.ID) string {
+	return fmt.Sprintf("eve/hos/%s", hid)
+}
+
+// EveFee maps list IDs to event IDs.
+func EveFee(lid objectid.ID) string {
+	return fmt.Sprintf("eve/fee/%s", lid)
+}
+
+// EveRul maps rule IDs to event IDs.
+func EveRul(rid objectid.ID) string {
+	return fmt.Sprintf("eve/rul/%s", rid)
+}
+
+// EveUse maps user IDs to event IDs.
+func EveUse(uid objectid.ID) string {
+	return fmt.Sprintf("eve/use/%s", uid)
+}
+
+// LisRul maps rule IDs to list IDs.
+func LisRul(rid objectid.ID) string {
+	return fmt.Sprintf("lis/rul/%s", rid)
+}
+
+// RulCat maps category label IDs to rule IDs.
+func RulCat(cid objectid.ID) string {
+	return fmt.Sprintf("rul/cat/%s", cid)
+}
+
+// RulEve maps event IDs to rule IDs.
+func RulEve(eid objectid.ID) string {
+	return fmt.Sprintf("rul/eve/%s", eid)
+}
+
+// RulHos maps host label IDs to rule IDs.
+func RulHos(hid objectid.ID) string {
+	return fmt.Sprintf("rul/hos/%s", hid)
+}
+
+// RulLis maps list IDs to rule IDs.
+func RulLis(lid objectid.ID) string {
+	return fmt.Sprintf("rul/lis/%s", lid)
+}
+
+// RulUse maps user IDs to rule IDs.
+func RulUse(uid objectid.ID) string {
+	return fmt.Sprintf("rul/use/%s", uid)
+}

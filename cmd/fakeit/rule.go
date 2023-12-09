@@ -14,18 +14,19 @@ import (
 func (r *run) createRule(sto *storage.Storage, obj ...*rulestorage.Object) error {
 	for _, x := range obj {
 		if x == nil {
-			return nil
+			continue
 		}
-	}
 
-	{
-		_, err := sto.Rule().Create(obj)
-		if rulestorage.IsRuleListLimit(err) {
-			// fall through
-		} else if rulestorage.IsResourceIDEmpty(err) {
-			// fall through
+		out, err := sto.Rule().CreateRule([]*rulestorage.Object{x})
+		if rulestorage.IsResourceIDEmpty(err) {
+			return nil
 		} else if err != nil {
 			tracer.Panic(tracer.Mask(err))
+		}
+
+		_, err = sto.Rule().CreateWrkr([]*rulestorage.Object{out[0]})
+		if err != nil {
+			return tracer.Mask(err)
 		}
 	}
 

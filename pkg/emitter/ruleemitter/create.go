@@ -1,4 +1,4 @@
-package descriptionemitter
+package ruleemitter
 
 import (
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectid"
@@ -7,14 +7,14 @@ import (
 	"github.com/xh3b4sd/tracer"
 )
 
-func (e *Emitter) DeleteDesc(did objectid.ID) error {
+func (e *Emitter) Create(rid objectid.ID) error {
 	var tas *task.Task
 	{
 		tas = &task.Task{
 			Meta: &task.Meta{
-				objectlabel.DescAction: objectlabel.ActionDelete,
-				objectlabel.DescObject: did.String(),
-				objectlabel.DescOrigin: objectlabel.OriginCustom,
+				objectlabel.RuleAction: objectlabel.ActionCreate,
+				objectlabel.RuleObject: rid.String(),
+				objectlabel.RuleOrigin: objectlabel.OriginCustom,
 			},
 		}
 	}

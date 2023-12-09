@@ -43,7 +43,7 @@ func (h *Handler) Create(ctx context.Context, req *event.CreateI) (*event.Create
 	//
 
 	{
-		_, err = h.eve.CreateWrkr(inp)
+		_, err = h.eve.CreateWrkr(out)
 		if err != nil {
 			return nil, tracer.Mask(err)
 		}

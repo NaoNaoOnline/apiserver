@@ -4,29 +4,29 @@ import (
 	"encoding/json"
 	"fmt"
 
+	"github.com/NaoNaoOnline/apiserver/pkg/emitter/ruleemitter"
 	"github.com/NaoNaoOnline/apiserver/pkg/keyfmt"
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectid"
-	"github.com/NaoNaoOnline/apiserver/pkg/storage/feedstorage"
 	"github.com/xh3b4sd/logger"
 	"github.com/xh3b4sd/redigo"
 	"github.com/xh3b4sd/tracer"
 )
 
 type RedisConfig struct {
+	Emi ruleemitter.Interface
 	Log logger.Interface
-	Fee feedstorage.Interface
 	Red redigo.Interface
 }
 
 type Redis struct {
-	fee feedstorage.Interface
+	emi ruleemitter.Interface
 	log logger.Interface
 	red redigo.Interface
 }
 
 func NewRedis(c RedisConfig) *Redis {
-	if c.Fee == nil {
-		tracer.Panic(tracer.Mask(fmt.Errorf("%T.Fee must not be empty", c)))
+	if c.Emi == nil {
+		tracer.Panic(tracer.Mask(fmt.Errorf("%T.Emi must not be empty", c)))
 	}
 	if c.Log == nil {
 		tracer.Panic(tracer.Mask(fmt.Errorf("%T.Log must not be empty", c)))
@@ -36,38 +36,10 @@ func NewRedis(c RedisConfig) *Redis {
 	}
 
 	return &Redis{
-		fee: c.Fee,
+		emi: c.Emi,
 		log: c.Log,
 		red: c.Red,
 	}
-}
-
-func lisObj(lis objectid.ID) string {
-	return fmt.Sprintf(keyfmt.ListObject, lis)
-}
-
-func notKin(kin string, oid objectid.ID) string {
-	if kin == "cate" {
-		return fmt.Sprintf(keyfmt.FeedCategory, oid)
-	}
-
-	if kin == "host" {
-		return fmt.Sprintf(keyfmt.FeedHost, oid)
-	}
-
-	if kin == "user" {
-		return fmt.Sprintf(keyfmt.FeedUser, oid)
-	}
-
-	panic(fmt.Sprintf("kin must be cate, host or user, got %s", kin))
-}
-
-func rulEve(eve objectid.ID) string {
-	return fmt.Sprintf(keyfmt.RuleEvent, eve)
-}
-
-func rulLis(lis objectid.ID) string {
-	return fmt.Sprintf(keyfmt.RuleList, lis)
 }
 
 func rulObj(rul objectid.ID) string {

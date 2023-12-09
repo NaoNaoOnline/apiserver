@@ -37,7 +37,7 @@ func (r *Redis) CreateEvnt(inp []*Object) ([]*Object, error) {
 			}
 
 			if cou != int64(len(key)) {
-				return nil, tracer.Maskf(labelObjectNotFoundError, "%d of these labels do not exist %v", int64(len(key))-cou, key)
+				return nil, tracer.Maskf(labelObjectNotFoundError, "%d of these labels do not exist on event %v %v", int64(len(key))-cou, inp[i].Evnt, key)
 			}
 		}
 

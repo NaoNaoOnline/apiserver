@@ -7,13 +7,13 @@ import (
 	"github.com/xh3b4sd/tracer"
 )
 
-func (e *Emitter) DeleteEvnt(eve objectid.ID) error {
+func (e *Emitter) DeleteEvnt(eid objectid.ID) error {
 	var tas *task.Task
 	{
 		tas = &task.Task{
 			Meta: &task.Meta{
 				objectlabel.EvntAction: objectlabel.ActionDelete,
-				objectlabel.EvntObject: eve.String(),
+				objectlabel.EvntObject: eid.String(),
 				objectlabel.EvntOrigin: objectlabel.OriginCustom,
 			},
 		}

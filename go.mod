@@ -21,7 +21,7 @@ require (
 	github.com/xh3b4sd/breakr v0.1.0
 	github.com/xh3b4sd/locker v0.1.0
 	github.com/xh3b4sd/logger v0.8.1
-	github.com/xh3b4sd/redigo v0.37.0
+	github.com/xh3b4sd/redigo v0.37.1
 	github.com/xh3b4sd/rescue v0.17.15
 	github.com/xh3b4sd/tracer v0.11.1
 	golang.org/x/text v0.14.0

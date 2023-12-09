@@ -91,6 +91,22 @@ abigen --abi pkg/contract/subscriptioncontract/Subscription.ABI.json --pkg subsc
 ```
 
 
+Running conformance tests.
+
+
+```
+export REDIS_PORT=6382
+```
+
+```
+docker run --rm -p 6382:6379 -p 8082:8001 redis/redis-stack:latest
+```
+
+```
+go test ./... --tags redis -count 1 -race
+```
+
+
 
 [abigen]: https://geth.ethereum.org/docs/tools/abigen
 [Twirp]: https://github.com/twitchtv/twirp

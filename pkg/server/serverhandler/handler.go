@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/NaoNaoOnline/apiserver/pkg/emitter"
+	"github.com/NaoNaoOnline/apiserver/pkg/feed"
 	"github.com/NaoNaoOnline/apiserver/pkg/permission"
 	"github.com/NaoNaoOnline/apiserver/pkg/server/serverhandler/descriptionhandler"
 	"github.com/NaoNaoOnline/apiserver/pkg/server/serverhandler/eventhandler"
@@ -22,6 +23,7 @@ import (
 
 type Config struct {
 	Emi *emitter.Emitter
+	Fee feed.Interface
 	Loc locker.Interface
 	Log logger.Interface
 	Prm permission.Interface
@@ -35,6 +37,9 @@ type Handler struct {
 func New(c Config) *Handler {
 	if c.Emi == nil {
 		tracer.Panic(tracer.Mask(fmt.Errorf("%T.Emi must not be empty", c)))
+	}
+	if c.Fee == nil {
+		tracer.Panic(tracer.Mask(fmt.Errorf("%T.Fee must not be empty", c)))
 	}
 	if c.Loc == nil {
 		tracer.Panic(tracer.Mask(fmt.Errorf("%T.Loc must not be empty", c)))
@@ -63,7 +68,7 @@ func New(c Config) *Handler {
 	{
 		han = append(han, eventhandler.NewHandler(eventhandler.HandlerConfig{
 			Eve: c.Sto.Evnt(),
-			Fee: c.Sto.Feed(),
+			Fee: c.Fee,
 			Log: c.Log,
 			Prm: c.Prm,
 			Rul: c.Sto.Rule(),
