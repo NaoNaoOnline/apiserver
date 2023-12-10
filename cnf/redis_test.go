@@ -3,6 +3,8 @@
 package cnf
 
 import (
+	"strconv"
+
 	"github.com/NaoNaoOnline/apiserver/pkg/emitter/ruleemitter"
 	"github.com/NaoNaoOnline/apiserver/pkg/feed"
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectid"
@@ -111,4 +113,13 @@ func prgAll(red redigo.Interface) redigo.Interface {
 	}
 
 	return red
+}
+
+func musNum(str string) int64 {
+	num, err := strconv.ParseInt(str, 10, 64)
+	if err != nil {
+		return 0
+	}
+
+	return num
 }

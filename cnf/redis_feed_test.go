@@ -67,7 +67,7 @@ func Test_Redis_Feed_Duplicate(t *testing.T) {
 	}
 
 	{
-		eid, err := fee.SearchFeed(lisOne().List, feed.PagAll())
+		eid, err := fee.SearchPage(lisOne().List, feed.PagAll())
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -108,7 +108,7 @@ func Test_Redis_Feed_Duplicate(t *testing.T) {
 
 	// Verify the correct event IDs got persisted in the list specific feed.
 	{
-		eid, err := fee.SearchFeed(lisOne().List, feed.PagAll())
+		eid, err := fee.SearchPage(lisOne().List, feed.PagAll())
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -213,7 +213,7 @@ func Test_Redis_Feed_Empty_Search(t *testing.T) {
 	}
 
 	{
-		eid, err := fee.SearchFeed(lisOne().List, feed.PagAll())
+		eid, err := fee.SearchPage(lisOne().List, feed.PagAll())
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -277,7 +277,7 @@ func Test_Redis_Feed_Multi_Event_First(t *testing.T) {
 	}
 
 	{
-		eid, err := fee.SearchFeed(lisOne().List, feed.PagAll())
+		eid, err := fee.SearchPage(lisOne().List, feed.PagAll())
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -321,7 +321,7 @@ func Test_Redis_Feed_Multi_Event_First(t *testing.T) {
 	// Verify the correct event IDs got persisted in the list specific feed. Note
 	// that the event order is based on the ascending order of event IDs.
 	{
-		eid, err := fee.SearchFeed(lisOne().List, feed.PagAll())
+		eid, err := fee.SearchPage(lisOne().List, feed.PagAll())
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -439,7 +439,7 @@ func Test_Redis_Feed_Multi_Rule_First(t *testing.T) {
 	}
 
 	{
-		eid, err := fee.SearchFeed(lisOne().List, feed.PagAll())
+		eid, err := fee.SearchPage(lisOne().List, feed.PagAll())
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -477,7 +477,7 @@ func Test_Redis_Feed_Multi_Rule_First(t *testing.T) {
 	// Verify the correct event IDs got persisted in the list specific feed. Note
 	// that the event order is based on the ascending order of event IDs.
 	{
-		eid, err := fee.SearchFeed(lisOne().List, feed.PagAll())
+		eid, err := fee.SearchPage(lisOne().List, feed.PagAll())
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -492,6 +492,27 @@ func Test_Redis_Feed_Multi_Rule_First(t *testing.T) {
 		}
 		if eid[2] != eveOne().Evnt {
 			t.Fatal("expected", eveOne().Evnt, "got", eid[2])
+		}
+	}
+
+	// Verify we are able to search for the event IDs within a certain time range.
+	// Note that event IDs are based on time, and their score refers to their time
+	// of creation. So if we remember when a user saw a custom list the last time,
+	// we can search for the delta of missed events later on, basically enabling
+	// notification features.
+	{
+		eid, err := fee.SearchUnix(lisOne().List, [2]float64{eveTwo().Evnt.Float(), eveOne().Evnt.Float()}) // [426989 944148]
+		if err != nil {
+			t.Fatal(err)
+		}
+		if len(eid) != 2 {
+			t.Fatal("expected", 2, "got", len(eid))
+		}
+		if eid[0] != eveTwo().Evnt {
+			t.Fatal("expected", eveTwo().Evnt, "got", eid[0])
+		}
+		if eid[1] != eveOne().Evnt {
+			t.Fatal("expected", eveOne().Evnt, "got", eid[1])
 		}
 	}
 
@@ -589,7 +610,7 @@ func Test_Redis_Feed_Single_Event_First(t *testing.T) {
 	}
 
 	{
-		eid, err := fee.SearchFeed(lisOne().List, feed.PagAll())
+		eid, err := fee.SearchPage(lisOne().List, feed.PagAll())
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -630,7 +651,7 @@ func Test_Redis_Feed_Single_Event_First(t *testing.T) {
 
 	// Verify the correct event IDs got persisted in the list specific feed.
 	{
-		eid, err := fee.SearchFeed(lisOne().List, feed.PagAll())
+		eid, err := fee.SearchPage(lisOne().List, feed.PagAll())
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -740,7 +761,7 @@ func Test_Redis_Feed_Single_Rule_First(t *testing.T) {
 	}
 
 	{
-		eid, err := fee.SearchFeed(lisOne().List, feed.PagAll())
+		eid, err := fee.SearchPage(lisOne().List, feed.PagAll())
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -777,7 +798,7 @@ func Test_Redis_Feed_Single_Rule_First(t *testing.T) {
 
 	// Verify the correct event IDs got persisted in the list specific feed.
 	{
-		eid, err := fee.SearchFeed(lisOne().List, feed.PagAll())
+		eid, err := fee.SearchPage(lisOne().List, feed.PagAll())
 		if err != nil {
 			t.Fatal(err)
 		}
