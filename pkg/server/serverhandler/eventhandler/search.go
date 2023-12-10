@@ -14,6 +14,8 @@ import (
 )
 
 func (h *Handler) Search(ctx context.Context, req *event.SearchI) (*event.SearchO, error) {
+	var err error
+
 	var out []*eventstorage.Object
 
 	var use objectid.ID
@@ -95,32 +97,38 @@ func (h *Handler) Search(ctx context.Context, req *event.SearchI) (*event.Search
 	//
 
 	{
-		var lis objectid.ID
-		for _, x := range req.Object {
-			if x.Symbol != nil && x.Symbol.List != "" {
-				lis = objectid.ID(x.Symbol.List)
-			}
+		var lid objectid.ID
+		{
+			lid = symbolList(req)
 		}
 
-		if lis != "" {
-			var pag [2]int
+		if lid != "" {
+			var kin string
 			{
-				pag = [2]int{
-					int(musNum(req.Filter.Paging.Strt)),
-					int(musNum(req.Filter.Paging.Stop)),
-				}
+				kin = pagingKind(req)
 			}
 
 			// TODO restrict feed length for non-premium users
-			eid, err := h.fee.SearchFeed(lis, pag)
-			if err != nil {
-				return nil, tracer.Mask(err)
+			var eid []objectid.ID
+
+			if kin == "" || kin == "page" {
+				eid, err = h.fee.SearchPage(lid, pagingPage(req))
+				if err != nil {
+					return nil, tracer.Mask(err)
+				}
+			}
+
+			if kin == "unix" {
+				eid, err = h.fee.SearchUnix(lid, pagingUnix(req))
+				if err != nil {
+					return nil, tracer.Mask(err)
+				}
 			}
 
 			if len(eid) != 0 {
 				var eob eventstorage.Slicer
 				{
-					eob, err = h.eve.SearchEvnt("", eid)
+					eob, err = h.eve.SearchEvnt(use, eid)
 					if err != nil {
 						return nil, tracer.Mask(err)
 					}
@@ -160,10 +168,12 @@ func (h *Handler) Search(ctx context.Context, req *event.SearchI) (*event.Search
 	{
 		var pag bool
 		for _, x := range req.Object {
-			if x.Symbol != nil && x.Symbol.Time == "page" {
+			if x.Symbol != nil && x.Symbol.Time == "dflt" {
 				pag = true
 			}
 		}
+
+		// TODO check for paging kind unix
 
 		if pag {
 			min := time.Unix(musNum(req.Filter.Paging.Strt), 0)

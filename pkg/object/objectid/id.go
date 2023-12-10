@@ -10,6 +10,10 @@ import (
 
 type ID string
 
+func Paging(num int64) ID {
+	return ID(fmt.Sprintf("%d%06d", num, 0))
+}
+
 func Random(num int64) ID {
 	return ID(fmt.Sprintf("%d%06d", num, rand.Intn(999999)))
 }

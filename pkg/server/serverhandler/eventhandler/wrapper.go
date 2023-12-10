@@ -145,7 +145,7 @@ func (w *wrapper) Search(ctx context.Context, req *event.SearchI) (*event.Search
 		}
 
 		for _, x := range req.Object {
-			if x.Symbol != nil && x.Symbol.Time != "" && x.Symbol.Time != "hpnd" && x.Symbol.Time != "page" && x.Symbol.Time != "upcm" {
+			if x.Symbol != nil && x.Symbol.Time != "" && x.Symbol.Time != "dflt" && x.Symbol.Time != "hpnd" && x.Symbol.Time != "upcm" {
 				return nil, tracer.Mask(searchSymbolTimeError)
 			}
 		}
@@ -154,7 +154,7 @@ func (w *wrapper) Search(ctx context.Context, req *event.SearchI) (*event.Search
 			if x.Symbol != nil && x.Symbol.Like != "" && (req.Filter == nil || req.Filter.Paging == nil || req.Filter.Paging.Strt == "" || req.Filter.Paging.Stop == "" || musNum(req.Filter.Paging.Strt) < 0 || musNum(req.Filter.Paging.Stop) < -1) {
 				return nil, tracer.Mask(searchSymbolPageError)
 			}
-			if x.Symbol != nil && x.Symbol.Time == "page" && (req.Filter == nil || req.Filter.Paging == nil || req.Filter.Paging.Strt == "" || req.Filter.Paging.Stop == "" || musNum(req.Filter.Paging.Strt) <= 0 || musNum(req.Filter.Paging.Stop) <= 0) {
+			if x.Symbol != nil && x.Symbol.Time == "dflt" && (req.Filter == nil || req.Filter.Paging == nil || req.Filter.Paging.Strt == "" || req.Filter.Paging.Stop == "" || musNum(req.Filter.Paging.Strt) <= 0 || musNum(req.Filter.Paging.Stop) <= 0) {
 				return nil, tracer.Mask(searchSymbolPageError)
 			}
 		}

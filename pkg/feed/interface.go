@@ -89,16 +89,16 @@ type Interface interface {
 	//
 	SearchEvnt(objectid.ID, [2]int) ([]objectid.ID, error)
 
-	// SearchFeed returns all event IDs for the given list ID. SearchFeed
-	// essentially provides the aggregated list view, the feed. All event IDs can
-	// be fetched using pagination range [0 -1]. The first 10 event IDs can be
-	// fetched using pagination range [0 9].
+	// SearchPage returns all event IDs for the given list ID. SearchPage
+	// essentially provides the aggregated list view, the feed, in order of rank.
+	// All event IDs can be fetched using pagination range [0 -1]. The first 10
+	// event IDs can be fetched using pagination range [0 9].
 	//
 	//     @inp[0] the list ID to search event IDs for
 	//     @inp[1] the pagination range defining lower and upper inclusive boundaries
 	//     @out[0] the list of event IDs linked to the given list ID
 	//
-	SearchFeed(objectid.ID, [2]int) ([]objectid.ID, error)
+	SearchPage(objectid.ID, [2]int) ([]objectid.ID, error)
 
 	// SearchList returns all list IDs for the given event ID. All list IDs can be
 	// fetched using pagination range [0 -1]. The first 10 list IDs can be fetched
@@ -119,4 +119,15 @@ type Interface interface {
 	//     @out[0] the list of rule IDs linked to the given event ID
 	//
 	SearchRule(objectid.ID, [2]int) ([]objectid.ID, error)
+
+	// SearchUnix returns all event IDs for the given list ID. SearchUnix
+	// essentially provides the aggregated list view, the feed, in order of time
+	// in microseconds. All event IDs within a particular hour can be fetched
+	// using pagination range [1672531200000000 1672534800000000].
+	//
+	//     @inp[0] the list ID to search event IDs for
+	//     @inp[1] the pagination range defining lower and upper inclusive boundaries
+	//     @out[0] the list of event IDs linked to the given list ID
+	//
+	SearchUnix(objectid.ID, [2]float64) ([]objectid.ID, error)
 }

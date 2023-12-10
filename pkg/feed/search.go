@@ -20,7 +20,7 @@ func (f *Feed) SearchEvnt(rid objectid.ID, pag [2]int) ([]objectid.ID, error) {
 	return objectid.IDs(val), nil
 }
 
-func (f *Feed) SearchFeed(lid objectid.ID, pag [2]int) ([]objectid.ID, error) {
+func (f *Feed) SearchPage(lid objectid.ID, pag [2]int) ([]objectid.ID, error) {
 	var err error
 
 	var val []string
@@ -67,6 +67,20 @@ func (f *Feed) SearchRule(eid objectid.ID, pag [2]int) ([]objectid.ID, error) {
 	var val []string
 	{
 		val, err = f.red.Sorted().Search().Order(keyfmt.RulEve(eid), pag[0], pag[1])
+		if err != nil {
+			return nil, tracer.Mask(err)
+		}
+	}
+
+	return objectid.IDs(val), nil
+}
+
+func (f *Feed) SearchUnix(lid objectid.ID, pag [2]float64) ([]objectid.ID, error) {
+	var err error
+
+	var val []string
+	{
+		val, err = f.red.Sorted().Search().Score(keyfmt.EveFee(lid), pag[0], pag[1])
 		if err != nil {
 			return nil, tracer.Mask(err)
 		}
