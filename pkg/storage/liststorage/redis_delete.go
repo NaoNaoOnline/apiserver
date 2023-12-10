@@ -22,13 +22,9 @@ func (r *Redis) DeleteList(inp []*Object) ([]objectstate.String, error) {
 
 		// Since the deletion process starts with the normalized key-value pair in
 		// the handler, we delete it as the very last step, so the operation can
-		// eventually be retried. Note that we also delete the per list feed when
-		// the respective list is being deleted.
+		// eventually be retried.
 		{
-			obj := lisObj(inp[i].List)
-			not := notObj(inp[i].User, inp[i].List)
-
-			_, err = r.red.Simple().Delete().Multi(obj, not)
+			_, err = r.red.Simple().Delete().Multi(lisObj(inp[i].List))
 			if err != nil {
 				return nil, tracer.Mask(err)
 			}

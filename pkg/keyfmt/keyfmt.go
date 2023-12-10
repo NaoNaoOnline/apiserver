@@ -60,16 +60,6 @@ const (
 	//
 	EventObject = "eve/obj/%s"
 
-	// EventReference is used to store a self referential event ID. We need this
-	// for instance to resolve event keys to event values when collecting event
-	// objects based on rules for custom lists.
-	//
-	//     event ID              event ID
-	//                     ->
-	//     eve/ref/1234          1234
-	//
-	EventReference = "eve/ref/%s"
-
 	// EventTime is used to resolve from event times to their respective event
 	// IDs.
 	//
@@ -87,42 +77,6 @@ const (
 	//     eve/use/5678          1234,5678
 	//
 	EventUser = "eve/use/%s"
-
-	// FeedCategory is used to store all the IDs of users who want feeds about
-	// events created matching a certain category label.
-	//
-	//     category ID                   user IDs
-	//                             ->
-	//     fee/eve/kin/cat/5678          1234,5678
-	//
-	FeedCategory = "fee/eve/kin/cat/%s"
-
-	// FeedHost is used to store all the IDs of users who want feeds about events
-	// created matching a certain host label.
-	//
-	//     host ID                       user IDs
-	//                             ->
-	//     fee/eve/kin/hos/5678          1234,5678
-	//
-	FeedHost = "fee/eve/kin/hos/%s"
-
-	// FeedUser is used to store all the IDs of users who want feeds about events
-	// created by certain users.
-	//
-	//     user ID                       user IDs
-	//                             ->
-	//     fee/eve/kin/use/5678          1234,5678
-	//
-	FeedUser = "fee/eve/kin/use/%s"
-
-	// FeedObject is used to store all of our internal representations of feed
-	// objects scoped to a specific user / list combination.
-	//
-	//     user ID / list ID                  feed objects
-	//                                  ->
-	//     fee/use/1234/lis/5678/obj          {"key": "val"},{"key": "val"}
-	//
-	FeedObject = "fee/use/%s/lis/%s/obj"
 
 	// LabelSystem is used to store all the IDs of system labels.
 	//
@@ -255,15 +209,6 @@ const (
 	//     pol/act                     [{"key": "val"}]
 	//
 	PolicyActive = "pol/act"
-
-	// RuleEvent is used to store all the IDs of rules defining single event IDs
-	// in their resource list.
-	//
-	//     event ID               rule IDs
-	//                     ->
-	//     rul/eve/5678          1234,5678
-	//
-	RuleEvent = "rul/eve/%s"
 
 	// RuleObject is used to store our internal representation of a rule object.
 	//

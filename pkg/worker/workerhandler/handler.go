@@ -95,9 +95,7 @@ func New(c Config) *Handler {
 			Des: c.Sto.Desc(),
 			Eve: c.Sto.Evnt(),
 			Fee: c.Fee,
-			Lis: c.Sto.List(),
 			Log: c.Log,
-			Rul: c.Sto.Rule(),
 		}))
 	}
 

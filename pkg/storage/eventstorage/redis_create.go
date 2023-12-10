@@ -106,16 +106,6 @@ func (r *Redis) CreateEvnt(inp []*Object) ([]*Object, error) {
 			}
 		}
 
-		// Create the self referential event ID pointer. This must be a sorted set
-		// because we need the pointer to reference the event ID value when
-		// searching for custom lists.
-		{
-			err = r.red.Sorted().Create().Score(eveRef(inp[i].Evnt), inp[i].Evnt.String(), inp[i].Evnt.Float())
-			if err != nil {
-				return nil, tracer.Mask(err)
-			}
-		}
-
 		var amn int64
 		{
 			amn, err = r.red.Sorted().Metric().Count(eveUse(inp[i].User))
