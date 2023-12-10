@@ -50,7 +50,7 @@ func (h *SystemHandler) Ensure(tas *task.Task, bud *budget.Budget) error {
 		}
 	}
 
-	for _, x := range lid {
+	for _, x := range lid[:bud.Claim(len(lid))] {
 		err = h.fee.CreateFeed(x)
 		if err != nil {
 			return tracer.Mask(err)

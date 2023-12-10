@@ -58,7 +58,7 @@ func (h *CustomHandler) deleteList(lid objectid.ID, bud *budget.Budget) error {
 
 	// Delete the list object from list storage.
 	{
-		_, err := h.lis.DeleteList(lob[:bud.Claim(len(lob))])
+		_, err := h.lis.DeleteList(lob)
 		if err != nil {
 			return tracer.Mask(err)
 		}
@@ -80,11 +80,15 @@ func (h *CustomHandler) deleteRule(lid objectid.ID, bud *budget.Budget) error {
 
 	// Delete all necessary cross-references between the deleted rules and all the
 	// events they described.
-	for _, x := range rob {
+	for _, x := range rob[:bud.Claim(len(rob))] {
 		err = h.fee.DeleteRule(x)
 		if err != nil {
 			return tracer.Mask(err)
 		}
+	}
+
+	if bud.Break() {
+		return nil
 	}
 
 	// Only delete the rule objects from rule storage once the feed references are

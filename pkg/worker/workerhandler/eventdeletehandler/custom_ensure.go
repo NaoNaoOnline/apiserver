@@ -100,7 +100,7 @@ func (h *CustomHandler) Ensure(tas *task.Task, bud *budget.Budget) error {
 	}
 
 	{
-		_, err = h.eve.DeleteEvnt(eob[:bud.Claim(len(eob))])
+		_, err = h.eve.DeleteEvnt(eob)
 		if err != nil {
 			return tracer.Mask(err)
 		}
@@ -113,19 +113,19 @@ func (h *CustomHandler) Ensure(tas *task.Task, bud *budget.Budget) error {
 	return nil
 }
 
-func (h *CustomHandler) deleteDesc(inp objectid.ID, bud *budget.Budget) error {
+func (h *CustomHandler) deleteDesc(did objectid.ID, bud *budget.Budget) error {
 	var err error
 
-	var des []*descriptionstorage.Object
+	var dob []*descriptionstorage.Object
 	{
-		des, err = h.des.SearchDesc("", []objectid.ID{inp})
+		dob, err = h.des.SearchDesc("", []objectid.ID{did})
 		if err != nil {
 			return tracer.Mask(err)
 		}
 	}
 
 	{
-		_, err := h.des.DeleteDesc(des[:bud.Claim(len(des))])
+		_, err := h.des.DeleteDesc(dob)
 		if err != nil {
 			return tracer.Mask(err)
 		}
@@ -134,19 +134,19 @@ func (h *CustomHandler) deleteDesc(inp objectid.ID, bud *budget.Budget) error {
 	return nil
 }
 
-func (h *CustomHandler) deleteLike(inp objectid.ID, bud *budget.Budget) error {
+func (h *CustomHandler) deleteLike(did objectid.ID, bud *budget.Budget) error {
 	var err error
 
-	var use []objectid.ID
+	var uid []objectid.ID
 	{
-		use, err = h.des.SearchLike(inp)
+		uid, err = h.des.SearchLike(did)
 		if err != nil {
 			return tracer.Mask(err)
 		}
 	}
 
 	{
-		_, err := h.des.DeleteLike(inp, use[:bud.Claim(len(use))])
+		_, err = h.des.DeleteLike(did, uid[:bud.Claim(len(uid))])
 		if err != nil {
 			return tracer.Mask(err)
 		}
@@ -155,19 +155,19 @@ func (h *CustomHandler) deleteLike(inp objectid.ID, bud *budget.Budget) error {
 	return nil
 }
 
-func (h *CustomHandler) deleteLink(inp objectid.ID, bud *budget.Budget) error {
+func (h *CustomHandler) deleteLink(eid objectid.ID, bud *budget.Budget) error {
 	var err error
 
-	var use []objectid.ID
+	var uid []objectid.ID
 	{
-		use, err = h.eve.SearchLink(inp)
+		uid, err = h.eve.SearchLink(eid)
 		if err != nil {
 			return tracer.Mask(err)
 		}
 	}
 
 	{
-		_, err := h.eve.DeleteLink(inp, use[:bud.Claim(len(use))])
+		_, err = h.eve.DeleteLink(eid, uid[:bud.Claim(len(uid))])
 		if err != nil {
 			return tracer.Mask(err)
 		}
