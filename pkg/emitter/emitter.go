@@ -5,9 +5,9 @@ import (
 
 	"github.com/NaoNaoOnline/apiserver/pkg/emitter/descriptionemitter"
 	"github.com/NaoNaoOnline/apiserver/pkg/emitter/eventemitter"
-	"github.com/NaoNaoOnline/apiserver/pkg/emitter/feedemitter"
 	"github.com/NaoNaoOnline/apiserver/pkg/emitter/listemitter"
 	"github.com/NaoNaoOnline/apiserver/pkg/emitter/policyemitter"
+	"github.com/NaoNaoOnline/apiserver/pkg/emitter/ruleemitter"
 	"github.com/NaoNaoOnline/apiserver/pkg/emitter/subscriptionemitter"
 	"github.com/xh3b4sd/logger"
 	"github.com/xh3b4sd/rescue"
@@ -26,9 +26,9 @@ type Config struct {
 type Emitter struct {
 	des descriptionemitter.Interface
 	eve eventemitter.Interface
-	fee feedemitter.Interface
 	lis listemitter.Interface
 	pol policyemitter.Interface
+	rul ruleemitter.Interface
 	sub subscriptionemitter.Interface
 }
 
@@ -45,9 +45,9 @@ func New(c Config) *Emitter {
 		e = &Emitter{
 			des: descriptionemitter.NewEmitter(descriptionemitter.EmitterConfig{Log: c.Log, Res: c.Res}),
 			eve: eventemitter.NewEmitter(eventemitter.EmitterConfig{Log: c.Log, Res: c.Res}),
-			fee: feedemitter.NewEmitter(feedemitter.EmitterConfig{Log: c.Log, Res: c.Res}),
 			lis: listemitter.NewEmitter(listemitter.EmitterConfig{Log: c.Log, Res: c.Res}),
 			pol: policyemitter.NewEmitter(policyemitter.EmitterConfig{Cid: c.Cid, Cnt: c.Pcn, Log: c.Log, Res: c.Res, Rpc: c.Rpc}),
+			rul: ruleemitter.NewEmitter(ruleemitter.EmitterConfig{Log: c.Log, Res: c.Res}),
 			sub: subscriptionemitter.NewEmitter(subscriptionemitter.EmitterConfig{Cid: c.Cid, Cnt: c.Scn, Log: c.Log, Res: c.Res, Rpc: c.Rpc}),
 		}
 	}
@@ -63,16 +63,16 @@ func (e *Emitter) Evnt() eventemitter.Interface {
 	return e.eve
 }
 
-func (e *Emitter) Feed() feedemitter.Interface {
-	return e.fee
-}
-
 func (e *Emitter) List() listemitter.Interface {
 	return e.lis
 }
 
 func (e *Emitter) Plcy() policyemitter.Interface {
 	return e.pol
+}
+
+func (e *Emitter) Rule() ruleemitter.Interface {
+	return e.rul
 }
 
 func (e *Emitter) Subs() subscriptionemitter.Interface {

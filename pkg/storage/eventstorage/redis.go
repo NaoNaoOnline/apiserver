@@ -50,10 +50,6 @@ func eveObj(oid objectid.ID) string {
 	return fmt.Sprintf(keyfmt.EventObject, oid)
 }
 
-func eveRef(oid objectid.ID) string {
-	return fmt.Sprintf(keyfmt.EventReference, oid)
-}
-
 func eveUse(oid objectid.ID) string {
 	return fmt.Sprintf(keyfmt.EventUser, oid)
 }
@@ -76,10 +72,6 @@ func linMap(use objectid.ID, oid objectid.ID) string {
 
 func linUse(oid objectid.ID) string {
 	return fmt.Sprintf(keyfmt.LinkUser, oid)
-}
-
-func rulEve(eve objectid.ID) string {
-	return fmt.Sprintf(keyfmt.RuleEvent, eve)
 }
 
 func musStr(obj *Object) string {

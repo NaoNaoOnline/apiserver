@@ -72,7 +72,7 @@ func (w *Worker) Daemon() {
 	go func() {
 		for {
 			w.search()
-			time.Sleep(5 * time.Second)
+			time.Sleep(1 * time.Second)
 		}
 	}()
 

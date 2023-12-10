@@ -14,12 +14,21 @@ import (
 )
 
 func (r *run) createEvnt(sto *storage.Storage, obj ...*eventstorage.Object) error {
-	{
-		_, err := sto.Evnt().CreateEvnt(obj)
+	for _, x := range obj {
+		if x == nil {
+			continue
+		}
+
+		out, err := sto.Evnt().CreateEvnt([]*eventstorage.Object{x})
 		if eventstorage.IsEventParticipationConflict(err) {
-			// fall through
+			return nil
 		} else if err != nil {
 			tracer.Panic(tracer.Mask(err))
+		}
+
+		_, err = sto.Evnt().CreateWrkr([]*eventstorage.Object{out[0]})
+		if err != nil {
+			return tracer.Mask(err)
 		}
 	}
 

@@ -46,7 +46,18 @@ func (h *Handler) Create(ctx context.Context, req *rule.CreateI) (*rule.CreateO,
 
 	var out []*rulestorage.Object
 	{
-		out, err = h.rul.Create(inp)
+		out, err = h.rul.CreateRule(inp)
+		if err != nil {
+			return nil, tracer.Mask(err)
+		}
+	}
+
+	//
+	// Create background tasks for the created resources.
+	//
+
+	{
+		_, err = h.rul.CreateWrkr(out)
 		if err != nil {
 			return nil, tracer.Mask(err)
 		}
@@ -116,6 +127,11 @@ func (h *Handler) createVrfy(ctx context.Context, obj rulestorage.Slicer) error 
 		// being added. Then the rule kind can be freely choosen without constraint.
 		if len(rul) == 0 {
 			continue
+		}
+
+		// Ensure the maximum amount of rules per list is respected.
+		if len(rul) >= 100 {
+			return tracer.Mask(ruleListLimitError)
 		}
 
 		// Ensure dynamic rules cannot be added to static lists. If the first rule

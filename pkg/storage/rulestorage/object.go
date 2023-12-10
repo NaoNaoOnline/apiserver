@@ -1,10 +1,8 @@
 package rulestorage
 
 import (
-	"fmt"
 	"time"
 
-	"github.com/NaoNaoOnline/apiserver/pkg/keyfmt"
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectid"
 	"github.com/NaoNaoOnline/apiserver/pkg/runtime"
 	"github.com/xh3b4sd/tracer"
@@ -35,31 +33,6 @@ type Object struct {
 	Rule objectid.ID `json:"rule"`
 	// User is the user ID creating this rule.
 	User objectid.ID `json:"user"`
-}
-
-func (o *Object) HasRes() bool {
-	return len(o.Excl) != 0 || len(o.Incl) != 0
-}
-
-func (o *Object) KeyFmt() string {
-	if o.Kind == "cate" || o.Kind == "host" {
-		return keyfmt.EventLabel
-	}
-
-	if o.Kind == "evnt" {
-		return keyfmt.EventReference
-	}
-
-	if o.Kind == "user" {
-		return keyfmt.EventUser
-	}
-
-	panic(fmt.Sprintf("invalid rule kind %#v in rule object %#v", o.Kind, o.Rule))
-}
-
-func (o *Object) RemRes(res objectid.ID) {
-	o.Excl = remRes(o.Excl, res)
-	o.Incl = remRes(o.Incl, res)
 }
 
 func (o *Object) Verify() error {
@@ -94,16 +67,4 @@ func (o *Object) Verify() error {
 	}
 
 	return nil
-}
-
-func remRes(ids []objectid.ID, res objectid.ID) []objectid.ID {
-	var lis []objectid.ID
-
-	for _, x := range ids {
-		if x != res {
-			lis = append(lis, x)
-		}
-	}
-
-	return lis
 }

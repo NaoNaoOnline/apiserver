@@ -1,4 +1,4 @@
-package feedemitter
+package ruleemitter
 
 import (
 	"fmt"

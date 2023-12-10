@@ -37,7 +37,7 @@ func (r *Redis) CreateEvnt(inp []*Object) ([]*Object, error) {
 			}
 
 			if cou != int64(len(key)) {
-				return nil, tracer.Maskf(labelObjectNotFoundError, "%d of these labels do not exist %v", int64(len(key))-cou, key)
+				return nil, tracer.Maskf(labelObjectNotFoundError, "%d of these labels do not exist on event %v %v", int64(len(key))-cou, inp[i].Evnt, key)
 			}
 		}
 
@@ -101,16 +101,6 @@ func (r *Redis) CreateEvnt(inp []*Object) ([]*Object, error) {
 		// objects using their IDs.
 		{
 			err = r.red.Simple().Create().Element(eveObj(inp[i].Evnt), musStr(inp[i]))
-			if err != nil {
-				return nil, tracer.Mask(err)
-			}
-		}
-
-		// Create the self referential event ID pointer. This must be a sorted set
-		// because we need the pointer to reference the event ID value when
-		// searching for custom lists.
-		{
-			err = r.red.Sorted().Create().Score(eveRef(inp[i].Evnt), inp[i].Evnt.String(), inp[i].Evnt.Float())
 			if err != nil {
 				return nil, tracer.Mask(err)
 			}

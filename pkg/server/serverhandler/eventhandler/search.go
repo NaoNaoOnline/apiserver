@@ -10,7 +10,6 @@ import (
 	"github.com/NaoNaoOnline/apiserver/pkg/server/context/userid"
 	"github.com/NaoNaoOnline/apiserver/pkg/server/limiter"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/eventstorage"
-	"github.com/NaoNaoOnline/apiserver/pkg/storage/feedstorage"
 	"github.com/xh3b4sd/tracer"
 )
 
@@ -113,15 +112,15 @@ func (h *Handler) Search(ctx context.Context, req *event.SearchI) (*event.Search
 			}
 
 			// TODO restrict feed length for non-premium users
-			not, err := h.fee.SearchFeed(use, lis, pag)
+			eid, err := h.fee.SearchFeed(lis, pag)
 			if err != nil {
 				return nil, tracer.Mask(err)
 			}
 
-			if len(not) != 0 {
+			if len(eid) != 0 {
 				var eob eventstorage.Slicer
 				{
-					eob, err = h.eve.SearchEvnt("", feedstorage.Slicer(not).Evnt())
+					eob, err = h.eve.SearchEvnt("", eid)
 					if err != nil {
 						return nil, tracer.Mask(err)
 					}

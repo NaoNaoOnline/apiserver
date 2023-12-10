@@ -1,5 +1,11 @@
 package keyfmt
 
+import (
+	"fmt"
+
+	"github.com/NaoNaoOnline/apiserver/pkg/object/objectid"
+)
+
 const (
 	// DescriptionEvent is used to store all the IDs of descriptions mapped to a
 	// specific event.
@@ -54,16 +60,6 @@ const (
 	//
 	EventObject = "eve/obj/%s"
 
-	// EventReference is used to store a self referential event ID. We need this
-	// for instance to resolve event keys to event values when collecting event
-	// objects based on rules for custom lists.
-	//
-	//     event ID              event ID
-	//                     ->
-	//     eve/ref/1234          1234
-	//
-	EventReference = "eve/ref/%s"
-
 	// EventTime is used to resolve from event times to their respective event
 	// IDs.
 	//
@@ -81,42 +77,6 @@ const (
 	//     eve/use/5678          1234,5678
 	//
 	EventUser = "eve/use/%s"
-
-	// FeedCategory is used to store all the IDs of users who want feeds about
-	// events created matching a certain category label.
-	//
-	//     category ID                   user IDs
-	//                             ->
-	//     fee/eve/kin/cat/5678          1234,5678
-	//
-	FeedCategory = "fee/eve/kin/cat/%s"
-
-	// FeedHost is used to store all the IDs of users who want feeds about events
-	// created matching a certain host label.
-	//
-	//     host ID                       user IDs
-	//                             ->
-	//     fee/eve/kin/hos/5678          1234,5678
-	//
-	FeedHost = "fee/eve/kin/hos/%s"
-
-	// FeedUser is used to store all the IDs of users who want feeds about events
-	// created by certain users.
-	//
-	//     user ID                       user IDs
-	//                             ->
-	//     fee/eve/kin/use/5678          1234,5678
-	//
-	FeedUser = "fee/eve/kin/use/%s"
-
-	// FeedObject is used to store all of our internal representations of feed
-	// objects scoped to a specific user / list combination.
-	//
-	//     user ID / list ID                  feed objects
-	//                                  ->
-	//     fee/use/1234/lis/5678/obj          {"key": "val"},{"key": "val"}
-	//
-	FeedObject = "fee/use/%s/lis/%s/obj"
 
 	// LabelSystem is used to store all the IDs of system labels.
 	//
@@ -250,23 +210,6 @@ const (
 	//
 	PolicyActive = "pol/act"
 
-	// RuleEvent is used to store all the IDs of rules defining single event IDs
-	// in their resource list.
-	//
-	//     event ID               rule IDs
-	//                     ->
-	//     rul/eve/5678          1234,5678
-	//
-	RuleEvent = "rul/eve/%s"
-
-	// RuleList is used to store all the IDs of rules mapped to a specific list.
-	//
-	//     list ID               rule IDs
-	//                     ->
-	//     rul/lis/5678          1234,5678
-	//
-	RuleList = "rul/lis/%s"
-
 	// RuleObject is used to store our internal representation of a rule object.
 	//
 	//     rule ID               rule object
@@ -389,3 +332,63 @@ const (
 	//
 	WalletUser = "wal/use/%s"
 )
+
+// EveCat maps category label IDs to event IDs.
+func EveCat[T string | objectid.ID](cid T) string {
+	return fmt.Sprintf("eve/cat/%s", cid)
+}
+
+// EveEve maps event IDs to event IDs.
+func EveEve[T string | objectid.ID](eid T) string {
+	return fmt.Sprintf("eve/eve/%s", eid)
+}
+
+// EveHos maps host label IDs to event IDs.
+func EveHos[T string | objectid.ID](hid T) string {
+	return fmt.Sprintf("eve/hos/%s", hid)
+}
+
+// EveFee maps list IDs to event IDs.
+func EveFee[T string | objectid.ID](lid T) string {
+	return fmt.Sprintf("eve/fee/%s", lid)
+}
+
+// EveRul maps rule IDs to event IDs.
+func EveRul[T string | objectid.ID](rid T) string {
+	return fmt.Sprintf("eve/rul/%s", rid)
+}
+
+// EveUse maps user IDs to event IDs.
+func EveUse[T string | objectid.ID](uid T) string {
+	return fmt.Sprintf("eve/use/%s", uid)
+}
+
+// LisRul maps rule IDs to list IDs.
+func LisRul[T string | objectid.ID](rid T) string {
+	return fmt.Sprintf("lis/rul/%s", rid)
+}
+
+// RulCat maps category label IDs to rule IDs.
+func RulCat[T string | objectid.ID](cid T) string {
+	return fmt.Sprintf("rul/cat/%s", cid)
+}
+
+// RulEve maps event IDs to rule IDs.
+func RulEve[T string | objectid.ID](eid T) string {
+	return fmt.Sprintf("rul/eve/%s", eid)
+}
+
+// RulHos maps host label IDs to rule IDs.
+func RulHos[T string | objectid.ID](hid T) string {
+	return fmt.Sprintf("rul/hos/%s", hid)
+}
+
+// RulLis maps list IDs to rule IDs.
+func RulLis[T string | objectid.ID](lid T) string {
+	return fmt.Sprintf("rul/lis/%s", lid)
+}
+
+// RulUse maps user IDs to rule IDs.
+func RulUse[T string | objectid.ID](uid T) string {
+	return fmt.Sprintf("rul/use/%s", uid)
+}

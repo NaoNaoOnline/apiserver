@@ -202,28 +202,6 @@ func (r *Redis) SearchLink(eve objectid.ID) ([]objectid.ID, error) {
 	return objectid.IDs(val), nil
 }
 
-func (r *Redis) SearchRule(eve objectid.ID) ([]objectid.ID, error) {
-	var err error
-
-	// val will result in a list of all rule IDs explicitely defining the given
-	// event ID, if any.
-	var val []string
-	{
-		val, err = r.red.Sorted().Search().Order(rulEve(eve), 0, -1)
-		if err != nil {
-			return nil, tracer.Mask(err)
-		}
-	}
-
-	// There might not be any values, and so we do not proceed, but instead
-	// return nothing.
-	if len(val) == 0 {
-		return nil, nil
-	}
-
-	return objectid.IDs(val), nil
-}
-
 func (r *Redis) SearchTime(min time.Time, max time.Time) ([]*Object, error) {
 	var err error
 

@@ -7,13 +7,13 @@ import (
 	"github.com/xh3b4sd/tracer"
 )
 
-func (e *Emitter) DeleteDesc(des objectid.ID) error {
+func (e *Emitter) DeleteDesc(did objectid.ID) error {
 	var tas *task.Task
 	{
 		tas = &task.Task{
 			Meta: &task.Meta{
 				objectlabel.DescAction: objectlabel.ActionDelete,
-				objectlabel.DescObject: des.String(),
+				objectlabel.DescObject: did.String(),
 				objectlabel.DescOrigin: objectlabel.OriginCustom,
 			},
 		}

@@ -1,56 +1,18 @@
 package rulestorage
 
 import (
+	"time"
+
+	"github.com/NaoNaoOnline/apiserver/pkg/keyfmt"
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectstate"
-	"github.com/NaoNaoOnline/apiserver/pkg/storage/feedstorage"
 	"github.com/xh3b4sd/tracer"
 )
 
-func (r *Redis) Delete(inp []*Object) ([]objectstate.String, error) {
+func (r *Redis) DeleteRule(inp []*Object) ([]objectstate.String, error) {
 	var err error
 
 	var out []objectstate.String
 	for i := range inp {
-		// Remove the rule owner from the feed for the resources specified by the
-		// given rules.
-		if inp[i].Kind == "cate" || inp[i].Kind == "host" || inp[i].Kind == "user" {
-			for _, y := range inp[i].Incl {
-				err = r.red.Sorted().Delete().Score(notKin(inp[i].Kind, y), inp[i].User.Float())
-				if err != nil {
-					return nil, tracer.Mask(err)
-				}
-			}
-		}
-
-		if inp[i].Kind == "evnt" {
-			for _, y := range inp[i].Incl {
-				// Delete the event specific mappings for event specific search queries.
-				{
-					err = r.red.Sorted().Delete().Score(rulEve(y), inp[i].Rule.Float())
-					if err != nil {
-						return nil, tracer.Mask(err)
-					}
-				}
-
-				// Remove the event from the static list.
-				var obj []*feedstorage.Object
-				{
-					obj = append(obj, &feedstorage.Object{
-						Evnt: y,
-						List: inp[i].List,
-						User: inp[i].User,
-					})
-				}
-
-				{
-					err = r.fee.DeleteFeed(obj)
-					if err != nil {
-						return nil, tracer.Mask(err)
-					}
-				}
-			}
-		}
-
 		// Delete the the user specific mappings for user specific search queries.
 		{
 			err = r.red.Sorted().Delete().Score(rulUse(inp[i].User), inp[i].Rule.Float())
@@ -61,7 +23,15 @@ func (r *Redis) Delete(inp []*Object) ([]objectstate.String, error) {
 
 		// Delete the the list specific mappings for list specific search queries.
 		{
-			err = r.red.Sorted().Delete().Score(rulLis(inp[i].List), inp[i].Rule.Float())
+			err = r.red.Sorted().Delete().Score(keyfmt.RulLis(inp[i].List), inp[i].Rule.Float())
+			if err != nil {
+				return nil, tracer.Mask(err)
+			}
+		}
+
+		// Delete the the rule specific mappings for rule specific search queries.
+		{
+			err = r.red.Sorted().Delete().Score(keyfmt.LisRul(inp[i].Rule), inp[i].List.Float())
 			if err != nil {
 				return nil, tracer.Mask(err)
 			}
@@ -72,6 +42,42 @@ func (r *Redis) Delete(inp []*Object) ([]objectstate.String, error) {
 		// eventually be retried.
 		{
 			_, err = r.red.Simple().Delete().Multi(rulObj(inp[i].Rule))
+			if err != nil {
+				return nil, tracer.Mask(err)
+			}
+		}
+
+		{
+			out = append(out, objectstate.Deleted)
+		}
+	}
+
+	return out, nil
+}
+
+func (r *Redis) DeleteWrkr(inp []*Object) ([]objectstate.String, error) {
+	var err error
+
+	var out []objectstate.String
+	for i := range inp {
+		// Before deleting a nested structure, we need to create a worker task for
+		// ensuring the deletion of the rule object and all of its associated data
+		// structures.
+		{
+			err = r.emi.Delete(inp[i].Rule)
+			if err != nil {
+				return nil, tracer.Mask(err)
+			}
+		}
+
+		// Mark the rule object as deleted.
+		{
+			inp[i].Dltd = time.Now().UTC()
+		}
+
+		// Update the rule object with the deletion timestamp.
+		{
+			err = r.red.Simple().Create().Element(rulObj(inp[i].Rule), musStr(inp[i]))
 			if err != nil {
 				return nil, tracer.Mask(err)
 			}

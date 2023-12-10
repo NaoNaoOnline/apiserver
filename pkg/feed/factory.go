@@ -1,4 +1,4 @@
-package feedstorage
+package feed
 
 import (
 	"github.com/xh3b4sd/logger"
@@ -6,7 +6,7 @@ import (
 )
 
 func Fake() Interface {
-	return NewRedis(RedisConfig{
+	return New(Config{
 		Log: logger.Fake(),
 		Red: redigo.Fake(),
 	})

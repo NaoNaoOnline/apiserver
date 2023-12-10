@@ -1,4 +1,4 @@
-package feedemitter
+package ruleemitter
 
 import (
 	"github.com/xh3b4sd/logger"

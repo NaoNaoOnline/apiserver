@@ -1,12 +1,18 @@
 package fakeit
 
 import (
+	"strconv"
+	"strings"
+
 	"github.com/NaoNaoOnline/apiserver/pkg/emitter"
+	"github.com/NaoNaoOnline/apiserver/pkg/envvar"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage"
 	"github.com/brianvoe/gofakeit/v6"
 	"github.com/spf13/cobra"
 	"github.com/xh3b4sd/logger"
 	"github.com/xh3b4sd/redigo"
+	"github.com/xh3b4sd/rescue"
+	"github.com/xh3b4sd/rescue/engine"
 	"github.com/xh3b4sd/tracer"
 )
 
@@ -22,10 +28,34 @@ func (r *run) run(cmd *cobra.Command, args []string) {
 
 	// --------------------------------------------------------------------- //
 
-	var emi *emitter.Emitter
+	var env envvar.Env
 	{
-		emi = emitter.Fake()
+		env = envvar.Load()
 	}
+
+	// --------------------------------------------------------------------- //
+
+	var cid []int64
+	{
+		cid = append(cid, splNum(env.ChainCid)...)
+	}
+
+	var pcn []string
+	{
+		pcn = append(pcn, splStr(env.ChainPol)...)
+	}
+
+	var rpc []string
+	{
+		rpc = append(rpc, splStr(env.ChainRpc)...)
+	}
+
+	var scn []string
+	{
+		scn = append(scn, splStr(env.ChainSub)...)
+	}
+
+	// --------------------------------------------------------------------- //
 
 	var log logger.Interface
 	{
@@ -35,6 +65,30 @@ func (r *run) run(cmd *cobra.Command, args []string) {
 	var red redigo.Interface
 	{
 		red = redigo.Default()
+	}
+
+	var res rescue.Interface
+	{
+		res = engine.New(engine.Config{
+			Logger: log,
+			Queue:  "api.naonao.io", // rescue.io/api.naonao.io
+			Redigo: red,
+			Sepkey: "/",
+		})
+	}
+
+	// --------------------------------------------------------------------- //
+
+	var emi *emitter.Emitter
+	{
+		emi = emitter.New(emitter.Config{
+			Cid: cid,
+			Log: log,
+			Pcn: pcn,
+			Res: res,
+			Rpc: rpc,
+			Scn: scn,
+		})
 	}
 
 	// --------------------------------------------------------------------- //
@@ -98,4 +152,27 @@ func (r *run) run(cmd *cobra.Command, args []string) {
 			tracer.Panic(tracer.Mask(err))
 		}
 	}
+}
+
+func splNum(str string) []int64 {
+	var lis []int64
+
+	for _, x := range strings.Split(str, ",") {
+		lis = append(lis, musNum(x))
+	}
+
+	return lis
+}
+
+func splStr(str string) []string {
+	return strings.Split(str, ",")
+}
+
+func musNum(str string) int64 {
+	num, err := strconv.ParseInt(str, 10, 64)
+	if err != nil {
+		tracer.Panic(tracer.Mask(err))
+	}
+
+	return num
 }
