@@ -2,12 +2,12 @@ package feed
 
 import (
 	"github.com/NaoNaoOnline/apiserver/pkg/keyfmt"
-	"github.com/NaoNaoOnline/apiserver/pkg/object/objectid"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/eventstorage"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/rulestorage"
 )
 
-// TODO read event IDs from these in CreateRule
+// eveRea computes storage keys that allow us to search for event IDs in
+// CreateRule that are associated to the given rule object.
 func eveRea(rob *rulestorage.Object) []string {
 	var key []string
 
@@ -38,11 +38,8 @@ func eveRea(rob *rulestorage.Object) []string {
 	return key
 }
 
-func eveRul(str string) string {
-	return keyfmt.EveRul(objectid.ID(str))
-}
-
-// TODO write event IDs to these in CreateEvnt
+// eveWri computes storage keys that allow us to persist event IDs in CreateEvnt
+// that are associated to the given event object.
 func eveWri(eob *eventstorage.Object) []string {
 	var key []string
 
@@ -65,17 +62,8 @@ func eveWri(eob *eventstorage.Object) []string {
 	return key
 }
 
-func fmtFnc[T string | objectid.ID](lis []T, fnc func(T) string) []string {
-	var key []string
-
-	for _, x := range lis {
-		key = append(key, fnc(x))
-	}
-
-	return key
-}
-
-// TODO read rule IDs from these in CreateEvnt
+// rulRea computes storage keys that allow us to search for rule IDs in
+// CreateEvnt that are associated to the given event object.
 func rulRea(eob *eventstorage.Object) []string {
 	var key []string
 
@@ -98,7 +86,8 @@ func rulRea(eob *eventstorage.Object) []string {
 	return key
 }
 
-// TODO write rule IDs to these in CreateRule
+// rulWri computes storage keys that allow us to persist rule IDs in CreateRule
+// that are associated to the given rule object.
 func rulWri(rob *rulestorage.Object) []string {
 	var key []string
 

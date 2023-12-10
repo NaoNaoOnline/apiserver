@@ -9,7 +9,6 @@ import (
 	"github.com/xh3b4sd/tracer"
 )
 
-// TODO
 func (h *CustomHandler) Ensure(tas *task.Task, bud *budget.Budget) error {
 	var err error
 
@@ -26,6 +25,8 @@ func (h *CustomHandler) Ensure(tas *task.Task, bud *budget.Budget) error {
 		}
 	}
 
+	// Delete all necessary cross-references between the deleted rule and all the
+	// events it described.
 	{
 		err = h.fee.DeleteRule(rob[0])
 		if err != nil {
@@ -33,6 +34,17 @@ func (h *CustomHandler) Ensure(tas *task.Task, bud *budget.Budget) error {
 		}
 	}
 
+	// Only delete the rule object from rule storage once the feed references are
+	// cleaned up.
+	{
+		_, err := h.rul.DeleteRule(rob)
+		if err != nil {
+			return tracer.Mask(err)
+		}
+	}
+
+	// Generate the associated feed, excluding the deleted rule. Afer this step
+	// the associated custom list will show all relevant events.
 	{
 		err = h.fee.CreateFeed(rob[0].List)
 		if err != nil {

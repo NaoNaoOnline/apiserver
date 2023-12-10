@@ -9,7 +9,6 @@ import (
 	"github.com/xh3b4sd/tracer"
 )
 
-// TODO lock with distributed lock
 func (f *Feed) CreateEvnt(eob *eventstorage.Object) error {
 	var err error
 
@@ -59,7 +58,6 @@ func (f *Feed) CreateEvnt(eob *eventstorage.Object) error {
 	return nil
 }
 
-// TODO lock with distributed lock
 func (f *Feed) CreateFeed(lid objectid.ID) error {
 	var err error
 
@@ -85,7 +83,7 @@ func (f *Feed) CreateFeed(lid objectid.ID) error {
 	// store event IDs using event keys
 	var cou int64
 	{
-		cou, err = f.red.Sorted().Create().Union(keyfmt.EveFee(lid), fmtFnc(rid, eveRul)...)
+		cou, err = f.red.Sorted().Create().Union(keyfmt.EveFee(lid), objectid.Fnc(rid, keyfmt.EveRul)...)
 		if err != nil {
 			return tracer.Mask(err)
 		}
@@ -102,7 +100,6 @@ func (f *Feed) CreateFeed(lid objectid.ID) error {
 	return nil
 }
 
-// TODO lock with distributed lock
 func (f *Feed) CreateRule(rob *rulestorage.Object) error {
 	var err error
 

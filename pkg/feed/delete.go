@@ -8,7 +8,6 @@ import (
 	"github.com/xh3b4sd/tracer"
 )
 
-// TODO lock with distributed lock
 func (f *Feed) DeleteEvnt(eob *eventstorage.Object) error {
 	var err error
 
@@ -47,7 +46,6 @@ func (f *Feed) DeleteEvnt(eob *eventstorage.Object) error {
 	return nil
 }
 
-// TODO lock with distributed lock
 func (f *Feed) DeleteFeed(lid objectid.ID) error {
 	var err error
 
@@ -61,7 +59,6 @@ func (f *Feed) DeleteFeed(lid objectid.ID) error {
 	return nil
 }
 
-// TODO lock with distributed lock
 func (f *Feed) DeleteRule(rob *rulestorage.Object) error {
 	var err error
 

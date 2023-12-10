@@ -389,61 +389,61 @@ const (
 )
 
 // EveCat maps category label IDs to event IDs.
-func EveCat(cid objectid.ID) string {
+func EveCat[T string | objectid.ID](cid T) string {
 	return fmt.Sprintf("eve/cat/%s", cid)
 }
 
 // EveEve maps event IDs to event IDs.
-func EveEve(eid objectid.ID) string {
+func EveEve[T string | objectid.ID](eid T) string {
 	return fmt.Sprintf("eve/eve/%s", eid)
 }
 
 // EveHos maps host label IDs to event IDs.
-func EveHos(hid objectid.ID) string {
+func EveHos[T string | objectid.ID](hid T) string {
 	return fmt.Sprintf("eve/hos/%s", hid)
 }
 
 // EveFee maps list IDs to event IDs.
-func EveFee(lid objectid.ID) string {
+func EveFee[T string | objectid.ID](lid T) string {
 	return fmt.Sprintf("eve/fee/%s", lid)
 }
 
 // EveRul maps rule IDs to event IDs.
-func EveRul(rid objectid.ID) string {
+func EveRul[T string | objectid.ID](rid T) string {
 	return fmt.Sprintf("eve/rul/%s", rid)
 }
 
 // EveUse maps user IDs to event IDs.
-func EveUse(uid objectid.ID) string {
+func EveUse[T string | objectid.ID](uid T) string {
 	return fmt.Sprintf("eve/use/%s", uid)
 }
 
 // LisRul maps rule IDs to list IDs.
-func LisRul(rid objectid.ID) string {
+func LisRul[T string | objectid.ID](rid T) string {
 	return fmt.Sprintf("lis/rul/%s", rid)
 }
 
 // RulCat maps category label IDs to rule IDs.
-func RulCat(cid objectid.ID) string {
+func RulCat[T string | objectid.ID](cid T) string {
 	return fmt.Sprintf("rul/cat/%s", cid)
 }
 
 // RulEve maps event IDs to rule IDs.
-func RulEve(eid objectid.ID) string {
+func RulEve[T string | objectid.ID](eid T) string {
 	return fmt.Sprintf("rul/eve/%s", eid)
 }
 
 // RulHos maps host label IDs to rule IDs.
-func RulHos(hid objectid.ID) string {
+func RulHos[T string | objectid.ID](hid T) string {
 	return fmt.Sprintf("rul/hos/%s", hid)
 }
 
 // RulLis maps list IDs to rule IDs.
-func RulLis(lid objectid.ID) string {
+func RulLis[T string | objectid.ID](lid T) string {
 	return fmt.Sprintf("rul/lis/%s", lid)
 }
 
 // RulUse maps user IDs to rule IDs.
-func RulUse(uid objectid.ID) string {
+func RulUse[T string | objectid.ID](uid T) string {
 	return fmt.Sprintf("rul/use/%s", uid)
 }

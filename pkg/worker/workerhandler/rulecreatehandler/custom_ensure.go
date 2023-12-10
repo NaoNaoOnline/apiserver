@@ -9,7 +9,6 @@ import (
 	"github.com/xh3b4sd/tracer"
 )
 
-// TODO
 func (h *CustomHandler) Ensure(tas *task.Task, bud *budget.Budget) error {
 	var err error
 
@@ -26,6 +25,8 @@ func (h *CustomHandler) Ensure(tas *task.Task, bud *budget.Budget) error {
 		}
 	}
 
+	// Create all necessary cross-references between the created rule and all the
+	// events it describes.
 	{
 		err = h.fee.CreateRule(rob[0])
 		if err != nil {
@@ -33,6 +34,8 @@ func (h *CustomHandler) Ensure(tas *task.Task, bud *budget.Budget) error {
 		}
 	}
 
+	// Generate the associated feed, including the created rule. Afer this step
+	// the associated custom list will show all relevant events.
 	{
 		err = h.fee.CreateFeed(rob[0].List)
 		if err != nil {

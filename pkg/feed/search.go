@@ -6,7 +6,6 @@ import (
 	"github.com/xh3b4sd/tracer"
 )
 
-// TODO find all event IDs for the given rule ID
 func (f *Feed) SearchEvnt(rid objectid.ID, pag [2]int) ([]objectid.ID, error) {
 	var err error
 
@@ -21,7 +20,6 @@ func (f *Feed) SearchEvnt(rid objectid.ID, pag [2]int) ([]objectid.ID, error) {
 	return objectid.IDs(val), nil
 }
 
-// TODO find all event IDs for the given list ID, this is the aggregated feed
 func (f *Feed) SearchFeed(lid objectid.ID, pag [2]int) ([]objectid.ID, error) {
 	var err error
 
@@ -36,7 +34,6 @@ func (f *Feed) SearchFeed(lid objectid.ID, pag [2]int) ([]objectid.ID, error) {
 	return objectid.IDs(val), nil
 }
 
-// TODO find all list IDs for the given event ID
 func (f *Feed) SearchList(eid objectid.ID, pag [2]int) ([]objectid.ID, error) {
 	var err error
 
@@ -55,7 +52,7 @@ func (f *Feed) SearchList(eid objectid.ID, pag [2]int) ([]objectid.ID, error) {
 
 	var val []string
 	{
-		val, err = f.red.Sorted().Search().Union(fmtFnc(rid, keyfmt.LisRul)...)
+		val, err = f.red.Sorted().Search().Union(objectid.Fnc(rid, keyfmt.LisRul)...)
 		if err != nil {
 			return nil, tracer.Mask(err)
 		}
@@ -64,7 +61,6 @@ func (f *Feed) SearchList(eid objectid.ID, pag [2]int) ([]objectid.ID, error) {
 	return objectid.IDs(val), nil
 }
 
-// TODO find all rule IDs for the given event ID
 func (f *Feed) SearchRule(eid objectid.ID, pag [2]int) ([]objectid.ID, error) {
 	var err error
 

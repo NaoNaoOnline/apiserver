@@ -48,6 +48,7 @@ func (h *CustomHandler) deleteList(lid objectid.ID, bud *budget.Budget) error {
 		}
 	}
 
+	// Delete the aggregated feed.
 	{
 		err = h.fee.DeleteFeed(lid)
 		if err != nil {
@@ -55,6 +56,7 @@ func (h *CustomHandler) deleteList(lid objectid.ID, bud *budget.Budget) error {
 		}
 	}
 
+	// Delete the list object from list storage.
 	{
 		_, err := h.lis.DeleteList(lob[:bud.Claim(len(lob))])
 		if err != nil {
@@ -76,6 +78,8 @@ func (h *CustomHandler) deleteRule(lid objectid.ID, bud *budget.Budget) error {
 		}
 	}
 
+	// Delete all necessary cross-references between the deleted rules and all the
+	// events they described.
 	for _, x := range rob {
 		err = h.fee.DeleteRule(x)
 		if err != nil {
@@ -83,6 +87,8 @@ func (h *CustomHandler) deleteRule(lid objectid.ID, bud *budget.Budget) error {
 		}
 	}
 
+	// Only delete the rule objects from rule storage once the feed references are
+	// cleaned up.
 	{
 		_, err := h.rul.DeleteRule(rob[:bud.Claim(len(rob))])
 		if err != nil {
