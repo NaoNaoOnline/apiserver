@@ -79,13 +79,20 @@ func Test_Redis_Feed_Duplicate(t *testing.T) {
 	// Create rules.
 	var rob []*rulestorage.Object
 	{
-		rob, err = rul.CreateRule([]*rulestorage.Object{rulOne(lisOne().List)})
+		lis := []*rulestorage.Object{
+			rulOne(lisOne().List),
+		}
+
+		rob, err = rul.CreateRule(lis)
 		if err != nil {
 			t.Fatal(err)
 		}
-		err = fee.CreateRule(rob[0])
-		if err != nil {
-			t.Fatal(err)
+
+		for _, x := range rob {
+			err = fee.CreateRule(x)
+			if err != nil {
+				t.Fatal(err)
+			}
 		}
 	}
 
@@ -147,9 +154,12 @@ func Test_Redis_Feed_Duplicate(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
-		err = fee.DeleteRule(rob[0])
-		if err != nil {
-			t.Fatal(err)
+
+		for _, x := range rob {
+			err = fee.DeleteRule(x)
+			if err != nil {
+				t.Fatal(err)
+			}
 		}
 	}
 
@@ -279,17 +289,22 @@ func Test_Redis_Feed_Multi_Event_First(t *testing.T) {
 	// Create rules.
 	var rob []*rulestorage.Object
 	{
-		rob, err = rul.CreateRule([]*rulestorage.Object{rulOne(lisOne().List), rulTwo(lisOne().List), rulThr(lisOne().List)})
+		lis := []*rulestorage.Object{
+			rulOne(lisOne().List),
+			rulTwo(lisOne().List),
+			rulThr(lisOne().List),
+		}
+
+		rob, err = rul.CreateRule(lis)
 		if err != nil {
 			t.Fatal(err)
 		}
-		err = fee.CreateRule(rob[0])
-		if err != nil {
-			t.Fatal(err)
-		}
-		err = fee.CreateRule(rob[1])
-		if err != nil {
-			t.Fatal(err)
+
+		for _, x := range rob {
+			err = fee.CreateRule(x)
+			if err != nil {
+				t.Fatal(err)
+			}
 		}
 	}
 
@@ -346,13 +361,12 @@ func Test_Redis_Feed_Multi_Event_First(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
-		err = fee.DeleteRule(rob[0])
-		if err != nil {
-			t.Fatal(err)
-		}
-		err = fee.DeleteRule(rob[1])
-		if err != nil {
-			t.Fatal(err)
+
+		for _, x := range rob {
+			err = fee.DeleteRule(x)
+			if err != nil {
+				t.Fatal(err)
+			}
 		}
 	}
 
@@ -398,17 +412,22 @@ func Test_Redis_Feed_Multi_Rule_First(t *testing.T) {
 	// Create rules.
 	var rob []*rulestorage.Object
 	{
-		rob, err = rul.CreateRule([]*rulestorage.Object{rulOne(lisOne().List), rulTwo(lisOne().List), rulThr(lisOne().List)})
+		lis := []*rulestorage.Object{
+			rulOne(lisOne().List),
+			rulTwo(lisOne().List),
+			rulThr(lisOne().List),
+		}
+
+		rob, err = rul.CreateRule(lis)
 		if err != nil {
 			t.Fatal(err)
 		}
-		err = fee.CreateRule(rob[0])
-		if err != nil {
-			t.Fatal(err)
-		}
-		err = fee.CreateRule(rob[1])
-		if err != nil {
-			t.Fatal(err)
+
+		for _, x := range rob {
+			err = fee.CreateRule(x)
+			if err != nil {
+				t.Fatal(err)
+			}
 		}
 	}
 
@@ -498,13 +517,12 @@ func Test_Redis_Feed_Multi_Rule_First(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
-		err = fee.DeleteRule(rob[0])
-		if err != nil {
-			t.Fatal(err)
-		}
-		err = fee.DeleteRule(rob[1])
-		if err != nil {
-			t.Fatal(err)
+
+		for _, x := range rob {
+			err = fee.DeleteRule(x)
+			if err != nil {
+				t.Fatal(err)
+			}
 		}
 	}
 
@@ -583,13 +601,20 @@ func Test_Redis_Feed_Single_Event_First(t *testing.T) {
 	// Create rules.
 	var rob []*rulestorage.Object
 	{
-		rob, err = rul.CreateRule([]*rulestorage.Object{rulOne(lisOne().List)})
+		lis := []*rulestorage.Object{
+			rulOne(lisOne().List),
+		}
+
+		rob, err = rul.CreateRule(lis)
 		if err != nil {
 			t.Fatal(err)
 		}
-		err = fee.CreateRule(rob[0])
-		if err != nil {
-			t.Fatal(err)
+
+		for _, x := range rob {
+			err = fee.CreateRule(x)
+			if err != nil {
+				t.Fatal(err)
+			}
 		}
 	}
 
@@ -639,9 +664,12 @@ func Test_Redis_Feed_Single_Event_First(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
-		err = fee.DeleteRule(rob[0])
-		if err != nil {
-			t.Fatal(err)
+
+		for _, x := range rob {
+			err = fee.DeleteRule(x)
+			if err != nil {
+				t.Fatal(err)
+			}
 		}
 	}
 
@@ -687,13 +715,20 @@ func Test_Redis_Feed_Single_Rule_First(t *testing.T) {
 	// Create rules.
 	var rob []*rulestorage.Object
 	{
-		rob, err = rul.CreateRule([]*rulestorage.Object{rulOne(lisOne().List)})
+		lis := []*rulestorage.Object{
+			rulOne(lisOne().List),
+		}
+
+		rob, err = rul.CreateRule(lis)
 		if err != nil {
 			t.Fatal(err)
 		}
-		err = fee.CreateRule(rob[0])
-		if err != nil {
-			t.Fatal(err)
+
+		for _, x := range rob {
+			err = fee.CreateRule(x)
+			if err != nil {
+				t.Fatal(err)
+			}
 		}
 	}
 
@@ -776,9 +811,12 @@ func Test_Redis_Feed_Single_Rule_First(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
-		err = fee.DeleteRule(rob[0])
-		if err != nil {
-			t.Fatal(err)
+
+		for _, x := range rob {
+			err = fee.DeleteRule(x)
+			if err != nil {
+				t.Fatal(err)
+			}
 		}
 	}
 

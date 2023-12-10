@@ -103,7 +103,7 @@ docker run --rm -p 6382:6379 -p 8082:8001 redis/redis-stack:latest
 ```
 
 ```
-go test ./... --tags redis -count 1 -race
+go test ./cnf --tags redis -count 1 -race
 ```
 
 
