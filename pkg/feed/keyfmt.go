@@ -12,25 +12,25 @@ func eveRea(rob *rulestorage.Object) []string {
 	var key []string
 
 	if rob.Kind == "cate" {
-		for _, x := range append(rob.Excl, rob.Incl...) {
+		for _, x := range rob.Incl {
 			key = append(key, keyfmt.EveCat(x))
 		}
 	}
 
 	if rob.Kind == "evnt" {
-		for _, x := range append(rob.Excl, rob.Incl...) {
+		for _, x := range rob.Incl {
 			key = append(key, keyfmt.EveEve(x))
 		}
 	}
 
 	if rob.Kind == "host" {
-		for _, x := range append(rob.Excl, rob.Incl...) {
+		for _, x := range rob.Incl {
 			key = append(key, keyfmt.EveHos(x))
 		}
 	}
 
 	if rob.Kind == "user" {
-		for _, x := range append(rob.Excl, rob.Incl...) {
+		for _, x := range rob.Incl {
 			key = append(key, keyfmt.EveUse(x))
 		}
 	}
@@ -92,25 +92,25 @@ func rulWri(rob *rulestorage.Object) []string {
 	var key []string
 
 	if rob.Kind == "cate" {
-		for _, x := range append(rob.Excl, rob.Incl...) {
+		for _, x := range rob.Incl {
 			key = append(key, keyfmt.RulCat(x))
 		}
 	}
 
 	if rob.Kind == "evnt" {
-		for _, x := range append(rob.Excl, rob.Incl...) {
+		for _, x := range rob.Incl {
 			key = append(key, keyfmt.RulEve(x))
 		}
 	}
 
 	if rob.Kind == "host" {
-		for _, x := range append(rob.Excl, rob.Incl...) {
+		for _, x := range rob.Incl {
 			key = append(key, keyfmt.RulHos(x))
 		}
 	}
 
 	if rob.Kind == "user" {
-		for _, x := range append(rob.Excl, rob.Incl...) {
+		for _, x := range rob.Incl {
 			key = append(key, keyfmt.RulUse(x))
 		}
 	}
