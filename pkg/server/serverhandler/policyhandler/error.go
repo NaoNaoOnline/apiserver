@@ -6,7 +6,7 @@ import (
 
 var searchLtstInvalidError = &tracer.Error{
 	Kind: "updateSyncInvalidError",
-	Desc: `The request expects symbol.ltst to be set to "default". symbol.ltst was not found to be set to "default". Therefore the request failed.`,
+	Desc: `The request expects symbol.ltst to be set to "dflt". symbol.ltst was not found to be set to "dflt". Therefore the request failed.`,
 }
 
 var searchSymbolEmptyError = &tracer.Error{
@@ -16,7 +16,7 @@ var searchSymbolEmptyError = &tracer.Error{
 
 var updateSyncInvalidError = &tracer.Error{
 	Kind: "updateSyncInvalidError",
-	Desc: `The request expects symbol.sync to be set to "default". symbol.sync was not found to be set to "default". Therefore the request failed.`,
+	Desc: `The request expects symbol.sync to be set to "dflt". symbol.sync was not found to be set to "dflt". Therefore the request failed.`,
 }
 
 var updateSyncLockError = &tracer.Error{

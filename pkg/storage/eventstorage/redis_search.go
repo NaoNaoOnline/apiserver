@@ -80,9 +80,17 @@ func (r *Redis) SearchEvnt(use objectid.ID, inp []objectid.ID) ([]*Object, error
 		// visit indicators should work reliably because Simple.Search.Multi gets
 		// called with the same amount of keys for each query. And so each and every
 		// JSON string should relate to each and every visit indicator for the
-		// calling user.
+		// calling user. Note that the bool map must be initialized here if it is
+		// nil, because the bool map is not persisted in storage, since we exclude
+		// it with the JSON tag "-".
 		if len(lin) == len(jsn) && lin[i] == "1" {
-			obj.Clck.User = true
+			if obj.Mtrc.User == nil {
+				obj.Mtrc.User = map[string]bool{}
+			}
+
+			{
+				obj.Mtrc.User[MetricUser] = true
+			}
 		}
 
 		{

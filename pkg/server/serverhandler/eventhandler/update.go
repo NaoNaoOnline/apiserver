@@ -6,6 +6,7 @@ import (
 	"github.com/NaoNaoOnline/apigocode/pkg/event"
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectid"
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectstate"
+	"github.com/NaoNaoOnline/apiserver/pkg/server/context/isprem"
 	"github.com/NaoNaoOnline/apiserver/pkg/server/context/userid"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/eventstorage"
 	"github.com/xh3b4sd/tracer"
@@ -13,6 +14,11 @@ import (
 
 func (h *Handler) Update(ctx context.Context, req *event.UpdateI) (*event.UpdateO, error) {
 	var err error
+
+	var pre bool
+	{
+		pre = isprem.FromContext(ctx)
+	}
 
 	var use objectid.ID
 	{
@@ -50,7 +56,7 @@ func (h *Handler) Update(ctx context.Context, req *event.UpdateI) (*event.Update
 			}
 
 			{
-				lis, err := h.eve.UpdateClck(use, inp)
+				lis, err := h.eve.UpdateClck(use, pre, inp)
 				if err != nil {
 					return nil, tracer.Mask(err)
 				}

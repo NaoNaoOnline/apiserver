@@ -148,7 +148,7 @@ func newLabl(x int, y int) []*labelstorage.Object {
 				Name: objectfield.String{
 					Data: "Arbitrum",
 				},
-				Prfl: objectfield.Map{
+				Prfl: objectfield.MapStr{
 					Data: map[string]string{
 						objectlabel.ProfileTwitter: "arbitrum_foundation",
 					},
@@ -159,7 +159,7 @@ func newLabl(x int, y int) []*labelstorage.Object {
 				Name: objectfield.String{
 					Data: "Vance",
 				},
-				Prfl: objectfield.Map{
+				Prfl: objectfield.MapStr{
 					Data: map[string]string{
 						objectlabel.ProfileTwitter: "pythianism_pythianism",
 					},
@@ -170,7 +170,7 @@ func newLabl(x int, y int) []*labelstorage.Object {
 				Name: objectfield.String{
 					Data: "Sisyphus",
 				},
-				Prfl: objectfield.Map{
+				Prfl: objectfield.MapStr{
 					Data: map[string]string{
 						objectlabel.ProfileTwitter: "Sisyphus_Sisyphus",
 					},

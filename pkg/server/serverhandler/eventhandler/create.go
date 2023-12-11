@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/NaoNaoOnline/apigocode/pkg/event"
+	"github.com/NaoNaoOnline/apiserver/pkg/object/objectfield"
 	"github.com/NaoNaoOnline/apiserver/pkg/server/context/userid"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/eventstorage"
 	"github.com/xh3b4sd/tracer"
@@ -20,6 +21,7 @@ func (h *Handler) Create(ctx context.Context, req *event.CreateI) (*event.Create
 				Dura: inpDur(x.Public.Dura),
 				Host: inpLab(x.Public.Host),
 				Link: x.Public.Link,
+				Mtrc: objectfield.MapInt{},
 				Time: inpTim(x.Public.Time),
 				User: userid.FromContext(ctx),
 			})

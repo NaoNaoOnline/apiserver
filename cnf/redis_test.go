@@ -74,6 +74,15 @@ func rulThr(lid objectid.ID) *rulestorage.Object {
 	}
 }
 
+func rulExc(lid objectid.ID) *rulestorage.Object {
+	return &rulestorage.Object{
+		Excl: []objectid.ID{"426990", "944148"}, // eveTwo:426989, eveOne:944148
+		List: lid,
+		Kind: "cate",
+		User: "295301",
+	}
+}
+
 func newSrv() (redigo.Interface, feed.Interface, rulestorage.Interface) {
 	var red redigo.Interface
 	{

@@ -10,8 +10,6 @@ import (
 	"github.com/xh3b4sd/tracer"
 )
 
-// Ensure receives a task for every event being created on the NaoNao platform
-// and simply fans out more detailed tasks without any further pre-processing.
 func (h *SystemHandler) Ensure(tas *task.Task, bud *budget.Budget) error {
 	var err error
 
@@ -23,13 +21,6 @@ func (h *SystemHandler) Ensure(tas *task.Task, bud *budget.Budget) error {
 	var eob []*eventstorage.Object
 	{
 		eob, err = h.eve.SearchEvnt("", []objectid.ID{eid})
-		if err != nil {
-			return tracer.Mask(err)
-		}
-	}
-
-	if h.twi.Verify() {
-		err = h.emi.Evnt().CreateTwtr(eid)
 		if err != nil {
 			return tracer.Mask(err)
 		}

@@ -131,8 +131,9 @@ type Interface interface {
 	// a link click for the given user.
 	//
 	//     @inp[0] the user clicking the event link
-	//     @inp[1] the list of event objects to modify
+	//     @inp[1] the bool expressing whether the given user has a premium subscription
+	//     @inp[2] the list of event objects to modify
 	//     @out[0] the list of operation states related to the modified event objects
 	//
-	UpdateClck(objectid.ID, []*Object) ([]objectstate.String, error)
+	UpdateClck(objectid.ID, bool, []*Object) ([]objectstate.String, error)
 }

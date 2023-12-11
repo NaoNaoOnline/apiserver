@@ -7,8 +7,8 @@ import (
 
 func (h *SystemHandler) Filter(tas *task.Task) bool {
 	return tas.Meta.Has(map[string]string{
-		objectlabel.EvntObject: "*",
 		objectlabel.EvntAction: objectlabel.ActionCreate,
+		objectlabel.EvntObject: "*",
 		objectlabel.EvntOrigin: objectlabel.OriginSystem,
 	})
 }

@@ -4,7 +4,6 @@ import (
 	"time"
 
 	"github.com/NaoNaoOnline/apiserver/pkg/keyfmt"
-	"github.com/NaoNaoOnline/apiserver/pkg/object/objectfield"
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectid"
 	"github.com/xh3b4sd/tracer"
 )
@@ -42,7 +41,6 @@ func (r *Redis) Create(inp []*Object) ([]*Object, error) {
 			inp[i].Crtd = now
 			inp[i].Labl = objectid.Random(objectid.Time(now))
 			inp[i].Name.Data = keyfmt.Name(inp[i].Name.Data)
-			inp[i].Prfl = objectfield.Map{}
 		}
 
 		// Once we know the label is unique, we create the normalized key-value pair

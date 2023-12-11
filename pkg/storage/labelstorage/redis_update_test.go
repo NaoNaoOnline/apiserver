@@ -71,7 +71,7 @@ func Test_Storage_Label_UpdatePtch(t *testing.T) {
 			Name: objectfield.String{
 				Data: "Vivek Ramaswamy",
 			},
-			Prfl: objectfield.Map{},
+			Prfl: objectfield.MapStr{},
 			User: objectfield.ID{
 				Data: objectid.ID("1234"),
 			},

@@ -84,7 +84,7 @@ func (w *wrapper) Search(ctx context.Context, req *policy.SearchI) (*policy.Sear
 		}
 
 		for _, x := range req.Object {
-			if x.Symbol != nil && x.Symbol.Ltst != "default" {
+			if x.Symbol != nil && x.Symbol.Ltst != "dflt" {
 				return nil, tracer.Mask(searchLtstInvalidError)
 			}
 		}
@@ -155,7 +155,7 @@ func (w *wrapper) Update(ctx context.Context, req *policy.UpdateI) (*policy.Upda
 		}
 
 		for _, x := range req.Object {
-			if x.Symbol == nil || x.Symbol.Sync != "default" {
+			if x.Symbol == nil || x.Symbol.Sync != "dflt" {
 				return nil, tracer.Mask(updateSyncInvalidError)
 			}
 		}

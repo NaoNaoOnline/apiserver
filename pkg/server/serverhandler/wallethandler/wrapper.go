@@ -112,7 +112,7 @@ func (w *wrapper) Search(ctx context.Context, req *wallet.SearchI) (*wallet.Sear
 		}
 
 		for _, x := range req.Object {
-			if x.Symbol != nil && x.Symbol.Crtr != "default" {
+			if x.Symbol != nil && x.Symbol.Crtr != "dflt" {
 				return nil, tracer.Mask(searchSymbolInvalidError)
 			}
 		}

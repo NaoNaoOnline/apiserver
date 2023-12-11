@@ -127,12 +127,14 @@ func (r *run) randomEvnt(sto *storage.Storage, fak *gofakeit.Faker) *eventstorag
 	{
 		obj = &eventstorage.Object{
 			Cate: cat.Labl()[:fak.Number(1, 4)],
-			Clck: objectfield.Integer{
-				Data: int64(fak.Number(minRan[fak.Number(0, 3)], maxRan[fak.Number(0, 3)])),
-			},
 			Dura: time.Duration(dur * int(time.Minute)),
-			Host: hos.Labl()[:fak.Number(1, 4)],
+			Host: hos.Labl()[:fak.Number(1, 2)],
 			Link: fmt.Sprintf("https://%s.%s", fak.DomainName(), fak.DomainSuffix()),
+			Mtrc: objectfield.MapInt{
+				Data: map[string]int64{
+					eventstorage.MetricUser: int64(fak.Number(minRan[fak.Number(0, 3)], maxRan[fak.Number(0, 3)])),
+				},
+			},
 			Time: tim,
 			User: use.User()[0],
 		}

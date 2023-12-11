@@ -43,13 +43,13 @@ func Test_Server_Handler_Label_Update_Fuzz(t *testing.T) {
 
 func Test_Server_Handler_Label_updateVrfyPtch(t *testing.T) {
 	testCases := []struct {
-		pro objectfield.Map
+		pro objectfield.MapStr
 		pat []*labelstorage.Patch
 		err error
 	}{
 		// Case 000 ensures that adding a new profile is allowed.
 		{
-			pro: objectfield.Map{},
+			pro: objectfield.MapStr{},
 			pat: []*labelstorage.Patch{
 				{Ope: "add" /*****/, Pat: "/prfl/data/Twitter", Val: "flashbots"},
 			},
@@ -57,7 +57,7 @@ func Test_Server_Handler_Label_updateVrfyPtch(t *testing.T) {
 		},
 		// Case 001 ensures that adding a second profile is allowed.
 		{
-			pro: objectfield.Map{
+			pro: objectfield.MapStr{
 				Data: map[string]string{
 					"Twitter": "FlashbotsFDN",
 				},
@@ -69,7 +69,7 @@ func Test_Server_Handler_Label_updateVrfyPtch(t *testing.T) {
 		},
 		// Case 002 ensures that removing an existing profile is allowed.
 		{
-			pro: objectfield.Map{
+			pro: objectfield.MapStr{
 				Data: map[string]string{
 					"Twitter": "FlashbotsFDN",
 				},
@@ -81,7 +81,7 @@ func Test_Server_Handler_Label_updateVrfyPtch(t *testing.T) {
 		},
 		// Case 003 ensures that replacing an existing profile is allowed.
 		{
-			pro: objectfield.Map{
+			pro: objectfield.MapStr{
 				Data: map[string]string{
 					"Twitter":  "FlashbotsFDN",
 					"Warpcast": "flashbots",
@@ -95,7 +95,7 @@ func Test_Server_Handler_Label_updateVrfyPtch(t *testing.T) {
 		},
 		// Case 004 ensures that adding an existing profile is not allowed.
 		{
-			pro: objectfield.Map{
+			pro: objectfield.MapStr{
 				Data: map[string]string{
 					"Twitter": "FlashbotsFDN",
 				},
@@ -108,7 +108,7 @@ func Test_Server_Handler_Label_updateVrfyPtch(t *testing.T) {
 		// Case 005 ensures that removing a profile that does not exist is not
 		// allowed.
 		{
-			pro: objectfield.Map{
+			pro: objectfield.MapStr{
 				Data: map[string]string{
 					"Twitter":  "FlashbotsFDN",
 					"Warpcast": "flashbots",

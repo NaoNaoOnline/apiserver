@@ -108,7 +108,7 @@ func (w *wrapper) Update(ctx context.Context, req *subscription.UpdateI) (*subsc
 		}
 
 		for _, x := range req.Object {
-			if x.Symbol == nil || x.Symbol.Sync != "default" {
+			if x.Symbol == nil || x.Symbol.Sync != "dflt" {
 				return nil, tracer.Mask(updateSyncInvalidError)
 			}
 		}

@@ -4,18 +4,6 @@ import "github.com/NaoNaoOnline/apiserver/pkg/object/objectid"
 
 type Slicer []*Object
 
-// Clck returns the cumulative amount of link clicks for the underling list of
-// event objects.
-func (s Slicer) Clck() int64 {
-	var clk int64
-
-	for _, x := range s {
-		clk += x.Clck.Data
-	}
-
-	return clk
-}
-
 // Evnt returns all the event IDs for the underling list of event objects.
 func (s Slicer) Evnt() []objectid.ID {
 	var ids []objectid.ID
@@ -40,6 +28,18 @@ func (s Slicer) Func(fun func(*Object) bool) Slicer {
 	}
 
 	return obj
+}
+
+// Muse returns the cumulative amount for metrics described by the given metric
+// label, for the underling list of event objects.
+func (s Slicer) Mtrc(lab string) int64 {
+	var cou int64
+
+	for _, x := range s {
+		cou += x.Mtrc.Data[lab]
+	}
+
+	return cou
 }
 
 func (s Slicer) Obct() []*Object {

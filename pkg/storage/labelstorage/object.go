@@ -34,7 +34,7 @@ type Object struct {
 	// Prfl is the map of external accounts related to this label. These accounts
 	// may point to references about this label or to the label owner on other
 	// platforms.
-	Prfl objectfield.Map `json:"prfl"`
+	Prfl objectfield.MapStr `json:"prfl"`
 	// User is the user ID creating this label, or the user ID owning this label
 	// after ownership transferal. Because labels are transferable. user IDs are
 	// not just object IDs but objectfield IDs, in order to reflect update
