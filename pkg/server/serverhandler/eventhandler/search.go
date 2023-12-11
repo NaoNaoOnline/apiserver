@@ -140,28 +140,6 @@ func (h *Handler) Search(ctx context.Context, req *event.SearchI) (*event.Search
 	}
 
 	//
-	// Search events by time, happened.
-	//
-
-	{
-		var hap bool
-		for _, x := range req.Object {
-			if x.Symbol != nil && x.Symbol.Time == "hpnd" {
-				hap = true
-			}
-		}
-
-		if hap {
-			lis, err := h.eve.SearchHpnd()
-			if err != nil {
-				return nil, tracer.Mask(err)
-			}
-
-			out = append(out, lis...)
-		}
-	}
-
-	//
 	// Search events by time, pagination.
 	//
 
@@ -180,6 +158,28 @@ func (h *Handler) Search(ctx context.Context, req *event.SearchI) (*event.Search
 			max := time.Unix(musNum(req.Filter.Paging.Stop), 0)
 
 			lis, err := h.eve.SearchTime(min, max)
+			if err != nil {
+				return nil, tracer.Mask(err)
+			}
+
+			out = append(out, lis...)
+		}
+	}
+
+	//
+	// Search events by time, happened.
+	//
+
+	{
+		var hap bool
+		for _, x := range req.Object {
+			if x.Symbol != nil && x.Symbol.Time == "hpnd" {
+				hap = true
+			}
+		}
+
+		if hap {
+			lis, err := h.eve.SearchHpnd()
 			if err != nil {
 				return nil, tracer.Mask(err)
 			}
@@ -269,9 +269,9 @@ func (h *Handler) Search(ctx context.Context, req *event.SearchI) (*event.Search
 		res.Object = append(res.Object, &event.SearchO_Object{
 			Extern: []*event.SearchO_Object_Extern{
 				{
-					Amnt: strconv.FormatInt(x.Clck.Data, 10),
+					Amnt: strconv.FormatInt(x.Mtrc.Data[eventstorage.MetricUser], 10),
 					Kind: "link",
-					User: x.Clck.User,
+					User: x.Mtrc.User[eventstorage.MetricUser],
 				},
 			},
 			Intern: &event.SearchO_Object_Intern{

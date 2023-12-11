@@ -21,6 +21,7 @@ func (h *Handler) Create(ctx context.Context, req *label.CreateI) (*label.Create
 				Name: objectfield.String{
 					Data: x.Public.Name,
 				},
+				Prfl: objectfield.MapStr{},
 				User: objectfield.ID{
 					Data: userid.FromContext(ctx),
 				},

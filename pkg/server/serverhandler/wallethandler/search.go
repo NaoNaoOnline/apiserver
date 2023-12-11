@@ -24,7 +24,7 @@ func (h *Handler) Search(ctx context.Context, req *wallet.SearchI) (*wallet.Sear
 	{
 		var cre bool
 		for _, x := range req.Object {
-			if x.Symbol != nil && x.Symbol.Crtr == "default" {
+			if x.Symbol != nil && x.Symbol.Crtr == "dflt" {
 				cre = true
 			}
 		}

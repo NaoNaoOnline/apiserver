@@ -103,6 +103,13 @@ func (f *Feed) CreateFeed(lid objectid.ID) error {
 func (f *Feed) CreateRule(rob *rulestorage.Object) error {
 	var err error
 
+	// Rules may be created with only excludes defined instead of includes. Since
+	// we only aggregate feeds for includes we have nothing to do here and return
+	// early to guard against execution errors.
+	if len(rob.Incl) == 0 {
+		return nil
+	}
+
 	// write rule ID to rule keys
 	for _, x := range rulWri(rob) {
 		err = f.red.Sorted().Create().Score(x, rob.Rule.String(), rob.Rule.Float())

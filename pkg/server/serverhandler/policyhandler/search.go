@@ -19,7 +19,7 @@ func (h *Handler) Search(ctx context.Context, req *policy.SearchI) (*policy.Sear
 
 	var def bool
 	for _, x := range req.Object {
-		if x.Symbol != nil && x.Symbol.Ltst == "default" {
+		if x.Symbol != nil && x.Symbol.Ltst == "dflt" {
 			def = true
 		}
 	}

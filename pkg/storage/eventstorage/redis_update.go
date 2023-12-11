@@ -8,7 +8,7 @@ import (
 	"github.com/xh3b4sd/tracer"
 )
 
-func (r *Redis) UpdateClck(use objectid.ID, obj []*Object) ([]objectstate.String, error) {
+func (r *Redis) UpdateClck(use objectid.ID, pre bool, obj []*Object) ([]objectstate.String, error) {
 	var err error
 
 	var out []objectstate.String
@@ -34,15 +34,21 @@ func (r *Redis) UpdateClck(use objectid.ID, obj []*Object) ([]objectstate.String
 			}
 		}
 
-		// Track the new link click on the event object by incrementing its internal
-		// counter.
+		// Only track premium link clicks if the given user has a premium
+		// subscription.
+		if pre {
+			obj[i].Mtrc.Data[MetricPrem]++
+		}
+
+		// Always track user link clicks on the event object by incrementing its
+		// public internal counter.
 		{
-			obj[i].Clck.Data++
+			obj[i].Mtrc.Data[MetricUser]++
 		}
 
 		// Track the time of the last updated link click.
 		{
-			obj[i].Clck.Time = time.Now().UTC()
+			obj[i].Mtrc.Time = time.Now().UTC()
 		}
 
 		// Verify the modified event object to ensure the applied changes are not

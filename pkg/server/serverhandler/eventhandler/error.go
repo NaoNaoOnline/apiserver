@@ -46,7 +46,7 @@ var searchSymbolPageError = &tracer.Error{
 
 var searchSymbolTimeError = &tracer.Error{
 	Kind: "searchSymbolTimeError",
-	Desc: "The request expects the query object to contain one of [hpnd page upcm] if symbol.time is configured. The query object was not found to contain one of [hpnd page upcm]. Therefore the request failed.",
+	Desc: "The request expects the query object to contain one of [dflt hpnd upcm] if symbol.time is configured. The query object was not found to contain one of [dflt hpnd upcm]. Therefore the request failed.",
 }
 
 var updateSymbolInvalidError = &tracer.Error{

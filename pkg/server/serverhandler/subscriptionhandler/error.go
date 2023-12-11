@@ -11,5 +11,5 @@ var updateSyncLockError = &tracer.Error{
 
 var updateSyncInvalidError = &tracer.Error{
 	Kind: "updateSyncInvalidError",
-	Desc: `The request expects symbol.sync to be set to "default". symbol.sync was not found to be set to "default". Therefore the request failed.`,
+	Desc: `The request expects symbol.sync to be set to "dflt". symbol.sync was not found to be set to "dflt". Therefore the request failed.`,
 }

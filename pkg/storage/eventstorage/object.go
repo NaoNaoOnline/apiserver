@@ -18,8 +18,6 @@ type Object struct {
 	Bltn []objectid.ID `json:"bltn"`
 	// Cate is the list of label IDs under which the event is categorized.
 	Cate []objectid.ID `json:"cate"`
-	// Clck is the number of link clicks this description received.
-	Clck objectfield.Integer `json:"clck"`
 	// Crtd is the time at which the event got created.
 	Crtd time.Time `json:"crtd"`
 	// Dltd is the time at which the event got deleted.
@@ -33,6 +31,8 @@ type Object struct {
 	// Link is the online location at which the event is expected to take place.
 	// For IRL events this may just be some informational website.
 	Link string `json:"link"`
+	// Mtrc is a mapping of various metrics related to this event object.
+	Mtrc objectfield.MapInt `json:"mtrc"`
 	// Time is the date time at which the event is expected to start.
 	Time time.Time `json:"time"`
 	// User is the user ID creating this event.
@@ -108,8 +108,11 @@ func (o *Object) Verify() error {
 	}
 
 	{
-		if o.Clck.Data < 0 {
-			return tracer.Mask(eventClckNegativeError)
+		if o.Mtrc.Data[MetricPrem] < 0 {
+			return tracer.Mask(eventPremNegativeError)
+		}
+		if o.Mtrc.Data[MetricUser] < 0 {
+			return tracer.Mask(eventUserNegativeError)
 		}
 	}
 

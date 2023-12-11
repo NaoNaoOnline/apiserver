@@ -82,11 +82,9 @@ func New(c Config) *Handler {
 
 	{
 		han = append(han, eventcreatehandler.NewSystemHandler(eventcreatehandler.SystemHandlerConfig{
-			Emi: c.Emi,
 			Eve: c.Sto.Evnt(),
 			Fee: c.Fee,
 			Log: c.Log,
-			Twi: c.Twi,
 		}))
 	}
 
@@ -187,7 +185,7 @@ func New(c Config) *Handler {
 		}))
 	}
 
-	{
+	if c.Twi.Verify() {
 		han = append(han, twittercreatehandler.NewSystemHandler(twittercreatehandler.SystemHandlerConfig{
 			Des: c.Sto.Desc(),
 			Eve: c.Sto.Evnt(),

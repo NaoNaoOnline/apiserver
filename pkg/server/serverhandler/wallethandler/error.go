@@ -21,7 +21,7 @@ var searchSymbolConflictError = &tracer.Error{
 
 var searchSymbolInvalidError = &tracer.Error{
 	Kind: "searchSymbolInvalidError",
-	Desc: `The request expects symbol.crtr to be set to "default". symbol.crtr was not found to be set to "default". Therefore the request failed.`,
+	Desc: `The request expects symbol.crtr to be set to "dflt". symbol.crtr was not found to be set to "dflt". Therefore the request failed.`,
 }
 
 var updateEmptyError = &tracer.Error{

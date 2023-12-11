@@ -28,25 +28,3 @@ func (e *Emitter) CreateEvnt(eid objectid.ID) error {
 
 	return nil
 }
-
-func (e *Emitter) CreateTwtr(eid objectid.ID) error {
-	var tas *task.Task
-	{
-		tas = &task.Task{
-			Meta: &task.Meta{
-				objectlabel.EvntObject: eid.String(),
-				objectlabel.TwtrAction: objectlabel.ActionCreate,
-				objectlabel.TwtrOrigin: objectlabel.OriginSystem,
-			},
-		}
-	}
-
-	{
-		err := e.res.Create(tas)
-		if err != nil {
-			return tracer.Mask(err)
-		}
-	}
-
-	return nil
-}
