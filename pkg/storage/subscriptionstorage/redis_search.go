@@ -66,7 +66,7 @@ func (r *Redis) SearchCrtr(uid []objectid.ID) ([]*walletstorage.Object, error) {
 				// If the user generated more than Y link clicks, then continue.
 				// Otherwise the respective user is not considered a legitimate content
 				// creator.
-				if x.Mtrc(eventstorage.MetricUser) < minLin {
+				if x.Mtrc(objectlabel.EventMetricUser) < minLin {
 					continue
 				}
 
@@ -87,7 +87,7 @@ func (r *Redis) SearchCrtr(uid []objectid.ID) ([]*walletstorage.Object, error) {
 		// Sort the filtered list of events by link clicks in order to promote
 		// content creators that generate engagement.
 		sort.SliceStable(fil, func(i, j int) bool {
-			return fil[i].Mtrc.Data[eventstorage.MetricUser] > fil[j].Mtrc.Data[eventstorage.MetricUser]
+			return fil[i].Mtrc.Data[objectlabel.EventMetricUser] > fil[j].Mtrc.Data[objectlabel.EventMetricUser]
 		})
 
 		// For the remaining content creators, lookup their accounting wallets.

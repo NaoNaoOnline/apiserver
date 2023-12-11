@@ -3,6 +3,7 @@ package fakeit
 import (
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectfield"
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectid"
+	"github.com/NaoNaoOnline/apiserver/pkg/object/objectlabel"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/descriptionstorage"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/eventstorage"
@@ -98,8 +99,10 @@ func (r *run) randomDesc(sto *storage.Storage, fak *gofakeit.Faker) *description
 	{
 		obj = &descriptionstorage.Object{
 			Evnt: eid,
-			Like: objectfield.Integer{
-				Data: int64(fak.Number(minRan[fak.Number(0, 3)], maxRan[fak.Number(0, 3)])),
+			Mtrc: objectfield.MapInt{
+				Data: map[string]int64{
+					objectlabel.DescriptionMetricUser: int64(fak.Number(minRan[fak.Number(0, 3)], maxRan[fak.Number(0, 3)])),
+				},
 			},
 			Text: objectfield.String{
 				Data: txt,

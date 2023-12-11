@@ -73,11 +73,12 @@ type Interface interface {
 	// addition or removal of a like for the given user.
 	//
 	//     @inp[0] the user liking or unliking the description
-	//     @inp[1] the list of description objects to modify
-	//     @inp[2] the bool expressing whether to increment or decrement the like count
+	//     @inp[1] the bool expressing whether the given user has a premium subscription
+	//     @inp[2] the list of description objects to modify
+	//     @inp[3] the bool expressing whether to increment or decrement the like count
 	//     @out[0] the list of operation states related to the modified description objects
 	//
-	UpdateLike(objectid.ID, []*Object, []bool) ([]objectstate.String, error)
+	UpdateLike(objectid.ID, bool, []*Object, []bool) ([]objectstate.String, error)
 
 	// UpdatePtch modifies the existing description objects by applying the given
 	// RFC6902 JSON-Patches to the underlying JSON documents. The list items are

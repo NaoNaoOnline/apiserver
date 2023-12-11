@@ -8,6 +8,7 @@ import (
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectid"
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectstate"
 	"github.com/NaoNaoOnline/apiserver/pkg/runtime"
+	"github.com/NaoNaoOnline/apiserver/pkg/server/context/isprem"
 	"github.com/NaoNaoOnline/apiserver/pkg/server/context/userid"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/descriptionstorage"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/eventstorage"
@@ -16,6 +17,11 @@ import (
 
 func (h *Handler) Update(ctx context.Context, req *description.UpdateI) (*description.UpdateO, error) {
 	var err error
+
+	var pre bool
+	{
+		pre = isprem.FromContext(ctx)
+	}
 
 	var use objectid.ID
 	{
@@ -121,7 +127,7 @@ func (h *Handler) Update(ctx context.Context, req *description.UpdateI) (*descri
 			//
 
 			{
-				lis, err := h.des.UpdateLike(use, inp, inc)
+				lis, err := h.des.UpdateLike(use, pre, inp, inc)
 				if err != nil {
 					return nil, tracer.Mask(err)
 				}

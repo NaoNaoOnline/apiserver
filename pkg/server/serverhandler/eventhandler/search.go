@@ -7,6 +7,7 @@ import (
 
 	"github.com/NaoNaoOnline/apigocode/pkg/event"
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectid"
+	"github.com/NaoNaoOnline/apiserver/pkg/object/objectlabel"
 	"github.com/NaoNaoOnline/apiserver/pkg/server/context/userid"
 	"github.com/NaoNaoOnline/apiserver/pkg/server/limiter"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/eventstorage"
@@ -269,9 +270,9 @@ func (h *Handler) Search(ctx context.Context, req *event.SearchI) (*event.Search
 		res.Object = append(res.Object, &event.SearchO_Object{
 			Extern: []*event.SearchO_Object_Extern{
 				{
-					Amnt: strconv.FormatInt(x.Mtrc.Data[eventstorage.MetricUser], 10),
+					Amnt: strconv.FormatInt(x.Mtrc.Data[objectlabel.EventMetricUser], 10),
 					Kind: "link",
-					User: x.Mtrc.User[eventstorage.MetricUser],
+					User: x.Mtrc.User[objectlabel.EventMetricUser],
 				},
 			},
 			Intern: &event.SearchO_Object_Intern{

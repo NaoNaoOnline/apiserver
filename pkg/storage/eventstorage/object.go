@@ -9,6 +9,7 @@ import (
 	"github.com/NaoNaoOnline/apiserver/pkg/generic"
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectfield"
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectid"
+	"github.com/NaoNaoOnline/apiserver/pkg/object/objectlabel"
 	"github.com/NaoNaoOnline/apiserver/pkg/runtime"
 	"github.com/xh3b4sd/tracer"
 )
@@ -108,10 +109,10 @@ func (o *Object) Verify() error {
 	}
 
 	{
-		if o.Mtrc.Data[MetricPrem] < 0 {
+		if o.Mtrc.Data[objectlabel.EventMetricPrem] < 0 {
 			return tracer.Mask(eventPremNegativeError)
 		}
-		if o.Mtrc.Data[MetricUser] < 0 {
+		if o.Mtrc.Data[objectlabel.EventMetricUser] < 0 {
 			return tracer.Mask(eventUserNegativeError)
 		}
 	}

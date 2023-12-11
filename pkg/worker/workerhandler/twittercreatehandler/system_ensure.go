@@ -102,7 +102,7 @@ func (h *SystemHandler) searchDesc(inp objectid.ID, bud *budget.Budget) (*descri
 	// have to search the list of descriptions here in reverse order, ensuring the
 	// first description in the list ends up having the most likes.
 	sort.SliceStable(des, func(i, j int) bool {
-		return des[i].Like.Data > des[j].Like.Data
+		return des[i].Mtrc.Data[objectlabel.DescriptionMetricUser] > des[j].Mtrc.Data[objectlabel.DescriptionMetricUser]
 	})
 
 	return des[0], nil

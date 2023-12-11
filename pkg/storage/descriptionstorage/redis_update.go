@@ -5,35 +5,46 @@ import (
 	"time"
 
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectid"
+	"github.com/NaoNaoOnline/apiserver/pkg/object/objectlabel"
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectstate"
 	jsonpatch "github.com/evanphx/json-patch/v5"
 	"github.com/xh3b4sd/tracer"
 )
 
-func (r *Redis) UpdateLike(use objectid.ID, obj []*Object, inc []bool) ([]objectstate.String, error) {
+func (r *Redis) UpdateLike(use objectid.ID, pre bool, obj []*Object, inc []bool) ([]objectstate.String, error) {
 	var err error
 
 	var out []objectstate.String
 	for i := range obj {
 		// Ensure that descriptions can only be liked and unliked once by the same user.
-		if obj[i].Like.User && inc[i] {
+		if obj[i].Mtrc.User[objectlabel.DescriptionMetricUser] && inc[i] {
 			return nil, tracer.Mask(descriptionLikeAlreadyExistsError)
 		}
-		if !obj[i].Like.User && !inc[i] {
+		if !obj[i].Mtrc.User[objectlabel.DescriptionMetricUser] && !inc[i] {
 			return nil, tracer.Mask(descriptionUnlikeAlreadyExistsError)
 		}
 
-		// Track the new like or unlike on the description object by incrementing or
-		// decrementing its internal counter.
+		// Only track premium comment likes if the given user has a premium
+		// subscription.
+		if pre {
+			if inc[i] {
+				obj[i].Mtrc.Data[objectlabel.DescriptionMetricPrem]++
+			} else {
+				obj[i].Mtrc.Data[objectlabel.DescriptionMetricPrem]--
+			}
+		}
+
+		// Always track user comment likes on the description object by incrementing
+		// its public internal counter.
 		if inc[i] {
-			obj[i].Like.Data++
+			obj[i].Mtrc.Data[objectlabel.DescriptionMetricUser]++
 		} else {
-			obj[i].Like.Data--
+			obj[i].Mtrc.Data[objectlabel.DescriptionMetricUser]--
 		}
 
 		// Track the time of the last updated like.
 		{
-			obj[i].Like.Time = time.Now().UTC()
+			obj[i].Mtrc.Time = time.Now().UTC()
 		}
 
 		// Verify the modified description object to ensure the applied changes are
