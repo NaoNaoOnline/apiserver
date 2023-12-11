@@ -7,6 +7,7 @@ import (
 	"github.com/NaoNaoOnline/apiserver/pkg/format/descriptionformat"
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectfield"
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectid"
+	"github.com/NaoNaoOnline/apiserver/pkg/object/objectlabel"
 	"github.com/NaoNaoOnline/apiserver/pkg/runtime"
 	"github.com/xh3b4sd/tracer"
 	"mvdan.cc/xurls/v2"
@@ -21,8 +22,8 @@ type Object struct {
 	Desc objectid.ID `json:"desc"`
 	// Evnt is the event ID this description is mapped to.
 	Evnt objectid.ID `json:"evnt"`
-	// Like is the number of likes this description received.
-	Like objectfield.Integer `json:"like"`
+	// Mtrc is a mapping of various metrics related to this event object.
+	Mtrc objectfield.MapInt `json:"mtrc"`
 	// Text is the description explaining what an event is about.
 	Text objectfield.String `json:"text"`
 	// User is the user ID creating this description.
@@ -41,8 +42,11 @@ func (o *Object) Verify() error {
 	}
 
 	{
-		if o.Like.Data < 0 {
-			return tracer.Mask(descriptionLikeNegativeError)
+		if o.Mtrc.Data[objectlabel.DescriptionMetricPrem] < 0 {
+			return tracer.Mask(descriptionPremNegativeError)
+		}
+		if o.Mtrc.Data[objectlabel.DescriptionMetricUser] < 0 {
+			return tracer.Mask(descriptionUserNegativeError)
 		}
 	}
 

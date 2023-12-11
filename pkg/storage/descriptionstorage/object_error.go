@@ -5,9 +5,9 @@ import (
 	"github.com/xh3b4sd/tracer"
 )
 
-var descriptionLikeNegativeError = &tracer.Error{
-	Kind: "descriptionLikeNegativeError",
-	Desc: "The request expects the description like not to be negative. The description like was found to be negative. Therefore the request failed.",
+var descriptionPremNegativeError = &tracer.Error{
+	Kind: "descriptionPremNegativeError",
+	Desc: "The request expects the description prem like not to be negative. The description prem like was found to be negative. Therefore the request failed.",
 }
 
 var descriptionTextEmptyError = &tracer.Error{
@@ -25,6 +25,11 @@ var descriptionTextLengthError = &tracer.Error{
 var descriptionTextURLError = &tracer.Error{
 	Kind: "descriptionTextURLError",
 	Desc: "The request expects the description text not to contain any URL. The description text was found to contain URLs. Therefore the request failed.",
+}
+
+var descriptionUserNegativeError = &tracer.Error{
+	Kind: "descriptionUserNegativeError",
+	Desc: "The request expects the description user like not to be negative. The description user like was found to be negative. Therefore the request failed.",
 }
 
 var eventIDEmptyError = &tracer.Error{

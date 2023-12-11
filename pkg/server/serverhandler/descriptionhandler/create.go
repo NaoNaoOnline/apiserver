@@ -20,6 +20,7 @@ func (h *Handler) Create(ctx context.Context, req *description.CreateI) (*descri
 		if x.Public != nil {
 			inp = append(inp, &descriptionstorage.Object{
 				Evnt: objectid.ID(x.Public.Evnt),
+				Mtrc: objectfield.MapInt{},
 				Text: objectfield.String{
 					Data: x.Public.Text,
 				},

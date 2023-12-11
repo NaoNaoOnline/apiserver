@@ -4,6 +4,7 @@ import (
 	"time"
 
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectid"
+	"github.com/NaoNaoOnline/apiserver/pkg/object/objectlabel"
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectstate"
 	"github.com/xh3b4sd/tracer"
 )
@@ -37,13 +38,13 @@ func (r *Redis) UpdateClck(use objectid.ID, pre bool, obj []*Object) ([]objectst
 		// Only track premium link clicks if the given user has a premium
 		// subscription.
 		if pre {
-			obj[i].Mtrc.Data[MetricPrem]++
+			obj[i].Mtrc.Data[objectlabel.EventMetricPrem]++
 		}
 
 		// Always track user link clicks on the event object by incrementing its
 		// public internal counter.
 		{
-			obj[i].Mtrc.Data[MetricUser]++
+			obj[i].Mtrc.Data[objectlabel.EventMetricUser]++
 		}
 
 		// Track the time of the last updated link click.

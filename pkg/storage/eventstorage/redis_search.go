@@ -8,6 +8,7 @@ import (
 	"github.com/NaoNaoOnline/apiserver/pkg/generic"
 	"github.com/NaoNaoOnline/apiserver/pkg/keyfmt"
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectid"
+	"github.com/NaoNaoOnline/apiserver/pkg/object/objectlabel"
 	"github.com/xh3b4sd/redigo/simple"
 	"github.com/xh3b4sd/tracer"
 )
@@ -89,7 +90,7 @@ func (r *Redis) SearchEvnt(use objectid.ID, inp []objectid.ID) ([]*Object, error
 			}
 
 			{
-				obj.Mtrc.User[MetricUser] = true
+				obj.Mtrc.User[objectlabel.EventMetricUser] = true
 			}
 		}
 

@@ -6,6 +6,7 @@ import (
 
 	"github.com/NaoNaoOnline/apiserver/pkg/keyfmt"
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectid"
+	"github.com/NaoNaoOnline/apiserver/pkg/object/objectlabel"
 	"github.com/xh3b4sd/redigo/simple"
 	"github.com/xh3b4sd/tracer"
 )
@@ -54,7 +55,13 @@ func (r *Redis) SearchDesc(use objectid.ID, inp []objectid.ID) ([]*Object, error
 		// query. And so each and every JSON string should relate to each and every
 		// like indicator for the calling user.
 		if len(lik) == len(jsn) && lik[i] == "1" {
-			obj.Like.User = true
+			if obj.Mtrc.User == nil {
+				obj.Mtrc.User = map[string]bool{}
+			}
+
+			{
+				obj.Mtrc.User[objectlabel.DescriptionMetricUser] = true
+			}
 		}
 
 		{

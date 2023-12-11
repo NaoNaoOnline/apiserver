@@ -6,16 +6,6 @@ import (
 	"github.com/xh3b4sd/tracer"
 )
 
-var eventUserNegativeError = &tracer.Error{
-	Kind: "eventUserNegativeError",
-	Desc: "The request expects the event user click not to be negative. The event user click was found to be negative. Therefore the request failed.",
-}
-
-var eventPremNegativeError = &tracer.Error{
-	Kind: "eventPremNegativeError",
-	Desc: "The request expects the event prem click not to be negative. The event prem click was found to be negative. Therefore the request failed.",
-}
-
 var eventDurationEmptyError = &tracer.Error{
 	Kind: "eventDurationEmptyError",
 	Desc: "The request expects the event duration not to be empty. The event duration was found to be empty. Therefore the request failed.",
@@ -88,6 +78,11 @@ func IsEventLinkFormat(err error) bool {
 	return errors.Is(err, eventLinkFormatError)
 }
 
+var eventPremNegativeError = &tracer.Error{
+	Kind: "eventPremNegativeError",
+	Desc: "The request expects the event prem click not to be negative. The event prem click was found to be negative. Therefore the request failed.",
+}
+
 var eventTimeEmptyError = &tracer.Error{
 	Kind: "eventTimeEmptyError",
 	Desc: "The request expects the event time not to be empty. The event time was found to be empty. Therefore the request failed.",
@@ -113,4 +108,9 @@ var eventTimePastError = &tracer.Error{
 
 func IsEventTimePast(err error) bool {
 	return errors.Is(err, eventTimePastError)
+}
+
+var eventUserNegativeError = &tracer.Error{
+	Kind: "eventUserNegativeError",
+	Desc: "The request expects the event user click not to be negative. The event user click was found to be negative. Therefore the request failed.",
 }
