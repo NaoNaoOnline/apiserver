@@ -9,7 +9,7 @@ import (
 	"github.com/xh3b4sd/tracer"
 )
 
-func (r *Redis) UpdatePtch(obj []*Object, pat [][]*Patch) ([]objectstate.String, error) {
+func (r *Redis) UpdatePtch(obj []*Object, pat PatchSlicer) ([]objectstate.String, error) {
 	var err error
 
 	var out []objectstate.String
@@ -29,7 +29,19 @@ func (r *Redis) UpdatePtch(obj []*Object, pat [][]*Patch) ([]objectstate.String,
 		}
 
 		{
-			obj[i].Desc.Time = now
+			if pat.RplDes(i) {
+				obj[i].Desc.Time = now
+			}
+
+			if pat.RplFee(i) {
+				obj[i].Feed.Time = now
+				// Since the apischema defines time values as strings of unix seconds,
+				// and since we accept those values transparently for the JSON patches,
+				// we have to transform unix seconds into formatted time strings. If we
+				// do not do that, then the JSON patch will fail because Feed.Data is of
+				// type time.Time, and that type requires a time formatted string.
+				pat[i] = pat.UniTim(i)
+			}
 		}
 
 		var dec jsonpatch.Patch

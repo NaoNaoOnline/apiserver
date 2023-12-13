@@ -33,7 +33,7 @@ func (p *Patch) Verify() error {
 		if p.Pat == "" {
 			return tracer.Maskf(jsonPatchPathEmptyError, p.Pat)
 		}
-		if p.Pat != "/desc/data" {
+		if p.Pat != "/desc/data" && p.Pat != "/feed/data" {
 			return tracer.Maskf(jsonPatchPathInvalidError, p.Pat)
 		}
 	}

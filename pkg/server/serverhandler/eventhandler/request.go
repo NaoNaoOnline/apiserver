@@ -23,12 +23,14 @@ func pagingUnix(req *event.SearchI) [2]float64 {
 	}
 }
 
-func symbolList(req *event.SearchI) objectid.ID {
+func symbolList(req *event.SearchI) []objectid.ID {
+	var lid []objectid.ID
+
 	for _, x := range req.Object {
 		if x.Symbol != nil && x.Symbol.List != "" {
-			return objectid.ID(x.Symbol.List)
+			lid = append(lid, objectid.ID(x.Symbol.List))
 		}
 	}
 
-	return ""
+	return lid
 }

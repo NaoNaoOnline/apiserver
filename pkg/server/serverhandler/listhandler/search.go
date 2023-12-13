@@ -15,9 +15,9 @@ import (
 func (h *Handler) Search(ctx context.Context, req *list.SearchI) (*list.SearchO, error) {
 	var out []*liststorage.Object
 
-	var prm bool
+	var pre bool
 	{
-		prm = isprem.FromContext(ctx)
+		pre = isprem.FromContext(ctx)
 	}
 
 	//
@@ -38,7 +38,7 @@ func (h *Handler) Search(ctx context.Context, req *list.SearchI) (*list.SearchO,
 		// an expired premium subscription should only see their first list as
 		// incentive to upgrade again.
 		var pag [2]int
-		if !prm {
+		if !pre {
 			pag = liststorage.PagFir()
 		} else {
 			pag = liststorage.PagAll()
@@ -83,11 +83,15 @@ func (h *Handler) Search(ctx context.Context, req *list.SearchI) (*list.SearchO,
 		res.Object = append(res.Object, &list.SearchO_Object{
 			Intern: &list.SearchO_Object_Intern{
 				Crtd: outTim(x.Crtd),
+				Feed: &list.SearchO_Object_Intern_Feed{
+					Time: outTim(x.Feed.Time),
+				},
 				List: x.List.String(),
 				User: x.User.String(),
 			},
 			Public: &list.SearchO_Object_Public{
 				Desc: x.Desc.Data,
+				Feed: outTim(x.Feed.Data),
 			},
 		})
 	}

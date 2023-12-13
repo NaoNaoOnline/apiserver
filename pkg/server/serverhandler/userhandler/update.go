@@ -78,9 +78,9 @@ func (h *Handler) Update(ctx context.Context, req *user.UpdateI) (*user.UpdateO,
 }
 
 func (h *Handler) updateVrfyPtch(ctx context.Context, inp []*userstorage.Object, pat userstorage.PatchSlicer) error {
-	var prm bool
+	var pre bool
 	{
-		prm = isprem.FromContext(ctx)
+		pre = isprem.FromContext(ctx)
 	}
 
 	var use objectid.ID
@@ -97,7 +97,7 @@ func (h *Handler) updateVrfyPtch(ctx context.Context, inp []*userstorage.Object,
 		// subscription. So if the given patches define the home feed to be
 		// replaced, and if the user does not have a premium subscription, then
 		// return an error.
-		if pat.RplHom(i) && !prm {
+		if pat.RplHom(i) && !pre {
 			return tracer.Mask(updateHomePremiumError)
 		}
 
