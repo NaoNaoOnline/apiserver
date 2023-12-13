@@ -3,6 +3,7 @@ package userstorage
 import (
 	"errors"
 
+	"github.com/NaoNaoOnline/apiserver/pkg/format/nameformat"
 	"github.com/xh3b4sd/tracer"
 )
 
@@ -31,6 +32,13 @@ var userNameLengthError = &tracer.Error{
 
 func IsUserNameLength(err error) bool {
 	return errors.Is(err, userNameLengthError)
+}
+
+var userPrflFormatError = nameformat.Errorf("user", "prfl")
+
+var userPrflInvalidError = &tracer.Error{
+	Kind: "userPrflInvalidError",
+	Desc: "The request expects the user prfl to be one of [Twitter Warpcast]. The user prfl was not found to be one of [Twitter Warpcast]. Therefore the request failed.",
 }
 
 var userSubjectEmptyError = &tracer.Error{

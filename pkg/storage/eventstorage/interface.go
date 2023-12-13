@@ -55,11 +55,12 @@ type Interface interface {
 	DeleteWrkr([]*Object) ([]objectstate.String, error)
 
 	// SearchCrtr returns the user IDs of all users who are recorded to have added
-	// events to the platform. All user IDs can be fetched using pagination range
-	// [0 -1]. The first 10 user IDs can be fetched using pagination range [0 9].
+	// events to the platform within a rolling time window. All user IDs can be
+	// fetched using pagination range [0 -1]. The first 10 user IDs can be fetched
+	// using pagination range [0 9].
 	//
 	//     @inp[0] the pagination range defining lower and upper inclusive boundaries
-	//     @out[0] the list of event objects created by the given user IDs
+	//     @out[0] the list of user IDs who have added events to the platform
 	//
 	SearchCrtr([2]int) ([]objectid.ID, error)
 

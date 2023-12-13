@@ -84,14 +84,14 @@ func (h *Handler) Search(ctx context.Context, req *list.SearchI) (*list.SearchO,
 			Intern: &list.SearchO_Object_Intern{
 				Crtd: outTim(x.Crtd),
 				Feed: &list.SearchO_Object_Intern_Feed{
-					Time: outTim(x.Feed.Time),
+					Time: preStr(pre, outTim(x.Feed.Time)), // no premium no time
 				},
 				List: x.List.String(),
 				User: x.User.String(),
 			},
 			Public: &list.SearchO_Object_Public{
 				Desc: x.Desc.Data,
-				Feed: outTim(x.Feed.Data),
+				Feed: preStr(pre, outTim(x.Feed.Data)), // no premium no feed
 			},
 		})
 	}

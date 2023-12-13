@@ -57,3 +57,11 @@ func outTim(tim time.Time) string {
 
 	return ""
 }
+
+func preStr(pre bool, str string) string {
+	if pre {
+		return str
+	}
+
+	return ""
+}

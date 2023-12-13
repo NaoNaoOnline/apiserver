@@ -53,3 +53,13 @@ var updateHomePremiumError = &tracer.Error{
 	Kind: "updateHomePremiumError",
 	Desc: "The request expects the user to have a premium subscription in order to set a custom home feed. The user was not found to have a premium subscription. Therefore the request failed.",
 }
+
+var userProfileAlreadyExistsError = &tracer.Error{
+	Kind: "userProfileAlreadyExistsError",
+	Desc: "The request expects the provided user profile not to exist already. The provided user profile was found to already exist. Therefore the request failed.",
+}
+
+var userProfileNotFoundError = &tracer.Error{
+	Kind: "userProfileNotFoundError",
+	Desc: "The request expects the provided user profile to exist already. The provided user profile was not found to already exist. Therefore the request failed.",
+}

@@ -3,8 +3,10 @@ package userstorage
 import (
 	"time"
 
+	"github.com/NaoNaoOnline/apiserver/pkg/format/nameformat"
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectfield"
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectid"
+	"github.com/NaoNaoOnline/apiserver/pkg/object/objectlabel"
 	"github.com/xh3b4sd/tracer"
 )
 
@@ -28,6 +30,9 @@ type Object struct {
 	Name objectfield.String `json:"name"`
 	// Prem is the time until the user got a valid premium subscription, if any.
 	Prem time.Time `json:"prem,omitempty"`
+	// Prfl is the map of external accounts related to this user. These accounts
+	// may point to references about this user on other platforms.
+	Prfl objectfield.MapStr `json:"prfl"`
 	// Sclm is the list of external subject claims mapped to the user being
 	// created.
 	Sclm []string `json:"sclm"`
@@ -37,6 +42,16 @@ type Object struct {
 
 func (o *Object) HasPre() bool {
 	return !o.Prem.IsZero() && time.Now().UTC().Before(o.Prem)
+}
+
+func (o *Object) ProPat() []string {
+	var pat []string
+
+	for k := range o.Prfl.Data {
+		pat = append(pat, "/prfl/data/"+k)
+	}
+
+	return pat
 }
 
 // UpdNam expresses whether the user name of this user object is allowed to be
@@ -66,6 +81,17 @@ func (o *Object) Verify() error {
 	}
 
 	{
+		for k, v := range o.Prfl.Data {
+			if !vldPrfl(k) {
+				return tracer.Maskf(userPrflInvalidError, k)
+			}
+			if !nameformat.Verify(v) {
+				return tracer.Maskf(userPrflFormatError, v)
+			}
+		}
+	}
+
+	{
 		if len(o.Sclm) != 1 || o.Sclm[0] == "" {
 			return tracer.Mask(userSubjectEmptyError)
 		}
@@ -77,4 +103,14 @@ func (o *Object) Verify() error {
 	// like most of the other storage implementations work.
 
 	return nil
+}
+
+func vldPrfl(key string) bool {
+	for _, x := range objectlabel.SearchPrfl() {
+		if key == x {
+			return true
+		}
+	}
+
+	return false
 }

@@ -30,7 +30,7 @@ var (
 
 // SubscriptionMetaData contains all meta data concerning the Subscription contract.
 var SubscriptionMetaData = &bind.MetaData{
-	ABI: "[{\"inputs\":[{\"internalType\":\"address\",\"name\":\"ownadd\",\"type\":\"address\"}],\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"owner\",\"type\":\"address\"}],\"name\":\"OwnableInvalidOwner\",\"type\":\"error\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"account\",\"type\":\"address\"}],\"name\":\"OwnableUnauthorizedAccount\",\"type\":\"error\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"previousOwner\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"newOwner\",\"type\":\"address\"}],\"name\":\"OwnershipTransferred\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address\",\"name\":\"feeadd\",\"type\":\"address\"}],\"name\":\"SetFeeAdd\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"feeamn\",\"type\":\"uint256\"}],\"name\":\"SetFeeAmn\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"subamn\",\"type\":\"uint256\"}],\"name\":\"SetSubAmn\",\"type\":\"event\"},{\"stateMutability\":\"payable\",\"type\":\"fallback\"},{\"inputs\":[],\"name\":\"getFeeAdd\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getFeeAmn\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getSubAmn\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"subrcvr\",\"type\":\"uint256\"}],\"name\":\"getSubRec\",\"outputs\":[{\"internalType\":\"address[3]\",\"name\":\"\",\"type\":\"address[3]\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"subrcvr\",\"type\":\"uint256\"}],\"name\":\"getSubUni\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"owner\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"renounceOwnership\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"feeadd\",\"type\":\"address\"}],\"name\":\"setFeeAdd\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"feeamn\",\"type\":\"uint256\"}],\"name\":\"setFeeAmn\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"subamn\",\"type\":\"uint256\"}],\"name\":\"setSubAmn\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"subrcvr\",\"type\":\"uint256\"},{\"internalType\":\"address\",\"name\":\"creaone\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"unixsec\",\"type\":\"uint256\"}],\"name\":\"subOne\",\"outputs\":[],\"stateMutability\":\"payable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"subrcvr\",\"type\":\"uint256\"},{\"internalType\":\"address\",\"name\":\"creaone\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"amntone\",\"type\":\"uint256\"},{\"internalType\":\"address\",\"name\":\"creatwo\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"amnttwo\",\"type\":\"uint256\"},{\"internalType\":\"address\",\"name\":\"creathr\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"amntthr\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"unixsec\",\"type\":\"uint256\"}],\"name\":\"subThr\",\"outputs\":[],\"stateMutability\":\"payable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"subrcvr\",\"type\":\"uint256\"},{\"internalType\":\"address\",\"name\":\"creaone\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"amntone\",\"type\":\"uint256\"},{\"internalType\":\"address\",\"name\":\"creatwo\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"amnttwo\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"unixsec\",\"type\":\"uint256\"}],\"name\":\"subTwo\",\"outputs\":[],\"stateMutability\":\"payable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"newOwner\",\"type\":\"address\"}],\"name\":\"transferOwnership\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"stateMutability\":\"payable\",\"type\":\"receive\"}]",
+	ABI: "[{\"inputs\":[{\"internalType\":\"address\",\"name\":\"ownadd\",\"type\":\"address\"}],\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"owner\",\"type\":\"address\"}],\"name\":\"OwnableInvalidOwner\",\"type\":\"error\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"account\",\"type\":\"address\"}],\"name\":\"OwnableUnauthorizedAccount\",\"type\":\"error\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"previousOwner\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"newOwner\",\"type\":\"address\"}],\"name\":\"OwnershipTransferred\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address\",\"name\":\"feeadd\",\"type\":\"address\"}],\"name\":\"SetFeeAdd\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"feeamn\",\"type\":\"uint256\"}],\"name\":\"SetFeeAmn\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"subamn\",\"type\":\"uint256\"}],\"name\":\"SetSubAmn\",\"type\":\"event\"},{\"stateMutability\":\"payable\",\"type\":\"fallback\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"creator\",\"type\":\"address\"}],\"name\":\"getCreFnd\",\"outputs\":[{\"internalType\":\"uint64\",\"name\":\"\",\"type\":\"uint64\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getFeeAdd\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getFeeAmn\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getSubAmn\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint64\",\"name\":\"subrcvr\",\"type\":\"uint64\"}],\"name\":\"getSubCre\",\"outputs\":[{\"internalType\":\"address[3]\",\"name\":\"\",\"type\":\"address[3]\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint64\",\"name\":\"subrcvr\",\"type\":\"uint64\"}],\"name\":\"getSubUni\",\"outputs\":[{\"internalType\":\"uint64\",\"name\":\"\",\"type\":\"uint64\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"owner\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"renounceOwnership\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"feeadd\",\"type\":\"address\"}],\"name\":\"setFeeAdd\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"feeamn\",\"type\":\"uint256\"}],\"name\":\"setFeeAmn\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"subamn\",\"type\":\"uint256\"}],\"name\":\"setSubAmn\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint64\",\"name\":\"subrcvr\",\"type\":\"uint64\"},{\"internalType\":\"address\",\"name\":\"creaone\",\"type\":\"address\"},{\"internalType\":\"uint64\",\"name\":\"unixsec\",\"type\":\"uint64\"}],\"name\":\"subOne\",\"outputs\":[],\"stateMutability\":\"payable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint64\",\"name\":\"subrcvr\",\"type\":\"uint64\"},{\"internalType\":\"address\",\"name\":\"creaone\",\"type\":\"address\"},{\"internalType\":\"uint8\",\"name\":\"amntone\",\"type\":\"uint8\"},{\"internalType\":\"address\",\"name\":\"creatwo\",\"type\":\"address\"},{\"internalType\":\"uint8\",\"name\":\"amnttwo\",\"type\":\"uint8\"},{\"internalType\":\"address\",\"name\":\"creathr\",\"type\":\"address\"},{\"internalType\":\"uint8\",\"name\":\"amntthr\",\"type\":\"uint8\"},{\"internalType\":\"uint64\",\"name\":\"unixsec\",\"type\":\"uint64\"}],\"name\":\"subThr\",\"outputs\":[],\"stateMutability\":\"payable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint64\",\"name\":\"subrcvr\",\"type\":\"uint64\"},{\"internalType\":\"address\",\"name\":\"creaone\",\"type\":\"address\"},{\"internalType\":\"uint8\",\"name\":\"amntone\",\"type\":\"uint8\"},{\"internalType\":\"address\",\"name\":\"creatwo\",\"type\":\"address\"},{\"internalType\":\"uint8\",\"name\":\"amnttwo\",\"type\":\"uint8\"},{\"internalType\":\"uint64\",\"name\":\"unixsec\",\"type\":\"uint64\"}],\"name\":\"subTwo\",\"outputs\":[],\"stateMutability\":\"payable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"newOwner\",\"type\":\"address\"}],\"name\":\"transferOwnership\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"stateMutability\":\"payable\",\"type\":\"receive\"}]",
 }
 
 // SubscriptionABI is the input ABI used to generate the binding from.
@@ -179,6 +179,37 @@ func (_Subscription *SubscriptionTransactorRaw) Transact(opts *bind.TransactOpts
 	return _Subscription.Contract.contract.Transact(opts, method, params...)
 }
 
+// GetCreFnd is a free data retrieval call binding the contract method 0xd7ec1528.
+//
+// Solidity: function getCreFnd(address creator) view returns(uint64)
+func (_Subscription *SubscriptionCaller) GetCreFnd(opts *bind.CallOpts, creator common.Address) (uint64, error) {
+	var out []interface{}
+	err := _Subscription.contract.Call(opts, &out, "getCreFnd", creator)
+
+	if err != nil {
+		return *new(uint64), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(uint64)).(*uint64)
+
+	return out0, err
+
+}
+
+// GetCreFnd is a free data retrieval call binding the contract method 0xd7ec1528.
+//
+// Solidity: function getCreFnd(address creator) view returns(uint64)
+func (_Subscription *SubscriptionSession) GetCreFnd(creator common.Address) (uint64, error) {
+	return _Subscription.Contract.GetCreFnd(&_Subscription.CallOpts, creator)
+}
+
+// GetCreFnd is a free data retrieval call binding the contract method 0xd7ec1528.
+//
+// Solidity: function getCreFnd(address creator) view returns(uint64)
+func (_Subscription *SubscriptionCallerSession) GetCreFnd(creator common.Address) (uint64, error) {
+	return _Subscription.Contract.GetCreFnd(&_Subscription.CallOpts, creator)
+}
+
 // GetFeeAdd is a free data retrieval call binding the contract method 0x4da84b64.
 //
 // Solidity: function getFeeAdd() view returns(address)
@@ -272,12 +303,12 @@ func (_Subscription *SubscriptionCallerSession) GetSubAmn() (*big.Int, error) {
 	return _Subscription.Contract.GetSubAmn(&_Subscription.CallOpts)
 }
 
-// GetSubRec is a free data retrieval call binding the contract method 0xaf0a8c98.
+// GetSubCre is a free data retrieval call binding the contract method 0xf0f77250.
 //
-// Solidity: function getSubRec(uint256 subrcvr) view returns(address[3])
-func (_Subscription *SubscriptionCaller) GetSubRec(opts *bind.CallOpts, subrcvr *big.Int) ([3]common.Address, error) {
+// Solidity: function getSubCre(uint64 subrcvr) view returns(address[3])
+func (_Subscription *SubscriptionCaller) GetSubCre(opts *bind.CallOpts, subrcvr uint64) ([3]common.Address, error) {
 	var out []interface{}
-	err := _Subscription.contract.Call(opts, &out, "getSubRec", subrcvr)
+	err := _Subscription.contract.Call(opts, &out, "getSubCre", subrcvr)
 
 	if err != nil {
 		return *new([3]common.Address), err
@@ -289,48 +320,48 @@ func (_Subscription *SubscriptionCaller) GetSubRec(opts *bind.CallOpts, subrcvr 
 
 }
 
-// GetSubRec is a free data retrieval call binding the contract method 0xaf0a8c98.
+// GetSubCre is a free data retrieval call binding the contract method 0xf0f77250.
 //
-// Solidity: function getSubRec(uint256 subrcvr) view returns(address[3])
-func (_Subscription *SubscriptionSession) GetSubRec(subrcvr *big.Int) ([3]common.Address, error) {
-	return _Subscription.Contract.GetSubRec(&_Subscription.CallOpts, subrcvr)
+// Solidity: function getSubCre(uint64 subrcvr) view returns(address[3])
+func (_Subscription *SubscriptionSession) GetSubCre(subrcvr uint64) ([3]common.Address, error) {
+	return _Subscription.Contract.GetSubCre(&_Subscription.CallOpts, subrcvr)
 }
 
-// GetSubRec is a free data retrieval call binding the contract method 0xaf0a8c98.
+// GetSubCre is a free data retrieval call binding the contract method 0xf0f77250.
 //
-// Solidity: function getSubRec(uint256 subrcvr) view returns(address[3])
-func (_Subscription *SubscriptionCallerSession) GetSubRec(subrcvr *big.Int) ([3]common.Address, error) {
-	return _Subscription.Contract.GetSubRec(&_Subscription.CallOpts, subrcvr)
+// Solidity: function getSubCre(uint64 subrcvr) view returns(address[3])
+func (_Subscription *SubscriptionCallerSession) GetSubCre(subrcvr uint64) ([3]common.Address, error) {
+	return _Subscription.Contract.GetSubCre(&_Subscription.CallOpts, subrcvr)
 }
 
-// GetSubUni is a free data retrieval call binding the contract method 0x2c3bf5ba.
+// GetSubUni is a free data retrieval call binding the contract method 0x06fffb81.
 //
-// Solidity: function getSubUni(uint256 subrcvr) view returns(uint256)
-func (_Subscription *SubscriptionCaller) GetSubUni(opts *bind.CallOpts, subrcvr *big.Int) (*big.Int, error) {
+// Solidity: function getSubUni(uint64 subrcvr) view returns(uint64)
+func (_Subscription *SubscriptionCaller) GetSubUni(opts *bind.CallOpts, subrcvr uint64) (uint64, error) {
 	var out []interface{}
 	err := _Subscription.contract.Call(opts, &out, "getSubUni", subrcvr)
 
 	if err != nil {
-		return *new(*big.Int), err
+		return *new(uint64), err
 	}
 
-	out0 := *abi.ConvertType(out[0], new(*big.Int)).(**big.Int)
+	out0 := *abi.ConvertType(out[0], new(uint64)).(*uint64)
 
 	return out0, err
 
 }
 
-// GetSubUni is a free data retrieval call binding the contract method 0x2c3bf5ba.
+// GetSubUni is a free data retrieval call binding the contract method 0x06fffb81.
 //
-// Solidity: function getSubUni(uint256 subrcvr) view returns(uint256)
-func (_Subscription *SubscriptionSession) GetSubUni(subrcvr *big.Int) (*big.Int, error) {
+// Solidity: function getSubUni(uint64 subrcvr) view returns(uint64)
+func (_Subscription *SubscriptionSession) GetSubUni(subrcvr uint64) (uint64, error) {
 	return _Subscription.Contract.GetSubUni(&_Subscription.CallOpts, subrcvr)
 }
 
-// GetSubUni is a free data retrieval call binding the contract method 0x2c3bf5ba.
+// GetSubUni is a free data retrieval call binding the contract method 0x06fffb81.
 //
-// Solidity: function getSubUni(uint256 subrcvr) view returns(uint256)
-func (_Subscription *SubscriptionCallerSession) GetSubUni(subrcvr *big.Int) (*big.Int, error) {
+// Solidity: function getSubUni(uint64 subrcvr) view returns(uint64)
+func (_Subscription *SubscriptionCallerSession) GetSubUni(subrcvr uint64) (uint64, error) {
 	return _Subscription.Contract.GetSubUni(&_Subscription.CallOpts, subrcvr)
 }
 
@@ -449,66 +480,66 @@ func (_Subscription *SubscriptionTransactorSession) SetSubAmn(subamn *big.Int) (
 	return _Subscription.Contract.SetSubAmn(&_Subscription.TransactOpts, subamn)
 }
 
-// SubOne is a paid mutator transaction binding the contract method 0xa22818da.
+// SubOne is a paid mutator transaction binding the contract method 0x775ed13b.
 //
-// Solidity: function subOne(uint256 subrcvr, address creaone, uint256 unixsec) payable returns()
-func (_Subscription *SubscriptionTransactor) SubOne(opts *bind.TransactOpts, subrcvr *big.Int, creaone common.Address, unixsec *big.Int) (*types.Transaction, error) {
+// Solidity: function subOne(uint64 subrcvr, address creaone, uint64 unixsec) payable returns()
+func (_Subscription *SubscriptionTransactor) SubOne(opts *bind.TransactOpts, subrcvr uint64, creaone common.Address, unixsec uint64) (*types.Transaction, error) {
 	return _Subscription.contract.Transact(opts, "subOne", subrcvr, creaone, unixsec)
 }
 
-// SubOne is a paid mutator transaction binding the contract method 0xa22818da.
+// SubOne is a paid mutator transaction binding the contract method 0x775ed13b.
 //
-// Solidity: function subOne(uint256 subrcvr, address creaone, uint256 unixsec) payable returns()
-func (_Subscription *SubscriptionSession) SubOne(subrcvr *big.Int, creaone common.Address, unixsec *big.Int) (*types.Transaction, error) {
+// Solidity: function subOne(uint64 subrcvr, address creaone, uint64 unixsec) payable returns()
+func (_Subscription *SubscriptionSession) SubOne(subrcvr uint64, creaone common.Address, unixsec uint64) (*types.Transaction, error) {
 	return _Subscription.Contract.SubOne(&_Subscription.TransactOpts, subrcvr, creaone, unixsec)
 }
 
-// SubOne is a paid mutator transaction binding the contract method 0xa22818da.
+// SubOne is a paid mutator transaction binding the contract method 0x775ed13b.
 //
-// Solidity: function subOne(uint256 subrcvr, address creaone, uint256 unixsec) payable returns()
-func (_Subscription *SubscriptionTransactorSession) SubOne(subrcvr *big.Int, creaone common.Address, unixsec *big.Int) (*types.Transaction, error) {
+// Solidity: function subOne(uint64 subrcvr, address creaone, uint64 unixsec) payable returns()
+func (_Subscription *SubscriptionTransactorSession) SubOne(subrcvr uint64, creaone common.Address, unixsec uint64) (*types.Transaction, error) {
 	return _Subscription.Contract.SubOne(&_Subscription.TransactOpts, subrcvr, creaone, unixsec)
 }
 
-// SubThr is a paid mutator transaction binding the contract method 0x79777551.
+// SubThr is a paid mutator transaction binding the contract method 0xa015f1bc.
 //
-// Solidity: function subThr(uint256 subrcvr, address creaone, uint256 amntone, address creatwo, uint256 amnttwo, address creathr, uint256 amntthr, uint256 unixsec) payable returns()
-func (_Subscription *SubscriptionTransactor) SubThr(opts *bind.TransactOpts, subrcvr *big.Int, creaone common.Address, amntone *big.Int, creatwo common.Address, amnttwo *big.Int, creathr common.Address, amntthr *big.Int, unixsec *big.Int) (*types.Transaction, error) {
+// Solidity: function subThr(uint64 subrcvr, address creaone, uint8 amntone, address creatwo, uint8 amnttwo, address creathr, uint8 amntthr, uint64 unixsec) payable returns()
+func (_Subscription *SubscriptionTransactor) SubThr(opts *bind.TransactOpts, subrcvr uint64, creaone common.Address, amntone uint8, creatwo common.Address, amnttwo uint8, creathr common.Address, amntthr uint8, unixsec uint64) (*types.Transaction, error) {
 	return _Subscription.contract.Transact(opts, "subThr", subrcvr, creaone, amntone, creatwo, amnttwo, creathr, amntthr, unixsec)
 }
 
-// SubThr is a paid mutator transaction binding the contract method 0x79777551.
+// SubThr is a paid mutator transaction binding the contract method 0xa015f1bc.
 //
-// Solidity: function subThr(uint256 subrcvr, address creaone, uint256 amntone, address creatwo, uint256 amnttwo, address creathr, uint256 amntthr, uint256 unixsec) payable returns()
-func (_Subscription *SubscriptionSession) SubThr(subrcvr *big.Int, creaone common.Address, amntone *big.Int, creatwo common.Address, amnttwo *big.Int, creathr common.Address, amntthr *big.Int, unixsec *big.Int) (*types.Transaction, error) {
+// Solidity: function subThr(uint64 subrcvr, address creaone, uint8 amntone, address creatwo, uint8 amnttwo, address creathr, uint8 amntthr, uint64 unixsec) payable returns()
+func (_Subscription *SubscriptionSession) SubThr(subrcvr uint64, creaone common.Address, amntone uint8, creatwo common.Address, amnttwo uint8, creathr common.Address, amntthr uint8, unixsec uint64) (*types.Transaction, error) {
 	return _Subscription.Contract.SubThr(&_Subscription.TransactOpts, subrcvr, creaone, amntone, creatwo, amnttwo, creathr, amntthr, unixsec)
 }
 
-// SubThr is a paid mutator transaction binding the contract method 0x79777551.
+// SubThr is a paid mutator transaction binding the contract method 0xa015f1bc.
 //
-// Solidity: function subThr(uint256 subrcvr, address creaone, uint256 amntone, address creatwo, uint256 amnttwo, address creathr, uint256 amntthr, uint256 unixsec) payable returns()
-func (_Subscription *SubscriptionTransactorSession) SubThr(subrcvr *big.Int, creaone common.Address, amntone *big.Int, creatwo common.Address, amnttwo *big.Int, creathr common.Address, amntthr *big.Int, unixsec *big.Int) (*types.Transaction, error) {
+// Solidity: function subThr(uint64 subrcvr, address creaone, uint8 amntone, address creatwo, uint8 amnttwo, address creathr, uint8 amntthr, uint64 unixsec) payable returns()
+func (_Subscription *SubscriptionTransactorSession) SubThr(subrcvr uint64, creaone common.Address, amntone uint8, creatwo common.Address, amnttwo uint8, creathr common.Address, amntthr uint8, unixsec uint64) (*types.Transaction, error) {
 	return _Subscription.Contract.SubThr(&_Subscription.TransactOpts, subrcvr, creaone, amntone, creatwo, amnttwo, creathr, amntthr, unixsec)
 }
 
-// SubTwo is a paid mutator transaction binding the contract method 0x7e0df4de.
+// SubTwo is a paid mutator transaction binding the contract method 0x1a882f89.
 //
-// Solidity: function subTwo(uint256 subrcvr, address creaone, uint256 amntone, address creatwo, uint256 amnttwo, uint256 unixsec) payable returns()
-func (_Subscription *SubscriptionTransactor) SubTwo(opts *bind.TransactOpts, subrcvr *big.Int, creaone common.Address, amntone *big.Int, creatwo common.Address, amnttwo *big.Int, unixsec *big.Int) (*types.Transaction, error) {
+// Solidity: function subTwo(uint64 subrcvr, address creaone, uint8 amntone, address creatwo, uint8 amnttwo, uint64 unixsec) payable returns()
+func (_Subscription *SubscriptionTransactor) SubTwo(opts *bind.TransactOpts, subrcvr uint64, creaone common.Address, amntone uint8, creatwo common.Address, amnttwo uint8, unixsec uint64) (*types.Transaction, error) {
 	return _Subscription.contract.Transact(opts, "subTwo", subrcvr, creaone, amntone, creatwo, amnttwo, unixsec)
 }
 
-// SubTwo is a paid mutator transaction binding the contract method 0x7e0df4de.
+// SubTwo is a paid mutator transaction binding the contract method 0x1a882f89.
 //
-// Solidity: function subTwo(uint256 subrcvr, address creaone, uint256 amntone, address creatwo, uint256 amnttwo, uint256 unixsec) payable returns()
-func (_Subscription *SubscriptionSession) SubTwo(subrcvr *big.Int, creaone common.Address, amntone *big.Int, creatwo common.Address, amnttwo *big.Int, unixsec *big.Int) (*types.Transaction, error) {
+// Solidity: function subTwo(uint64 subrcvr, address creaone, uint8 amntone, address creatwo, uint8 amnttwo, uint64 unixsec) payable returns()
+func (_Subscription *SubscriptionSession) SubTwo(subrcvr uint64, creaone common.Address, amntone uint8, creatwo common.Address, amnttwo uint8, unixsec uint64) (*types.Transaction, error) {
 	return _Subscription.Contract.SubTwo(&_Subscription.TransactOpts, subrcvr, creaone, amntone, creatwo, amnttwo, unixsec)
 }
 
-// SubTwo is a paid mutator transaction binding the contract method 0x7e0df4de.
+// SubTwo is a paid mutator transaction binding the contract method 0x1a882f89.
 //
-// Solidity: function subTwo(uint256 subrcvr, address creaone, uint256 amntone, address creatwo, uint256 amnttwo, uint256 unixsec) payable returns()
-func (_Subscription *SubscriptionTransactorSession) SubTwo(subrcvr *big.Int, creaone common.Address, amntone *big.Int, creatwo common.Address, amnttwo *big.Int, unixsec *big.Int) (*types.Transaction, error) {
+// Solidity: function subTwo(uint64 subrcvr, address creaone, uint8 amntone, address creatwo, uint8 amnttwo, uint64 unixsec) payable returns()
+func (_Subscription *SubscriptionTransactorSession) SubTwo(subrcvr uint64, creaone common.Address, amntone uint8, creatwo common.Address, amnttwo uint8, unixsec uint64) (*types.Transaction, error) {
 	return _Subscription.Contract.SubTwo(&_Subscription.TransactOpts, subrcvr, creaone, amntone, creatwo, amnttwo, unixsec)
 }
 
