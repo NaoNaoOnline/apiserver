@@ -88,6 +88,9 @@ func (h *Handler) Update(ctx context.Context, req *label.UpdateI) (*label.Update
 	return res, nil
 }
 
+// updateVrfyPtch verifies the given patches. Note that the exact same
+// implementation exists for users. If something changes here, it must be ported
+// to the user handler as well.
 func (h *Handler) updateVrfyPtch(ctx context.Context, obj labelstorage.Slicer, pat labelstorage.PatchSlicer) error {
 	var use objectid.ID
 	{

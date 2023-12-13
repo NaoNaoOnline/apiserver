@@ -1,6 +1,10 @@
 package userstorage
 
-import "github.com/xh3b4sd/tracer"
+import (
+	"strings"
+
+	"github.com/xh3b4sd/tracer"
+)
 
 type Patch struct {
 	// Frm is the RFC6902 compliant from for this JSON-Patch.
@@ -24,7 +28,7 @@ func (p *Patch) Verify() error {
 		if p.Ope == "" {
 			return tracer.Mask(jsonPatchOperationEmptyError)
 		}
-		if p.Ope != "replace" {
+		if p.Ope != "add" && p.Ope != "remove" && p.Ope != "replace" {
 			return tracer.Maskf(jsonPatchOperationInvalidError, p.Ope)
 		}
 	}
@@ -33,7 +37,7 @@ func (p *Patch) Verify() error {
 		if p.Pat == "" {
 			return tracer.Maskf(jsonPatchPathEmptyError, p.Pat)
 		}
-		if p.Pat != "/home/data" && p.Pat != "/name/data" {
+		if p.Pat != "/home/data" && p.Pat != "/name/data" && !strings.HasPrefix(p.Pat, "/prfl/data/") {
 			return tracer.Maskf(jsonPatchPathInvalidError, p.Pat)
 		}
 	}

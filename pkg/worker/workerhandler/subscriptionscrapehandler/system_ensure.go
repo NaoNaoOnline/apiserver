@@ -3,7 +3,6 @@ package subscriptionscrapehandler
 import (
 	"context"
 	"fmt"
-	"math/big"
 	"strings"
 
 	"github.com/NaoNaoOnline/apiserver/pkg/contract/subscriptioncontract"
@@ -74,9 +73,9 @@ func (h *SystemHandler) Ensure(tas *task.Task, bud *budget.Budget) error {
 		}
 	}
 
-	var sec *big.Int
+	var sec uint64
 	{
-		sec, err = scn.GetSubUni(nil, big.NewInt(sob[0].Rcvr.Int()))
+		sec, err = scn.GetSubUni(nil, uint64(sob[0].Rcvr.Int()))
 		if err != nil {
 			return tracer.Mask(err)
 		}
@@ -84,7 +83,7 @@ func (h *SystemHandler) Ensure(tas *task.Task, bud *budget.Budget) error {
 
 	var add [3]common.Address
 	{
-		add, err = scn.GetSubRec(nil, big.NewInt(sob[0].Rcvr.Int()))
+		add, err = scn.GetSubCre(nil, uint64(sob[0].Rcvr.Int()))
 		if err != nil {
 			return tracer.Mask(err)
 		}
@@ -92,7 +91,7 @@ func (h *SystemHandler) Ensure(tas *task.Task, bud *budget.Budget) error {
 
 	var uni int64
 	{
-		uni = int64(sec.Uint64())
+		uni = int64(sec)
 	}
 
 	var cre []string

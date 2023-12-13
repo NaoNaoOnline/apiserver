@@ -114,6 +114,7 @@ func (h *Handler) Search(ctx context.Context, req *user.SearchI) (*user.SearchO,
 				Home: x.Home.Data,
 				Imag: x.Imag,
 				Name: x.Name.Data,
+				Prfl: outMap(x.Prfl),
 			},
 		})
 	}

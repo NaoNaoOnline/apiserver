@@ -57,6 +57,9 @@ func (h *SystemHandler) Ensure(tas *task.Task, bud *budget.Budget) error {
 		}
 	}
 
+	// Search for the user IDs of content creators that added events to the
+	// platform during the rolling time window. This time window is the event
+	// retention in Redis, which is currently set to 3 months.
 	var uid []objectid.ID
 	{
 		uid, err = h.eve.SearchCrtr(pag)

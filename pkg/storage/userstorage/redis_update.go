@@ -67,6 +67,10 @@ func (r *Redis) UpdatePtch(obj []*Object, pat PatchSlicer) ([]objectstate.String
 			if pat.RplNam(i) {
 				obj[i].Name.Time = now
 			}
+
+			if pat.RplPro(i) {
+				obj[i].Prfl.Time = now
+			}
 		}
 
 		var dec jsonpatch.Patch

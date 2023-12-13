@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/NaoNaoOnline/apigocode/pkg/user"
+	"github.com/NaoNaoOnline/apiserver/pkg/object/objectfield"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/userstorage"
 	"github.com/xh3b4sd/logger"
 	"github.com/xh3b4sd/tracer"
@@ -48,6 +49,16 @@ func inpPat(upd []*user.UpdateI_Object_Update) []*userstorage.Patch {
 	}
 
 	return lis
+}
+
+func outMap(inp objectfield.MapStr) map[string]string {
+	out := map[string]string{}
+
+	for k, v := range inp.Data {
+		out[k] = v
+	}
+
+	return out
 }
 
 func outTim(tim time.Time) string {

@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/NaoNaoOnline/apigocode/pkg/user"
+	"github.com/NaoNaoOnline/apiserver/pkg/generic"
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectid"
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectstate"
 	"github.com/NaoNaoOnline/apiserver/pkg/runtime"
@@ -77,7 +78,7 @@ func (h *Handler) Update(ctx context.Context, req *user.UpdateI) (*user.UpdateO,
 	return res, nil
 }
 
-func (h *Handler) updateVrfyPtch(ctx context.Context, inp []*userstorage.Object, pat userstorage.PatchSlicer) error {
+func (h *Handler) updateVrfyPtch(ctx context.Context, obj []*userstorage.Object, pat userstorage.PatchSlicer) error {
 	var pre bool
 	{
 		pre = isprem.FromContext(ctx)
@@ -88,7 +89,7 @@ func (h *Handler) updateVrfyPtch(ctx context.Context, inp []*userstorage.Object,
 		use = userid.FromContext(ctx)
 	}
 
-	for i, x := range inp {
+	for i, x := range obj {
 		if use != x.User {
 			return tracer.Mask(runtime.UserNotOwnerError)
 		}
@@ -107,6 +108,23 @@ func (h *Handler) updateVrfyPtch(ctx context.Context, inp []*userstorage.Object,
 		// then return an error.
 		if pat.RplNam(i) && !x.UpdNam() {
 			return tracer.Mask(updateNamePeriodError)
+		}
+
+		// Verify the given patches against user profile data. Note that the exact
+		// same implementation exists for users. If something changes here, it must
+		// be ported to the user handler as well.
+		for k := range x.Prfl.Data {
+			// Ensure user profiles can only be added if they do not already exist. If
+			// RemLab returns false, given the existing user y, then it means that a
+			// patch defines a user to be added that does not already exist.
+			if pat.AddPro(i, k) && !pat.RemPro(i, k) {
+				return tracer.Maskf(userProfileAlreadyExistsError, k)
+			}
+
+			// Ensure user profiles can only be removed if they do already exist.
+			if len(pat.RemPat(i)) != 0 && !generic.All(obj[i].ProPat(), pat.RemPat(i)) {
+				return tracer.Maskf(userProfileNotFoundError, k)
+			}
 		}
 	}
 

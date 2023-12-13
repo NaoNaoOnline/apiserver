@@ -16,7 +16,7 @@ var jsonPatchOperationEmptyError = &tracer.Error{
 
 var jsonPatchOperationInvalidError = &tracer.Error{
 	Kind: "jsonPatchOperationInvalidError",
-	Desc: "The request expects the JSON-Patch operation to be one of [replace]. The JSON-Patch operation was not found to be one of [replace]. Therefore the request failed.",
+	Desc: "The request expects the JSON-Patch operation to be one of [add remove replace]. The JSON-Patch operation was not found to be one of [add remove replace]. Therefore the request failed.",
 }
 
 var jsonPatchPathEmptyError = &tracer.Error{
@@ -26,5 +26,5 @@ var jsonPatchPathEmptyError = &tracer.Error{
 
 var jsonPatchPathInvalidError = &tracer.Error{
 	Kind: "jsonPatchPathInvalidError",
-	Desc: "The request expects the JSON-Patch path to be one of [/home/data /name/data]. The JSON-Patch path was not found to be one of [/home/data /name/data]. Therefore the request failed.",
+	Desc: "The request expects the JSON-Patch path to be one of [/home/data /name/data /prfl/data/*]. The JSON-Patch path was not found to be one of [/home/data /name/data /prfl/data/*]. Therefore the request failed.",
 }
