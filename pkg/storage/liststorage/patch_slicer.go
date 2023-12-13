@@ -37,6 +37,8 @@ func (s PatchSlicer) RplFee(ind int) bool {
 	return false
 }
 
+// UniTim converts a string of unix seconds into a formatted time string. Empty
+// strings and zeroes will yield the zero value of the time.Time type.
 func (s PatchSlicer) UniTim(ind int) []*Patch {
 	for i, x := range s[ind] {
 		if x.Ope == "replace" && x.Pat == "/feed/data" {

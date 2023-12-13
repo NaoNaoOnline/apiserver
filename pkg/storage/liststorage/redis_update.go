@@ -35,7 +35,11 @@ func (r *Redis) UpdatePtch(obj []*Object, pat PatchSlicer) ([]objectstate.String
 
 			if pat.RplFee(i) {
 				obj[i].Feed.Time = now
-				// TODO
+				// Since the apischema defines time values as strings of unix seconds,
+				// and since we accept those values transparently for the JSON patches,
+				// we have to transform unix seconds into formatted time strings. If we
+				// do not do that, then the JSON patch will fail because Feed.Data is of
+				// type time.Time, and that type requires a time formatted string.
 				pat[i] = pat.UniTim(i)
 			}
 		}
