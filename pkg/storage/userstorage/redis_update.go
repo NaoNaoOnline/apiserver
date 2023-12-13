@@ -68,7 +68,7 @@ func (r *Redis) UpdatePtch(obj []*Object, pat PatchSlicer) ([]objectstate.String
 				obj[i].Name.Time = now
 			}
 
-			if pat.RplNam(i) {
+			if pat.RplPro(i) {
 				obj[i].Prfl.Time = now
 			}
 		}
