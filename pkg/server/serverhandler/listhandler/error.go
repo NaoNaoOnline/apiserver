@@ -23,3 +23,8 @@ var updateEmptyError = &tracer.Error{
 	Kind: "updateEmptyError",
 	Desc: "The request expects the query object to contain all of [intern update]. The query object was not found to contain all of [intern update]. Therefore the request failed.",
 }
+
+var updateFeedPremiumError = &tracer.Error{
+	Kind: "updateFeedPremiumError",
+	Desc: "The request expects the user to have a premium subscription in order to set list notifications. The user was not found to have a premium subscription. Therefore the request failed.",
+}

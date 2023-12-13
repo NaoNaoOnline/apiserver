@@ -73,9 +73,9 @@ func (h *Handler) Create(ctx context.Context, req *list.CreateI) (*list.CreateO,
 func (h *Handler) createVrfy(ctx context.Context, obj liststorage.Slicer) error {
 	var err error
 
-	var prm bool
+	var pre bool
 	{
-		prm = isprem.FromContext(ctx)
+		pre = isprem.FromContext(ctx)
 	}
 
 	for _, x := range obj {
@@ -88,10 +88,10 @@ func (h *Handler) createVrfy(ctx context.Context, obj liststorage.Slicer) error 
 		}
 
 		{
-			if !prm && amn >= 1 {
+			if !pre && amn >= 1 {
 				return tracer.Mask(createListPremiumError)
 			}
-			if prm && amn >= 50 {
+			if pre && amn >= 50 {
 				return tracer.Mask(createListLimitError)
 			}
 		}

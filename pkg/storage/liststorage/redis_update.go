@@ -9,7 +9,7 @@ import (
 	"github.com/xh3b4sd/tracer"
 )
 
-func (r *Redis) UpdatePtch(obj []*Object, pat [][]*Patch) ([]objectstate.String, error) {
+func (r *Redis) UpdatePtch(obj []*Object, pat PatchSlicer) ([]objectstate.String, error) {
 	var err error
 
 	var out []objectstate.String
@@ -29,7 +29,15 @@ func (r *Redis) UpdatePtch(obj []*Object, pat [][]*Patch) ([]objectstate.String,
 		}
 
 		{
-			obj[i].Desc.Time = now
+			if pat.RplDes(i) {
+				obj[i].Desc.Time = now
+			}
+
+			if pat.RplFee(i) {
+				obj[i].Feed.Time = now
+				// TODO
+				pat[i] = pat.UniTim(i)
+			}
 		}
 
 		var dec jsonpatch.Patch

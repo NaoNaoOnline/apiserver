@@ -22,3 +22,8 @@ var listDescLengthError = &tracer.Error{
 func IsListDescLength(err error) bool {
 	return errors.Is(err, listDescLengthError)
 }
+
+var feedTimeFutureError = &tracer.Error{
+	Kind: "feedTimeFutureError",
+	Desc: "The request expects the feed timestamp not to be in the future. The feed timestamp was found to be in the future. Therefore the request failed.",
+}

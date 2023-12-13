@@ -14,6 +14,11 @@ var queryObjectConflictError = &tracer.Error{
 	Desc: "The request expects the query object to contain one of [intern public symbol]. The query object was not found to contain one of [intern public symbol]. Therefore the request failed.",
 }
 
+var searchFeedPremiumError = &tracer.Error{
+	Kind: "searchFeedPremiumError",
+	Desc: "The request expects the user to have a premium subscription in order to receive list notifications. The user was not found to have a premium subscription. Therefore the request failed.",
+}
+
 var searchInternConflictError = &tracer.Error{
 	Kind: "searchInternConflictError",
 	Desc: "The request expects the query object to contain one of [intern.evnt intern.user]. The query object was not found to contain one of [intern.evnt intern.user]. Therefore the request failed.",

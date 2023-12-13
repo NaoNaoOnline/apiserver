@@ -8,6 +8,7 @@ import (
 	"github.com/NaoNaoOnline/apigocode/pkg/event"
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectid"
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectlabel"
+	"github.com/NaoNaoOnline/apiserver/pkg/server/context/isprem"
 	"github.com/NaoNaoOnline/apiserver/pkg/server/context/userid"
 	"github.com/NaoNaoOnline/apiserver/pkg/server/limiter"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/eventstorage"
@@ -22,6 +23,11 @@ func (h *Handler) Search(ctx context.Context, req *event.SearchI) (*event.Search
 	var use objectid.ID
 	{
 		use = userid.FromContext(ctx)
+	}
+
+	var pre bool
+	{
+		pre = isprem.FromContext(ctx)
 	}
 
 	//
@@ -98,44 +104,79 @@ func (h *Handler) Search(ctx context.Context, req *event.SearchI) (*event.Search
 	//
 
 	{
-		var lid objectid.ID
+		var lid []objectid.ID
 		{
 			lid = symbolList(req)
 		}
 
-		if lid != "" {
+		if len(lid) != 0 {
 			var kin string
 			{
 				kin = pagingKind(req)
 			}
 
-			// TODO restrict feed length for non-premium users
-			var eid []objectid.ID
+			// TODO restrict feed length for non-premium users to 1 week of history
 
+			// kin=page is used to receive the full list of events described by the
+			// provided paging range. This response contains all event information
+			// with the returned event objects.
 			if kin == "" || kin == "page" {
-				eid, err = h.fee.SearchPage(lid, pagingPage(req))
-				if err != nil {
-					return nil, tracer.Mask(err)
-				}
-			}
+				for _, x := range lid {
+					var eid []objectid.ID
+					{
+						eid, err = h.fee.SearchPage(x, pagingPage(req))
+						if err != nil {
+							return nil, tracer.Mask(err)
+						}
+					}
 
-			if kin == "unix" {
-				eid, err = h.fee.SearchUnix(lid, pagingUnix(req))
-				if err != nil {
-					return nil, tracer.Mask(err)
-				}
-			}
+					var eob []*eventstorage.Object
+					{
+						eob, err = h.eve.SearchEvnt(use, eid)
+						if err != nil {
+							return nil, tracer.Mask(err)
+						}
+					}
 
-			if len(eid) != 0 {
-				var eob eventstorage.Slicer
-				{
-					eob, err = h.eve.SearchEvnt(use, eid)
-					if err != nil {
-						return nil, tracer.Mask(err)
+					{
+						out = append(out, eob...)
 					}
 				}
+			}
 
-				out = append(out, eob...)
+			// kin=unix is used to receive the delta of events that a user has not
+			// seen yet for any given list. This notification response has a different
+			// shape as it does only contain the event ID and respective list ID in
+			// the returned event objects. Note that only users with an active premium
+			// subscription should be allowed to receive list notifications. So if a
+			// client asks for the events a user might have missed, and if that user
+			// does not have an active premium subscription, then return an error.
+			// Further note that notifications are pull based and entirely managed on
+			// the client side. Any client may just work around the restrictions set
+			// here.
+			if kin == "unix" {
+				if pre {
+					for _, x := range lid {
+						var eid []objectid.ID
+						{
+							eid, err = h.fee.SearchUnix(x, pagingUnix(req))
+							if err != nil {
+								return nil, tracer.Mask(err)
+							}
+						}
+
+						for _, y := range eid {
+							out = append(out, &eventstorage.Object{
+								Evnt: y,
+								List: x,
+							})
+						}
+					}
+				} else {
+					{
+						return nil, tracer.Mask(searchFeedPremiumError)
+					}
+				}
 			}
 		}
 	}
@@ -267,27 +308,45 @@ func (h *Handler) Search(ctx context.Context, req *event.SearchI) (*event.Search
 			continue
 		}
 
-		res.Object = append(res.Object, &event.SearchO_Object{
-			Extern: []*event.SearchO_Object_Extern{
-				{
-					Amnt: strconv.FormatInt(x.Mtrc.Data[objectlabel.EventMetricUser], 10),
-					Kind: "link",
-					User: x.Mtrc.User[objectlabel.EventMetricUser],
+		// Event object responses change shape when searching for the delta of a
+		// feed. These notification responses do only contain event IDs and their
+		// respective list IDs. All other responses should return all available
+		// information for the requested event objects.
+		var eob *event.SearchO_Object
+		if x.List != "" {
+			eob = &event.SearchO_Object{
+				Intern: &event.SearchO_Object_Intern{
+					Evnt: x.Evnt.String(),
+					List: x.List.String(),
 				},
-			},
-			Intern: &event.SearchO_Object_Intern{
-				Crtd: outTim(x.Crtd),
-				Evnt: x.Evnt.String(),
-				User: x.User.String(),
-			},
-			Public: &event.SearchO_Object_Public{
-				Cate: outLab(append(x.Cate, x.Bltn...)),
-				Dura: outDur(x.Dura),
-				Host: outLab(x.Host),
-				Link: x.Link,
-				Time: outTim(x.Time),
-			},
-		})
+			}
+		} else {
+			eob = &event.SearchO_Object{
+				Extern: []*event.SearchO_Object_Extern{
+					{
+						Amnt: strconv.FormatInt(x.Mtrc.Data[objectlabel.EventMetricUser], 10),
+						Kind: "link",
+						User: x.Mtrc.User[objectlabel.EventMetricUser],
+					},
+				},
+				Intern: &event.SearchO_Object_Intern{
+					Crtd: outTim(x.Crtd),
+					Evnt: x.Evnt.String(),
+					User: x.User.String(),
+				},
+				Public: &event.SearchO_Object_Public{
+					Cate: outLab(append(x.Cate, x.Bltn...)),
+					Dura: outDur(x.Dura),
+					Host: outLab(x.Host),
+					Link: x.Link,
+					Time: outTim(x.Time),
+				},
+			}
+		}
+
+		{
+			res.Object = append(res.Object, eob)
+		}
 	}
 
 	return res, nil

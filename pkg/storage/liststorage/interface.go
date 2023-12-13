@@ -71,5 +71,5 @@ type Interface interface {
 	//     @inp[1] the list of RFC6902 compliant JSON-Patches
 	//     @out[0] the list of operation states related to the modified list objects
 	//
-	UpdatePtch([]*Object, [][]*Patch) ([]objectstate.String, error)
+	UpdatePtch([]*Object, PatchSlicer) ([]objectstate.String, error)
 }

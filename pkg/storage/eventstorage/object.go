@@ -32,6 +32,11 @@ type Object struct {
 	// Link is the online location at which the event is expected to take place.
 	// For IRL events this may just be some informational website.
 	Link string `json:"link"`
+	// List is the ID of the list this event belongs to, if any. Note that this
+	// field will only be set when searching events using symbol.list. Further
+	// note that this field is not persisted, but rather only augmented on the
+	// fly.
+	List objectid.ID `json:"-"`
 	// Mtrc is a mapping of various metrics related to this event object.
 	Mtrc objectfield.MapInt `json:"mtrc"`
 	// Time is the date time at which the event is expected to start.
