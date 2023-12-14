@@ -104,6 +104,7 @@ func (r *run) run(cmd *cobra.Command, args []string) {
 	{
 		sto = storage.New(storage.Config{
 			Emi: emi,
+			Env: env,
 			Log: log,
 			Red: red,
 		})

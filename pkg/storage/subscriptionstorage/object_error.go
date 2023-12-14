@@ -46,7 +46,7 @@ var subscriptionUnixEmptyError = &tracer.Error{
 
 var subscriptionUnixInvalidError = &tracer.Error{
 	Kind: "subscriptionUnixInvalidError",
-	Desc: "The request expects the subscription timestamp to define the first day of the current month. The subscription timestamp was not found to define the first day of the current month. Therefore the request failed.",
+	Desc: "The request expects the subscription timestamp to define the first day of the subscription period. The subscription timestamp was not found to define the first day of the subscription period. Therefore the request failed.",
 }
 
 func IsSubscriptionUnixInvalid(err error) bool {

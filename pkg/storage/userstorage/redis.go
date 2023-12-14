@@ -14,12 +14,12 @@ import (
 
 type RedisConfig struct {
 	Log logger.Interface
-	// PSO is a global premium subscription overwrite. Setting this value provides
+	// Pso is a global premium subscription overwrite. Setting this value provides
 	// every user returned by the user storage with a premium subscription until
-	// the timestamp provided here has expired. That is, if PSO were set to the
-	// 1st of November and today would be the 3rd of October then every user on
+	// the timestamp provided here has expired. That is, if Pso were set to the
+	// 1st of November and today would be the 3rd of October, then every user on
 	// the platform would have a premium subscription for the rest of the month.
-	PSO time.Time
+	Pso time.Time
 	Red redigo.Interface
 }
 
@@ -39,7 +39,7 @@ func NewRedis(c RedisConfig) *Redis {
 
 	return &Redis{
 		log: c.Log,
-		pso: c.PSO,
+		pso: c.Pso,
 		red: c.Red,
 	}
 }

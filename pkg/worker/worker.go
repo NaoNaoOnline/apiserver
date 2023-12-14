@@ -3,10 +3,9 @@ package worker
 import (
 	"context"
 	"fmt"
-	"reflect"
-	"strings"
 	"time"
 
+	"github.com/NaoNaoOnline/apiserver/pkg/object"
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectlabel"
 	"github.com/NaoNaoOnline/apiserver/pkg/worker/budget"
 	"github.com/NaoNaoOnline/apiserver/pkg/worker/workerhandler"
@@ -205,7 +204,7 @@ func (w *Worker) search() {
 				logctx(tas),
 				"level", "info",
 				"message", "processing worker task",
-				objectlabel.WrkrObject, hanNam(x),
+				objectlabel.WrkrObject, object.String(x),
 			)
 		}
 
@@ -263,33 +262,6 @@ func (w *Worker) ticker() {
 	if err != nil {
 		w.lerror(tracer.Mask(err))
 	}
-}
-
-func hanNam(han workerhandler.Interface) string {
-	var typ reflect.Type
-	{
-		typ = reflect.TypeOf(han)
-	}
-
-	if typ.Kind() == reflect.Ptr {
-		typ = typ.Elem()
-	}
-
-	var pkg string
-	{
-		pkg = typ.PkgPath()
-	}
-
-	var spl []string
-	{
-		spl = strings.Split(pkg, "/")
-	}
-
-	if len(spl) != 0 {
-		pkg = spl[len(spl)-1]
-	}
-
-	return fmt.Sprintf("%s.%s", pkg, typ.Name())
 }
 
 func logctx(tas *task.Task) context.Context {

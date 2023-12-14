@@ -9,7 +9,6 @@ import (
 	"github.com/NaoNaoOnline/apiserver/pkg/keyfmt"
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectid"
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectlabel"
-	"github.com/NaoNaoOnline/apiserver/pkg/runtime"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/eventstorage"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/walletstorage"
 	"github.com/xh3b4sd/redigo/simple"
@@ -59,14 +58,14 @@ func (r *Redis) SearchCrtr(uid []objectid.ID) ([]*walletstorage.Object, error) {
 			for _, x := range dic {
 				// If a user created more than X events, then continue. Otherwise the
 				// respective user is not considered a legitimate content creator.
-				if len(x) < minEve {
+				if len(x) < r.mse {
 					continue
 				}
 
 				// If the user generated more than Y link clicks, then continue.
 				// Otherwise the respective user is not considered a legitimate content
 				// creator.
-				if x.Mtrc(objectlabel.EventMetricUser) < minLin {
+				if x.Mtrc(objectlabel.EventMetricUser) < int64(r.msl) {
 					continue
 				}
 
@@ -123,11 +122,11 @@ func (r *Redis) SearchCrtr(uid []objectid.ID) ([]*walletstorage.Object, error) {
 func (r *Redis) SearchCurr(uid objectid.ID) (*Object, error) {
 	var err error
 
-	// Search for the latest subscription object for the given user ID, which is
+	// Search for all subscription objects for the given user ID, which is
 	// expected to be the receiver of the subscription to search for.
 	var sob []*Object
 	{
-		sob, err = r.SearchRcvr([]objectid.ID{uid}, PagLat())
+		sob, err = r.SearchRcvr([]objectid.ID{uid}, PagAll())
 		if err != nil {
 			return nil, tracer.Mask(err)
 		}
@@ -139,18 +138,33 @@ func (r *Redis) SearchCurr(uid objectid.ID) (*Object, error) {
 		return nil, nil
 	}
 
-	// Protect against some critical internal errors.
-	if len(sob) > 1 {
-		return nil, tracer.Mask(runtime.ExecutionFailedError)
+	// Sort subscription objects by subscription period in descending order with
+	// first priority. The newest subscriptions will end up at index zero.
+	sort.SliceStable(sob, func(i, j int) bool {
+		return sob[i].Unix.Unix() > sob[j].Unix.Unix()
+	})
+
+	var now time.Time
+	{
+		now = time.Now().UTC()
 	}
 
 	// Verify whether the latest subscription for the given user is in fact for
-	// the current month. VerifyUnix together with VerifyOnce will fail if the
-	// subscription timestamp does not refer to the first day of the current
-	// month. So if that specific error is returned, we did not find a
-	// subscription for the current month. In that case we simply return nil.
-	{
-		err = sob[0].VerifyUnix(VerifyOnce(time.Now().UTC()))
+	// the current, or next month. We expect the current month for single
+	// subscriptions. We expect the next month for first subscriptions and
+	// subscription renewals. VerifyUnix together with VerifyOnce will fail if the
+	// subscription timestamp does not refer to the first day of the given month.
+	// So if that specific error is returned, we did not find the valid latest
+	// subscription. And in that case we simply return nil.
+	if len(sob) == 1 || subRen(sob, sob[0].Unix, now) {
+		err = sob[0].VerifyUnix(VerifyOnce(now.AddDate(0, 1, 0)))
+		if IsSubscriptionUnixInvalid(err) {
+			return nil, nil
+		} else if err != nil {
+			return nil, tracer.Mask(err)
+		}
+	} else {
+		err = sob[0].VerifyUnix(VerifyOnce(now))
 		if IsSubscriptionUnixInvalid(err) {
 			return nil, nil
 		} else if err != nil {
@@ -158,8 +172,8 @@ func (r *Redis) SearchCurr(uid objectid.ID) (*Object, error) {
 		}
 	}
 
-	// The validation above worked out, which means for us that we have found a
-	// subscription for the current month.
+	// The validation above worked out, which means for us that we have found the
+	// valid latest subscription.
 	return sob[0], nil
 }
 

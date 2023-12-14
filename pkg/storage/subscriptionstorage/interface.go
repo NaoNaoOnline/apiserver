@@ -24,7 +24,12 @@ type Interface interface {
 	SearchCrtr([]objectid.ID) ([]*walletstorage.Object, error)
 
 	// SearchCurr returns the subscription object for the given receiver for the
-	// current month, if any.
+	// current month, if any. Note that "the current month" here means the valid
+	// latest subscription that is active right now. This might mean the very
+	// first subscription valid until the end of next month. The same is true for
+	// subscription renewals. Due to several assumptions made here, SearchCurr
+	// should only be used to validate subscriptions that are being processed
+	// right now and thus have not been active yet.
 	//
 	//     @inp[0] the user ID of the receiver to search for
 	//     @out[0] the subscription object for the current month, or nil
