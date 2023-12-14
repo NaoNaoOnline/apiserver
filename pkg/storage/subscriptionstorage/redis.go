@@ -15,19 +15,18 @@ import (
 	"github.com/xh3b4sd/tracer"
 )
 
-const (
-	// minEve is the minimum amount of event objects created, that are required
-	// for users to be considered a legitimate content creator.
-	minEve = 3
-	// minLin is the minimum amount of link clicks generated, that are required
-	// for users to be considered a legitimate content creator.
-	minLin = 3
-)
-
 type RedisConfig struct {
 	Emi subscriptionemitter.Interface
 	Eve eventstorage.Interface
 	Log logger.Interface
+	// Mse is the minimum amount of events created required for users to be
+	// considered legitimate content creators. This amount of events must have
+	// been created for content creators to receive subscription fees.
+	Mse int
+	// Msl is the minimum amount of links clicked required for users to be
+	// considered legitimate content creators. This amount of clicks must have
+	// been generated for content creators to receive subscription fees.
+	Msl int
 	Red redigo.Interface
 	Use userstorage.Interface
 	Wal walletstorage.Interface
@@ -37,6 +36,8 @@ type Redis struct {
 	emi subscriptionemitter.Interface
 	eve eventstorage.Interface
 	log logger.Interface
+	mse int
+	msl int
 	red redigo.Interface
 	use userstorage.Interface
 	wal walletstorage.Interface
@@ -52,6 +53,12 @@ func NewRedis(c RedisConfig) *Redis {
 	if c.Log == nil {
 		tracer.Panic(tracer.Mask(fmt.Errorf("%T.Log must not be empty", c)))
 	}
+	if c.Mse == 0 {
+		tracer.Panic(tracer.Mask(fmt.Errorf("%T.Mse must not be empty", c)))
+	}
+	if c.Msl == 0 {
+		tracer.Panic(tracer.Mask(fmt.Errorf("%T.Msl must not be empty", c)))
+	}
 	if c.Red == nil {
 		tracer.Panic(tracer.Mask(fmt.Errorf("%T.Red must not be empty", c)))
 	}
@@ -66,6 +73,8 @@ func NewRedis(c RedisConfig) *Redis {
 		emi: c.Emi,
 		eve: c.Eve,
 		log: c.Log,
+		mse: c.Mse,
+		msl: c.Msl,
 		red: c.Red,
 		use: c.Use,
 		wal: c.Wal,

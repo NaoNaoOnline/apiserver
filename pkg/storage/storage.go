@@ -20,6 +20,10 @@ import (
 	"github.com/xh3b4sd/tracer"
 )
 
+const (
+	Layout = "2006-01-02T15:04:05.999999Z"
+)
+
 type Config struct {
 	Emi *emitter.Emitter
 	Env envvar.Env
@@ -50,6 +54,8 @@ func New(c Config) *Storage {
 		tracer.Panic(tracer.Mask(fmt.Errorf("%T.Red must not be empty", c)))
 	}
 
+	// Parse the global premium subscription overwrite, if any. This setting gives
+	// every user access to premium features until the specified time.
 	var pso time.Time
 	if c.Env.UpremTim != "" {
 		pso = musTim(c.Env.UpremTim)
@@ -58,13 +64,40 @@ func New(c Config) *Storage {
 	var s *Storage
 	{
 		s = &Storage{
-			des: descriptionstorage.NewRedis(descriptionstorage.RedisConfig{Emi: c.Emi.Desc(), Log: c.Log, Red: c.Red}),
-			eve: eventstorage.NewRedis(eventstorage.RedisConfig{Emi: c.Emi.Evnt(), Log: c.Log, Red: c.Red}),
-			lab: labelstorage.NewRedis(labelstorage.RedisConfig{Log: c.Log, Red: c.Red}),
-			lis: liststorage.NewRedis(liststorage.RedisConfig{Emi: c.Emi.List(), Log: c.Log, Red: c.Red}),
-			pol: policystorage.NewRedis(policystorage.RedisConfig{Log: c.Log, Red: c.Red}),
-			use: userstorage.NewRedis(userstorage.RedisConfig{Log: c.Log, PSO: pso, Red: c.Red}),
-			wal: walletstorage.NewRedis(walletstorage.RedisConfig{Log: c.Log, Red: c.Red}),
+			des: descriptionstorage.NewRedis(descriptionstorage.RedisConfig{
+				Emi: c.Emi.Desc(),
+				Log: c.Log,
+				Red: c.Red,
+			}),
+			eve: eventstorage.NewRedis(eventstorage.RedisConfig{
+				Emi: c.Emi.Evnt(),
+				Log: c.Log,
+				Mse: c.Env.MsubsEve,
+				Msl: c.Env.MsubsLin,
+				Red: c.Red,
+			}),
+			lab: labelstorage.NewRedis(labelstorage.RedisConfig{
+				Log: c.Log,
+				Red: c.Red,
+			}),
+			lis: liststorage.NewRedis(liststorage.RedisConfig{
+				Emi: c.Emi.List(),
+				Log: c.Log,
+				Red: c.Red,
+			}),
+			pol: policystorage.NewRedis(policystorage.RedisConfig{
+				Log: c.Log,
+				Red: c.Red,
+			}),
+			use: userstorage.NewRedis(userstorage.RedisConfig{
+				Log: c.Log,
+				Pso: pso,
+				Red: c.Red,
+			}),
+			wal: walletstorage.NewRedis(walletstorage.RedisConfig{
+				Log: c.Log,
+				Red: c.Red,
+			}),
 		}
 	}
 
@@ -81,6 +114,8 @@ func New(c Config) *Storage {
 			Emi: c.Emi.Subs(),
 			Eve: s.eve,
 			Log: c.Log,
+			Mse: c.Env.MsubsEve,
+			Msl: c.Env.MsubsLin,
 			Red: c.Red,
 			Use: s.use,
 			Wal: s.wal,
@@ -127,7 +162,7 @@ func (s *Storage) Wllt() walletstorage.Interface {
 }
 
 func musTim(str string) time.Time {
-	tim, err := time.Parse("2006-01-02T15:04:05.999999Z", str)
+	tim, err := time.Parse(Layout, str)
 	if err != nil {
 		panic(err)
 	}

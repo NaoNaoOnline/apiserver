@@ -20,6 +20,9 @@ func (h *Handler) Create(ctx context.Context, req *user.CreateI) (*user.CreateO,
 			Name: objectfield.String{
 				Data: req.Object[0].Public.Name,
 			},
+			Prfl: objectfield.MapStr{
+				Data: map[string]string{},
+			},
 			Sclm: []string{subjectclaim.FromContext(ctx)},
 		}
 	}

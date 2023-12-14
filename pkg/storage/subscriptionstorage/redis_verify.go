@@ -69,7 +69,7 @@ func (r *Redis) VerifyUser(uid []objectid.ID) ([]bool, error) {
 		// If the wallet owner created more than X events, then continue. Otherwise
 		// the respective wallet address is not considered a legitimate content
 		// creator.
-		if len(eob) < minEve {
+		if len(eob) < r.mse {
 			vld = append(vld, false)
 			continue
 		}
@@ -77,7 +77,7 @@ func (r *Redis) VerifyUser(uid []objectid.ID) ([]bool, error) {
 		// If the wallet owner generated more than Y link clicks, then continue.
 		// Otherwise the respective wallet address is not considered a legitimate
 		// content creator.
-		if eob.Mtrc(objectlabel.EventMetricUser) < minLin {
+		if eob.Mtrc(objectlabel.EventMetricUser) < int64(r.msl) {
 			vld = append(vld, false)
 			continue
 		}

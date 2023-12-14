@@ -14,6 +14,8 @@ func Fake() Interface {
 		Emi: subscriptionemitter.Fake(),
 		Eve: eventstorage.Fake(),
 		Log: logger.Fake(),
+		Mse: 3,
+		Msl: 3,
 		Red: redigo.Fake(),
 		Use: userstorage.Fake(),
 		Wal: walletstorage.Fake(),

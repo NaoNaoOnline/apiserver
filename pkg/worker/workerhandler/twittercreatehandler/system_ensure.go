@@ -89,18 +89,19 @@ func (h *SystemHandler) searchDesc(inp objectid.ID, bud *budget.Budget) (*descri
 		}
 	}
 
-	// Sort event descriptions by time with second priority. Note that we are
-	// interested in the earliest description if no single description has the
-	// most likes. The earliest description is then most likely the description
-	// the event creator provided during event creation.
+	// Sort event descriptions by time in ascending order with second priority.
+	// Note that we are interested in the earliest description if no single
+	// description has the most likes. The earliest description is then most
+	// likely the description the event creator provided during event creation.
 	sort.SliceStable(des, func(i, j int) bool {
 		return des[i].Crtd.Unix() < des[j].Crtd.Unix()
 	})
 
-	// Sort event descriptions by likes with first priority. Since we want to
-	// create an event post with the event description that has the most likes, we
-	// have to search the list of descriptions here in reverse order, ensuring the
-	// first description in the list ends up having the most likes.
+	// Sort event descriptions by likes in descending order with first priority.
+	// Since we want to create an event post with the event description that has
+	// the most likes, we have to search the list of descriptions here in reverse
+	// order, ensuring the first description in the list ends up having the most
+	// likes.
 	sort.SliceStable(des, func(i, j int) bool {
 		return des[i].Mtrc.Data[objectlabel.DescriptionMetricUser] > des[j].Mtrc.Data[objectlabel.DescriptionMetricUser]
 	})

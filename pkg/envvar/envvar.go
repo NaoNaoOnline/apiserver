@@ -13,6 +13,8 @@ type Env struct {
 	ChainSub string `split_words:"true" required:"true"`
 	HttpHost string `split_words:"true" default:"127.0.0.1"`
 	HttpPort string `split_words:"true" default:"7777"`
+	MsubsEve int    `split_words:"true" required:"true"`
+	MsubsLin int    `split_words:"true" required:"true"`
 	OauthAud string `split_words:"true" required:"true"`
 	OauthIss string `split_words:"true" required:"true"`
 	UpremTim string `split_words:"true" required:"false"`

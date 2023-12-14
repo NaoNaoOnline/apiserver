@@ -130,16 +130,18 @@ func (h *Handler) Search(ctx context.Context, req *event.SearchI) (*event.Search
 						}
 					}
 
-					var eob []*eventstorage.Object
-					{
-						eob, err = h.eve.SearchEvnt(use, eid)
-						if err != nil {
-							return nil, tracer.Mask(err)
+					if len(eid) != 0 {
+						var eob []*eventstorage.Object
+						{
+							eob, err = h.eve.SearchEvnt(use, eid)
+							if err != nil {
+								return nil, tracer.Mask(err)
+							}
 						}
-					}
 
-					{
-						out = append(out, eob...)
+						{
+							out = append(out, eob...)
+						}
 					}
 				}
 			}

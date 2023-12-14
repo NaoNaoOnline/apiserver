@@ -1,9 +1,12 @@
 package subscriptionstorage
 
 import (
+	"context"
 	"time"
 
+	"github.com/NaoNaoOnline/apiserver/pkg/object"
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectid"
+	"github.com/NaoNaoOnline/apiserver/pkg/object/objectlabel"
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectstate"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/userstorage"
 	"github.com/xh3b4sd/tracer"
@@ -44,17 +47,68 @@ func (r *Redis) CreateSubs(inp []*Object) ([]*Object, error) {
 			}
 		}
 
+		var now time.Time
+		{
+			now = time.Now().UTC()
+		}
+
 		// Check whether the created subscription for the given receiver is
 		// effectively a renewal.
-		if subRen(exi, inp[i]) {
-			err = inp[i].VerifyUnix(VerifyRenw(time.Now().UTC()))
-			if err != nil {
-				return nil, tracer.Mask(err)
+		if subRen(exi, inp[i].Unix, now) {
+			{
+				r.log.Log(
+					context.Background(),
+					"level", "info",
+					"message", "processing subscription renewal",
+					objectlabel.StrgObject, object.String(r),
+				)
+			}
+
+			{
+				err = inp[i].VerifyUnix(VerifyRenw(now))
+				if err != nil {
+					return nil, tracer.Mask(err)
+				}
 			}
 		} else {
-			err = inp[i].VerifyUnix(VerifyOnce(time.Now().UTC()))
-			if err != nil {
-				return nil, tracer.Mask(err)
+			if len(exi) == 0 {
+				{
+					r.log.Log(
+						context.Background(),
+						"level", "info",
+						"message", "processing first subscription",
+						objectlabel.StrgObject, object.String(r),
+					)
+				}
+
+				// The very first subscription month is for free. So we add 1 month to
+				// the current time that is being used to verify the given subscription
+				// period.
+				{
+					err = inp[i].VerifyUnix(VerifyOnce(now.AddDate(0, 1, 0)))
+					if err != nil {
+						return nil, tracer.Mask(err)
+					}
+				}
+			} else {
+				{
+					r.log.Log(
+						context.Background(),
+						"level", "info",
+						"message", "processing single subscription",
+						objectlabel.StrgObject, object.String(r),
+					)
+				}
+
+				// Single subscriptions represent those that are neither renewals nor
+				// the very first subscriptions. If this code is executed, then the user
+				// already had a subscription, then had none, and now wants one again.
+				{
+					err = inp[i].VerifyUnix(VerifyOnce(now))
+					if err != nil {
+						return nil, tracer.Mask(err)
+					}
+				}
 			}
 		}
 
@@ -70,11 +124,6 @@ func (r *Redis) CreateSubs(inp []*Object) ([]*Object, error) {
 
 		if !vldAdd(vld) {
 			return nil, tracer.Mask(subscriptionCrtrInvalidError)
-		}
-
-		var now time.Time
-		{
-			now = time.Now().UTC()
 		}
 
 		{
@@ -129,14 +178,25 @@ func (r *Redis) CreateSubs(inp []*Object) ([]*Object, error) {
 // renewal based on the existing subscriptions for the given receiver, if any.
 // Essentially a subscription for the immediate prior month must exist for the
 // current subscription to be classified as renewal.
-func subRen(exi []*Object, cur *Object) bool {
+func subRen(exi []*Object, uni time.Time, now time.Time) bool {
 	if len(exi) == 0 {
+		return false
+	}
+
+	var sta time.Time
+	var end time.Time
+	{
+		sta = timMon(now).AddDate(0, 1, -7)
+		end = timMon(now).AddDate(0, 1, 0)
+	}
+
+	if now.Before(sta) || now.After(end) {
 		return false
 	}
 
 	var des time.Time
 	{
-		des = cur.Unix.AddDate(0, -1, 0)
+		des = uni.AddDate(0, -1, 0)
 	}
 
 	for _, x := range exi {

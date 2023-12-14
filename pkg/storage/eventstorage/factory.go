@@ -10,6 +10,8 @@ func Fake() Interface {
 	return NewRedis(RedisConfig{
 		Emi: eventemitter.Fake(),
 		Log: logger.Fake(),
+		Mse: 3,
+		Msl: 3,
 		Red: redigo.Fake(),
 	})
 }

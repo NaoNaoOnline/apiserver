@@ -21,7 +21,9 @@ func (h *Handler) Create(ctx context.Context, req *event.CreateI) (*event.Create
 				Dura: inpDur(x.Public.Dura),
 				Host: inpLab(x.Public.Host),
 				Link: x.Public.Link,
-				Mtrc: objectfield.MapInt{},
+				Mtrc: objectfield.MapInt{
+					Data: map[string]int64{},
+				},
 				Time: inpTim(x.Public.Time),
 				User: userid.FromContext(ctx),
 			})
