@@ -33,6 +33,26 @@ Running the apiserver locally.
 
 
 
+Note that a `.env.local` file is required for the apiserver to be configured
+properly.
+
+```
+APISERVER_CHAIN_CID="31337"
+APISERVER_CHAIN_POL="0x5FbDB2315678afecb367f032d93F642f64180aa3"
+APISERVER_CHAIN_RPC="http://127.0.0.1:8545"
+APISERVER_CHAIN_SUB="0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512"
+
+APISERVER_MSUBS_EVE="10"
+APISERVER_MSUBS_LIN="15"
+
+APISERVER_OAUTH_ISS="https://[REDACTED].auth0.com/"
+APISERVER_OAUTH_AUD="https://apiserver"
+
+APISERVER_UPREM_TIM="2023-11-01T00:00:00Z"
+```
+
+
+
 Calling the apiserver locally.
 
 ```
