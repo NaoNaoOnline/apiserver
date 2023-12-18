@@ -3,6 +3,7 @@ package cmd
 import (
 	"github.com/NaoNaoOnline/apiserver/cmd/daemon"
 	"github.com/NaoNaoOnline/apiserver/cmd/fakeit"
+	"github.com/NaoNaoOnline/apiserver/cmd/systemd"
 	"github.com/NaoNaoOnline/apiserver/cmd/version"
 	"github.com/spf13/cobra"
 	"github.com/xh3b4sd/tracer"
@@ -10,8 +11,8 @@ import (
 
 var (
 	use = "apiserver"
-	sho = "Golang based gRPC apiserver."
-	lon = "Golang based gRPC apiserver."
+	sho = "Golang based RPC apiserver."
+	lon = "Golang based RPC apiserver."
 )
 
 func New() (*cobra.Command, error) {
@@ -34,6 +35,16 @@ func New() (*cobra.Command, error) {
 		c := fakeit.Config{}
 
 		cmdFak, err = fakeit.New(c)
+		if err != nil {
+			return nil, tracer.Mask(err)
+		}
+	}
+
+	var cmdSys *cobra.Command
+	{
+		c := systemd.Config{}
+
+		cmdSys, err = systemd.New(c)
 		if err != nil {
 			return nil, tracer.Mask(err)
 		}
@@ -77,6 +88,7 @@ func New() (*cobra.Command, error) {
 	{
 		c.AddCommand(cmdDae)
 		c.AddCommand(cmdFak)
+		c.AddCommand(cmdSys)
 		c.AddCommand(cmdVer)
 	}
 

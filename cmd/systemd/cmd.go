@@ -1,13 +1,13 @@
-package daemon
+package systemd
 
 import (
 	"github.com/spf13/cobra"
 )
 
 const (
-	use = "daemon"
-	sho = "Execute the long running process exposing RPC server handlers."
-	lon = "Execute the long running process exposing RPC server handlers."
+	use = "systemd"
+	sho = "Launch systemd unit files on the executing host."
+	lon = "Launch systemd unit files on the executing host."
 )
 
 type Config struct{}
@@ -19,7 +19,7 @@ func New(config Config) (*cobra.Command, error) {
 			Use:   use,
 			Short: sho,
 			Long:  lon,
-			RunE:  (&run{}).runE,
+			Run:   (&run{}).run,
 		}
 	}
 

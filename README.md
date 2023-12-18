@@ -2,6 +2,29 @@
 
 Golang based [Twirp] apiserver. Requires at least `go1.21.1`.
 
+```
+./apiserver -h
+```
+
+```
+Golang based RPC apiserver.
+
+Usage:
+  apiserver [flags]
+  apiserver [command]
+
+Available Commands:
+  daemon      Execute the long running process exposing RPC server handlers.
+  fakeit      Fill redis with fake data.
+  systemd     Launch systemd unit files on the executing host.
+  version     Print version information of this command line tool.
+
+Flags:
+  -h, --help   help for apiserver
+
+Use "apiserver [command] --help" for more information about a command.
+```
+
 
 
 Running redis stack locally.
