@@ -6,6 +6,7 @@ require (
 	github.com/NaoNaoOnline/apigocode v0.8.21
 	github.com/auth0/go-jwt-middleware/v2 v2.2.0
 	github.com/brianvoe/gofakeit/v6 v6.26.3
+	github.com/coreos/go-systemd/v22 v22.5.0
 	github.com/ethereum/go-ethereum v1.13.5
 	github.com/evanphx/json-patch/v5 v5.7.0
 	github.com/google/go-cmp v0.6.0
@@ -45,6 +46,7 @@ require (
 	github.com/go-ole/go-ole v1.3.0 // indirect
 	github.com/go-redsync/redsync/v4 v4.11.0 // indirect
 	github.com/go-stack/stack v1.8.1 // indirect
+	github.com/godbus/dbus/v5 v5.0.4 // indirect
 	github.com/gomodule/redigo v1.8.9 // indirect
 	github.com/google/uuid v1.5.0 // indirect
 	github.com/gorilla/websocket v1.5.1 // indirect
