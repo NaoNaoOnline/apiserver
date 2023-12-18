@@ -6,8 +6,8 @@ import (
 
 const (
 	use = "daemon"
-	sho = "Execute the long running process exposing gRPC server handlers."
-	lon = "Execute the long running process exposing gRPC server handlers."
+	sho = "Execute the long running process exposing RPC server handlers."
+	lon = "Execute the long running process exposing RPC server handlers."
 )
 
 type Config struct{}

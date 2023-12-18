@@ -11,8 +11,8 @@ import (
 
 var (
 	use = "apiserver"
-	sho = "Golang based gRPC apiserver."
-	lon = "Golang based gRPC apiserver."
+	sho = "Golang based RPC apiserver."
+	lon = "Golang based RPC apiserver."
 )
 
 func New() (*cobra.Command, error) {
