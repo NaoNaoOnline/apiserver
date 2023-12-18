@@ -7,6 +7,7 @@ import (
 	"os"
 	"path/filepath"
 
+	"github.com/NaoNaoOnline/apiserver/pkg/runtime"
 	"github.com/coreos/go-systemd/v22/dbus"
 	"github.com/spf13/cobra"
 	"github.com/xh3b4sd/logger"
@@ -188,7 +189,7 @@ func (r *run) dat() interface{} {
 
 	return Data{
 		ApiServer: ApiServer{
-			Version: "v0.1.0",
+			Version: runtime.Tag(),
 		},
 		RedisServer: RedisServer{
 			Version: "6.2.0",
