@@ -5,7 +5,7 @@ go 1.21.1
 require (
 	github.com/NaoNaoOnline/apigocode v0.8.21
 	github.com/auth0/go-jwt-middleware/v2 v2.2.0
-	github.com/brianvoe/gofakeit/v6 v6.26.0
+	github.com/brianvoe/gofakeit/v6 v6.26.3
 	github.com/ethereum/go-ethereum v1.13.5
 	github.com/evanphx/json-patch/v5 v5.7.0
 	github.com/google/go-cmp v0.6.0
@@ -46,7 +46,7 @@ require (
 	github.com/go-redsync/redsync/v4 v4.11.0 // indirect
 	github.com/go-stack/stack v1.8.1 // indirect
 	github.com/gomodule/redigo v1.8.9 // indirect
-	github.com/google/uuid v1.4.0 // indirect
+	github.com/google/uuid v1.5.0 // indirect
 	github.com/gorilla/websocket v1.5.1 // indirect
 	github.com/hashicorp/errwrap v1.1.0 // indirect
 	github.com/hashicorp/go-multierror v1.1.1 // indirect
@@ -66,13 +66,13 @@ require (
 	github.com/tklauser/numcpus v0.7.0 // indirect
 	github.com/yusufpapurcu/wmi v1.2.3 // indirect
 	golang.org/x/crypto v0.16.0 // indirect
-	golang.org/x/exp v0.0.0-20231206192017-f3f8817b8deb // indirect
+	golang.org/x/exp v0.0.0-20231214170342-aacd6d4b4611 // indirect
 	golang.org/x/mod v0.14.0 // indirect
 	golang.org/x/net v0.19.0 // indirect
 	golang.org/x/sync v0.5.0 // indirect
 	golang.org/x/sys v0.15.0 // indirect
-	golang.org/x/tools v0.16.0 // indirect
+	golang.org/x/tools v0.16.1 // indirect
 	google.golang.org/protobuf v1.31.0 // indirect
-	gopkg.in/go-jose/go-jose.v2 v2.6.1 // indirect
+	gopkg.in/go-jose/go-jose.v2 v2.6.2 // indirect
 	rsc.io/tmplfunc v0.0.3 // indirect
 )
