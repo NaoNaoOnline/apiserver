@@ -2,7 +2,7 @@
 # Do not edit. This file was generated via the "workflow" command line tool.
 # More information about the tool can be found at github.com/xh3b4sd/workflow.
 #
-#     workflow create releasego -n apiserver -p pkg/runtime/
+#     workflow create releasego -n apiserver -p pkg/runtime
 #
 
 name: "go-release"
@@ -30,8 +30,8 @@ jobs:
 
       - name: "Cross Compile Binaries"
         run: |
-          GOOS=darwin GOARCH=amd64 go build -o apiserver-darwin-amd64 -ldflags="-X 'github.com/${{ github.repository_owner }}/apiserver/pkg/runtime/.sha=${{ github.sha }}' -X 'github.com/${{ github.repository_owner }}/apiserver/pkg/runtime/.tag=${{ github.ref_name }}'"
-          GOOS=linux GOARCH=amd64 go build -o apiserver-linux-amd64 -ldflags="-X 'github.com/${{ github.repository_owner }}/apiserver/pkg/runtime/.sha=${{ github.sha }}' -X 'github.com/${{ github.repository_owner }}/apiserver/pkg/runtime/.tag=${{ github.ref_name }}'"
+          GOOS=darwin GOARCH=amd64 go build -o apiserver-darwin-amd64 -ldflags="-X 'github.com/${{ github.repository_owner }}/apiserver/pkg/runtime.sha=${{ github.sha }}' -X 'github.com/${{ github.repository_owner }}/apiserver/pkg/runtime.tag=${{ github.ref_name }}'"
+          GOOS=linux GOARCH=amd64 go build -o apiserver-linux-amd64 -ldflags="-X 'github.com/${{ github.repository_owner }}/apiserver/pkg/runtime.sha=${{ github.sha }}' -X 'github.com/${{ github.repository_owner }}/apiserver/pkg/runtime.tag=${{ github.ref_name }}'"
 
       - name: "Upload To Github"
         uses: "softprops/action-gh-release@v1"

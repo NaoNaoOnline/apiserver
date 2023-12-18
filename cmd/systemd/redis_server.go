@@ -2,8 +2,8 @@ package systemd
 
 const RedisServerService = `[Unit]
 Description=redis server
-After=docker.service phoebe.red.ensure.service
-Requires=docker.service phoebe.red.ensure.service
+After=docker.service
+Requires=docker.service
 
 [Service]
 ExecStartPre=-/usr/bin/docker stop redis
