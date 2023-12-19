@@ -16,8 +16,9 @@ import (
 )
 
 const (
-	PathRedis   = "/home/ubuntu/redis/data"
-	PathSystemd = "/etc/systemd/system"
+	PathApiServer   = "/home/ubuntu/apiserver/data"
+	PathRedisServer = "/home/ubuntu/redis/data"
+	PathSystemd     = "/etc/systemd/system"
 )
 
 var (
@@ -82,6 +83,13 @@ func (r *run) runE() error {
 		}
 
 		{
+			err = r.apiConf()
+			if err != nil {
+				return tracer.Mask(err)
+			}
+		}
+
+		{
 			err = r.unitFiles()
 			if err != nil {
 				return tracer.Mask(err)
@@ -90,6 +98,52 @@ func (r *run) runE() error {
 
 		{
 			r.log.Log(r.ctx, "level", "info", "message", "complete")
+		}
+	}
+
+	return nil
+}
+
+func (r *run) apiConf() error {
+	err := os.MkdirAll(PathApiServer, os.ModePerm)
+	if err != nil {
+		return tracer.Mask(err)
+	}
+
+	return nil
+}
+
+func (r *run) redisConf() error {
+	var err error
+
+	{
+		r.log.Log(r.ctx, "level", "info", "message", "persisting redis config")
+	}
+
+	var buf bytes.Buffer
+	{
+		t, err := template.New(PathRedisServer).Parse(RedisServerConf)
+		if err != nil {
+			return tracer.Mask(err)
+		}
+
+		err = t.ExecuteTemplate(&buf, PathRedisServer, nil)
+		if err != nil {
+			return tracer.Mask(err)
+		}
+	}
+
+	{
+		err := os.MkdirAll(PathRedisServer, os.ModePerm)
+		if err != nil {
+			return tracer.Mask(err)
+		}
+	}
+
+	{
+		err = os.WriteFile(filepath.Join(PathRedisServer, "redis.conf"), buf.Bytes(), 0644)
+		if err != nil {
+			return tracer.Mask(err)
 		}
 	}
 
@@ -158,52 +212,15 @@ func (r *run) unitFiles() error {
 	return nil
 }
 
-func (r *run) redisConf() error {
-	var err error
-
-	{
-		r.log.Log(r.ctx, "level", "info", "message", "persisting redis config")
-	}
-
-	var buf bytes.Buffer
-	{
-		t, err := template.New(PathRedis).Parse(RedisServerConf)
-		if err != nil {
-			return tracer.Mask(err)
-		}
-
-		err = t.ExecuteTemplate(&buf, PathRedis, nil)
-		if err != nil {
-			return tracer.Mask(err)
-		}
-	}
-
-	{
-		err := os.MkdirAll(PathRedis, os.ModePerm)
-		if err != nil {
-			return tracer.Mask(err)
-		}
-	}
-
-	{
-		err = os.WriteFile(filepath.Join(PathRedis, "redis.conf"), buf.Bytes(), 0644)
-		if err != nil {
-			return tracer.Mask(err)
-		}
-	}
-
-	return nil
-}
-
 func (r *run) userData() error {
 	var buf bytes.Buffer
 	{
-		t, err := template.New(PathRedis).Parse(UserData)
+		t, err := template.New(PathRedisServer).Parse(UserData)
 		if err != nil {
 			return tracer.Mask(err)
 		}
 
-		err = t.ExecuteTemplate(&buf, PathRedis, r.dat(r.fla.Version))
+		err = t.ExecuteTemplate(&buf, PathRedisServer, r.dat(r.fla.Version))
 		if err != nil {
 			return tracer.Mask(err)
 		}
@@ -218,7 +235,8 @@ func (r *run) userData() error {
 
 func (r *run) dat(v string) interface{} {
 	type ApiServer struct {
-		Version string
+		Directory string
+		Version   string
 	}
 
 	type RedisServer struct {
@@ -232,7 +250,8 @@ func (r *run) dat(v string) interface{} {
 
 	return Data{
 		ApiServer: ApiServer{
-			Version: v,
+			Directory: PathApiServer,
+			Version:   v,
 		},
 		RedisServer: RedisServer{
 			Version: "6.2.0",

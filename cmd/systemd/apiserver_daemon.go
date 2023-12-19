@@ -7,8 +7,8 @@ Requires=redis.server.service
 
 [Service]
 EnvironmentFile=/etc/environment
-WorkingDirectory=/home/ubuntu/apiserver/data
-ExecStartPre=/bin/bash -c "until docker run --rm --network host redis redis-cli ping; do sleep 5; done"
+WorkingDirectory={{ .ApiServer.Directory }}
+ExecStartPre=/bin/bash -c "until docker run --rm --network host redis:{{ .RedisServer.Version }} redis-cli ping; do sleep 5; done"
 ExecStart=/usr/local/bin/apiserver daemon
 ExecReload=/bin/kill -HUP $MAINPID
 Restart=always
