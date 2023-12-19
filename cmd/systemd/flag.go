@@ -13,8 +13,8 @@ type flag struct {
 }
 
 func (f *flag) Init(cmd *cobra.Command) {
-	cmd.Flags().StringVarP(&f.Version, "version", "v", "", "The apiserver version to download with the userdata.")
 	cmd.Flags().BoolVarP(&f.UserData, "user-data", "u", false, "Whether to generate and print the cloudinit userdata.")
+	cmd.Flags().StringVarP(&f.Version, "version", "v", "", "The apiserver version to download with the userdata.")
 }
 
 func (f *flag) Validate() error {

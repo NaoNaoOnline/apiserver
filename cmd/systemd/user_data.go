@@ -1,7 +1,6 @@
 package systemd
 
-const UserData = `
-#cloud-config
+const UserData = `#cloud-config
 
 apt:
   sources:
@@ -32,8 +31,7 @@ system_info:
     name: ubuntu
 
 runcmd:
-  - curl --output /usr/local/bin/apiserver https://github.com/NaoNaoOnline/apiserver/releases/download/{{ .ApiServer.Version }}/apiserver-linux-amd64
+  - curl --location https://github.com/NaoNaoOnline/apiserver/releases/download/{{ .ApiServer.Version }}/apiserver-linux-amd64 --output /usr/local/bin/apiserver
   - chmod +x /usr/local/bin/apiserver
 
-  - /usr/local/bin/apiserver systemd
-`
+  - /usr/local/bin/apiserver systemd`
