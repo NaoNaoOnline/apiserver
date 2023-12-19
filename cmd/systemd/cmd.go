@@ -1,7 +1,10 @@
 package systemd
 
 import (
+	"context"
+
 	"github.com/spf13/cobra"
+	"github.com/xh3b4sd/logger"
 )
 
 const (
@@ -12,15 +15,33 @@ const (
 
 type Config struct{}
 
-func New(config Config) (*cobra.Command, error) {
+func New(con Config) (*cobra.Command, error) {
+	var f *flag
+	{
+		f = &flag{}
+	}
+
+	var r *run
+	{
+		r = &run{
+			ctx: context.Background(),
+			fla: f,
+			log: logger.Default(),
+		}
+	}
+
 	var c *cobra.Command
 	{
 		c = &cobra.Command{
 			Use:   use,
 			Short: sho,
 			Long:  lon,
-			Run:   (&run{}).run,
+			Run:   r.run,
 		}
+	}
+
+	{
+		f.Init(c)
 	}
 
 	return c, nil

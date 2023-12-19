@@ -3,6 +3,7 @@ package systemd
 import (
 	"bytes"
 	"context"
+	"fmt"
 	"html/template"
 	"os"
 	"path/filepath"
@@ -36,39 +37,60 @@ var (
 
 type run struct {
 	ctx context.Context
+	fla *flag
 	log logger.Interface
 }
 
 func (r *run) run(cmd *cobra.Command, args []string) {
-	err := r.runE()
-	if err != nil {
-		tracer.Panic(tracer.Mask(err))
+	var err error
+
+	{
+		err = r.fla.Validate()
+		if err != nil {
+			tracer.Panic(tracer.Mask(err))
+		}
+	}
+
+	{
+		err = r.runE()
+		if err != nil {
+			tracer.Panic(tracer.Mask(err))
+		}
 	}
 }
 
 func (r *run) runE() error {
 	var err error
 
-	{
-		r.log.Log(r.ctx, "level", "info", "message", "starting")
-	}
-
-	{
-		err = r.redisConf()
-		if err != nil {
-			return tracer.Mask(err)
+	if r.fla.UserData {
+		{
+			err = r.userData()
+			if err != nil {
+				return tracer.Mask(err)
+			}
 		}
-	}
-
-	{
-		err = r.unitFiles()
-		if err != nil {
-			return tracer.Mask(err)
+	} else {
+		{
+			r.log.Log(r.ctx, "level", "info", "message", "starting")
 		}
-	}
 
-	{
-		r.log.Log(r.ctx, "level", "info", "message", "complete")
+		{
+			err = r.redisConf()
+			if err != nil {
+				return tracer.Mask(err)
+			}
+		}
+
+		{
+			err = r.unitFiles()
+			if err != nil {
+				return tracer.Mask(err)
+			}
+		}
+
+		{
+			r.log.Log(r.ctx, "level", "info", "message", "complete")
+		}
 	}
 
 	return nil
@@ -92,7 +114,7 @@ func (r *run) unitFiles() error {
 				}
 
 				var b bytes.Buffer
-				err = t.ExecuteTemplate(&b, p, r.dat())
+				err = t.ExecuteTemplate(&b, p, r.dat(runtime.Tag()))
 				if err != nil {
 					return tracer.Mask(err)
 				}
@@ -173,7 +195,28 @@ func (r *run) redisConf() error {
 	return nil
 }
 
-func (r *run) dat() interface{} {
+func (r *run) userData() error {
+	var buf bytes.Buffer
+	{
+		t, err := template.New(PathRedis).Parse(UserData)
+		if err != nil {
+			return tracer.Mask(err)
+		}
+
+		err = t.ExecuteTemplate(&buf, PathRedis, r.dat(r.fla.Version))
+		if err != nil {
+			return tracer.Mask(err)
+		}
+	}
+
+	{
+		fmt.Printf("%s\n", buf.String())
+	}
+
+	return nil
+}
+
+func (r *run) dat(v string) interface{} {
 	type ApiServer struct {
 		Version string
 	}
@@ -189,7 +232,7 @@ func (r *run) dat() interface{} {
 
 	return Data{
 		ApiServer: ApiServer{
-			Version: runtime.Tag(),
+			Version: v,
 		},
 		RedisServer: RedisServer{
 			Version: "6.2.0",
