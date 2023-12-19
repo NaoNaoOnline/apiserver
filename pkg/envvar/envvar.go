@@ -1,9 +1,15 @@
 package envvar
 
 import (
+	"fmt"
+	"time"
+
 	"github.com/joho/godotenv"
 	"github.com/kelseyhightower/envconfig"
-	"github.com/xh3b4sd/tracer"
+)
+
+const (
+	pat = ".env.local"
 )
 
 type Env struct {
@@ -21,16 +27,29 @@ type Env struct {
 }
 
 func Load() Env {
-	err := godotenv.Load(".env.local")
-	if err != nil {
-		tracer.Panic(tracer.Mask(err))
-	}
+	var err error
 
 	var env Env
-	err = envconfig.Process("APISERVER", &env)
-	if err != nil {
-		tracer.Panic(tracer.Mask(err))
-	}
 
-	return env
+	for {
+		{
+			err = godotenv.Load(pat)
+			if err != nil {
+				fmt.Printf("could not load %s (%#v)\n", pat, err)
+				time.Sleep(5 * time.Second)
+				continue
+			}
+		}
+
+		{
+			err = envconfig.Process("APISERVER", &env)
+			if err != nil {
+				fmt.Printf("could process envfile %s (%#v)\n", pat, err)
+				time.Sleep(5 * time.Second)
+				continue
+			}
+		}
+
+		return env
+	}
 }
