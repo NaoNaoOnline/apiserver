@@ -44,7 +44,7 @@ func Load() Env {
 		{
 			err = envconfig.Process("APISERVER", &env)
 			if err != nil {
-				fmt.Printf("could process envfile %s (%s)\n", pat, err)
+				fmt.Printf("could not process envfile %s (%s)\n", pat, err)
 				time.Sleep(5 * time.Second)
 				continue
 			}
