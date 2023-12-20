@@ -35,7 +35,7 @@ func Load() Env {
 		{
 			err = godotenv.Load(pat)
 			if err != nil {
-				fmt.Printf("could not load %s (%#v)\n", pat, err)
+				fmt.Printf("could not load %s (%s)\n", pat, err)
 				time.Sleep(5 * time.Second)
 				continue
 			}
@@ -44,7 +44,7 @@ func Load() Env {
 		{
 			err = envconfig.Process("APISERVER", &env)
 			if err != nil {
-				fmt.Printf("could process envfile %s (%#v)\n", pat, err)
+				fmt.Printf("could process envfile %s (%s)\n", pat, err)
 				time.Sleep(5 * time.Second)
 				continue
 			}
