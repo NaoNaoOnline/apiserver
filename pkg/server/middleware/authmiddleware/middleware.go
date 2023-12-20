@@ -38,25 +38,38 @@ func NewMiddleware(c MiddlewareConfig) *Middleware {
 		tracer.Panic(tracer.Mask(fmt.Errorf("%T.Log must not be empty", c)))
 	}
 
-	val, err := validator.New(
-		jwks.NewCachingProvider(musUrl(c.Iss), 5*time.Minute).KeyFunc,
-		validator.RS256,
-		c.Iss,
-		[]string{c.Aud},
-	)
-	if err != nil {
-		tracer.Panic(tracer.Mask(err))
+	var err error
+
+	var fnc func(ctx context.Context) (interface{}, error)
+	{
+		fnc = jwks.NewCachingProvider(musUrl(c.Iss), 5*time.Minute).KeyFunc
 	}
 
-	return &Middleware{
-		log: c.Log,
-		jwt: jwtmiddleware.New(
+	var val *validator.Validator
+	{
+		val, err = validator.New(fnc, validator.RS256, c.Iss, []string{c.Aud})
+		if err != nil {
+			tracer.Panic(tracer.Mask(err))
+		}
+	}
+
+	var m *Middleware
+	{
+		m = &Middleware{
+			log: c.Log,
+		}
+	}
+
+	{
+		m.jwt = jwtmiddleware.New(
 			val.ValidateToken,
 			jwtmiddleware.WithCredentialsOptional(true),
 			jwtmiddleware.WithValidateOnOptions(false),
-			jwtmiddleware.WithErrorHandler(errHan),
-		),
+			jwtmiddleware.WithErrorHandler(m.errHan),
+		)
 	}
+
+	return m
 }
 
 func (m *Middleware) Handler(h http.Handler) http.Handler {
@@ -82,10 +95,22 @@ func (m *Middleware) Handler(h http.Handler) http.Handler {
 	}))
 }
 
-func errHan(wri http.ResponseWriter, req *http.Request, err error) {
-	e := twirp.WriteError(wri, err)
-	if e != nil {
-		tracer.Panic(tracer.Mask(err))
+func (m *Middleware) errHan(wri http.ResponseWriter, req *http.Request, err error) {
+	{
+		m.log.Log(
+			context.Background(),
+			"level", "error",
+			"message", err.Error(),
+			"path", req.URL.String(),
+			"stack", tracer.Stack(err),
+		)
+	}
+
+	{
+		err = twirp.WriteError(wri, err)
+		if err != nil {
+			tracer.Panic(tracer.Mask(err))
+		}
 	}
 }
 
