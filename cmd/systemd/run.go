@@ -17,12 +17,18 @@ import (
 
 const (
 	PathApiServer   = "/home/ubuntu/apiserver/data"
+	PathCaddyProxy  = "/home/ubuntu/caddy/data"
 	PathRedisServer = "/home/ubuntu/redis/data"
 	PathSystemd     = "/etc/systemd/system"
 )
 
 var (
 	uni = []Unit{
+		{
+			cou: 1,
+			nam: "caddy.proxy.service",
+			tem: CaddyProxyService,
+		},
 		{
 			cou: 1,
 			nam: "redis.server.service",
@@ -76,14 +82,21 @@ func (r *run) runE() error {
 		}
 
 		{
-			err = r.redisConf()
+			err = r.apiConf()
 			if err != nil {
 				return tracer.Mask(err)
 			}
 		}
 
 		{
-			err = r.apiConf()
+			err = r.caddyConf()
+			if err != nil {
+				return tracer.Mask(err)
+			}
+		}
+
+		{
+			err = r.redisConf()
 			if err != nil {
 				return tracer.Mask(err)
 			}
@@ -106,6 +119,15 @@ func (r *run) runE() error {
 
 func (r *run) apiConf() error {
 	err := os.MkdirAll(PathApiServer, os.ModePerm)
+	if err != nil {
+		return tracer.Mask(err)
+	}
+
+	return nil
+}
+
+func (r *run) caddyConf() error {
+	err := os.MkdirAll(PathCaddyProxy, os.ModePerm)
 	if err != nil {
 		return tracer.Mask(err)
 	}
@@ -239,12 +261,19 @@ func (r *run) dat(v string) interface{} {
 		Version   string
 	}
 
+	type CaddyProxy struct {
+		Directory string
+		Version   string
+	}
+
 	type RedisServer struct {
-		Version string
+		Directory string
+		Version   string
 	}
 
 	type Data struct {
 		ApiServer   ApiServer
+		CaddyProxy  CaddyProxy
 		RedisServer RedisServer
 	}
 
@@ -253,8 +282,13 @@ func (r *run) dat(v string) interface{} {
 			Directory: PathApiServer,
 			Version:   v,
 		},
+		CaddyProxy: CaddyProxy{
+			Directory: PathCaddyProxy,
+			Version:   "2.7.6",
+		},
 		RedisServer: RedisServer{
-			Version: "6.2.0",
+			Directory: PathRedisServer,
+			Version:   "6.2.0",
 		},
 	}
 }
