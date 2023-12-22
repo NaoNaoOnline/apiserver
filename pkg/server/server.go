@@ -6,6 +6,7 @@ import (
 	"net"
 	"net/http"
 
+	"github.com/NaoNaoOnline/apiserver/pkg/runtime"
 	"github.com/NaoNaoOnline/apiserver/pkg/server/serverhandler"
 	"github.com/gorilla/mux"
 	"github.com/twitchtv/twirp"
@@ -53,6 +54,22 @@ func New(c Config) *Server {
 		rtr.Use(c.Mid...)
 	}
 
+	// Add a simple health check response to the root.
+	{
+		rtr.NewRoute().Methods("GET").Path("/").HandlerFunc(func(wri http.ResponseWriter, req *http.Request) {
+			wri.WriteHeader(http.StatusOK)
+			_, _ = wri.Write(linBrk([]byte("OK")))
+		})
+	}
+
+	// Add a simple version response for the runtime.
+	{
+		rtr.NewRoute().Methods("GET").Path("/version").HandlerFunc(func(wri http.ResponseWriter, req *http.Request) {
+			wri.WriteHeader(http.StatusOK)
+			_, _ = wri.Write(linBrk(runtime.JSON()))
+		})
+	}
+
 	for _, x := range c.Han {
 		x.Attach(rtr, twirp.WithServerInterceptors(c.Int...), twirp.WithServerPathPrefix(""))
 	}
@@ -80,4 +97,8 @@ func (s *Server) Daemon() {
 			tracer.Panic(tracer.Mask(err))
 		}
 	}
+}
+
+func linBrk(byt []byte) []byte {
+	return append(byt, []byte("\n")...)
 }
