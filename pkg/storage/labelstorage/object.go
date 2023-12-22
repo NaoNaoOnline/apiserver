@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/NaoNaoOnline/apiserver/pkg/format/descriptionformat"
+	"github.com/NaoNaoOnline/apiserver/pkg/format/handleformat"
 	"github.com/NaoNaoOnline/apiserver/pkg/format/nameformat"
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectfield"
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectid"
@@ -88,7 +89,7 @@ func (o *Object) Verify() error {
 			if !vldPrfl(k) {
 				return tracer.Maskf(labelPrflInvalidError, k)
 			}
-			if !nameformat.Verify(v) {
+			if !handleformat.Verify(v) {
 				return tracer.Maskf(labelPrflFormatError, v)
 			}
 		}
