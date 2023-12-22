@@ -76,6 +76,24 @@ func (r *run) runE() error {
 				return tracer.Mask(err)
 			}
 		}
+	} else if r.fla.Restart {
+		var api []Unit
+		{
+			api = []Unit{
+				{
+					cou: 1,
+					nam: "apiserver.daemon.service",
+					tem: ApiserverDaemonService,
+				},
+			}
+		}
+
+		{
+			err = r.unitFiles(api, true)
+			if err != nil {
+				return tracer.Mask(err)
+			}
+		}
 	} else {
 		{
 			r.log.Log(r.ctx, "level", "info", "message", "starting")
@@ -103,7 +121,7 @@ func (r *run) runE() error {
 		}
 
 		{
-			err = r.unitFiles()
+			err = r.unitFiles(uni, false)
 			if err != nil {
 				return tracer.Mask(err)
 			}
@@ -172,7 +190,7 @@ func (r *run) redisConf() error {
 	return nil
 }
 
-func (r *run) unitFiles() error {
+func (r *run) unitFiles(uni []Unit, res bool) error {
 	var err error
 
 	{
@@ -223,9 +241,16 @@ func (r *run) unitFiles() error {
 	{
 		for _, u := range uni {
 			for i := 0; i < u.Cou(); i++ {
-				_, err = con.StartUnitContext(context.Background(), u.Nam(i), "replace", nil)
-				if err != nil {
-					return tracer.Mask(err)
+				if res {
+					_, err = con.RestartUnitContext(context.Background(), u.Nam(i), "replace", nil)
+					if err != nil {
+						return tracer.Mask(err)
+					}
+				} else {
+					_, err = con.StartUnitContext(context.Background(), u.Nam(i), "replace", nil)
+					if err != nil {
+						return tracer.Mask(err)
+					}
 				}
 			}
 		}
