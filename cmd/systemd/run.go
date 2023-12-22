@@ -76,24 +76,6 @@ func (r *run) runE() error {
 				return tracer.Mask(err)
 			}
 		}
-	} else if r.fla.Restart {
-		var api []Unit
-		{
-			api = []Unit{
-				{
-					cou: 1,
-					nam: "apiserver.daemon.service",
-					tem: ApiserverDaemonService,
-				},
-			}
-		}
-
-		{
-			err = r.unitFiles(api, true)
-			if err != nil {
-				return tracer.Mask(err)
-			}
-		}
 	} else {
 		{
 			r.log.Log(r.ctx, "level", "info", "message", "starting")
@@ -121,7 +103,7 @@ func (r *run) runE() error {
 		}
 
 		{
-			err = r.unitFiles(uni, false)
+			err = r.unitFiles(uni)
 			if err != nil {
 				return tracer.Mask(err)
 			}
@@ -136,18 +118,33 @@ func (r *run) runE() error {
 }
 
 func (r *run) apiConf() error {
-	err := os.MkdirAll(PathApiServer, os.ModePerm)
-	if err != nil {
-		return tracer.Mask(err)
+	var err error
+
+	{
+		err = os.MkdirAll(PathApiServer, os.ModePerm)
+		if err != nil {
+			return tracer.Mask(err)
+		}
+	}
+
+	{
+		err = os.WriteFile(filepath.Join(PathApiServer, "update.sh"), []byte(ApiserverUpdateScript), 0755)
+		if err != nil {
+			return tracer.Mask(err)
+		}
 	}
 
 	return nil
 }
 
 func (r *run) caddyConf() error {
-	err := os.MkdirAll(PathCaddyProxy, os.ModePerm)
-	if err != nil {
-		return tracer.Mask(err)
+	var err error
+
+	{
+		err = os.MkdirAll(PathCaddyProxy, os.ModePerm)
+		if err != nil {
+			return tracer.Mask(err)
+		}
 	}
 
 	return nil
@@ -190,7 +187,7 @@ func (r *run) redisConf() error {
 	return nil
 }
 
-func (r *run) unitFiles(uni []Unit, res bool) error {
+func (r *run) unitFiles(uni []Unit) error {
 	var err error
 
 	{
@@ -241,16 +238,9 @@ func (r *run) unitFiles(uni []Unit, res bool) error {
 	{
 		for _, u := range uni {
 			for i := 0; i < u.Cou(); i++ {
-				if res {
-					_, err = con.RestartUnitContext(context.Background(), u.Nam(i), "replace", nil)
-					if err != nil {
-						return tracer.Mask(err)
-					}
-				} else {
-					_, err = con.StartUnitContext(context.Background(), u.Nam(i), "replace", nil)
-					if err != nil {
-						return tracer.Mask(err)
-					}
+				_, err = con.StartUnitContext(context.Background(), u.Nam(i), "replace", nil)
+				if err != nil {
+					return tracer.Mask(err)
 				}
 			}
 		}
