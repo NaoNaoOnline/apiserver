@@ -90,12 +90,12 @@ func (h *SystemHandler) Ensure(tas *task.Task, bud *budget.Budget) error {
 	return nil
 }
 
-func (h *SystemHandler) searchDesc(inp objectid.ID, bud *budget.Budget) (*descriptionstorage.Object, error) {
+func (h *SystemHandler) searchDesc(eid objectid.ID, bud *budget.Budget) (*descriptionstorage.Object, error) {
 	var err error
 
 	var dob []*descriptionstorage.Object
 	{
-		dob, err = h.des.SearchEvnt("", []objectid.ID{inp})
+		dob, err = h.des.SearchEvnt("", []objectid.ID{eid})
 		if err != nil {
 			return nil, tracer.Mask(err)
 		}
@@ -125,12 +125,12 @@ func (h *SystemHandler) searchDesc(inp objectid.ID, bud *budget.Budget) (*descri
 	return dob[0], nil
 }
 
-func (h *SystemHandler) searchEvnt(inp objectid.ID, bud *budget.Budget) (*eventstorage.Object, error) {
+func (h *SystemHandler) searchEvnt(eid objectid.ID, bud *budget.Budget) (*eventstorage.Object, error) {
 	var err error
 
-	var eve []*eventstorage.Object
+	var eob []*eventstorage.Object
 	{
-		eve, err = h.eve.SearchEvnt("", []objectid.ID{inp})
+		eob, err = h.eve.SearchEvnt("", []objectid.ID{eid})
 		if eventstorage.IsEventObjectNotFound(err) {
 			return nil, nil
 		} else if err != nil {
@@ -138,16 +138,20 @@ func (h *SystemHandler) searchEvnt(inp objectid.ID, bud *budget.Budget) (*events
 		}
 	}
 
-	return eve[0], nil
+	if len(eob) == 0 {
+		return nil, nil
+	}
+
+	return eob[0], nil
 }
 
-func (h *SystemHandler) searchLabl(inp *eventstorage.Object, bud *budget.Budget) ([]*labelstorage.Object, error) {
+func (h *SystemHandler) searchLabl(eob *eventstorage.Object, bud *budget.Budget) ([]*labelstorage.Object, error) {
 	var err error
 
 	var lid []objectid.ID
 	{
-		lid = append(lid, inp.Cate...)
-		lid = append(lid, inp.Host...)
+		lid = append(lid, eob.Cate...)
+		lid = append(lid, eob.Host...)
 	}
 
 	var lob labelstorage.Slicer
