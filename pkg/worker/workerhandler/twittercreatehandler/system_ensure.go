@@ -37,6 +37,12 @@ func (h *SystemHandler) Ensure(tas *task.Task, bud *budget.Budget) error {
 		}
 	}
 
+	// It might happen that events get created and at the time the task runs the
+	// event got already deleted. In such a case we just stop processing here.
+	if eob == nil {
+		return nil
+	}
+
 	var lob labelstorage.Slicer
 	{
 		lob, err = h.searchLabl(eob, bud)
@@ -60,6 +66,12 @@ func (h *SystemHandler) Ensure(tas *task.Task, bud *budget.Budget) error {
 		}
 	}
 
+	// It might happen that events get created without descriptions. In such a
+	// case we just stop processing here.
+	if dob == nil {
+		return nil
+	}
+
 	var twt string
 	{
 		twt, err = ensureTmpl(dob, eob, lob)
@@ -78,23 +90,27 @@ func (h *SystemHandler) Ensure(tas *task.Task, bud *budget.Budget) error {
 	return nil
 }
 
-func (h *SystemHandler) searchDesc(inp objectid.ID, bud *budget.Budget) (*descriptionstorage.Object, error) {
+func (h *SystemHandler) searchDesc(eid objectid.ID, bud *budget.Budget) (*descriptionstorage.Object, error) {
 	var err error
 
-	var des []*descriptionstorage.Object
+	var dob []*descriptionstorage.Object
 	{
-		des, err = h.des.SearchEvnt("", []objectid.ID{inp})
+		dob, err = h.des.SearchEvnt("", []objectid.ID{eid})
 		if err != nil {
 			return nil, tracer.Mask(err)
 		}
+	}
+
+	if len(dob) == 0 {
+		return nil, nil
 	}
 
 	// Sort event descriptions by time in ascending order with second priority.
 	// Note that we are interested in the earliest description if no single
 	// description has the most likes. The earliest description is then most
 	// likely the description the event creator provided during event creation.
-	sort.SliceStable(des, func(i, j int) bool {
-		return des[i].Crtd.Unix() < des[j].Crtd.Unix()
+	sort.SliceStable(dob, func(i, j int) bool {
+		return dob[i].Crtd.Unix() < dob[j].Crtd.Unix()
 	})
 
 	// Sort event descriptions by likes in descending order with first priority.
@@ -102,34 +118,40 @@ func (h *SystemHandler) searchDesc(inp objectid.ID, bud *budget.Budget) (*descri
 	// the most likes, we have to search the list of descriptions here in reverse
 	// order, ensuring the first description in the list ends up having the most
 	// likes.
-	sort.SliceStable(des, func(i, j int) bool {
-		return des[i].Mtrc.Data[objectlabel.DescriptionMetricUser] > des[j].Mtrc.Data[objectlabel.DescriptionMetricUser]
+	sort.SliceStable(dob, func(i, j int) bool {
+		return dob[i].Mtrc.Data[objectlabel.DescriptionMetricUser] > dob[j].Mtrc.Data[objectlabel.DescriptionMetricUser]
 	})
 
-	return des[0], nil
+	return dob[0], nil
 }
 
-func (h *SystemHandler) searchEvnt(inp objectid.ID, bud *budget.Budget) (*eventstorage.Object, error) {
+func (h *SystemHandler) searchEvnt(eid objectid.ID, bud *budget.Budget) (*eventstorage.Object, error) {
 	var err error
 
-	var eve []*eventstorage.Object
+	var eob []*eventstorage.Object
 	{
-		eve, err = h.eve.SearchEvnt("", []objectid.ID{inp})
-		if err != nil {
+		eob, err = h.eve.SearchEvnt("", []objectid.ID{eid})
+		if eventstorage.IsEventObjectNotFound(err) {
+			return nil, nil
+		} else if err != nil {
 			return nil, tracer.Mask(err)
 		}
 	}
 
-	return eve[0], nil
+	if len(eob) == 0 {
+		return nil, nil
+	}
+
+	return eob[0], nil
 }
 
-func (h *SystemHandler) searchLabl(inp *eventstorage.Object, bud *budget.Budget) ([]*labelstorage.Object, error) {
+func (h *SystemHandler) searchLabl(eob *eventstorage.Object, bud *budget.Budget) ([]*labelstorage.Object, error) {
 	var err error
 
 	var lid []objectid.ID
 	{
-		lid = append(lid, inp.Cate...)
-		lid = append(lid, inp.Host...)
+		lid = append(lid, eob.Cate...)
+		lid = append(lid, eob.Host...)
 	}
 
 	var lob labelstorage.Slicer
