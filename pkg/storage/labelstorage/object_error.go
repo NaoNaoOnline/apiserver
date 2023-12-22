@@ -2,6 +2,7 @@ package labelstorage
 
 import (
 	"github.com/NaoNaoOnline/apiserver/pkg/format/descriptionformat"
+	"github.com/NaoNaoOnline/apiserver/pkg/format/handleformat"
 	"github.com/NaoNaoOnline/apiserver/pkg/format/nameformat"
 	"github.com/xh3b4sd/tracer"
 )
@@ -25,7 +26,7 @@ var labelNameLengthError = &tracer.Error{
 	Desc: "The request expects the label name to have between 2 and 25 characters. The label name was not found to have between 3 and 20 characters. Therefore the request failed.",
 }
 
-var labelPrflFormatError = nameformat.Errorf("label", "prfl")
+var labelPrflFormatError = handleformat.Errorf("label", "prfl")
 
 var labelPrflInvalidError = &tracer.Error{
 	Kind: "labelPrflInvalidError",
