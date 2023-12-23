@@ -1,4 +1,4 @@
-package twittercreatehandler
+package discordcreatehandler
 
 import (
 	"github.com/NaoNaoOnline/apiserver/pkg/object/objectid"
@@ -17,13 +17,13 @@ func (h *SystemHandler) Ensure(tas *task.Task, bud *budget.Budget) error {
 		eid = objectid.ID(tas.Meta.Get(objectlabel.EvntObject))
 	}
 
-	// Try to generate the template and give the result to the twitter client. It
+	// Try to generate the template and give the result to the discord client. It
 	// might happen that events get created and at the time this task runs the
 	// event got already deleted. Certain interruptions might happen. In such a
 	// cases we just stop processing here.
 	var tem string
 	{
-		tem, err = h.tem.Create(eid, eventtemplate.KindTwitter)
+		tem, err = h.tem.Create(eid, eventtemplate.KindDiscord)
 		if eventtemplate.IsCancel(err) {
 			return nil
 		} else if err != nil {
@@ -32,7 +32,7 @@ func (h *SystemHandler) Ensure(tas *task.Task, bud *budget.Budget) error {
 	}
 
 	{
-		err = h.twi.Create(tem)
+		err = h.dis.Create(tem)
 		if err != nil {
 			return tracer.Mask(err)
 		}

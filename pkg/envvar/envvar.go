@@ -17,6 +17,7 @@ type Env struct {
 	ChainPol string `split_words:"true" required:"true"`
 	ChainRpc string `split_words:"true" required:"true"`
 	ChainSub string `split_words:"true" required:"true"`
+	DscrdBot string `split_words:"true" required:"false"`
 	HttpHost string `split_words:"true" default:"127.0.0.1"`
 	HttpPort string `split_words:"true" default:"7777"`
 	MsubsEve int    `split_words:"true" required:"true"`

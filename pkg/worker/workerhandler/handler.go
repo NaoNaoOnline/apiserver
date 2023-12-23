@@ -7,8 +7,11 @@ import (
 	"github.com/NaoNaoOnline/apiserver/pkg/feed"
 	"github.com/NaoNaoOnline/apiserver/pkg/permission"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage"
+	"github.com/NaoNaoOnline/apiserver/pkg/worker/client/discordclient"
 	"github.com/NaoNaoOnline/apiserver/pkg/worker/client/twitterclient"
+	"github.com/NaoNaoOnline/apiserver/pkg/worker/template/eventtemplate"
 	"github.com/NaoNaoOnline/apiserver/pkg/worker/workerhandler/descriptiondeletehandler"
+	"github.com/NaoNaoOnline/apiserver/pkg/worker/workerhandler/discordcreatehandler"
 	"github.com/NaoNaoOnline/apiserver/pkg/worker/workerhandler/eventcreatehandler"
 	"github.com/NaoNaoOnline/apiserver/pkg/worker/workerhandler/eventdeletehandler"
 	"github.com/NaoNaoOnline/apiserver/pkg/worker/workerhandler/listdeletehandler"
@@ -29,6 +32,7 @@ import (
 type Config struct {
 	// Cid are the chain IDs for all deployed chains.
 	Cid []int64
+	Dis discordclient.Interface
 	Emi *emitter.Emitter
 	Fee feed.Interface
 	Loc locker.Interface
@@ -41,6 +45,7 @@ type Config struct {
 	// Scn are the subscription contract addresses for all deployed chains.
 	Scn []string
 	Sto *storage.Storage
+	Tem *eventtemplate.Template
 	Twi twitterclient.Interface
 }
 
@@ -49,6 +54,9 @@ type Handler struct {
 }
 
 func New(c Config) *Handler {
+	if c.Dis == nil {
+		tracer.Panic(tracer.Mask(fmt.Errorf("%T.Dis must not be empty", c)))
+	}
 	if c.Emi == nil {
 		tracer.Panic(tracer.Mask(fmt.Errorf("%T.Emi must not be empty", c)))
 	}
@@ -77,6 +85,14 @@ func New(c Config) *Handler {
 		han = append(han, descriptiondeletehandler.NewCustomHandler(descriptiondeletehandler.CustomHandlerConfig{
 			Des: c.Sto.Desc(),
 			Log: c.Log,
+		}))
+	}
+
+	if c.Dis.Verify() {
+		han = append(han, discordcreatehandler.NewSystemHandler(discordcreatehandler.SystemHandlerConfig{
+			Dis: c.Dis,
+			Log: c.Log,
+			Tem: c.Tem,
 		}))
 	}
 
@@ -187,10 +203,8 @@ func New(c Config) *Handler {
 
 	if c.Twi.Verify() {
 		han = append(han, twittercreatehandler.NewSystemHandler(twittercreatehandler.SystemHandlerConfig{
-			Des: c.Sto.Desc(),
-			Eve: c.Sto.Evnt(),
-			Lab: c.Sto.Labl(),
 			Log: c.Log,
+			Tem: c.Tem,
 			Twi: c.Twi,
 		}))
 	}

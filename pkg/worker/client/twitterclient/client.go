@@ -45,7 +45,7 @@ func New(c Config) *Client {
 		}
 	}
 
-	if !cli.cli.IsReady() {
+	if !cli.Verify() {
 		cli.log.Log(
 			context.Background(),
 			"level", "info",

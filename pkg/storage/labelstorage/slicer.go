@@ -57,7 +57,15 @@ func (s Slicer) Prfl(key string) []string {
 	var nam []string
 
 	for _, x := range s {
+		// Since we are looking for e.g. Twitter handles, we only want to process
+		// host labels.
+		if x.Kind != "host" {
+			continue
+		}
+
+		// If there is no profile data we record the label name instead.
 		if x.Prfl.Data == nil {
+			nam = append(nam, x.Name.Data)
 			continue
 		}
 
@@ -68,6 +76,9 @@ func (s Slicer) Prfl(key string) []string {
 
 		if val != "" {
 			nam = append(nam, val)
+		} else {
+			// If there is no profile value we record the label name instead.
+			nam = append(nam, x.Name.Data)
 		}
 	}
 
