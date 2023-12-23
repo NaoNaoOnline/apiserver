@@ -6,6 +6,7 @@ require (
 	github.com/NaoNaoOnline/apigocode v0.8.21
 	github.com/auth0/go-jwt-middleware/v2 v2.2.0
 	github.com/brianvoe/gofakeit/v6 v6.26.3
+	github.com/bwmarrin/discordgo v0.27.1
 	github.com/coreos/go-systemd/v22 v22.5.0
 	github.com/ethereum/go-ethereum v1.13.5
 	github.com/evanphx/json-patch/v5 v5.7.0

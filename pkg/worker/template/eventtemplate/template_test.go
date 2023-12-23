@@ -1,4 +1,4 @@
-package twittercreatehandler
+package eventtemplate
 
 import (
 	"flag"
@@ -15,14 +15,15 @@ import (
 	"github.com/google/go-cmp/cmp"
 )
 
-// go test ./pkg/worker/workerhandler/twittercreatehandler -update
+// go test ./pkg/worker/template/eventtemplate -update
 var update = flag.Bool("update", false, "update .golden files")
 
-func Test_Worker_Twitter_Create_ensureTmpl(t *testing.T) {
+func Test_Worker_Template_Event_Create(t *testing.T) {
 	testCases := []struct {
 		dob *descriptionstorage.Object
 		eob *eventstorage.Object
 		lob []*labelstorage.Object
+		kin kind
 	}{
 		// Case 000 ensures a normal tweet can be generated with all the given
 		// content.
@@ -30,6 +31,7 @@ func Test_Worker_Twitter_Create_ensureTmpl(t *testing.T) {
 			dob: newDesc("where do I sign up I'm straight yes and amen"),
 			eob: newEvnt(),
 			lob: newLabl(3, 1),
+			kin: KindTwitter,
 		},
 		// Case 001 ensures a trimmed tweet can be generated with the description
 		// being partially cut off.
@@ -37,6 +39,7 @@ func Test_Worker_Twitter_Create_ensureTmpl(t *testing.T) {
 			dob: newDesc("where do I sign up I'm straight yes and amen coulda, shoulda, woulda, where have you been I'm sick check is in the mail"),
 			eob: newEvnt(),
 			lob: newLabl(2, 1),
+			kin: KindTwitter,
 		},
 		// Case 002 ensures a trimmed tweet can be generated with the description
 		// and a category label being fully cut off.
@@ -44,6 +47,15 @@ func Test_Worker_Twitter_Create_ensureTmpl(t *testing.T) {
 			dob: newDesc("where do I sign up I'm straight yes and amen coulda, shoulda, woulda, where have you been I'm sick check is in the mail"),
 			eob: newEvnt(),
 			lob: newLabl(4, 3),
+			kin: KindTwitter,
+		},
+		// Case 003 ensures that hosts without configured Twitter handle are still
+		// added to the host list.
+		{
+			dob: newDesc("where do I sign up I'm straight yes and amen"),
+			eob: newEvnt(),
+			lob: newLabl(2, 4),
+			kin: KindTwitter,
 		},
 	}
 
@@ -53,7 +65,7 @@ func Test_Worker_Twitter_Create_ensureTmpl(t *testing.T) {
 
 			var cur string
 			{
-				cur, err = ensureTmpl(tc.dob, tc.eob, tc.lob)
+				cur, err = ensureTmpl(tc.dob, tc.eob, tc.lob, tc.kin)
 				if err != nil {
 					t.Fatal(err)
 				}
@@ -134,7 +146,7 @@ func newLabl(x int, y int) []*labelstorage.Object {
 			{
 				Kind: "cate",
 				Name: objectfield.String{
-					Data: "Real World Assets",
+					Data: "Something-Something",
 				},
 			},
 		}
@@ -174,6 +186,12 @@ func newLabl(x int, y int) []*labelstorage.Object {
 					Data: map[string]string{
 						objectlabel.ProfileTwitter: "Sisyphus_Sisyphus",
 					},
+				},
+			},
+			{
+				Kind: "host",
+				Name: objectfield.String{
+					Data: "Foo Bar",
 				},
 			},
 		}

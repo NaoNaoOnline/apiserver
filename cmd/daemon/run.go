@@ -24,7 +24,9 @@ import (
 	"github.com/NaoNaoOnline/apiserver/pkg/storage"
 	"github.com/NaoNaoOnline/apiserver/pkg/storage/labelstorage"
 	"github.com/NaoNaoOnline/apiserver/pkg/worker"
+	"github.com/NaoNaoOnline/apiserver/pkg/worker/client/discordclient"
 	"github.com/NaoNaoOnline/apiserver/pkg/worker/client/twitterclient"
+	"github.com/NaoNaoOnline/apiserver/pkg/worker/template/eventtemplate"
 	"github.com/NaoNaoOnline/apiserver/pkg/worker/workerhandler"
 	"github.com/gorilla/mux"
 	"github.com/spf13/cobra"
@@ -121,9 +123,19 @@ func (r *run) runE(cmd *cobra.Command, args []string) error {
 		loc = defLoc(red.Listen())
 	}
 
+	var dis discordclient.Interface
+	{
+		dis = discordclient.New(discordclient.Config{
+			Log: log,
+			Tkn: env.DscrdBot,
+		})
+	}
+
 	var twi twitterclient.Interface
 	{
-		twi = twitterclient.New(twitterclient.Config{Log: log})
+		twi = twitterclient.New(twitterclient.Config{
+			Log: log,
+		})
 	}
 
 	// --------------------------------------------------------------------- //
@@ -199,6 +211,16 @@ func (r *run) runE(cmd *cobra.Command, args []string) error {
 		}
 	}
 
+	var tem *eventtemplate.Template
+	{
+		tem = eventtemplate.NewTemplate(eventtemplate.TemplateConfig{
+			Des: sto.Desc(),
+			Eve: sto.Evnt(),
+			Lab: sto.Labl(),
+			Log: log,
+		})
+	}
+
 	// --------------------------------------------------------------------- //
 
 	var shn *serverhandler.Handler
@@ -242,6 +264,7 @@ func (r *run) runE(cmd *cobra.Command, args []string) error {
 	{
 		whn = workerhandler.New(workerhandler.Config{
 			Cid: cid,
+			Dis: dis,
 			Emi: emi,
 			Fee: fee,
 			Loc: loc,
@@ -251,6 +274,7 @@ func (r *run) runE(cmd *cobra.Command, args []string) error {
 			Rpc: rpc,
 			Scn: scn,
 			Sto: sto,
+			Tem: tem,
 			Twi: twi,
 		})
 	}
