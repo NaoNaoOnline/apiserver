@@ -25,14 +25,14 @@ func (c *Client) Create(str string) error {
 	}
 
 	{
+		defer cli.Close()
+	}
+
+	{
 		_, err = cli.ChannelMessageSend(cid, str)
 		if err != nil {
 			return tracer.Mask(err)
 		}
-	}
-
-	{
-		cli.Close()
 	}
 
 	return nil
