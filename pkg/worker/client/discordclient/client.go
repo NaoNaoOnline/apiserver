@@ -8,7 +8,8 @@ import (
 
 type Config struct {
 	Log logger.Interface
-	// Tkn is the authorization token, the bot's client secret required to send messages to some Discord channel.
+	// Tkn is the authorization token, the bot's client secret required to send
+	// messages to some Discord channel.
 	Tkn string
 }
 
