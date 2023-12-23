@@ -152,8 +152,9 @@ func (r *Redis) CreateEvnt(inp []*Object) ([]*Object, error) {
 		}
 
 		// Create the label specific mappings for label specific search queries.
-		// With that we can search for events associated to certain labels.
-		for _, x := range append(inp[i].Cate, inp[i].Host...) {
+		// With that we can search for events associated to builtin, category and
+		// host labels.
+		for _, x := range append(append(inp[i].Bltn, inp[i].Cate...), inp[i].Host...) {
 			err = r.red.Sorted().Create().Score(eveLab(x), inp[i].Evnt.String(), inp[i].Evnt.Float())
 			if err != nil {
 				return nil, tracer.Mask(err)

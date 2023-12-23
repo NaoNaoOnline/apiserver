@@ -24,7 +24,7 @@ func (r *Redis) DeleteEvnt(inp []*Object) ([]objectstate.String, error) {
 		}
 
 		// Delete the label specific mappings for label specific search queries.
-		for _, x := range append(inp[i].Cate, inp[i].Host...) {
+		for _, x := range append(append(inp[i].Bltn, inp[i].Cate...), inp[i].Host...) {
 			err = r.red.Sorted().Delete().Score(eveLab(x), inp[i].Evnt.Float())
 			if err != nil {
 				return nil, tracer.Mask(err)
