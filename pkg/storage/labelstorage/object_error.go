@@ -30,5 +30,5 @@ var labelPrflFormatError = handleformat.Errorf("label", "prfl")
 
 var labelPrflInvalidError = &tracer.Error{
 	Kind: "labelPrflInvalidError",
-	Desc: "The request expects the label prfl to be one of [Twitter Warpcast]. The label prfl was not found to be one of [Twitter Warpcast]. Therefore the request failed.",
+	Desc: "The request expects the label prfl to be one of [Twitch Twitter Warpcast]. The label prfl was not found to be one of [Twitch Twitter Warpcast]. Therefore the request failed.",
 }
