@@ -187,6 +187,13 @@ func (r *Redis) CreateWrkr(inp []*Object) ([]objectstate.String, error) {
 		}
 
 		{
+			err = r.emi.TickerEvnt(inp[i].Evnt, inp[i].Time)
+			if err != nil {
+				return nil, tracer.Mask(err)
+			}
+		}
+
+		{
 			out = append(out, objectstate.Started)
 		}
 	}
