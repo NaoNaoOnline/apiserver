@@ -6,5 +6,6 @@ const (
 	ActionDelete string = "delete"
 	ActionDonate string = "donate"
 	ActionScrape string = "scrape"
+	ActionTicker string = "ticker"
 	ActionUpdate string = "update"
 )

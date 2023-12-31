@@ -37,7 +37,7 @@ type templateData struct {
 	Time string
 }
 
-const templateBody = `Online event added to NaoNao. {{ .Host }} welcomes you to chat about {{ .Cate }}!
+const templateBody = `Online event happening now now! {{ .Host }} welcomes you to chat about {{ .Cate }}.
 
 {{ .Desc }}
 
