@@ -9,7 +9,7 @@ require (
 	github.com/bwmarrin/discordgo v0.28.1
 	github.com/coreos/go-systemd/v22 v22.5.0
 	github.com/ethereum/go-ethereum v1.13.5
-	github.com/evanphx/json-patch/v5 v5.8.0
+	github.com/evanphx/json-patch/v5 v5.9.0
 	github.com/google/go-cmp v0.6.0
 	github.com/google/gofuzz v1.2.0
 	github.com/gorilla/mux v1.8.1
