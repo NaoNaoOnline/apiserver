@@ -17,7 +17,7 @@ require (
 	github.com/kelseyhightower/envconfig v1.4.0
 	github.com/michimani/gotwi v0.14.0
 	github.com/rafaeljusto/redigomock/v3 v3.1.2
-	github.com/rs/cors v1.10.1
+	github.com/rs/cors v1.11.0
 	github.com/spf13/cobra v1.8.0
 	github.com/twitchtv/twirp v8.1.3+incompatible
 	github.com/xh3b4sd/breakr v0.1.0
