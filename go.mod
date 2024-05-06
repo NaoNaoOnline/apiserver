@@ -26,7 +26,7 @@ require (
 	github.com/xh3b4sd/redigo v0.37.1
 	github.com/xh3b4sd/rescue v0.17.16
 	github.com/xh3b4sd/tracer v0.11.1
-	golang.org/x/text v0.14.0
+	golang.org/x/text v0.15.0
 	mvdan.cc/xurls/v2 v2.5.0
 )
 
