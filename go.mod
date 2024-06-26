@@ -1,6 +1,7 @@
 module github.com/NaoNaoOnline/apiserver
 
 go 1.21.1
+toolchain go1.22.4
 
 require (
 	github.com/NaoNaoOnline/apigocode v0.8.21
@@ -15,7 +16,7 @@ require (
 	github.com/gorilla/mux v1.8.1
 	github.com/joho/godotenv v1.5.1
 	github.com/kelseyhightower/envconfig v1.4.0
-	github.com/michimani/gotwi v0.14.0
+	github.com/michimani/gotwi v0.15.0
 	github.com/rafaeljusto/redigomock/v3 v3.1.2
 	github.com/rs/cors v1.10.1
 	github.com/spf13/cobra v1.8.0
